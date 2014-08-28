@@ -1,4 +1,4 @@
-TheGRID3D
+TheGRID
 =========
 
 TGC TheGRID
