@@ -1,0 +1,1 @@
+xcopy AlumnoMedia "..\AlumnoMedia" /s
