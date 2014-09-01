@@ -29,6 +29,7 @@ namespace AlumnoEjemplos.MiGrupo
         //Dibujable asteroide;
         //Dibujable caja;
         Dibujable nave;
+        Dibujable laser;
         //--------------------------------------------------------
         public override void init()
         {
@@ -54,6 +55,11 @@ namespace AlumnoEjemplos.MiGrupo
             nave.objeto = scene.Meshes[0];
             nave.velocidadRadial = 2;
             GuiController.Instance.ThirdPersonCamera.Target = nave.Position;
+
+            laser = new Dibujable();
+            scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml");
+            laser.objeto = scene.Meshes[0];
+            
         }
         //--------------------------------------------------------
 
@@ -84,6 +90,7 @@ namespace AlumnoEjemplos.MiGrupo
             nave.rotar(elapsedTime);
             nave.trasladar(elapsedTime);
             nave.render();
+            laser.render();
             //caja.rotar(elapsedTime, lista);
             //caja.render();
 
@@ -91,7 +98,8 @@ namespace AlumnoEjemplos.MiGrupo
 
         public override void close()
         {
-
+            nave.dispose();
+            laser.dispose();
         }
 
         public void metodoUselessInit()
