@@ -26,18 +26,17 @@ namespace AlumnoEjemplos.MiGrupo
         //--------------------------------------------------------
         // ATRIBUTOS
         TgcBox suelo;
-<<<<<<< HEAD
+
         TgcMesh asteroide, asteroide2;
 
-=======
+
         //Dibujable asteroide;
         //Dibujable caja;
         Dibujable nave;
-<<<<<<< HEAD
+
         Dibujable laser;
-=======
->>>>>>> 85a2155e20ce8c26d46349fea151c760bab86cff
->>>>>>> origin/master
+
+
         //--------------------------------------------------------
         public override void init()
         {
@@ -48,9 +47,9 @@ namespace AlumnoEjemplos.MiGrupo
             //Crear suelo
             TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\Quake\\TexturePack2\\rock_floor1.jpg");
             suelo = TgcBox.fromSize(new Vector3(0, -5, 0), new Vector3(500, 0, 500), pisoTexture);
-            /*
+            
             //Crear 1 asteroide
-<<<<<<< HEAD
+
             creadorAsteroides creadorAsteroides = new creadorAsteroides();
 
             asteroide = creadorAsteroides.crearAsteroide(new Vector3(1, 1, 1));
@@ -58,14 +57,14 @@ namespace AlumnoEjemplos.MiGrupo
             creadorAsteroides.transladar(asteroide2, new Vector3(200, 0, 50));
             GuiController.Instance.RotCamera.targetObject(asteroide.BoundingBox);
 
-=======
+            /*
             asteroide = new Dibujable();
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Asteroide\\esferita-TgcScene.xml");
             asteroide.objeto = scene.Meshes[0];
             //GuiController.Instance.RotCamera.targetObject(asteroide.BoundingBox);
             */
->>>>>>> 85a2155e20ce8c26d46349fea151c760bab86cff
+
 
             nave = new Dibujable();
             TgcSceneLoader loader = new TgcSceneLoader();
@@ -103,12 +102,12 @@ namespace AlumnoEjemplos.MiGrupo
 
             //Device de DirectX para renderizar
             Device d3dDevice = GuiController.Instance.D3dDevice;
-<<<<<<< HEAD
+
             asteroide.render();
             asteroide2.render();
-=======
+
            // asteroide.render();
->>>>>>> 85a2155e20ce8c26d46349fea151c760bab86cff
+
             suelo.render();
             nave.rotar(elapsedTime);
             nave.trasladar(elapsedTime);
@@ -121,14 +120,14 @@ namespace AlumnoEjemplos.MiGrupo
 
         public override void close()
         {
-<<<<<<< HEAD
+
             nave.dispose();
             laser.dispose();
-=======
+
             asteroide.dispose();
             asteroide2.dispose();
             suelo.dispose();
->>>>>>> origin/master
+
         }
 
         public void metodoUselessInit()
