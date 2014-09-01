@@ -1,1 +1,1 @@
-xcopy AlumnoMedia "..\AlumnoMedia" /s
+xcopy AlumnoMedia "..\AlumnoMedia" /s /y
