@@ -29,7 +29,7 @@ namespace AlumnoEjemplos.TheGRID
             mesh_asteroide.Transform = Matrix.Scaling(tamanio);
             //Creamos su bounding Sphere
             mesh_asteroide.AutoUpdateBoundingBox = false;
-            TgcBoundingSphere bounding_asteroide = new TgcBoundingSphere(mesh_asteroide.BoundingBox.calculateBoxCenter(), mesh_asteroide.BoundingBox.calculateBoxRadius());
+            TgcBoundingSphere bounding_asteroide = new TgcBoundingSphere(mesh_asteroide.BoundingBox.calculateBoxCenter(), mesh_asteroide.BoundingBox.calculateAxisRadius().X);
            
             //Cargamos las cosas en el dibujable
             Dibujable asteroide = new Dibujable();
