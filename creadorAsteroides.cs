@@ -11,7 +11,7 @@ using TgcViewer.Utils.Modifiers;
 
 namespace AlumnoEjemplos.TheGRID
 {
-    class creadorAsteroides
+    class CreadorAsteroides
     {
         public TgcMesh crearAsteroide(Vector3 tamanio)
         {

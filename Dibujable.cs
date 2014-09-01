@@ -187,20 +187,22 @@ namespace AlumnoEjemplos.TheGRID
             normal.setActual(normal4.X, normal4.Y, normal4.Z);
             Vector4 dir4 = Vector3.Transform(x, rotation);
             direccion.setActual(normal4.X, normal4.Y, normal4.Z);
-            rotateX(x.X * angulo);
-            rotateY(x.Y * angulo);
-            rotateZ(x.Z * angulo);
+            Transform *= rotation;
+            //rotateX(x.X * angulo);
+            //rotateY(x.Y * angulo);
+            //rotateZ(x.Z * angulo);
         }
         private void rotarZ(float angulo)
         {
             Vector3 z = direccion.getActual();
             z.Normalize();
-            Matrix rotation = Matrix.RotationX(angulo);
-            //RotationYawPitchRoll(0*z.Y* angulo,0* z.X * angulo, z.Z * angulo);
+            //Matrix rotation = Matrix.RotationZ(angulo);
+            Matrix rotation = Matrix.RotationYawPitchRoll(0*z.Y* angulo,0* z.X * angulo, z.Z * angulo);
             Vector4 normal4 = Vector3.Transform(z, rotation);
             normal.setActual(normal4.X, normal4.Y, normal4.Z);
-            //Vector4 dir4 = Vector3.Transform(z, rotation);
-            //direccion.setActual(normal4.X, normal4.Y, normal4.Z);
+            Vector4 dir4 = Vector3.Transform(z, rotation);
+            direccion.setActual(normal4.X, normal4.Y, normal4.Z);
+            Transform *= rotation;
             //rotateX(z.X * angulo);
             //rotateY(z.Y * angulo);
             //rotateZ(z.Z * angulo);
