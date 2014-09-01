@@ -25,7 +25,8 @@ namespace AlumnoEjemplos.MiGrupo
         //--------------------------------------------------------
         // ATRIBUTOS
         TgcBox suelo;
-        Dibujable asteroide;
+        TgcMesh asteroide, asteroide2;
+
         //--------------------------------------------------------
         public override void init()
         {
@@ -37,11 +38,13 @@ namespace AlumnoEjemplos.MiGrupo
             TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\Quake\\TexturePack2\\rock_floor1.jpg");
             suelo = TgcBox.fromSize(new Vector3(500, 0, 500), new Vector3(2000, 0, 2000), pisoTexture);
             //Crear 1 asteroide
-            asteroide = new Dibujable();
-            TgcSceneLoader loader = new TgcSceneLoader();
-            TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Asteroide\\esferita-TgcScene.xml");
-            asteroide.objeto = scene.Meshes[0];            
-            //GuiController.Instance.RotCamera.targetObject(asteroide.BoundingBox);
+            creadorAsteroides creadorAsteroides = new creadorAsteroides();
+
+            asteroide = creadorAsteroides.crearAsteroide(new Vector3(1, 1, 1));
+            asteroide2 = creadorAsteroides.crearAsteroide(new Vector3(2, 2, 2));
+            creadorAsteroides.transladar(asteroide2, new Vector3(200, 0, 50));
+            GuiController.Instance.RotCamera.targetObject(asteroide.BoundingBox);
+
 
         }
         //--------------------------------------------------------
@@ -51,15 +54,17 @@ namespace AlumnoEjemplos.MiGrupo
         {
             //Device de DirectX para renderizar
             Device d3dDevice = GuiController.Instance.D3dDevice;
-            
             asteroide.render();
+            asteroide2.render();
             suelo.render();
 
         }
 
         public override void close()
         {
-
+            asteroide.dispose();
+            asteroide2.dispose();
+            suelo.dispose();
         }
 
         public void metodoUselessInit()
