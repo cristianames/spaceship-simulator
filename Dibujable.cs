@@ -40,11 +40,24 @@ namespace AlumnoEjemplos.TheGRID
         }
         public Vector3 getActual() { return actual; }
         public Vector3 getAnterior() { return anterior; }
-        public Vector3 direccion()
+        private bool sonIguales(Vector3 v1, Vector3 v2)
         {
-            Vector3 temp = new Vector3(actual.X, actual.Y, actual.Z);
-            temp.Subtract(anterior);
-            return temp;
+            bool iguales=true;
+            if (v1.X != v2.X) iguales = false;
+            if (v1.Y != v2.Y) iguales = false;
+            if (v1.Z != v2.Z) iguales = false;
+            return iguales;
+        }
+        public Vector3 direccion(){
+            Vector3 dir;
+            if (sonIguales(actual, anterior)) dir = new Vector3(1, 0, 0);
+            else
+            {
+                dir = new Vector3(actual.X, actual.Y, actual.Z);
+                dir.Subtract(anterior);
+            }
+            dir.Normalize();
+            return dir;
         }
     }
     //------------------------------------------------------------------
@@ -52,20 +65,26 @@ namespace AlumnoEjemplos.TheGRID
     //------------------------------------------------------------------
     class Dibujable
     {
+        //-----Atributos-----
         private Vector3Doble posicion;
-        private Vector3Doble aceleracion;
-        private Vector3Doble velocidad;
-        public Object objeto;
-        public Object fisica;
-        public Object colisiones;        
+        public float velocidad { set; get; }
+        public float velocidadRadial { set; get; }
+        public int traslacion { set; get; } // 0: Nada ; -1:frenado ; 1:acelerado
+        public int inclinacion { set; get; } // 0: Nada ; -1:hacia abajo ; 1:hacia arriba //Pitch
+        public int rotacion { set; get; } // 0: Nada ; -1:lateral izquierda ; 1:lateral derecha //Roll
+        // Doblar hacia la derecha o izquierda se hace rotando e inclinando, como un avion. //Yaw
+        public Object objeto { set; get; }
+        private Fisica fisica;
+        private Object colisiones;
+        //-------------------
+        
         public Dibujable()
         {
             posicion.setActual(0, 0, 0);
-            aceleracion.setActual(0, 0, 0);
-            velocidad.setActual(0, 0, 0);
             fisica = null;
             colisiones = null;
         }
+
         //-----IRenderObject-----
         public void render() { ((IRenderObject)objeto).render(); }
         public void dispose() 
@@ -79,7 +98,8 @@ namespace AlumnoEjemplos.TheGRID
             get { return ((IRenderObject)objeto).AlphaBlendEnable; }
             set { ((IRenderObject)objeto).AlphaBlendEnable = value; }
         }
-        //-----IRenderObject-----
+        //-----------------------
+
         //-----ITransformObject-----
         Matrix Transform
         {
@@ -91,7 +111,7 @@ namespace AlumnoEjemplos.TheGRID
             get { return ((ITransformObject)objeto).AutoTransformEnable; }
             set { ((ITransformObject)objeto).AutoTransformEnable = value; }
         }
-        Vector3 Position
+        public Vector3 Position
         {
             get { return ((ITransformObject)objeto).Position; }
             set { ((ITransformObject)objeto).Position = value; }
@@ -106,13 +126,54 @@ namespace AlumnoEjemplos.TheGRID
             get { return ((ITransformObject)objeto).Scale; }
             set { ((ITransformObject)objeto).Scale = value; }
         }
-        void move(Vector3 v) { ((ITransformObject)objeto).move(v); }
-        void move(float x, float y, float z) { ((ITransformObject)objeto).move(x,y,z); }
-        void moveOrientedY(float movement) { ((ITransformObject)objeto).moveOrientedY(movement); }
+        void move(Vector3 v) { this.move(v.X, v.Y, v.Z); }
+        void move(float x, float y, float z) 
+        { 
+            ((ITransformObject)objeto).move(x,y,z); 
+            Vector3 temp = new Vector3();
+            getPosition(temp);
+            posicion.setActual(temp);
+        }
+        void moveOrientedY(float movement) 
+        {
+            ((ITransformObject)objeto).moveOrientedY(movement); 
+            Vector3 temp = new Vector3();
+            getPosition(temp);
+            posicion.setActual(temp);
+        }
         void getPosition(Vector3 pos) { ((ITransformObject)objeto).getPosition(pos); }
         void rotateX(float angle) { ((ITransformObject)objeto).rotateX(angle); }
         void rotateY(float angle) { ((ITransformObject)objeto).rotateY(angle); }
         void rotateZ(float angle) { ((ITransformObject)objeto).rotateZ(angle); }
-        //-----ITransformObject-----
+        //--------------------------
+        public void setObject(Object cosa) { objeto = cosa; }
+        public Vector3 direccion() { return posicion.direccion(); }
+
+        public void rotar(float time)
+        {
+            if (fisica != null) fisica.rotar(time);
+            else
+            {
+                float angulo;
+                angulo =  velocidadRadial * time;
+                rotateX(angulo * inclinacion);
+                rotateZ(angulo * rotacion);
+                inclinacion = 0;
+                rotacion = 0;
+            }
+        }
+        public void rotar(float time, List<Dibujable> dibujables) { if (fisica != null) fisica.rotar(time, dibujables); }
+        public void trasladar(float time)
+        {
+            if (fisica != null) fisica.trasladar(time);
+            else
+            {
+                //Vector3 temp;
+                moveOrientedY(traslacion * velocidad * time);
+                traslacion = 0;
+            }
+        }
+        public void trasladar(float time, List<Dibujable> dibujables) { if (fisica != null) fisica.trasladar(time, dibujables); }
+
     }
 }
