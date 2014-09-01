@@ -46,13 +46,11 @@ namespace AlumnoEjemplos.MiGrupo
             
             //Crear 1 asteroide
 
-            CreadorAsteroides creadorAsteroides = new CreadorAsteroides();
+            Factory fabrica_dibujables = new Factory();
 
-            asteroide = new Dibujable();
-            asteroide2 = new Dibujable();
-            asteroide.objeto = creadorAsteroides.crearAsteroide(new Vector3(1, 1, 1));
-            asteroide2.objeto = creadorAsteroides.crearAsteroide(new Vector3(2, 2, 2));
-            creadorAsteroides.trasladar(asteroide2.objeto, new Vector3(200, 0, 50));
+            asteroide = fabrica_dibujables.crearAsteroide(new Vector3(1, 1, 1));
+            asteroide2 = fabrica_dibujables.crearAsteroide(new Vector3(2, 2, 2));
+            fabrica_dibujables.trasladar(asteroide2.objeto, new Vector3(200, 0, 50));
             GuiController.Instance.RotCamera.targetObject(((TgcMesh)asteroide.objeto).BoundingBox);
 
             /*
@@ -140,7 +138,8 @@ namespace AlumnoEjemplos.MiGrupo
             //asteroide2.render();
             //laser.render();
 
-           // asteroide.render();
+           
+            //asteroide.render();
 
             suelo.render();
             nave.rotar(elapsedTime);

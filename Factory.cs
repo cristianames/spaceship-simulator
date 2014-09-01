@@ -11,18 +11,27 @@ using TgcViewer.Utils.Modifiers;
 
 namespace AlumnoEjemplos.TheGRID
 {
-    class CreadorAsteroides
+    class Factory
     {
-        public TgcMesh crearAsteroide(Vector3 tamanio)
+        public Dibujable crearAsteroide(Vector3 tamanio)
         {
+            //Carguemos el DirectX y la carpeta de media
             Device d3dDevice = GuiController.Instance.D3dDevice;
             string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir; 
-          
+            //Creemos el dibujable
+            Dibujable asteroide = new Dibujable();
+
+            //Creemos la mesh
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Asteroide\\esferita-TgcScene.xml");
-            TgcMesh asteroide = scene.Meshes[0];
-            asteroide.AutoTransformEnable = false;
-            asteroide.Transform = Matrix.Scaling(tamanio);
+            TgcMesh mesh_asteroide = scene.Meshes[0];
+            mesh_asteroide.AutoTransformEnable = false;
+            mesh_asteroide.Transform = Matrix.Scaling(tamanio);
+            asteroide.objeto = mesh_asteroide;
+
+            //Creemos el detector de collisiones y las explosiones
+            ;
+
             return asteroide;
         }
         public void trasladar(Object asteroide, Vector3 vector)
