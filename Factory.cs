@@ -8,6 +8,7 @@ using TgcViewer;
 using Microsoft.DirectX.Direct3D;
 using System.Drawing;
 using TgcViewer.Utils.Modifiers;
+using TgcViewer.Utils.TgcGeometry;
 
 namespace AlumnoEjemplos.TheGRID
 {
@@ -18,8 +19,6 @@ namespace AlumnoEjemplos.TheGRID
             //Carguemos el DirectX y la carpeta de media
             Device d3dDevice = GuiController.Instance.D3dDevice;
             string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir; 
-            //Creemos el dibujable
-            Dibujable asteroide = new Dibujable();
 
             //Creemos la mesh
             TgcSceneLoader loader = new TgcSceneLoader();
@@ -27,17 +26,21 @@ namespace AlumnoEjemplos.TheGRID
             TgcMesh mesh_asteroide = scene.Meshes[0];
             mesh_asteroide.AutoTransformEnable = false;
             mesh_asteroide.Transform = Matrix.Scaling(tamanio);
+            //Creamos su bounding Sphere
+            TgcBoundingSphere bounding_asteroide = new TgcBoundingSphere(mesh_asteroide.BoundingBox.calculateBoxCenter(), mesh_asteroide.BoundingBox.calculateBoxRadius());
+           
+            //Cargamos las cosas en el dibujable
+            Dibujable asteroide = new Dibujable();
             asteroide.objeto = mesh_asteroide;
-
-            //Creemos el detector de collisiones y las explosiones
-            ;
+            asteroide.setBoundingBox(bounding_asteroide);
 
             return asteroide;
         }
-        public void trasladar(Object asteroide, Vector3 vector)
+        public void trasladar(Dibujable asteroide, Vector3 vector)
         {
             Matrix traslacion = Matrix.Translation(vector);
-            ((TgcMesh)asteroide).Transform *= traslacion;
+            ((TgcMesh)asteroide.objeto).Transform *= traslacion;
+            ((TgcBoundingSphere)asteroide.getBoundingBox()).setCenter(((TgcMesh)asteroide.objeto).BoundingBox.calculateBoxCenter() + vector);
         }
 
        /* public Asteroide(Vector3 tamanio)

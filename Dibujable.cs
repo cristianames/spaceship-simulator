@@ -80,7 +80,7 @@ namespace AlumnoEjemplos.TheGRID
         // Doblar hacia la derecha o izquierda se hace rotando e inclinando, como un avion. //Yaw
         public Object objeto { set; get; }
         private Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
-        private IColision colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
+        private IRenderObject colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
         private IExplosion explosion; // Acá va el manejo de un objeto cuando es chocado por otro.
         //-------------------
         
@@ -223,5 +223,8 @@ namespace AlumnoEjemplos.TheGRID
         }
         public void trasladar(float time, List<Dibujable> dibujables) { if (fisica != null) fisica.trasladar(time, dibujables); }
 
+        public void renderBoundingBox() { colision.render();}
+        public IRenderObject getBoundingBox() { return this.colision; }
+        public void setBoundingBox(IRenderObject bb) { this.colision = bb; }
     }
 }
