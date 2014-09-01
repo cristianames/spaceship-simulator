@@ -9,6 +9,7 @@ using Microsoft.DirectX.Direct3D;
 using System.Drawing;
 using TgcViewer.Utils.Modifiers;
 using TgcViewer.Utils.TgcGeometry;
+using AlumnoEjemplos.TheGRID.Colisiones;
 
 namespace AlumnoEjemplos.TheGRID
 {
@@ -27,12 +28,14 @@ namespace AlumnoEjemplos.TheGRID
             mesh_asteroide.AutoTransformEnable = false;
             mesh_asteroide.Transform = Matrix.Scaling(tamanio);
             //Creamos su bounding Sphere
+            mesh_asteroide.AutoUpdateBoundingBox = false;
             TgcBoundingSphere bounding_asteroide = new TgcBoundingSphere(mesh_asteroide.BoundingBox.calculateBoxCenter(), mesh_asteroide.BoundingBox.calculateBoxRadius());
            
             //Cargamos las cosas en el dibujable
             Dibujable asteroide = new Dibujable();
             asteroide.objeto = mesh_asteroide;
-            asteroide.setBoundingBox(bounding_asteroide);
+            asteroide.setColision(new ColisionAsteroide());
+            asteroide.getColision().setBoundingBox(bounding_asteroide);
 
             return asteroide;
         }
@@ -40,7 +43,7 @@ namespace AlumnoEjemplos.TheGRID
         {
             Matrix traslacion = Matrix.Translation(vector);
             ((TgcMesh)asteroide.objeto).Transform *= traslacion;
-            ((TgcBoundingSphere)asteroide.getBoundingBox()).setCenter(((TgcMesh)asteroide.objeto).BoundingBox.calculateBoxCenter() + vector);
+            asteroide.getColision().transladar(vector);
         }
 
        /* public Asteroide(Vector3 tamanio)
