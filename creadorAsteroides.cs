@@ -25,10 +25,10 @@ namespace AlumnoEjemplos.TheGRID
             asteroide.Transform = Matrix.Scaling(tamanio);
             return asteroide;
         }
-        public void transladar(TgcMesh asteroide, Vector3 vector)
+        public void trasladar(Object asteroide, Vector3 vector)
         {
-            Matrix translacion = Matrix.Translation(vector);
-            asteroide.Transform *= translacion;
+            Matrix traslacion = Matrix.Translation(vector);
+            ((TgcMesh)asteroide).Transform *= traslacion;
         }
 
        /* public Asteroide(Vector3 tamanio)

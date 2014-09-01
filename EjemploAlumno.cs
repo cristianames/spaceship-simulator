@@ -26,14 +26,10 @@ namespace AlumnoEjemplos.MiGrupo
         //--------------------------------------------------------
         // ATRIBUTOS
         TgcBox suelo;
-
-        TgcMesh asteroide, asteroide2;
-
-
+        Dibujable asteroide, asteroide2;
         //Dibujable asteroide;
         //Dibujable caja;
         Dibujable nave;
-
         Dibujable laser;
 
 
@@ -52,10 +48,12 @@ namespace AlumnoEjemplos.MiGrupo
 
             creadorAsteroides creadorAsteroides = new creadorAsteroides();
 
-            asteroide = creadorAsteroides.crearAsteroide(new Vector3(1, 1, 1));
-            asteroide2 = creadorAsteroides.crearAsteroide(new Vector3(2, 2, 2));
-            creadorAsteroides.transladar(asteroide2, new Vector3(200, 0, 50));
-            GuiController.Instance.RotCamera.targetObject(asteroide.BoundingBox);
+            asteroide = new Dibujable();
+            asteroide2 = new Dibujable();
+            asteroide.objeto = creadorAsteroides.crearAsteroide(new Vector3(1, 1, 1));
+            asteroide2.objeto = creadorAsteroides.crearAsteroide(new Vector3(2, 2, 2));
+            creadorAsteroides.trasladar(asteroide2.objeto, new Vector3(200, 0, 50));
+            GuiController.Instance.RotCamera.targetObject(((TgcMesh)asteroide.objeto).BoundingBox);
 
             /*
             asteroide = new Dibujable();
@@ -65,18 +63,33 @@ namespace AlumnoEjemplos.MiGrupo
             //GuiController.Instance.RotCamera.targetObject(asteroide.BoundingBox);
             */
 
+            laser = new Dibujable();
+            TgcSceneLoader loader = new TgcSceneLoader();
+            TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml");
+            laser.objeto = scene.Meshes[0];
 
             nave = new Dibujable();
-            TgcSceneLoader loader = new TgcSceneLoader();
-            TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Nave\\nave-TgcScene.xml");
+            scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Nave\\nave-TgcScene.xml");
             nave.objeto = scene.Meshes[0];
-            nave.velocidadRadial = 2;
-            GuiController.Instance.ThirdPersonCamera.Target = nave.Position;
+            nave.velocidadRadial = 5;
+            nave.velocidad = 50;
+            GuiController.Instance.RotCamera.targetObject(suelo.BoundingBox);
 
-            laser = new Dibujable();
-            scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml");
-            laser.objeto = scene.Meshes[0];
-            
+            GuiController.Instance.UserVars.addVar("Direccion-X");
+            GuiController.Instance.UserVars.addVar("Direccion-Y");
+            GuiController.Instance.UserVars.addVar("Direccion-Z");
+            GuiController.Instance.UserVars.addVar("Normal-X");
+            GuiController.Instance.UserVars.addVar("Normal-Y");
+            GuiController.Instance.UserVars.addVar("Normal-Z");
+            //Cargar valor en UserVar
+            Vector3 temp = nave.direccion.getActual();
+            GuiController.Instance.UserVars.setValue("Direccion-X", temp.X);
+            GuiController.Instance.UserVars.setValue("Direccion-Y", temp.Y);
+            GuiController.Instance.UserVars.setValue("Direccion-Z", temp.Z);
+            temp = nave.normal.getActual();
+            GuiController.Instance.UserVars.setValue("Normal-X", temp.X);
+            GuiController.Instance.UserVars.setValue("Normal-Y", temp.Y);
+            GuiController.Instance.UserVars.setValue("Normal-Z", temp.Z);
         }
         //--------------------------------------------------------
 
@@ -116,6 +129,14 @@ namespace AlumnoEjemplos.MiGrupo
             //caja.rotar(elapsedTime, lista);
             //caja.render();
 
+            Vector3 temp = nave.direccion.getActual();
+            GuiController.Instance.UserVars.setValue("Direccion-X", temp.X);
+            GuiController.Instance.UserVars.setValue("Direccion-Y", temp.Y);
+            GuiController.Instance.UserVars.setValue("Direccion-Z", temp.Z);
+            temp = nave.normal.getActual();
+            GuiController.Instance.UserVars.setValue("Normal-X", temp.X);
+            GuiController.Instance.UserVars.setValue("Normal-Y", temp.Y);
+            GuiController.Instance.UserVars.setValue("Normal-Z", temp.Z);
         }
 
         public override void close()

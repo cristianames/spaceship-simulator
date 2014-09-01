@@ -6,6 +6,7 @@ using Microsoft.DirectX;
 using TgcViewer;
 using TgcViewer.Utils.TgcSceneLoader;
 using System.Drawing;
+using Microsoft.DirectX.Direct3D;
 
 
 namespace AlumnoEjemplos.TheGRID
@@ -50,7 +51,7 @@ namespace AlumnoEjemplos.TheGRID
         }
         public Vector3 direccion(){
             Vector3 dir;
-            if (sonIguales(actual, anterior)) dir = new Vector3(1, 0, 0);
+            if (sonIguales(actual, anterior)) dir = new Vector3(0, 0, -1);
             else
             {
                 dir = new Vector3(actual.X, actual.Y, actual.Z);
@@ -67,6 +68,8 @@ namespace AlumnoEjemplos.TheGRID
     {
         //-----Atributos-----
         private Vector3Doble posicion;
+        public Vector3Doble normal;
+        public Vector3Doble direccion;
         public float velocidad { set; get; }
         public float velocidadRadial { set; get; }
         public int traslacion { set; get; } // 0: Nada ; -1:frenado ; 1:acelerado
@@ -74,15 +77,19 @@ namespace AlumnoEjemplos.TheGRID
         public int rotacion { set; get; } // 0: Nada ; -1:lateral izquierda ; 1:lateral derecha //Roll
         // Doblar hacia la derecha o izquierda se hace rotando e inclinando, como un avion. //Yaw
         public Object objeto { set; get; }
-        private Fisica fisica;
-        private Object colisiones;
+        private Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
+        private Object colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
+        private Object explosion; // Acá va el manejo de un objeto cuando es chocado por otro.
         //-------------------
         
         public Dibujable()
         {
             posicion.setActual(0, 0, 0);
+            normal.setActual(0, 1, 0);
+            direccion.setActual(0, 0, -1);
             fisica = null;
-            colisiones = null;
+            colision = null;
+            explosion = null;
         }
 
         //-----IRenderObject-----
@@ -147,30 +154,67 @@ namespace AlumnoEjemplos.TheGRID
         void rotateZ(float angle) { ((ITransformObject)objeto).rotateZ(angle); }
         //--------------------------
         public void setObject(Object cosa) { objeto = cosa; }
-        public Vector3 direccion() { return posicion.direccion(); }
+        //public Vector3 direccion() { return posicion.direccion(); }
 
         public void rotar(float time)
         {
             if (fisica != null) fisica.rotar(time);
             else
             {
-                float angulo;
-                angulo =  velocidadRadial * time;
-                rotateX(angulo * inclinacion);
-                rotateZ(angulo * rotacion);
+                float angulo = Geometry.DegreeToRadian(velocidadRadial * time);
+                //if (inclinacion != 0)rotarX(angulo * inclinacion);
+                if (rotacion != 0) rotarZ(angulo * rotacion);
+                //rotateX(angulo * inclinacion);
+                //rotateZ(angulo * rotacion);
                 inclinacion = 0;
                 rotacion = 0;
             }
         }
+
+        /*
+       Vector3 p = new Vector3(10, 5, 10);
+       Vector4 transformedVec4 = Vector3.Transform(p, movimientoFinal); //Devuelve un Vector4 poque estan las coordenadas homogeneas
+       Vector3 transformedVec3 = new Vector3(transformedVec4.X, transformedVec4.Y, transformedVec4.Z); //Ignoramos la componente W
+       */
+        private void rotarX(float angulo)
+        {
+            Vector3 x = Vector3.Cross(normal.getActual(), direccion.getActual());
+            x.Normalize();
+            Matrix rotation = Matrix.RotationYawPitchRoll(x.Y * angulo, x.X * angulo, x.Z * angulo);
+            Vector4 normal4 = Vector3.Transform(x, rotation);
+            normal.setActual(normal4.X, normal4.Y, normal4.Z);
+            Vector4 dir4 = Vector3.Transform(x, rotation);
+            direccion.setActual(normal4.X, normal4.Y, normal4.Z);
+            rotateX(x.X * angulo);
+            rotateY(x.Y * angulo);
+            rotateZ(x.Z * angulo);
+        }
+        private void rotarZ(float angulo)
+        {
+            Vector3 z = direccion.getActual();
+            z.Normalize();
+            Matrix rotation = Matrix.RotationX(angulo);
+            //RotationYawPitchRoll(0*z.Y* angulo,0* z.X * angulo, z.Z * angulo);
+            Vector4 normal4 = Vector3.Transform(z, rotation);
+            normal.setActual(normal4.X, normal4.Y, normal4.Z);
+            //Vector4 dir4 = Vector3.Transform(z, rotation);
+            //direccion.setActual(normal4.X, normal4.Y, normal4.Z);
+            //rotateX(z.X * angulo);
+            //rotateY(z.Y * angulo);
+            //rotateZ(z.Z * angulo);
+        }
         public void rotar(float time, List<Dibujable> dibujables) { if (fisica != null) fisica.rotar(time, dibujables); }
+
         public void trasladar(float time)
         {
             if (fisica != null) fisica.trasladar(time);
             else
             {
-                //Vector3 temp;
-                moveOrientedY(traslacion * velocidad * time);
+                //Vector3 temp = posicion.direccion();
+                Vector3 temp = direccion.getActual();
+                ((TgcMesh)objeto).move(temp.X * traslacion * velocidad * time, temp.Y * traslacion * velocidad * time, temp.Z * traslacion * velocidad * time);
                 traslacion = 0;
+                //moveOrientedY(traslacion * velocidad * time);
             }
         }
         public void trasladar(float time, List<Dibujable> dibujables) { if (fisica != null) fisica.trasladar(time, dibujables); }
