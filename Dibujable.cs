@@ -7,6 +7,8 @@ using TgcViewer;
 using TgcViewer.Utils.TgcSceneLoader;
 using System.Drawing;
 using Microsoft.DirectX.Direct3D;
+using AlumnoEjemplos.TheGRID.Explosiones;
+using AlumnoEjemplos.TheGRID.Colisiones;
 
 
 namespace AlumnoEjemplos.TheGRID
@@ -78,8 +80,8 @@ namespace AlumnoEjemplos.TheGRID
         // Doblar hacia la derecha o izquierda se hace rotando e inclinando, como un avion. //Yaw
         public Object objeto { set; get; }
         private Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
-        private Object colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
-        private Object explosion; // Acá va el manejo de un objeto cuando es chocado por otro.
+        private IColision colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
+        private IExplosion explosion; // Acá va el manejo de un objeto cuando es chocado por otro.
         //-------------------
         
         public Dibujable()
