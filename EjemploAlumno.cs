@@ -73,7 +73,7 @@ namespace AlumnoEjemplos.MiGrupo
             nave.objeto = scene.Meshes[0];
             nave.velocidadRadial = 5;
             nave.velocidad = 50;
-            ((TgcMesh)nave.objeto).AutoTransformEnable = false;
+            //((TgcMesh)nave.objeto).AutoTransformEnable = false;
             GuiController.Instance.RotCamera.targetObject(suelo.BoundingBox);
             
             // Prueba vectores
@@ -120,8 +120,16 @@ namespace AlumnoEjemplos.MiGrupo
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.W)) { }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.S)) { }
             //Otros
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.Space)) { nave.traslacion = 1; }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.LeftControl)) { nave.traslacion = -1; }
+            if (GuiController.Instance.D3dInput.keyPressed(Microsoft.DirectX.DirectInput.Key.Space)) 
+            {
+                if (nave.traslacion == 0) nave.traslacion = 1;
+                else nave.traslacion = 0;  
+            }
+            if (GuiController.Instance.D3dInput.keyPressed(Microsoft.DirectX.DirectInput.Key.LeftControl))
+            {
+                if (nave.traslacion == 0) nave.traslacion = -1;
+                else nave.traslacion = 0;  
+            }
             //-----FIN-UPDATE-----
 
 

@@ -217,7 +217,7 @@ namespace AlumnoEjemplos.TheGRID
                 //Vector3 temp = posicion.direccion();
                 Vector3 temp = direccion.getActual();
                 ((TgcMesh)objeto).move(temp.X * traslacion * velocidad * time, temp.Y * traslacion * velocidad * time, temp.Z * traslacion * velocidad * time);
-                traslacion = 0;
+                //traslacion = 0;
                 //moveOrientedY(traslacion * velocidad * time);
             }
         }
