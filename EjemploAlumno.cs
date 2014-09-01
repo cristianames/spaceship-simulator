@@ -51,11 +51,12 @@ namespace AlumnoEjemplos.MiGrupo
             fabrica_dibujables.trasladar(asteroide, new Vector3(200, 100, 50));
             GuiController.Instance.RotCamera.targetObject(((TgcMesh)asteroide.objeto).BoundingBox);
 
-            laser = new Dibujable();
-            TgcSceneLoader loader = new TgcSceneLoader();
-            TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml");
-            laser.objeto = scene.Meshes[0];
+            //Crear 1 laser
 
+            laser = fabrica_dibujables.crearLaser();
+           
+            TgcSceneLoader loader = new TgcSceneLoader();
+            TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml");           
             nave = new Dibujable();
             scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Nave\\nave-TgcScene.xml");
             nave.objeto = scene.Meshes[0];
@@ -128,7 +129,7 @@ namespace AlumnoEjemplos.MiGrupo
             //Device de DirectX para renderizar
             Device d3dDevice = GuiController.Instance.D3dDevice;
 
-            //laser.render();
+            laser.render();
 
            
             asteroide.render();
