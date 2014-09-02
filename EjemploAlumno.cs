@@ -55,13 +55,14 @@ namespace AlumnoEjemplos.MiGrupo
 
            
             TgcSceneLoader loader = new TgcSceneLoader();
-            TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml");           
-            nave = new Dibujable();
+            TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml"); 
+          
+            //Crea la nave
+
+            nave = new Dibujable(0, -10, -15);
             scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Nave\\nave-TgcScene.xml");
-            nave.objeto = scene.Meshes[0];
-            nave.velocidadRadial = 5;
-            nave.velocidad = 50;
-            //((TgcMesh)nave.objeto).AutoTransformEnable = false;
+            nave.setObject(scene.Meshes[0], 200, 150, new Vector3(0, 180, 0), new Vector3(1, 1, 1));
+
             GuiController.Instance.RotCamera.targetObject(suelo.BoundingBox);
 
           
@@ -107,8 +108,8 @@ namespace AlumnoEjemplos.MiGrupo
             //Flechas
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.Left)) { nave.rotacion = 1; }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.Right)) { nave.rotacion = -1; }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.Up)) { nave.inclinacion = -1; }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.Down)) { nave.inclinacion = 1; }
+            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.Up)) { nave.inclinacion = 1; }
+            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.Down)) { nave.inclinacion = -1; }
             //Letras
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.A)) { }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.D)) { }
