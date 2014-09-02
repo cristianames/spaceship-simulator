@@ -77,7 +77,7 @@ namespace AlumnoEjemplos.TheGRID
 
         public void dispararLaser(Dibujable laser, Vector3 direccion,float time) 
         {
-            Matrix traslacion = Matrix.Translation(direccion*time*3000);// extraer velocidad
+            Matrix traslacion = Matrix.Translation(direccion*time*4000);// extraer velocidad
             ((TgcMesh)laser.objeto).Transform *= traslacion;
         }
     }
