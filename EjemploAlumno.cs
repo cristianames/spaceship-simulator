@@ -63,6 +63,7 @@ namespace AlumnoEjemplos.MiGrupo
             nave.velocidad = 50;
             //((TgcMesh)nave.objeto).AutoTransformEnable = false;
             GuiController.Instance.RotCamera.targetObject(suelo.BoundingBox);
+<<<<<<< HEAD
           
             
             //Configurar camara en Tercer Persona
@@ -95,6 +96,8 @@ namespace AlumnoEjemplos.MiGrupo
             GuiController.Instance.UserVars.setValue("Normal-X", resultado.X);
             GuiController.Instance.UserVars.setValue("Normal-Y", resultado.Y);
             GuiController.Instance.UserVars.setValue("Normal-Z", resultado.Z);
+=======
+>>>>>>> origin/master
         }
         //--------------------------------------------------------
 
@@ -168,19 +171,6 @@ namespace AlumnoEjemplos.MiGrupo
             nave.rotar(elapsedTime);
             nave.trasladar(elapsedTime);
             nave.render();
-            //caja.rotar(elapsedTime, lista);
-            //caja.render();
-
-            /*
-            Vector3 temp = nave.direccion.getActual();
-            GuiController.Instance.UserVars.setValue("Direccion-X", temp.X);
-            GuiController.Instance.UserVars.setValue("Direccion-Y", temp.Y);
-            GuiController.Instance.UserVars.setValue("Direccion-Z", temp.Z);
-            temp = nave.normal.getActual();
-            GuiController.Instance.UserVars.setValue("Normal-X", temp.X);
-            GuiController.Instance.UserVars.setValue("Normal-Y", temp.Y);
-            GuiController.Instance.UserVars.setValue("Normal-Z", temp.Z);
-            */
         }
 
         public override void close()
