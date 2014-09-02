@@ -223,5 +223,8 @@ namespace AlumnoEjemplos.TheGRID
         }
         public void trasladar(float time, List<Dibujable> dibujables) { if (fisica != null) fisica.trasladar(time, dibujables); }
 
+        public void renderBoundingBox() { colision.render();}
+        public IColision getColision() { return this.colision; }
+        public void setColision(IColision bb) { this.colision = bb; }
     }
 }

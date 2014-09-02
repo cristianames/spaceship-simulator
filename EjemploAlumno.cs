@@ -26,8 +26,7 @@ namespace AlumnoEjemplos.MiGrupo
         //--------------------------------------------------------
         // ATRIBUTOS
         TgcBox suelo;
-        Dibujable asteroide, asteroide2;
-        //Dibujable asteroide;
+        Dibujable asteroide;
         //Dibujable caja;
         Dibujable nave;
         Dibujable laser;
@@ -49,23 +48,15 @@ namespace AlumnoEjemplos.MiGrupo
             Factory fabrica_dibujables = new Factory();
 
             asteroide = fabrica_dibujables.crearAsteroide(new Vector3(1, 1, 1));
-            asteroide2 = fabrica_dibujables.crearAsteroide(new Vector3(2, 2, 2));
-            fabrica_dibujables.trasladar(asteroide2.objeto, new Vector3(200, 0, 50));
+            fabrica_dibujables.trasladar(asteroide, new Vector3(200, 100, 50));
             GuiController.Instance.RotCamera.targetObject(((TgcMesh)asteroide.objeto).BoundingBox);
 
-            /*
-            asteroide = new Dibujable();
-            TgcSceneLoader loader = new TgcSceneLoader();
-            TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Asteroide\\esferita-TgcScene.xml");
-            asteroide.objeto = scene.Meshes[0];
-            //GuiController.Instance.RotCamera.targetObject(asteroide.BoundingBox);
-            */
+            //Crear 1 laser
 
-            laser = new Dibujable();
+            laser = fabrica_dibujables.crearLaser();
+           
             TgcSceneLoader loader = new TgcSceneLoader();
-            TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml");
-            laser.objeto = scene.Meshes[0];
-
+            TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml");           
             nave = new Dibujable();
             scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Nave\\nave-TgcScene.xml");
             nave.objeto = scene.Meshes[0];
@@ -107,12 +98,11 @@ namespace AlumnoEjemplos.MiGrupo
             //Device de DirectX para renderizar
             Device d3dDevice = GuiController.Instance.D3dDevice;
 
-            //asteroide.render();
-            //asteroide2.render();
-            //laser.render();
+            laser.render();
 
            
-            //asteroide.render();
+            asteroide.render();
+            asteroide.renderBoundingBox();
 
             suelo.render();
             nave.rotar(elapsedTime);
@@ -127,7 +117,6 @@ namespace AlumnoEjemplos.MiGrupo
             laser.dispose();
 
             asteroide.dispose();
-            asteroide2.dispose();
             suelo.dispose();
 
         }

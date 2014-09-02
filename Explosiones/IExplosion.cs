@@ -7,6 +7,6 @@ namespace AlumnoEjemplos.TheGRID.Explosiones
 {
     interface IExplosion
     {
-        void teChoque(); //Se puede cambiar el nombre por uno mas expresivo.
+        void exiteChoqueEntre(Object colisionador, Object colisionado); //Se puede cambiar el nombre por uno mas expresivo.
     }
 }
