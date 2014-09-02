@@ -57,7 +57,7 @@ namespace AlumnoEjemplos.TheGRID
             changeDiffuseMaps(new TgcTexture[] { TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesDir + "Transformations\\SistemaSolar\\SunTexture.jpg") });
 
         }*/
-        public Dibujable crearLaser() 
+        public Dibujable crearLaser(Vector3 origen) //se le pasa como parametro al laser el punto de origen 
         {
             //Carguemos el DirectX y la carpeta de media
             Device d3dDevice = GuiController.Instance.D3dDevice;
@@ -67,12 +67,18 @@ namespace AlumnoEjemplos.TheGRID
             TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml");
             TgcMesh mesh_laser = scene.Meshes[0];
             mesh_laser.AutoTransformEnable = false;
-            mesh_laser.Transform = Matrix.Scaling(new Vector3(0.1F, 0.1F, 1F));
+            mesh_laser.Transform = Matrix.Scaling(new Vector3(0.1F, 0.1F, 1F)) * Matrix.Translation(origen);            
             //Cargamos las cosas en el dibujable
             Dibujable laser = new Dibujable();
             laser.objeto = mesh_laser;
             return laser;
 
+        }
+
+        public void dispararLaser(Dibujable laser, Vector3 direccion,float time) 
+        {
+            Matrix traslacion = Matrix.Translation(direccion*time*3000);// extraer velocidad
+            ((TgcMesh)laser.objeto).Transform *= traslacion;
         }
     }
 }

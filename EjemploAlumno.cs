@@ -29,20 +29,22 @@ namespace AlumnoEjemplos.MiGrupo
         Dibujable asteroide;
         //Dibujable caja;
         Dibujable nave;
-        Dibujable laser;
+        List<Dibujable> laserLista;
+        
+        
 
 
         //--------------------------------------------------------
         public override void init()
         {
+            laserLista=new List<Dibujable>();
             //GuiController.Instance: acceso principal a todas las herramientas del Framework
             Device d3dDevice = GuiController.Instance.D3dDevice;
             //Carpeta de archivos Media del alumno
             string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;           
             //Crear suelo
             TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\Quake\\TexturePack2\\rock_floor1.jpg");
-            suelo = TgcBox.fromSize(new Vector3(0, -5, 0), new Vector3(500, 0, 500), pisoTexture);
-            
+            suelo = TgcBox.fromSize(new Vector3(0, -5, 0), new Vector3(500, 0, 500), pisoTexture);            
             //Crear 1 asteroide
 
             Factory fabrica_dibujables = new Factory();
@@ -51,9 +53,6 @@ namespace AlumnoEjemplos.MiGrupo
             fabrica_dibujables.trasladar(asteroide, new Vector3(200, 100, 50));
             GuiController.Instance.RotCamera.targetObject(((TgcMesh)asteroide.objeto).BoundingBox);
 
-            //Crear 1 laser
-
-            laser = fabrica_dibujables.crearLaser();
            
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml");           
@@ -64,7 +63,8 @@ namespace AlumnoEjemplos.MiGrupo
             nave.velocidad = 50;
             //((TgcMesh)nave.objeto).AutoTransformEnable = false;
             GuiController.Instance.RotCamera.targetObject(suelo.BoundingBox);
-
+          
+            
             //Configurar camara en Tercer Persona
             /*GuiController.Instance.ThirdPersonCamera.Enable = true;
             GuiController.Instance.ThirdPersonCamera.setCamera(nave.Position, 30, -75);*/
@@ -123,14 +123,43 @@ namespace AlumnoEjemplos.MiGrupo
                 if (nave.traslacion == 0) nave.traslacion = -1;
                 else nave.traslacion = 0;  
             }
+
+
+            Factory fabrica = new Factory();
+            Vector3 direccion = new Vector3(0,0,1);// hay que ajustar la direccion a la verdadera direccion que tiene el "cañon"
+            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.A))
+            {
+
+                laserLista.Add(fabrica.crearLaser(nave.Position)); //arreglar haz de laser infinito, agregar colisiones
+            }            
+            if (laserLista.Count != 0)
+            {
+
+                foreach (Dibujable laser in laserLista)
+                {
+                    fabrica.dispararLaser(laser, direccion,elapsedTime);
+
+                }
+            }
+                       
             //-----FIN-UPDATE-----
 
 
             //Device de DirectX para renderizar
             Device d3dDevice = GuiController.Instance.D3dDevice;
 
-            laser.render();
+          
+            //laser.trasladar(elapsedTime);
 
+            if (laserLista.Count != 0)
+            {
+
+                foreach (Dibujable laser in laserLista)
+                {
+                    laser.render();
+
+                }
+            }
            
             asteroide.render();
             asteroide.renderBoundingBox();
@@ -158,7 +187,7 @@ namespace AlumnoEjemplos.MiGrupo
         {
 
             nave.dispose();
-            laser.dispose();
+           // laser.dispose();
 
             asteroide.dispose();
             suelo.dispose();
