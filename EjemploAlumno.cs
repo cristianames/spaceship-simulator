@@ -63,7 +63,7 @@ namespace AlumnoEjemplos.MiGrupo
             nave.velocidad = 50;
             //((TgcMesh)nave.objeto).AutoTransformEnable = false;
             GuiController.Instance.RotCamera.targetObject(suelo.BoundingBox);
-<<<<<<< HEAD
+
           
             
             //Configurar camara en Tercer Persona
@@ -96,8 +96,7 @@ namespace AlumnoEjemplos.MiGrupo
             GuiController.Instance.UserVars.setValue("Normal-X", resultado.X);
             GuiController.Instance.UserVars.setValue("Normal-Y", resultado.Y);
             GuiController.Instance.UserVars.setValue("Normal-Z", resultado.Z);
-=======
->>>>>>> origin/master
+
         }
         //--------------------------------------------------------
 
