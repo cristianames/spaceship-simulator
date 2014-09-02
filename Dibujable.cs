@@ -193,6 +193,15 @@ namespace AlumnoEjemplos.TheGRID
             matriz *= Matrix.RotationYawPitchRoll(rotacion.Y, rotacion.X, rotacion.Z);
             Transform *= matriz;
         }
+        public void setCentro(float x, float y, float z) { vectorDireccion.centrar(x, y, z); }
+        public Vector3 getCentro() 
+        {
+            Vector3 temp = getPosicion();
+            temp.Subtract(vectorDireccion.getCentro());
+            return temp;
+        }
+
+        public Vector3 direccion() { return vectorDireccion.direccion(); }
         //--------------------------------
 
         //----------MOVIMIENTOS----------

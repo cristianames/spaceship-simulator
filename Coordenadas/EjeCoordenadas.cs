@@ -27,6 +27,13 @@ namespace AlumnoEjemplos.TheGRID
 
         public void centrar(float x, float y, float z) { centroObjeto = new Vector3(x, y, z); }
 
+        public Vector3 getCentro() 
+        {
+            Vector3 temp = centroObjeto;
+            //temp.Multiply(-1);
+            return temp; 
+        }
+
         Matrix rotation, rototranslation;
         Vector4 normal4;
         public Matrix rotarX_desde(Vector3 posActual, float grados)
@@ -89,9 +96,6 @@ namespace AlumnoEjemplos.TheGRID
             return rototranslation;
         }
         //De la subclase
-        public Vector3 direccion()
-        {
-            return vectorZ;
-        }
+        public Vector3 direccion() { return vectorZ; }
     }
 }
