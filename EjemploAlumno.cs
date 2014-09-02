@@ -73,33 +73,6 @@ namespace AlumnoEjemplos.MiGrupo
             nave.velocidad = 50;
             //((TgcMesh)nave.objeto).AutoTransformEnable = false;
             GuiController.Instance.RotCamera.targetObject(suelo.BoundingBox);
-            
-            // Prueba vectores
-            Vector3 dePrueba = new Vector3(0, 1, 0);
-            //z.Normalize();
-            float angulo = Geometry.DegreeToRadian(90);
-            Matrix rotation = Matrix.RotationZ(angulo);
-            //Matrix rotation = Matrix.RotationYawPitchRoll(0 * z.Y * angulo, 0 * z.X * angulo, z.Z * angulo);
-            Vector4 normal4 = Vector3.Transform(dePrueba, rotation);
-            Vector3 resultado = new Vector3(normal4.X, normal4.Y, normal4.Z);
-            
-            //-------------------
-
-            GuiController.Instance.UserVars.addVar("Direccion-X");
-            GuiController.Instance.UserVars.addVar("Direccion-Y");
-            GuiController.Instance.UserVars.addVar("Direccion-Z");
-            GuiController.Instance.UserVars.addVar("Normal-X");
-            GuiController.Instance.UserVars.addVar("Normal-Y");
-            GuiController.Instance.UserVars.addVar("Normal-Z");
-            //Cargar valor en UserVar
-            Vector3 temp = nave.direccion.getActual();
-            GuiController.Instance.UserVars.setValue("Direccion-X", dePrueba.X);
-            GuiController.Instance.UserVars.setValue("Direccion-Y", dePrueba.Y);
-            GuiController.Instance.UserVars.setValue("Direccion-Z", dePrueba.Z);
-            temp = nave.normal.getActual();
-            GuiController.Instance.UserVars.setValue("Normal-X", resultado.X);
-            GuiController.Instance.UserVars.setValue("Normal-Y", resultado.Y);
-            GuiController.Instance.UserVars.setValue("Normal-Z", resultado.Z);
         }
         //--------------------------------------------------------
 
@@ -145,19 +118,6 @@ namespace AlumnoEjemplos.MiGrupo
             nave.rotar(elapsedTime);
             nave.trasladar(elapsedTime);
             nave.render();
-            //caja.rotar(elapsedTime, lista);
-            //caja.render();
-
-            /*
-            Vector3 temp = nave.direccion.getActual();
-            GuiController.Instance.UserVars.setValue("Direccion-X", temp.X);
-            GuiController.Instance.UserVars.setValue("Direccion-Y", temp.Y);
-            GuiController.Instance.UserVars.setValue("Direccion-Z", temp.Z);
-            temp = nave.normal.getActual();
-            GuiController.Instance.UserVars.setValue("Normal-X", temp.X);
-            GuiController.Instance.UserVars.setValue("Normal-Y", temp.Y);
-            GuiController.Instance.UserVars.setValue("Normal-Z", temp.Z);
-            */
         }
 
         public override void close()
