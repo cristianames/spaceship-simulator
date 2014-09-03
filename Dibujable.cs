@@ -76,6 +76,9 @@ namespace AlumnoEjemplos.TheGRID
         public int inclinacion { set; get; } // 0: Nada ; -1:hacia abajo ; 1:hacia arriba //Pitch
         public int rotacion { set; get; } // 0: Nada ; -1:lateral izquierda ; 1:lateral derecha //Roll
         // Doblar hacia la derecha o izquierda se hace rotando e inclinando, como un avion. //Yaw
+        internal bool velocidadManual;
+        internal bool desplazamientoReal;
+        internal bool rotacionReal;
         public Object objeto { set; get; }
         private EjeCoordenadas vectorDireccion;
         private Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
@@ -92,6 +95,9 @@ namespace AlumnoEjemplos.TheGRID
             explosion = null;
             vectorDireccion = new EjeCoordenadas();
             vectorDireccion.centrar(0, 0, 0);
+            velocidadManual = false;
+            desplazamientoReal = false;
+            rotacionReal = false;
         }
         public Dibujable(float x, float y, float z)
         {
@@ -101,13 +107,23 @@ namespace AlumnoEjemplos.TheGRID
             explosion = null;
             vectorDireccion = new EjeCoordenadas();
             vectorDireccion.centrar(x, y, z);
+            velocidadManual = false;
+            desplazamientoReal = false;
+            rotacionReal = false;
+        }
+        public void SetPropiedades(bool velMan, bool despReal, bool rotReal)
+        {
+            velocidadManual = velMan;
+            desplazamientoReal = despReal;
+            rotacionReal = rotReal;
         }
 
         //-----IRenderObject-----
         public void render() { ((IRenderObject)objeto).render(); }
         public void dispose() 
-        { 
-            ((IRenderObject)objeto).dispose();
+        {
+            try { ((IRenderObject)objeto).dispose(); }
+            catch { }
             //fisica.dispose();
             //colisiones.dispose();            
         }
@@ -226,9 +242,22 @@ namespace AlumnoEjemplos.TheGRID
                     rotation = vectorDireccion.rotarZ_desde(posicion.getActual(), angulo * rotacion);
                     Transform *= rotation;
                 }
-                inclinacion = 0;
-                rotacion = 0;
             //}
+                if (velocidadManual)
+                {
+                    inclinacion = 0;
+                    rotacion = 0;
+                }
+        }
+        internal void acelrerar(int p)
+        {
+            traslacion = p;
+            //if (fisica != null) fisica.aceleracion = ;
+        }
+
+        internal void flotar()
+        {
+            traslacion = 0;
         }
         public void trasladar(float time, List<Dibujable> dibujables)
         {
@@ -246,10 +275,8 @@ namespace AlumnoEjemplos.TheGRID
                 posicion.setActual(vector4.X, vector4.Y, vector4.Z);
 
                 Transform *= translate;
-                //traslacion = 0;
-
-
             }
+            if (velocidadManual) traslacion = 0;
         }
 
         public void escalar(Vector3 escalado)

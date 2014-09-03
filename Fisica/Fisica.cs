@@ -11,15 +11,23 @@ namespace AlumnoEjemplos.TheGRID
         //-----Atributos-----
         private Dibujable duenio;
         private float aceleracion;
-        public float velocidadMaxima;
+        public float velocidadInstantanea;
         private float masa;
         //-------------------
-        public Fisica(Dibujable owner, float vm, float ac, float mas)
+        public Fisica(Dibujable owner, float ac, float mas)
         {
             duenio = owner;
-            velocidadMaxima = vm;
             aceleracion = ac;
             masa = mas;
+            velocidadInstantanea = 0;
+        }
+        private float desplazamiento(float vel, float acel, float tiempo)
+        {
+            float resultado;
+            resultado = vel * tiempo;
+            //float cuad = (float)Math.Pow(tiempo, 2); //El tiempo elevado al cuadrado da 0 por ser muy poco.
+            resultado += (acel * tiempo)/ (float)2;
+            return resultado;
         }
         public void rotar(float time, List<Dibujable> dibujables)
         {
@@ -27,40 +35,46 @@ namespace AlumnoEjemplos.TheGRID
         }
         public void trasladar(float time, List<Dibujable> dibujables)
         {
-            if (duenio.traslacion == 0) 
-            { 
-                duenio.velocidad = 0;
-                return;
-            }
-            duenio.velocidad += (aceleracion * time);
+            if (velocidadInstantanea < 0) velocidadInstantanea = 0;
             
-            Vector3 direccion = duenio.getDireccion();
-            direccion += duenio.getTrayectoria();
-            direccion.Normalize();
-            Vector3 gravedad = calcularGravedad(dibujables);
-            float acelTemp = Vector3.Length(gravedad);
-            gravedad.Normalize();
-            if (duenio.velocidad >= velocidadMaxima) duenio.velocidad = velocidadMaxima;
-            else acelTemp += aceleracion;
-            direccion += gravedad;
-            direccion.Multiply(acelTemp);  //Falta si es 0 hacer que no se cancele todo.
-            float vT = duenio.velocidad * time;
-            float timeTemp = (float)Math.Pow(time, 2);
-            timeTemp = timeTemp / (float) 2;
-            direccion.Multiply(timeTemp);
-            Vector3 temp = direccion;
-            temp.Normalize();
-            temp.Multiply(vT);
-            direccion += temp;
-            direccion.Multiply(duenio.traslacion);
+            //Desplazamiento Gravitacional
+            Vector3 auxiliar1 = calcularGravedad(dibujables);
+            Vector3 dGravedad = auxiliar1;
+            float gravedad = Vector3.Length(dGravedad);
+            dGravedad.Normalize();
+            float atraccion = desplazamiento(0,gravedad,time);
+            dGravedad.Multiply(atraccion);
+            
+            //Desplazamiento Inercial
+            Vector3 dTrayectoria= duenio.getTrayectoria();
+            dTrayectoria.Normalize();
+            float trayecto = desplazamiento(velocidadInstantanea, 0, time);
+            dTrayectoria.Multiply(trayecto);
+            
+            //Desplazamiento Direccional
+            Vector3 auxiliar2 = duenio.getDireccion();
+            Vector3 dDireccion = auxiliar2;
+            //direccion.Normalize();   //Ya viene normalizado.
+            float desplazo = desplazamiento(0, duenio.traslacion * aceleracion, time);
+            dDireccion.Multiply(desplazo);
 
-            Matrix translate = Matrix.Translation(direccion);
+            //Unimos y armamos la matriz
+            dDireccion += dGravedad;
+            dDireccion += dTrayectoria;
+            Matrix translate = Matrix.Translation(dDireccion);
 
             Vector4 vector4 = Vector3.Transform(duenio.getPosicion(), translate);
             duenio.setPosicion(new Vector3(vector4.X, vector4.Y, vector4.Z));
 
             duenio.Transform *= translate;
-            //duenio.traslacion = 0;
+
+            //Calculo de la Velocidad actual.
+            auxiliar1.Normalize();
+            auxiliar1.Multiply(gravedad);
+            auxiliar2.Multiply(duenio.traslacion * aceleracion);
+            auxiliar1 += auxiliar2;
+            float acelGlobal = Vector3.Length(auxiliar1);
+            velocidadInstantanea += acelGlobal * time;
         }
         public Vector3 indicarGravedad(Vector3 posicionSolicitante, float masa)
         {
