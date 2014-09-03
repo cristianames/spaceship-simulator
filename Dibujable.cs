@@ -77,7 +77,7 @@ namespace AlumnoEjemplos.TheGRID
         public int rotacion { set; get; } // 0: Nada ; -1:lateral izquierda ; 1:lateral derecha //Roll
         // Doblar hacia la derecha o izquierda se hace rotando e inclinando, como un avion. //Yaw
         public Object objeto { set; get; }
-        public EjeCoordenadas vectorDireccion;
+        private EjeCoordenadas vectorDireccion;
         private Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
         private IColision colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
         private IExplosion explosion; // Acá va el manejo de un objeto cuando es chocado por otro.
@@ -201,11 +201,12 @@ namespace AlumnoEjemplos.TheGRID
             return temp;
         }
 
-        public Vector3 direccion() { return vectorDireccion.direccion(); }
+        public Vector3 getDireccion() { return vectorDireccion.direccion(); }
         //--------------------------------
 
         //----------MOVIMIENTOS----------
         public Vector3 getPosicion() { return posicion.getActual(); }
+        public Vector3 getTrayectoria() { return posicion.direccion(); }
         public void rotar(float time, List<Dibujable> dibujables)
         {
             if (fisica != null) fisica.rotar(time, dibujables);

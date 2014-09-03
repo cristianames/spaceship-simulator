@@ -105,7 +105,6 @@ namespace AlumnoEjemplos.MiGrupo
             
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.A))
             {
-
                 laserLista.Add(fabrica.crearLaser(nave.getCentro())); //arreglar haz de laser infinito, agregar colisiones
             }            
             if (laserLista.Count != 0)
@@ -113,7 +112,7 @@ namespace AlumnoEjemplos.MiGrupo
 
                 foreach (Dibujable laser in laserLista)
                 {
-                    fabrica.dispararLaser(laser, nave.direccion() ,elapsedTime);
+                    fabrica.dispararLaser(laser, nave.getDireccion() ,elapsedTime);
 
                 }
             }
