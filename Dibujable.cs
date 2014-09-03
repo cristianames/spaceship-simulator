@@ -206,40 +206,46 @@ namespace AlumnoEjemplos.TheGRID
 
         //----------MOVIMIENTOS----------
         public Vector3 getPosicion() { return posicion.getActual(); }
-        public void rotar(float time)
+        public void rotar(float time, List<Dibujable> dibujables)
         {
-            float angulo = velocidadRadial * time;
-            Matrix rotation;
-            if (inclinacion != 0) //Rotar en X
+            if (fisica != null) fisica.rotar(time, dibujables);
+            else
             {
-                rotation = vectorDireccion.rotarX_desde(posicion.getActual(), angulo * inclinacion);
-                Transform *= rotation;
+                float angulo = velocidadRadial * time;
+                Matrix rotation;
+                if (inclinacion != 0) //Rotar en X
+                {
+                    rotation = vectorDireccion.rotarX_desde(posicion.getActual(), angulo * inclinacion);
+                    Transform *= rotation;
+                }
+                if (rotacion != 0) //Rotar en Z
+                {
+                    rotation = vectorDireccion.rotarZ_desde(posicion.getActual(), angulo * rotacion);
+                    Transform *= rotation;
+                }
+                inclinacion = 0;
+                rotacion = 0;
             }
-            if (rotacion != 0) //Rotar en Z
-            {
-                rotation = vectorDireccion.rotarZ_desde(posicion.getActual(), angulo * rotacion);
-                Transform *= rotation;
-            }
-            inclinacion = 0;
-            rotacion = 0;
         }
-        public void trasladar(float time)
+        public void trasladar(float time, List<Dibujable> dibujables)
         {
-            Vector3 director = vectorDireccion.direccion();
-            director.Normalize();
-            director.X *= traslacion * velocidad * time;
-            director.Y *= traslacion * velocidad * time;
-            director.Z *= traslacion * velocidad * time;
-            Matrix translate = Matrix.Translation(director);
+            if (fisica != null) fisica.trasladar(time, dibujables);
+            else
+            {
+                Vector3 director = vectorDireccion.direccion();
+                director.Normalize();
+                director.X *= traslacion * velocidad * time;
+                director.Y *= traslacion * velocidad * time;
+                director.Z *= traslacion * velocidad * time;
+                Matrix translate = Matrix.Translation(director);
 
-            Vector4 vector4 = Vector3.Transform(posicion.getActual(), translate);
-            posicion.setActual(vector4.X, vector4.Y, vector4.Z);
+                Vector4 vector4 = Vector3.Transform(posicion.getActual(), translate);
+                posicion.setActual(vector4.X, vector4.Y, vector4.Z);
 
-            Transform *= translate;
-            //traslacion = 0;
+                Transform *= translate;
+                //traslacion = 0;
+            }
         }
-        public void trasladar(float time, List<Dibujable> dibujables) { if (fisica != null) fisica.trasladar(time, dibujables); }
-        //-------------------------------
 
         public void escalar(Vector3 escalado)
         {
