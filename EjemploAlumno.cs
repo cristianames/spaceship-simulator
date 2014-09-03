@@ -63,9 +63,10 @@ namespace AlumnoEjemplos.MiGrupo
             nave = new Dibujable(0, -10, 15);
             scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Nave\\nave-TgcScene.xml");
             nave.setObject(scene.Meshes[0], 200, 100, new Vector3(0, 180, 0), new Vector3(1, 1, 1));
-            Fisica fisicaNave = new Fisica(nave, 10, 100);
+            Fisica fisicaNave = new Fisica(nave, 100, 100);
             nave.setFisica(fisicaNave);
-            nave.SetPropiedades(true, true, true);
+            nave.fisica.acelFrenado = 500;
+            nave.SetPropiedades(true, true, false);
 
 
             GuiController.Instance.RotCamera.targetObject(suelo.BoundingBox);
@@ -94,8 +95,9 @@ namespace AlumnoEjemplos.MiGrupo
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.W)) { }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.S)) { }
             //Otros
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.Space)) { nave.acelrerar(1); }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.LeftControl)) { nave.acelrerar(-1); }
+            //if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.LeftShift)) { nave.acelerar(1); }
+            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.LeftControl)) { nave.frenar(); }
+            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.Space)) { nave.acelerar(); }
 
 
             Factory fabrica = new Factory();

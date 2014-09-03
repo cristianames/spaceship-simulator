@@ -81,7 +81,7 @@ namespace AlumnoEjemplos.TheGRID
         internal bool rotacionReal;
         public Object objeto { set; get; }
         private EjeCoordenadas vectorDireccion;
-        private Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
+        internal Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
         private IColision colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
         private IExplosion explosion; // Acá va el manejo de un objeto cuando es chocado por otro.
         
@@ -227,9 +227,9 @@ namespace AlumnoEjemplos.TheGRID
         public Vector3 getTrayectoria() { return posicion.direccion(); }
         public void rotar(float time, List<Dibujable> dibujables)
         {
-            /*if (fisica != null) fisica.rotar(time, dibujables);
+            if (fisica != null && rotacionReal) fisica.rotar(time, dibujables);
             else
-            {*/
+            {
                 float angulo = velocidadRadial * time;
                 Matrix rotation;
                 if (inclinacion != 0) //Rotar en X
@@ -242,26 +242,23 @@ namespace AlumnoEjemplos.TheGRID
                     rotation = vectorDireccion.rotarZ_desde(posicion.getActual(), angulo * rotacion);
                     Transform *= rotation;
                 }
-            //}
-                if (velocidadManual)
-                {
-                    inclinacion = 0;
-                    rotacion = 0;
-                }
+            }
+            if (velocidadManual)
+            {
+                inclinacion = 0;
+                rotacion = 0;
+            }
         }
-        internal void acelrerar(int p)
-        {
-            traslacion = p;
-            //if (fisica != null) fisica.aceleracion = ;
-        }
+        internal void acelerar() { traslacion = 1; }
 
-        internal void flotar()
+        internal void frenar()
         {
-            traslacion = 0;
+            if (fisica != null && velocidadManual) fisica.frenado = true;
+            else traslacion = 0;
         }
         public void trasladar(float time, List<Dibujable> dibujables)
         {
-            if (fisica != null) fisica.trasladar(time, dibujables);
+            if (fisica != null && desplazamientoReal) fisica.trasladar(time, dibujables);
             else
             {
                 Vector3 director = vectorDireccion.direccion();
