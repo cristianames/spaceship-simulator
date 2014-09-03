@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using TgcViewer.Example;
 using TgcViewer;
+using System.Linq;
 using Microsoft.DirectX.Direct3D;
 using System.Drawing;
 using Microsoft.DirectX;
@@ -30,7 +31,7 @@ namespace AlumnoEjemplos.MiGrupo
         //Dibujable caja;
         Dibujable nave;
         List<Dibujable> laserLista;
-        
+        List<Dibujable> listaDibujable = new List<Dibujable>();
         
 
 
@@ -62,6 +63,9 @@ namespace AlumnoEjemplos.MiGrupo
             nave = new Dibujable(0, -10, 15);
             scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Nave\\nave-TgcScene.xml");
             nave.setObject(scene.Meshes[0], 200, 150, new Vector3(0, 180, 0), new Vector3(1, 1, 1));
+            Fisica fisicaNave = new Fisica(nave, 200, 500, 100);
+            nave.setFisica(fisicaNave);
+
 
             GuiController.Instance.RotCamera.targetObject(suelo.BoundingBox);
 
@@ -140,8 +144,13 @@ namespace AlumnoEjemplos.MiGrupo
             asteroide.renderBoundingBox();
 
             suelo.render();
-            nave.rotar(elapsedTime);
-            nave.trasladar(elapsedTime);
+
+            
+            listaDibujable.Add(asteroide);
+            //listaDibujable.Add(nave);
+
+            nave.rotar(elapsedTime,listaDibujable);
+            nave.trasladar(elapsedTime,listaDibujable);
             nave.render();
         }
 

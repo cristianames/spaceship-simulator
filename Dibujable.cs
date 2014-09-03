@@ -200,18 +200,20 @@ namespace AlumnoEjemplos.TheGRID
             temp.Subtract(vectorDireccion.getCentro());
             return temp;
         }
+        public void setFisica(Fisica modulo) { fisica = modulo; }
 
         public Vector3 getDireccion() { return vectorDireccion.direccion(); }
         //--------------------------------
 
         //----------MOVIMIENTOS----------
         public Vector3 getPosicion() { return posicion.getActual(); }
+        public void setPosicion(Vector3 pos) { posicion.setActual(pos); }
         public Vector3 getTrayectoria() { return posicion.direccion(); }
         public void rotar(float time, List<Dibujable> dibujables)
         {
-            if (fisica != null) fisica.rotar(time, dibujables);
+            /*if (fisica != null) fisica.rotar(time, dibujables);
             else
-            {
+            {*/
                 float angulo = velocidadRadial * time;
                 Matrix rotation;
                 if (inclinacion != 0) //Rotar en X
@@ -226,7 +228,7 @@ namespace AlumnoEjemplos.TheGRID
                 }
                 inclinacion = 0;
                 rotacion = 0;
-            }
+            //}
         }
         public void trasladar(float time, List<Dibujable> dibujables)
         {
@@ -245,6 +247,8 @@ namespace AlumnoEjemplos.TheGRID
 
                 Transform *= translate;
                 //traslacion = 0;
+
+
             }
         }
 
@@ -258,6 +262,11 @@ namespace AlumnoEjemplos.TheGRID
         {
             Matrix matriz = Matrix.Scaling(x, y, z);
             Transform *= matriz;
+        }
+
+        public Vector3 indicarGravedad(Vector3 pos, float mass){
+            if (fisica != null) return this.fisica.indicarGravedad(pos, mass);
+            else return new Vector3(0, 0, 0);
         }
 
         public void renderBoundingBox() { colision.render();}
