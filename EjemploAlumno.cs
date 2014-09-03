@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using TgcViewer.Example;
 using TgcViewer;
+using System.Linq;
 using Microsoft.DirectX.Direct3D;
 using System.Drawing;
 using Microsoft.DirectX;
@@ -141,8 +142,13 @@ namespace AlumnoEjemplos.MiGrupo
             asteroide.renderBoundingBox();
 
             suelo.render();
-            nave.rotar(elapsedTime);
-            nave.trasladar(elapsedTime);
+
+            List<Dibujable> listaDibujable = new List<Dibujable>();
+            listaDibujable.Add(asteroide);
+            listaDibujable.Add(nave);
+
+            nave.rotar(elapsedTime,listaDibujable);
+            nave.trasladar(elapsedTime,listaDibujable);
             nave.render();
         }
 

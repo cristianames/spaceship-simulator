@@ -11,7 +11,7 @@ namespace AlumnoEjemplos.TheGRID
         //-----Atributos-----
         private Dibujable duenio;
         private Doble aceleracion;
-        private Doble masa;
+        private float masa;
         //-------------------
         public Fisica(Dibujable owner)
         {
@@ -44,15 +44,17 @@ namespace AlumnoEjemplos.TheGRID
 
 
         }
-        public Vector3 indicarGravedad(Vector3 posicionSolicitante)
+        public Vector3 indicarGravedad(Vector3 posicionSolicitante, float masa)
         {
             Vector3 temp = new Vector3();
             return temp;
         }
-        public Vector3 calcularGravedad()
+        public Vector3 calcularGravedad(List<Dibujable> dibujables)
         {
-            Vector3 temp = new Vector3();
-            return temp;
+            List<Vector3> vectores = dibujables.ConvertAll(dibujable => dibujable.indicarGravedad(duenio.getPosicion(),masa));
+            Vector3 resultante = new Vector3(0,0,0);
+            foreach (Vector3 vector in vectores) resultante += vector;
+            return resultante;
         }
     }
 }

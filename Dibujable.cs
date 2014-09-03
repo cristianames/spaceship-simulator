@@ -232,6 +232,8 @@ namespace AlumnoEjemplos.TheGRID
             if (fisica != null) fisica.trasladar(time, dibujables);
             else
             {
+                Vector3 vectorResultante = fisica.calcularGravedad(dibujables);
+
                 Vector3 director = vectorDireccion.direccion();
                 director.Normalize();
                 director.X *= traslacion * velocidad * time;
@@ -244,6 +246,8 @@ namespace AlumnoEjemplos.TheGRID
 
                 Transform *= translate;
                 //traslacion = 0;
+
+
             }
         }
 
@@ -257,6 +261,10 @@ namespace AlumnoEjemplos.TheGRID
         {
             Matrix matriz = Matrix.Scaling(x, y, z);
             Transform *= matriz;
+        }
+
+        public Vector3 indicarGravedad(Vector3 pos, float mass){
+            return this.fisica.indicarGravedad(pos,mass);
         }
 
         public void renderBoundingBox() { colision.render();}
