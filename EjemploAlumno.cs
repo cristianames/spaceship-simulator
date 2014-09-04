@@ -12,6 +12,7 @@ using TgcViewer.Utils.TgcGeometry;
 using AlumnoEjemplos.TheGRID;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Input;
+using AlumnoEjemplos.TheGRID.Camara;
 
 namespace AlumnoEjemplos.MiGrupo
 {
@@ -33,6 +34,9 @@ namespace AlumnoEjemplos.MiGrupo
         Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
         List<Dibujable> laserLista;
         List<Dibujable> listaDibujable = new List<Dibujable>();
+
+        //Modificador de la camara del proyecto
+        CambioCamara camara;
         
 
 
@@ -53,7 +57,6 @@ namespace AlumnoEjemplos.MiGrupo
 
             asteroide = fabrica_dibujables.crearAsteroide(new Vector3(1, 1, 1));
             fabrica_dibujables.trasladar(asteroide, new Vector3(200, 100, 50));
-            GuiController.Instance.RotCamera.targetObject(((TgcMesh)asteroide.objeto).BoundingBox);
 
            
             TgcSceneLoader loader = new TgcSceneLoader();
@@ -69,14 +72,12 @@ namespace AlumnoEjemplos.MiGrupo
 
             //Cargamos la nave como objeto principal.
             objetoPrincipal = nave;
-
-            GuiController.Instance.RotCamera.targetObject(suelo.BoundingBox);
+            //Cargamos la camara
+            camara = new CambioCamara(nave);
 
           
             
-            //Configurar camara en Tercer Persona
-            /*GuiController.Instance.ThirdPersonCamera.Enable = true;
-            GuiController.Instance.ThirdPersonCamera.setCamera(nave.Position, 30, -75);*/
+
 
             /*
             //Cargamos valores en el panel lateral
@@ -115,6 +116,8 @@ namespace AlumnoEjemplos.MiGrupo
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.X)) { nave.giro = 1; }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightAlt)) { nave.giro = -1; }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightControl)) { nave.giro = 1; }
+            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F1)) { camara.modoFPS(); }
+            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F2)) { camara.modoTPS(); }
 
 
             Factory fabrica = new Factory();
@@ -163,7 +166,9 @@ namespace AlumnoEjemplos.MiGrupo
 
             nave.rotar(elapsedTime,listaDibujable);
             nave.trasladar(elapsedTime,listaDibujable);
-            nave.render();
+            camara.cambiarPosicionCamara(nave);
+            if(!camara.getMode())
+                nave.render();
         }
 
         public override void close()
