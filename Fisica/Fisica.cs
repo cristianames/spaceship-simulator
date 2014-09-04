@@ -106,10 +106,17 @@ namespace AlumnoEjemplos.TheGRID
             frenado = false;
             }
         }
-        public Vector3 indicarGravedad(Vector3 posicionSolicitante, float masa)
+        public Vector3 indicarGravedad(Vector3 posicionSolicitante, float mass)
         {
-            Vector3 temp = new Vector3(0,0,0);
-            return temp;
+            posicionSolicitante -= duenio.getPosicion();
+            posicionSolicitante.Multiply(-1);
+            float distanciaCuad = Vector3.LengthSq(posicionSolicitante);
+            float gravity = mass * masa;
+            gravity = gravity / distanciaCuad;
+            gravity *= (float) 0.0001; //Aca deberia ir el coeficiente de gravitacion universal.
+            posicionSolicitante.Normalize();
+            posicionSolicitante.Multiply(gravity);
+            return posicionSolicitante;
         }
         public Vector3 calcularGravedad(List<Dibujable> dibujables)
         {

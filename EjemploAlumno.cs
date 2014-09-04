@@ -53,8 +53,9 @@ namespace AlumnoEjemplos.MiGrupo
 
             asteroide = fabrica_dibujables.crearAsteroide(new Vector3(1, 1, 1));
             fabrica_dibujables.trasladar(asteroide, new Vector3(200, 100, 50));
+            asteroide.setPosicion(new Vector3(200, 100, 50));
             GuiController.Instance.RotCamera.targetObject(((TgcMesh)asteroide.objeto).BoundingBox);
-
+            asteroide.setFisica(5, 10, 5000);
            
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml"); 
@@ -83,10 +84,16 @@ namespace AlumnoEjemplos.MiGrupo
             GuiController.Instance.UserVars.addVar("Vel-Actual:");
             GuiController.Instance.UserVars.addVar("Integtidad Nave:");
             GuiController.Instance.UserVars.addVar("Integridad Escudos:");
+            GuiController.Instance.UserVars.addVar("Posicion X:");
+            GuiController.Instance.UserVars.addVar("Posicion Y:");
+            GuiController.Instance.UserVars.addVar("Posicion Z:");
             //Cargar valor en UserVar
             GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual());
             GuiController.Instance.UserVars.setValue("Integtidad Nave:", 100);
             GuiController.Instance.UserVars.setValue("Integridad Escudos:", 100);
+            GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);
+            GuiController.Instance.UserVars.setValue("Posicion Y:", objetoPrincipal.getPosicion().Y);
+            GuiController.Instance.UserVars.setValue("Posicion Z:", objetoPrincipal.getPosicion().Z);
             //Crear un modifier para un valor FLOAT
             GuiController.Instance.Modifiers.addFloat("Aceleracion", 0f,500f, objetoPrincipal.getAceleracion());
             GuiController.Instance.Modifiers.addFloat("Frenado", 0f, 1000f, objetoPrincipal.getAcelFrenado());
@@ -179,7 +186,9 @@ namespace AlumnoEjemplos.MiGrupo
             //Refrescar panel lateral
             //Refrescar User Vars
             GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual());
-
+            GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);
+            GuiController.Instance.UserVars.setValue("Posicion Y:", objetoPrincipal.getPosicion().Y);
+            GuiController.Instance.UserVars.setValue("Posicion Z:", objetoPrincipal.getPosicion().Z);
             //Obtener valores de Modifiers
             objetoPrincipal.fisica.aceleracion = (float)GuiController.Instance.Modifiers["Aceleracion"];
             objetoPrincipal.fisica.acelFrenado = (float)GuiController.Instance.Modifiers["Frenado"];

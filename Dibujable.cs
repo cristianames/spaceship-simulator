@@ -140,6 +140,7 @@ namespace AlumnoEjemplos.TheGRID
         {
             objeto = cosa;
             AutoTransformEnable = false;
+            Transform *= Matrix.Identity;
         }
         public void setObject(Object cosa, float vLineal, float vRadial)    //Le agregas la velocidad maxima lineal y radial.
         {
@@ -147,6 +148,7 @@ namespace AlumnoEjemplos.TheGRID
             AutoTransformEnable = false;
             velocidad = vLineal;
             velocidadRadial = vRadial;
+            Transform *= Matrix.Identity;
         }
         public void setObject(Object cosa, float vLineal, float vRadial, Vector3 rotacion, Vector3 escalado)
         {  //Le agregas ademas un vector para la matriz de rotacion y otro para la de escalado. Para acomodar el objeto de forma inicial.
@@ -160,6 +162,7 @@ namespace AlumnoEjemplos.TheGRID
             Matrix matriz = Matrix.Scaling(escalado);
             matriz *= Matrix.RotationYawPitchRoll(rotacion.Y, rotacion.X, rotacion.Z);
             Transform *= matriz;
+            Transform *= Matrix.Identity;
         }
         public void setFisica(float acel, float aFrenado, float masaCuerpo) { fisica = new Fisica(this, acel, aFrenado, masaCuerpo); }
                 //Carga un nuevo módulo de fisica.
@@ -176,7 +179,10 @@ namespace AlumnoEjemplos.TheGRID
             temp.Subtract(vectorDireccion.getCentro());
             return temp;
         }
-        public void setPosicion(Vector3 pos) { posicion.setActual(pos); }   //No manipular a menos que sea necesario. Se pierde coherencia con la posicion que lleva el objeto renderizable.
+        public void setPosicion(Vector3 pos) 
+        {
+            posicion.setActual(pos);
+        }   //No manipular a menos que sea necesario. Se pierde coherencia con la posicion que lleva el objeto renderizable.
         public Vector3 getPosicion() { return posicion.getActual(); }
 
         //----------------------------------------------------------------------------------------------------MOVIMIENTOS-----
