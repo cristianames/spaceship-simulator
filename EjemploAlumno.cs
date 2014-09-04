@@ -65,7 +65,7 @@ namespace AlumnoEjemplos.MiGrupo
             scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Nave\\nave-TgcScene.xml");
             nave.setObject(scene.Meshes[0], 200, 100, new Vector3(0, 180, 0), new Vector3(1, 1, 1));
             nave.setFisica(100, 500, 100);
-            nave.SetPropiedades(true, true, false);
+            //nave.SetPropiedades(true, true, false);
 
             //Cargamos la nave como objeto principal.
             objetoPrincipal = nave;
@@ -78,17 +78,28 @@ namespace AlumnoEjemplos.MiGrupo
             /*GuiController.Instance.ThirdPersonCamera.Enable = true;
             GuiController.Instance.ThirdPersonCamera.setCamera(nave.Position, 30, -75);*/
 
-            /*
+            
             //Cargamos valores en el panel lateral
             GuiController.Instance.UserVars.addVar("Vel-Actual:");
+            GuiController.Instance.UserVars.addVar("Integtidad Nave:");
+            GuiController.Instance.UserVars.addVar("Integridad Escudos:");
             //Cargar valor en UserVar
             GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual());
+            GuiController.Instance.UserVars.setValue("Integtidad Nave:", 100);
+            GuiController.Instance.UserVars.setValue("Integridad Escudos:", 100);
             //Crear un modifier para un valor FLOAT
-            GuiController.Instance.Modifiers.addFloat("valorFloat", -50f, 200f, 0f);
+            GuiController.Instance.Modifiers.addFloat("Aceleracion", 0f,500f, objetoPrincipal.getAceleracion());
+            GuiController.Instance.Modifiers.addFloat("Frenado", 0f, 1000f, objetoPrincipal.getAcelFrenado());
             //Crear un modifier para un ComboBox con opciones
-            string[] opciones = new string[] { "opcion1", "opcion2", "opcion3" };
-            GuiController.Instance.Modifiers.addInterval("valorIntervalo", opciones, 0);
-             */
+            string[] opciones1 = new string[] { "Camara Fija", "Camara FPS", "Camara TPS" };
+            GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
+            string[] opciones2 = new string[] { "Activado", "Desactivado" };
+            GuiController.Instance.Modifiers.addInterval("Velocidad Manual", opciones2, 1);
+            string[] opciones3 = new string[] { "Activado", "Desactivado" };
+            GuiController.Instance.Modifiers.addInterval("Desplaz. Avanzado", opciones3, 1);
+            string[] opciones4 = new string[] { "Activado", "Desactivado" };
+            GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);
+            
         }
         //--------------------------------------------------------RENDER-----
 
@@ -164,6 +175,22 @@ namespace AlumnoEjemplos.MiGrupo
             nave.rotar(elapsedTime,listaDibujable);
             nave.trasladar(elapsedTime,listaDibujable);
             nave.render();
+            
+            //Refrescar panel lateral
+            //Refrescar User Vars
+            GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual());
+
+            //Obtener valores de Modifiers
+            objetoPrincipal.fisica.aceleracion = (float)GuiController.Instance.Modifiers["Aceleracion"];
+            objetoPrincipal.fisica.acelFrenado = (float)GuiController.Instance.Modifiers["Frenado"];
+            string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
+            //case
+            opcionElegida = (string)GuiController.Instance.Modifiers["Velocidad Manual"];
+            if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.velocidadManual = true; else objetoPrincipal.velocidadManual = false;
+            opcionElegida = (string)GuiController.Instance.Modifiers["Desplaz. Avanzado"];
+            if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.desplazamientoReal = true; else objetoPrincipal.desplazamientoReal = false;
+            opcionElegida = (string)GuiController.Instance.Modifiers["Rotacion Avanzada"];
+            if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.rotacionReal = true; else objetoPrincipal.rotacionReal = false;
         }
 
         public override void close()
