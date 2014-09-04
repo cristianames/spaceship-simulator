@@ -14,22 +14,21 @@ namespace AlumnoEjemplos.TheGRID
         public float velocidadInstantanea;
         private float masa;
         internal bool frenado;
-        internal float acelFrenado { set; get; }
+        private float acelFrenado { set; get; }
         //-------------------
-        public Fisica(Dibujable owner, float ac, float mas)
+        public Fisica(Dibujable owner, float acel, float aFrenado, float masaCuerpo)    //La aceleracion de frenado recomiendo poner un valor mayor que acel.
         {
             duenio = owner;
-            aceleracion = ac;
-            masa = mas;
+            aceleracion = acel;
+            masa = masaCuerpo;
             velocidadInstantanea = 0;
             frenado = false;
-            acelFrenado = aceleracion;
+            acelFrenado = aFrenado;
         }
         private float desplazamiento(float vel, float acel, float tiempo)
         {
             float resultado;
             resultado = vel * tiempo;
-            //float cuad = (float)Math.Pow(tiempo, 2); //El tiempo elevado al cuadrado da 0 por ser muy poco.
             resultado += (acel * tiempo)/ (float)2;
             return resultado;
         }
@@ -87,12 +86,14 @@ namespace AlumnoEjemplos.TheGRID
             {
                 if (velocidadInstantanea != 0)
                 {
+                    //Solo vamos a usar desplazamiento en trayectoria, es decir, el inercial.
                     Vector3 dTrayectoria = duenio.getTrayectoria();
                     dTrayectoria.Normalize();
                     float trayecto = desplazamiento(velocidadInstantanea, -acelFrenado, time);
                     if (trayecto < 0) trayecto = 0;
                     dTrayectoria.Multiply(trayecto);
 
+                    //Armamos la matriz
                     Matrix translate = Matrix.Translation(dTrayectoria);
                     Vector4 vector4 = Vector3.Transform(duenio.getPosicion(), translate);
                     duenio.setPosicion(new Vector3(vector4.X, vector4.Y, vector4.Z));

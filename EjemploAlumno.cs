@@ -23,13 +23,14 @@ namespace AlumnoEjemplos.MiGrupo
         /// Completar nombre del grupo en formato Grupo NN
         public override string getName(){ return "Grupo TheGRID"; }
         /// Completar con la descripción del TP
-        public override string getDescription(){return "Viaje Interplanetario - Misma idea";}
+        public override string getDescription(){return "Viaje Interplanetario - Manejo: \nArriba/Abajo - Pitch                       \nIzq/Der - Roll                                  \nZ/X o AltGr/CtrlDer - Yaw                 \nSpaceBar - Acelerar                  \n CtrlIzq - Estabilizar                             \nA - Disparo Principal";}
         //--------------------------------------------------------
         // ATRIBUTOS
         TgcBox suelo;
         Dibujable asteroide;
         //Dibujable caja;
         Dibujable nave;
+        Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
         List<Dibujable> laserLista;
         List<Dibujable> listaDibujable = new List<Dibujable>();
         
@@ -63,11 +64,11 @@ namespace AlumnoEjemplos.MiGrupo
             nave = new Dibujable(0, -10, 15);
             scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Nave\\nave-TgcScene.xml");
             nave.setObject(scene.Meshes[0], 200, 100, new Vector3(0, 180, 0), new Vector3(1, 1, 1));
-            Fisica fisicaNave = new Fisica(nave, 100, 100);
-            nave.setFisica(fisicaNave);
-            nave.fisica.acelFrenado = 500;
+            nave.setFisica(100, 500, 100);
             nave.SetPropiedades(true, true, false);
 
+            //Cargamos la nave como objeto principal.
+            objetoPrincipal = nave;
 
             GuiController.Instance.RotCamera.targetObject(suelo.BoundingBox);
 
@@ -77,8 +78,19 @@ namespace AlumnoEjemplos.MiGrupo
             /*GuiController.Instance.ThirdPersonCamera.Enable = true;
             GuiController.Instance.ThirdPersonCamera.setCamera(nave.Position, 30, -75);*/
 
+            /*
+            //Cargamos valores en el panel lateral
+            GuiController.Instance.UserVars.addVar("Vel-Actual:");
+            //Cargar valor en UserVar
+            GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual());
+            //Crear un modifier para un valor FLOAT
+            GuiController.Instance.Modifiers.addFloat("valorFloat", -50f, 200f, 0f);
+            //Crear un modifier para un ComboBox con opciones
+            string[] opciones = new string[] { "opcion1", "opcion2", "opcion3" };
+            GuiController.Instance.Modifiers.addInterval("valorIntervalo", opciones, 0);
+             */
         }
-        //--------------------------------------------------------
+        //--------------------------------------------------------RENDER-----
 
         // <param name="elapsedTime">Tiempo en segundos transcurridos desde el último frame</param>
         public override void render(float elapsedTime)
@@ -98,6 +110,11 @@ namespace AlumnoEjemplos.MiGrupo
             //if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.LeftShift)) { nave.acelerar(1); }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.LeftControl)) { nave.frenar(); }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.Space)) { nave.acelerar(); }
+
+            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.Z)) { nave.giro = -1; }
+            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.X)) { nave.giro = 1; }
+            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightAlt)) { nave.giro = -1; }
+            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightControl)) { nave.giro = 1; }
 
 
             Factory fabrica = new Factory();
@@ -213,16 +230,6 @@ namespace AlumnoEjemplos.MiGrupo
             {
                 string element = lista[i];
             }
-            /*
-            //Creamos una caja 3D de color rojo, ubicada en el origen y lado 10
-            Vector3 center = new Vector3(0, 0, 0);
-            Vector3 size = new Vector3(10, 10, 10);
-            Color color = Color.Red;
-            caja = new Dibujable();
-            caja.objeto = TgcBox.fromSize(center, size, color);
-            TgcBox cajita = (TgcBox)caja.objeto;
-            //GuiController.Instance.RotCamera.targetObject(cajita.BoundingBox);
-            */
         }
 
         public void metodoUselessRender()
