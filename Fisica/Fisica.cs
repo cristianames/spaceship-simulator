@@ -10,11 +10,11 @@ namespace AlumnoEjemplos.TheGRID
     {
         //-----Atributos-----
         private Dibujable duenio;
-        private float aceleracion;
+        internal float aceleracion { set; get; }
         public float velocidadInstantanea;
         private float masa;
         internal bool frenado;
-        private float acelFrenado { set; get; }
+        internal float acelFrenado { set; get; }
         //-------------------
         public Fisica(Dibujable owner, float acel, float aFrenado, float masaCuerpo)    //La aceleracion de frenado recomiendo poner un valor mayor que acel.
         {

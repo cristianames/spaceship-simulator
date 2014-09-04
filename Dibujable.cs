@@ -76,9 +76,9 @@ namespace AlumnoEjemplos.TheGRID
         public int inclinacion { set; get; } // 0: Nada ; -1:hacia abajo ; 1:hacia arriba //Pitch
         public int rotacion { set; get; } // 0: Nada ; -1:lateral izquierda ; 1:lateral derecha //Roll
         public int giro { set; get; } // 0: Nada ; -1:lateral izquierda ; 1:lateral derecha //Yaw
-        private bool velocidadManual;   //Indica si hay que mantener apretado para moverte o no.
-        private bool desplazamientoReal;    //Se usa o no el modulo de Fisica para el desplazamiento.
-        private bool rotacionReal;  //Se usa o no el modulo de Fisica para la rotacion.
+        internal bool velocidadManual { set; get; }   //Indica si hay que mantener apretado para moverte o no.
+        internal bool desplazamientoReal { set; get; }    //Se usa o no el modulo de Fisica para el desplazamiento.
+        internal bool rotacionReal { set; get; }  //Se usa o no el modulo de Fisica para la rotacion.
         public Object objeto { set; get; }
         private EjeCoordenadas vectorDireccion;
         internal Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
@@ -256,13 +256,16 @@ namespace AlumnoEjemplos.TheGRID
             else return new Vector3(0, 0, 0);
         }
 
+        public float getAceleracion() { if (fisica != null) return fisica.aceleracion; else return 0; }
+        public float getAcelFrenado() { if (fisica != null) return fisica.acelFrenado; else return 0; }
         public void renderBoundingBox() { colision.render();}
         public IColision getColision() { return this.colision; }
         public void setColision(IColision bb) { this.colision = bb; }
 
-        internal object velocidadActual()
+        internal float velocidadActual()
         {
-            throw new NotImplementedException();
+            if (fisica != null && desplazamientoReal) return fisica.velocidadInstantanea;
+            else return velocidad;
         }
     }
 }
