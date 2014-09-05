@@ -37,12 +37,12 @@ namespace AlumnoEjemplos.TheGRID.Camara
         private void habilitarThird()
         {
             GuiController.Instance.ThirdPersonCamera.Enable = true;
-            GuiController.Instance.ThirdPersonCamera.setCamera(objecto_foco.getPosicion(), 200, 300);
+            GuiController.Instance.ThirdPersonCamera.setCamera(objecto_foco.getPosicion(), 75, -300);
         }
         private void habilitarFirst()
         {
             GuiController.Instance.FpsCamera.Enable = true;
-            GuiController.Instance.FpsCamera.setCamera(objecto_foco.getPosicion(), objecto_foco.getDireccion());
+            GuiController.Instance.FpsCamera.setCamera(objecto_foco.getPosicion(), -objecto_foco.getDireccion());
         }
         public void cambiarFoco(Dibujable dibujable){
             objecto_foco = dibujable;
@@ -53,7 +53,7 @@ namespace AlumnoEjemplos.TheGRID.Camara
         {
             if (FPSon)
             {
-                GuiController.Instance.FpsCamera.setCamera(dibujable.getPosicion(), dibujable.getDireccion());
+                GuiController.Instance.FpsCamera.setCamera(dibujable.getPosicion(), -dibujable.getDireccion());
             }
             else
             {

@@ -110,6 +110,18 @@ namespace AlumnoEjemplos.TheGRID
             desplazamientoReal = false;
             rotacionReal = false;
         }
+        public Dibujable(Vector3 centro)
+        {
+            posicion.setActual(0, 0, 0);
+            fisica = null;
+            colision = null;
+            explosion = null;
+            vectorDireccion = new EjeCoordenadas();
+            vectorDireccion.centrar(centro.X, centro.Y, centro.Z);
+            velocidadManual = false;
+            desplazamientoReal = false;
+            rotacionReal = false;
+        }
         //-------------------------------------------------------------------------------------METODOS--------IRenderObject-----
         public void render() { ((IRenderObject)objeto).render(); }
         public void dispose() 
@@ -128,7 +140,11 @@ namespace AlumnoEjemplos.TheGRID
         public Matrix Transform
         {
             get { return ((ITransformObject)objeto).Transform; }
-            set { ((ITransformObject)objeto).Transform = value; }
+            set 
+            {
+                ((ITransformObject)objeto).Transform = value;
+                //vectorDireccion.trasnform(value);
+            }
         }
         public bool AutoTransformEnable
         {
@@ -173,6 +189,7 @@ namespace AlumnoEjemplos.TheGRID
             rotacionReal = rotReal;
         }
         public void setCentro(float x, float y, float z) { vectorDireccion.centrar(x, y, z); } //Acomoda el centro de giro del objeto.
+        public void setCentro(Vector3 centro) { vectorDireccion.centrar(centro.X, centro.Y, centro.Z); }
         public Vector3 getCentro() 
         {
             Vector3 temp = getPosicion();
@@ -184,6 +201,7 @@ namespace AlumnoEjemplos.TheGRID
             posicion.setActual(pos);
         }   //No manipular a menos que sea necesario. Se pierde coherencia con la posicion que lleva el objeto renderizable.
         public Vector3 getPosicion() { return posicion.getActual(); }
+        public void setEjes(EjeCoordenadas nuevoEje) { vectorDireccion = nuevoEje; }
 
         //----------------------------------------------------------------------------------------------------MOVIMIENTOS-----
         public Vector3 getTrayectoria() { return posicion.direccion(); }   //Direccion en la que se desplaza un objeto.
@@ -225,7 +243,7 @@ namespace AlumnoEjemplos.TheGRID
             if (fisica != null && velocidadManual) fisica.frenado = true;
             else traslacion = 0;
         }
-        public void trasladar(float time, List<Dibujable> dibujables)   //Movimiento de traslacion base de un dibujable.
+        public void desplazarse(float time, List<Dibujable> dibujables)   //Movimiento de traslacion base de un dibujable.
         {
             if (fisica != null && desplazamientoReal) fisica.trasladar(time, dibujables);
             else
@@ -256,6 +274,16 @@ namespace AlumnoEjemplos.TheGRID
             Matrix matriz = Matrix.Scaling(x, y, z);
             Transform *= matriz;
         }
+
+        public void trasladar(Vector3 traslado)
+        {
+            Matrix matriz = Matrix.Translation(traslado);
+            Transform *= matriz;
+            Vector4 normal4 = Vector3.Transform(getPosicion(), matriz);
+            setPosicion(new Vector3(normal4.X, normal4.Y, normal4.Z));
+            normal4 = Vector3.Transform(getCentro(), matriz);
+            //setCentro(normal4.X, normal4.Y, normal4.Z);
+        }
         //----------------------------------------------------------------------------------------------------CONSULTAS-----
         public Vector3 indicarGravedad(Vector3 pos, float mass){
             if (fisica != null) return this.fisica.indicarGravedad(pos, mass);
@@ -272,6 +300,15 @@ namespace AlumnoEjemplos.TheGRID
         {
             if (fisica != null && desplazamientoReal) return fisica.velocidadInstantanea;
             else return velocidad;
+        }
+        public EjeCoordenadas getEjes() 
+        {
+            EjeCoordenadas nuevoEje = new EjeCoordenadas();
+            nuevoEje.vectorX = vectorDireccion.vectorX;
+            nuevoEje.vectorY = vectorDireccion.vectorY;
+            nuevoEje.vectorZ = vectorDireccion.vectorZ;
+            nuevoEje.centroObjeto = vectorDireccion.centroObjeto;
+            return nuevoEje; 
         }
     }
 }

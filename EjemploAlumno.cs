@@ -27,45 +27,51 @@ namespace AlumnoEjemplos.MiGrupo
         public override string getDescription(){return "Viaje Interplanetario - Manejo: \nArriba/Abajo - Pitch                       \nIzq/Der - Roll                                  \nZ/X o AltGr/CtrlDer - Yaw                 \nSpaceBar - Acelerar                  \n CtrlIzq - Estabilizar                             \nA - Disparo Principal";}
         //--------------------------------------------------------
         // ATRIBUTOS
-        TgcBox suelo;
+        //TgcBox suelo;
         Dibujable asteroide;
         //Dibujable caja;
         Dibujable nave;
         Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
-        List<Dibujable> laserLista;
+        //Laser
         List<Dibujable> listaDibujable = new List<Dibujable>();
+        float timeLaser = 0;
+        const float betweenTime = 0.15f;
+        ManagerDibujables laserManager;
 
         //Modificador de la camara del proyecto
         CambioCamara camara;
+
         
 
 
         //--------------------------------------------------------
         public override void init()
         {
-            laserLista=new List<Dibujable>();
             //GuiController.Instance: acceso principal a todas las herramientas del Framework
             Device d3dDevice = GuiController.Instance.D3dDevice;
             //Carpeta de archivos Media del alumno
-            string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;           
+            string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;          
+ 
             //Crear suelo
             TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\Quake\\TexturePack2\\rock_floor1.jpg");
-            suelo = TgcBox.fromSize(new Vector3(0, -5, 0), new Vector3(500, 0, 500), pisoTexture);            
-            //Crear 1 asteroide
+            //suelo = TgcBox.fromSize(new Vector3(0, -5, 0), new Vector3(500, 0, 500), pisoTexture);   
+         
+            //Crear manager Lasers
+            laserManager = new ManagerDibujables(50);
 
+            //Crear 1 asteroide
             Factory fabrica_dibujables = new Factory();
 
             asteroide = fabrica_dibujables.crearAsteroide(new Vector3(1, 1, 1));
             fabrica_dibujables.trasladar(asteroide, new Vector3(200, 100, 50));
             asteroide.setPosicion(new Vector3(200, 100, 50));
-            GuiController.Instance.RotCamera.targetObject(((TgcMesh)asteroide.objeto).BoundingBox);
+            //GuiController.Instance.RotCamera.targetObject(((TgcMesh)asteroide.objeto).BoundingBox);
             asteroide.setFisica(5, 10, 5000);
            
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml"); 
           
             //Crear la nave
-
             nave = new Dibujable(0, -10, 15);
             scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Nave\\nave-TgcScene.xml");
             nave.setObject(scene.Meshes[0], 200, 100, new Vector3(0, 180, 0), new Vector3(1, 1, 1));
@@ -139,8 +145,14 @@ namespace AlumnoEjemplos.MiGrupo
             
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.A))
             {
-                laserLista.Add(fabrica.crearLaser(nave.getCentro())); //arreglar haz de laser infinito, agregar colisiones
+                timeLaser += elapsedTime;
+                if (timeLaser > betweenTime)
+                {
+                    laserManager.addNew(fabrica.crearLaser(nave.Transform, nave.getEjes()));
+                    timeLaser = 0;
+                }
             }            
+            /*
             if (laserLista.Count != 0)
             {
 
@@ -150,6 +162,7 @@ namespace AlumnoEjemplos.MiGrupo
 
                 }
             }
+             */
                        
             //-----FIN-UPDATE-----
 
@@ -159,7 +172,7 @@ namespace AlumnoEjemplos.MiGrupo
 
           
             //laser.trasladar(elapsedTime);
-
+            /*
             if (laserLista.Count != 0)
             {
 
@@ -169,18 +182,20 @@ namespace AlumnoEjemplos.MiGrupo
 
                 }
             }
-           
+             */
+
+            laserManager.operar(elapsedTime);
             asteroide.render();
             asteroide.renderBoundingBox();
 
-            suelo.render();
+            //suelo.render();
 
             
             listaDibujable.Add(asteroide);
             //listaDibujable.Add(nave);
 
             nave.rotar(elapsedTime,listaDibujable);
-            nave.trasladar(elapsedTime,listaDibujable);
+            nave.desplazarse(elapsedTime,listaDibujable);
             camara.cambiarPosicionCamara(nave);
             if(!camara.getMode())
                 nave.render();
@@ -212,7 +227,7 @@ namespace AlumnoEjemplos.MiGrupo
 
             asteroide.dispose();
             nave.dispose();
-            suelo.dispose();
+            //suelo.dispose();
 
         }
 
