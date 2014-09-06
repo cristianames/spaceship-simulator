@@ -54,6 +54,7 @@ namespace AlumnoEjemplos.MiGrupo
             //Carpeta de archivos Media del alumno
             string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
 
+            /*
             //Crear SkyBox 
             skyBox = new TgcSkyBox();
             skyBox.Center = new Vector3(0, 0, 0);
@@ -71,11 +72,10 @@ namespace AlumnoEjemplos.MiGrupo
             //Hay veces es necesario invertir las texturas Front y Back si se pasa de un sistema RightHanded a uno LeftHanded
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, alumnoMediaFolder + "Texture/adelante.png");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, alumnoMediaFolder + "Texture/atras.png");
-
-
-
+            
             //Actualizar todos los valores para crear el SkyBox
             skyBox.updateValues();
+            */
 
             //Crear suelo
             TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\Quake\\TexturePack2\\rock_floor1.jpg");
@@ -87,9 +87,9 @@ namespace AlumnoEjemplos.MiGrupo
             //Crear 1 asteroide
             Factory fabrica_dibujables = new Factory();
 
-            asteroide = fabrica_dibujables.crearAsteroide(new Vector3(1, 1, 1));
-            fabrica_dibujables.trasladar(asteroide, new Vector3(200, 100, 50));
-            asteroide.setPosicion(new Vector3(200, 100, 50));
+            asteroide = fabrica_dibujables.crearAsteroide(20);
+            fabrica_dibujables.trasladar(asteroide, new Vector3(0, 0, 800));
+            asteroide.setPosicion(new Vector3(0, 0, 0));
             //GuiController.Instance.RotCamera.targetObject(((TgcMesh)asteroide.objeto).BoundingBox);
             asteroide.setFisica(5, 10, 5000);
            
@@ -101,7 +101,7 @@ namespace AlumnoEjemplos.MiGrupo
             scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Nave\\nave-TgcScene.xml");
             nave.setObject(scene.Meshes[0], 200, 100, new Vector3(0, 180, 0), new Vector3(1, 1, 1));
             nave.setFisica(100, 500, 100);
-            //nave.SetPropiedades(true, true, false);
+            nave.SetPropiedades(true, false, false);
 
             //Cargamos la nave como objeto principal.
             objetoPrincipal = nave;
@@ -130,7 +130,7 @@ namespace AlumnoEjemplos.MiGrupo
             string[] opciones1 = new string[] { "Camara Fija", "Camara FPS", "Camara TPS" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
             string[] opciones2 = new string[] { "Activado", "Desactivado" };
-            GuiController.Instance.Modifiers.addInterval("Velocidad Manual", opciones2, 1);
+            GuiController.Instance.Modifiers.addInterval("Velocidad Manual", opciones2, 0);
             string[] opciones3 = new string[] { "Activado", "Desactivado" };
             GuiController.Instance.Modifiers.addInterval("Desplaz. Avanzado", opciones3, 1);
             string[] opciones4 = new string[] { "Activado", "Desactivado" };
@@ -163,7 +163,8 @@ namespace AlumnoEjemplos.MiGrupo
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightAlt)) { nave.giro = -1; }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightControl)) { nave.giro = 1; }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F1)) { camara.modoFPS(); }
-            //if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F2)) { camara.modoExterior(); }
+
+           // if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F2)) { camara.modoExterior(); }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F3)) { camara.modoTPS(); }
 
 

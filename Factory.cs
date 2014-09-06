@@ -31,15 +31,17 @@ namespace AlumnoEjemplos.TheGRID
             TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + path);
             return scene.Meshes[0];
         }
-        public Dibujable crearAsteroide(Vector3 tamanio)
+        public Dibujable crearAsteroide(float factorEscalado)
         {            
             //Creemos la mesh
-            TgcMesh mesh_asteroide = cargarMesh("Asteroide\\esferita-TgcScene.xml");
+            TgcMesh mesh_asteroide = cargarMesh("asteroid\\asteroid-TgcScene.xml");
             mesh_asteroide.AutoTransformEnable = false;
-            mesh_asteroide.Transform = Matrix.Scaling(tamanio);
+            mesh_asteroide.Transform = Matrix.Scaling(new Vector3(factorEscalado,factorEscalado,factorEscalado));
             //Creamos su bounding Sphere
             mesh_asteroide.AutoUpdateBoundingBox = false;
-            TgcBoundingSphere bounding_asteroide = new TgcBoundingSphere(mesh_asteroide.BoundingBox.calculateBoxCenter(), mesh_asteroide.BoundingBox.calculateAxisRadius().X);
+            float radioMalla3DsMax = 11.633f;
+            //TgcBoundingSphere bounding_asteroide = new TgcBoundingSphere(mesh_asteroide.BoundingBox.calculateBoxCenter(), mesh_asteroide.BoundingBox.calculateAxisRadius().X);
+            TgcBoundingSphere bounding_asteroide = new TgcBoundingSphere(mesh_asteroide.BoundingBox.calculateBoxCenter(), radioMalla3DsMax * factorEscalado);
            
             //Cargamos las cosas en el dibujable
             Dibujable asteroide = new Dibujable();
