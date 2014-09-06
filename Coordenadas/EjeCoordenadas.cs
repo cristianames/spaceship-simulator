@@ -12,6 +12,7 @@ namespace AlumnoEjemplos.TheGRID
         public Vector3 vectorX;
         public Vector3 vectorY;
         public Vector3 vectorZ;
+        public Vector3 vectorK;
 
         public Vector3 centroObjeto;
 
@@ -20,6 +21,8 @@ namespace AlumnoEjemplos.TheGRID
             vectorX = new Vector3(1, 0, 0);
             vectorY = new Vector3(0, 1, 0);
             vectorZ = new Vector3(0, 0, 1);
+
+            vectorK = new Vector3(0, 0, 1);
 
             centroObjeto = new Vector3(0, 0, 0);
         }
@@ -46,6 +49,7 @@ namespace AlumnoEjemplos.TheGRID
             rotation = Matrix.RotationYawPitchRoll(vectorX.Y * angulo, vectorX.X * angulo, vectorX.Z * angulo);
             
             normal4 = Vector3.Transform(vectorZ, rotation);
+            vectorK = vectorZ;
             vectorZ = new Vector3(normal4.X, normal4.Y, normal4.Z);
 
             normal4 = Vector3.Transform(vectorY, rotation);
@@ -69,6 +73,7 @@ namespace AlumnoEjemplos.TheGRID
             vectorY = new Vector3(normal4.X, normal4.Y, normal4.Z);
 
             normal4 = Vector3.Transform(vectorZ, rotation);
+            vectorK = vectorZ;
             vectorZ = new Vector3(normal4.X, normal4.Y, normal4.Z);
 
             actualizarX();
@@ -89,6 +94,7 @@ namespace AlumnoEjemplos.TheGRID
             vectorY = new Vector3(normal4.X, normal4.Y, normal4.Z);
 
             normal4 = Vector3.Transform(vectorZ, rotation);
+            vectorK = vectorZ;
             vectorZ = new Vector3(normal4.X, normal4.Y, normal4.Z);
 
             actualizarX(); 
@@ -101,6 +107,7 @@ namespace AlumnoEjemplos.TheGRID
         }
         //De la subclase
         public Vector3 direccion() { return vectorZ; }
+        public Vector3 direccionAnterior() { return vectorK; }
 
     }
 }

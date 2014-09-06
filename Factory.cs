@@ -57,7 +57,6 @@ namespace AlumnoEjemplos.TheGRID
             asteroide.Transform *= traslacion;
             asteroide.getColision().transladar(vector);
         }
-
        /* public Asteroide(Vector3 tamanio)
         {
             transform.Scale(tamanio);
