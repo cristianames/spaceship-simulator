@@ -57,41 +57,6 @@ namespace AlumnoEjemplos.TheGRID
             asteroide.Transform *= traslacion;
             asteroide.getColision().transladar(vector);
         }
-       /* public Asteroide(Vector3 tamanio)
-        {
-            transform.Scale(tamanio);
-            Device d3dDevice = GuiController.Instance.D3dDevice;
-            //Carpeta de archivos Media del alumno
-            string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;   
-
-            TgcSceneLoader loader = new TgcSceneLoader();
-            changeDiffuseMaps(new TgcTexture[] { TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesDir + "Transformations\\SistemaSolar\\SunTexture.jpg") });
-
-        }*/
-        /*      LASER DANTE
-        public Dibujable crearLaser(Vector3 origen) //se le pasa como parametro al laser el punto de origen 
-        {
-            //Carguemos el DirectX y la carpeta de media
-            Device d3dDevice = GuiController.Instance.D3dDevice;
-            string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
-            //Creemos la mesh
-            TgcSceneLoader loader = new TgcSceneLoader();
-            TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml");
-            TgcMesh mesh_laser = scene.Meshes[0];
-            mesh_laser.AutoTransformEnable = false;
-            mesh_laser.Transform = Matrix.Scaling(new Vector3(0.1F, 0.1F, 1F)) * Matrix.Translation(origen);            
-            //Cargamos las cosas en el dibujable
-            Dibujable laser = new Dibujable();
-            laser.objeto = mesh_laser;
-            return laser;
-        }
-        public void dispararLaser(Dibujable laser, Vector3 direccion,float time) 
-        {
-            Matrix traslacion = Matrix.Translation(direccion*time*4000);// extraer velocidad
-            ((TgcMesh)laser.objeto).Transform *= traslacion;
-        }
-        */
-
         public Dibujable crearLaser(Matrix transformacion,EjeCoordenadas ejes) 
         {
             //Creemos la mesh

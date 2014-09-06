@@ -206,6 +206,8 @@ namespace AlumnoEjemplos.TheGRID
         //----------------------------------------------------------------------------------------------------MOVIMIENTOS-----
         public Vector3 getTrayectoria() { return posicion.direccion(); }   //Direccion en la que se desplaza un objeto.
         public Vector3 getDireccion() { return vectorDireccion.direccion(); }   //Direccion en la que apunta el frente del objeto.
+        public Vector3 getDireccion_Y() { return vectorDireccion.direccion_Y(); }
+        public Vector3 getDireccion_X() { return vectorDireccion.direccion_X(); }
         public Vector3 getDireccionAnterior() { return vectorDireccion.direccionAnterior(); } //Direccion anterior a la que apuntaba el frente del objeto
         public void rotar(float time, List<Dibujable> dibujables)   //Movimiento de rotacion base de un dibujable.
         {

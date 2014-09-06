@@ -64,7 +64,6 @@ namespace AlumnoEjemplos.TheGRID.Camara
             modo = TipoModo.Exterior;
             GuiController.Instance.RotCamera.Enable = true;
             GuiController.Instance.RotCamera.CameraCenter = objeto_foco.getCentro();
-
         }
         public void cambiarFoco(Dibujable dibujable){
             objeto_foco = dibujable;

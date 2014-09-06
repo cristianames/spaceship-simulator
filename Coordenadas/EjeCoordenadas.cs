@@ -29,10 +29,6 @@ namespace AlumnoEjemplos.TheGRID
         public void actualizarX() { vectorX = Vector3.Cross(vectorY, vectorZ); }
 
         public void centrar(float x, float y, float z) { centroObjeto = new Vector3(x, y, z); }
-        internal void trasnform(Matrix value)
-        {
-            
-        }
 
         public Vector3 getCentro() 
         {
@@ -107,6 +103,8 @@ namespace AlumnoEjemplos.TheGRID
         }
         //De la subclase
         public Vector3 direccion() { return vectorZ; }
+        public Vector3 direccion_Y() { return vectorY; }
+        public Vector3 direccion_X() { return vectorX; }
         public Vector3 direccionAnterior() { return vectorK; }
 
     }
