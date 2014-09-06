@@ -62,9 +62,9 @@ namespace AlumnoEjemplos.MiGrupo
             //Crear 1 asteroide
             Factory fabrica_dibujables = new Factory();
 
-            asteroide = fabrica_dibujables.crearAsteroide(new Vector3(20, 20, 20));
-            fabrica_dibujables.trasladar(asteroide, new Vector3(200, 100, 50));
-            asteroide.setPosicion(new Vector3(200, 100, 50));
+            asteroide = fabrica_dibujables.crearAsteroide(20);
+            fabrica_dibujables.trasladar(asteroide, new Vector3(0, 0, 800));
+            asteroide.setPosicion(new Vector3(0, 0, 0));
             //GuiController.Instance.RotCamera.targetObject(((TgcMesh)asteroide.objeto).BoundingBox);
             asteroide.setFisica(5, 10, 5000);
            
@@ -138,7 +138,7 @@ namespace AlumnoEjemplos.MiGrupo
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightAlt)) { nave.giro = -1; }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightControl)) { nave.giro = 1; }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F1)) { camara.modoFPS(); }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F2)) { camara.modoExterior(); }
+           // if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F2)) { camara.modoExterior(); }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F3)) { camara.modoTPS(); }
 
 
