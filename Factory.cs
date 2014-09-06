@@ -23,7 +23,7 @@ namespace AlumnoEjemplos.TheGRID
 
             //Creemos la mesh
             TgcSceneLoader loader = new TgcSceneLoader();
-            TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Asteroide\\esferita-TgcScene.xml");
+            TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "asteroid\\asteroid-TgcScene.xml");
             TgcMesh mesh_asteroide = scene.Meshes[0];
             mesh_asteroide.AutoTransformEnable = false;
             mesh_asteroide.Transform = Matrix.Scaling(tamanio);

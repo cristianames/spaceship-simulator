@@ -51,7 +51,7 @@ namespace AlumnoEjemplos.MiGrupo
 
             Factory fabrica_dibujables = new Factory();
 
-            asteroide = fabrica_dibujables.crearAsteroide(new Vector3(1, 1, 1));
+            asteroide = fabrica_dibujables.crearAsteroide(new Vector3(20, 20, 20));
             fabrica_dibujables.trasladar(asteroide, new Vector3(200, 100, 50));
             GuiController.Instance.RotCamera.targetObject(((TgcMesh)asteroide.objeto).BoundingBox);
 
