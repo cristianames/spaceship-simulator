@@ -28,12 +28,11 @@ namespace AlumnoEjemplos.MiGrupo
         public override string getDescription(){return "Viaje Interplanetario - Manejo: \nArriba/Abajo - Pitch                       \nIzq/Der - Roll                                  \nZ/X o AltGr/CtrlDer - Yaw                 \nSpaceBar - Acelerar                  \n CtrlIzq - Estabilizar                             \nA - Disparo Principal";}
         //--------------------------------------------------------
         // ATRIBUTOS
-        //TgcBox suelo;
+        TgcBox suelo;
         Dibujable asteroide;
         //Dibujable caja;
         Dibujable nave;
         Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
-        //Laser
         List<Dibujable> listaDibujable = new List<Dibujable>();
         float timeLaser = 0;
         const float betweenTime = 0.15f;
@@ -54,32 +53,35 @@ namespace AlumnoEjemplos.MiGrupo
             //Carpeta de archivos Media del alumno
             string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
 
-            /*
+            d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
+
             //Crear SkyBox 
             skyBox = new TgcSkyBox();
             skyBox.Center = new Vector3(0, 0, 0);
-            skyBox.Size = new Vector3(1000, 1000, 50000);
+            skyBox.Size = new Vector3(15000, 15000, 150000);
+
+
+            //Crear suelo
+            TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, alumnoMediaFolder + "SkyBox\\adelante.jpg");
+            suelo = TgcBox.fromSize(new Vector3(0, 0, 9500), new Vector3(1000, 1000, 0), pisoTexture);   
 
             //Configurar color
             //skyBox.Color = Color.OrangeRed;
 
             //Configurar las texturas para cada una de las 6 caras
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, alumnoMediaFolder + "Texture/arriba.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, alumnoMediaFolder + "Texture/abajo.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, alumnoMediaFolder + "Texture/izquierda.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, alumnoMediaFolder + "Texture/derecha.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, alumnoMediaFolder + "SkyBox\\arriba.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, alumnoMediaFolder + "SkyBox\\abajo.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, alumnoMediaFolder + "SkyBox\\izquierda.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, alumnoMediaFolder + "SkyBox\\derecha.jpg");
 
             //Hay veces es necesario invertir las texturas Front y Back si se pasa de un sistema RightHanded a uno LeftHanded
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, alumnoMediaFolder + "Texture/adelante.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, alumnoMediaFolder + "Texture/atras.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, alumnoMediaFolder + "SkyBox\\adelante.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, alumnoMediaFolder + "SkyBox\\atras.jpg");
             
             //Actualizar todos los valores para crear el SkyBox
             skyBox.updateValues();
-            */
+            
 
-            //Crear suelo
-            TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\Quake\\TexturePack2\\rock_floor1.jpg");
-            //suelo = TgcBox.fromSize(new Vector3(0, -5, 0), new Vector3(500, 0, 500), pisoTexture);   
          
             //Crear manager Lasers
             laserManager = new ManagerDibujables(50);
@@ -196,6 +198,7 @@ namespace AlumnoEjemplos.MiGrupo
 
             //Device de DirectX para renderizar
             Device d3dDevice = GuiController.Instance.D3dDevice;
+            d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
 
           
             //laser.trasladar(elapsedTime);
@@ -215,12 +218,14 @@ namespace AlumnoEjemplos.MiGrupo
             asteroide.render();
             asteroide.renderBoundingBox();
 
-            //suelo.render();
+            suelo.render();
 
             
             listaDibujable.Add(asteroide);
             //listaDibujable.Add(nave);
 
+
+            skyBox.render();
             nave.rotar(elapsedTime,listaDibujable);
             nave.desplazarse(elapsedTime,listaDibujable);
             camara.cambiarPosicionCamara(nave);
