@@ -10,11 +10,11 @@ namespace AlumnoEjemplos.TheGRID
     {
         //-----Atributos-----
         private Dibujable duenio;
-        private float aceleracion;
+        internal float aceleracion { set; get; }
         public float velocidadInstantanea;
         private float masa;
         internal bool frenado;
-        private float acelFrenado { set; get; }
+        internal float acelFrenado { set; get; }
         //-------------------
         public Fisica(Dibujable owner, float acel, float aFrenado, float masaCuerpo)    //La aceleracion de frenado recomiendo poner un valor mayor que acel.
         {
@@ -106,10 +106,17 @@ namespace AlumnoEjemplos.TheGRID
             frenado = false;
             }
         }
-        public Vector3 indicarGravedad(Vector3 posicionSolicitante, float masa)
+        public Vector3 indicarGravedad(Vector3 posicionSolicitante, float mass)
         {
-            Vector3 temp = new Vector3(0,0,0);
-            return temp;
+            posicionSolicitante -= duenio.getPosicion();
+            posicionSolicitante.Multiply(-1);
+            float distanciaCuad = Vector3.LengthSq(posicionSolicitante);
+            float gravity = mass * masa;
+            gravity = gravity / distanciaCuad;
+            gravity *= (float) 0.0001; //Aca deberia ir el coeficiente de gravitacion universal.
+            posicionSolicitante.Normalize();
+            posicionSolicitante.Multiply(gravity);
+            return posicionSolicitante;
         }
         public Vector3 calcularGravedad(List<Dibujable> dibujables)
         {

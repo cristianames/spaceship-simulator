@@ -12,6 +12,7 @@ using TgcViewer.Utils.TgcGeometry;
 using AlumnoEjemplos.TheGRID;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Input;
+using AlumnoEjemplos.TheGRID.Camara;
 
 namespace AlumnoEjemplos.MiGrupo
 {
@@ -26,69 +27,90 @@ namespace AlumnoEjemplos.MiGrupo
         public override string getDescription(){return "Viaje Interplanetario - Manejo: \nArriba/Abajo - Pitch                       \nIzq/Der - Roll                                  \nZ/X o AltGr/CtrlDer - Yaw                 \nSpaceBar - Acelerar                  \n CtrlIzq - Estabilizar                             \nA - Disparo Principal";}
         //--------------------------------------------------------
         // ATRIBUTOS
-        TgcBox suelo;
+        //TgcBox suelo;
         Dibujable asteroide;
         //Dibujable caja;
         Dibujable nave;
         Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
-        List<Dibujable> laserLista;
+        //Laser
         List<Dibujable> listaDibujable = new List<Dibujable>();
+        float timeLaser = 0;
+        const float betweenTime = 0.15f;
+        ManagerDibujables laserManager;
+
+        //Modificador de la camara del proyecto
+        CambioCamara camara;
+
         
 
 
         //--------------------------------------------------------
         public override void init()
         {
-            laserLista=new List<Dibujable>();
             //GuiController.Instance: acceso principal a todas las herramientas del Framework
             Device d3dDevice = GuiController.Instance.D3dDevice;
             //Carpeta de archivos Media del alumno
-            string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;           
+            string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;          
+ 
             //Crear suelo
             TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\Quake\\TexturePack2\\rock_floor1.jpg");
-            suelo = TgcBox.fromSize(new Vector3(0, -5, 0), new Vector3(500, 0, 500), pisoTexture);            
-            //Crear 1 asteroide
+            //suelo = TgcBox.fromSize(new Vector3(0, -5, 0), new Vector3(500, 0, 500), pisoTexture);   
+         
+            //Crear manager Lasers
+            laserManager = new ManagerDibujables(50);
 
+            //Crear 1 asteroide
             Factory fabrica_dibujables = new Factory();
 
             asteroide = fabrica_dibujables.crearAsteroide(new Vector3(20, 20, 20));
             fabrica_dibujables.trasladar(asteroide, new Vector3(200, 100, 50));
-            GuiController.Instance.RotCamera.targetObject(((TgcMesh)asteroide.objeto).BoundingBox);
-
+            asteroide.setPosicion(new Vector3(200, 100, 50));
+            //GuiController.Instance.RotCamera.targetObject(((TgcMesh)asteroide.objeto).BoundingBox);
+            asteroide.setFisica(5, 10, 5000);
            
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml"); 
           
             //Crear la nave
-
             nave = new Dibujable(0, -10, 15);
             scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Nave\\nave-TgcScene.xml");
             nave.setObject(scene.Meshes[0], 200, 100, new Vector3(0, 180, 0), new Vector3(1, 1, 1));
             nave.setFisica(100, 500, 100);
-            nave.SetPropiedades(true, true, false);
+            //nave.SetPropiedades(true, true, false);
 
             //Cargamos la nave como objeto principal.
             objetoPrincipal = nave;
-
-            GuiController.Instance.RotCamera.targetObject(suelo.BoundingBox);
+            //Cargamos la camara
+            camara = new CambioCamara(nave);
 
           
-            
-            //Configurar camara en Tercer Persona
-            /*GuiController.Instance.ThirdPersonCamera.Enable = true;
-            GuiController.Instance.ThirdPersonCamera.setCamera(nave.Position, 30, -75);*/
-
-            /*
             //Cargamos valores en el panel lateral
             GuiController.Instance.UserVars.addVar("Vel-Actual:");
+            GuiController.Instance.UserVars.addVar("Integtidad Nave:");
+            GuiController.Instance.UserVars.addVar("Integridad Escudos:");
+            GuiController.Instance.UserVars.addVar("Posicion X:");
+            GuiController.Instance.UserVars.addVar("Posicion Y:");
+            GuiController.Instance.UserVars.addVar("Posicion Z:");
             //Cargar valor en UserVar
             GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual());
+            GuiController.Instance.UserVars.setValue("Integtidad Nave:", 100);
+            GuiController.Instance.UserVars.setValue("Integridad Escudos:", 100);
+            GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);
+            GuiController.Instance.UserVars.setValue("Posicion Y:", objetoPrincipal.getPosicion().Y);
+            GuiController.Instance.UserVars.setValue("Posicion Z:", objetoPrincipal.getPosicion().Z);
             //Crear un modifier para un valor FLOAT
-            GuiController.Instance.Modifiers.addFloat("valorFloat", -50f, 200f, 0f);
+            GuiController.Instance.Modifiers.addFloat("Aceleracion", 0f,500f, objetoPrincipal.getAceleracion());
+            GuiController.Instance.Modifiers.addFloat("Frenado", 0f, 1000f, objetoPrincipal.getAcelFrenado());
             //Crear un modifier para un ComboBox con opciones
-            string[] opciones = new string[] { "opcion1", "opcion2", "opcion3" };
-            GuiController.Instance.Modifiers.addInterval("valorIntervalo", opciones, 0);
-             */
+            string[] opciones1 = new string[] { "Camara Fija", "Camara FPS", "Camara TPS" };
+            GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
+            string[] opciones2 = new string[] { "Activado", "Desactivado" };
+            GuiController.Instance.Modifiers.addInterval("Velocidad Manual", opciones2, 1);
+            string[] opciones3 = new string[] { "Activado", "Desactivado" };
+            GuiController.Instance.Modifiers.addInterval("Desplaz. Avanzado", opciones3, 1);
+            string[] opciones4 = new string[] { "Activado", "Desactivado" };
+            GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);
+            
         }
         //--------------------------------------------------------RENDER-----
 
@@ -115,14 +137,23 @@ namespace AlumnoEjemplos.MiGrupo
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.X)) { nave.giro = 1; }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightAlt)) { nave.giro = -1; }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightControl)) { nave.giro = 1; }
+            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F1)) { camara.modoFPS(); }
+            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F2)) { camara.modoExterior(); }
+            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F3)) { camara.modoTPS(); }
 
 
             Factory fabrica = new Factory();
             
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.A))
             {
-                laserLista.Add(fabrica.crearLaser(nave.getCentro())); //arreglar haz de laser infinito, agregar colisiones
+                timeLaser += elapsedTime;
+                if (timeLaser > betweenTime)
+                {
+                    laserManager.addNew(fabrica.crearLaser(nave.Transform, nave.getEjes()));
+                    timeLaser = 0;
+                }
             }            
+            /*
             if (laserLista.Count != 0)
             {
 
@@ -132,6 +163,7 @@ namespace AlumnoEjemplos.MiGrupo
 
                 }
             }
+             */
                        
             //-----FIN-UPDATE-----
 
@@ -141,7 +173,7 @@ namespace AlumnoEjemplos.MiGrupo
 
           
             //laser.trasladar(elapsedTime);
-
+            /*
             if (laserLista.Count != 0)
             {
 
@@ -151,19 +183,41 @@ namespace AlumnoEjemplos.MiGrupo
 
                 }
             }
-           
+             */
+
+            laserManager.operar(elapsedTime);
             asteroide.render();
             asteroide.renderBoundingBox();
 
-            suelo.render();
+            //suelo.render();
 
             
             listaDibujable.Add(asteroide);
             //listaDibujable.Add(nave);
 
             nave.rotar(elapsedTime,listaDibujable);
-            nave.trasladar(elapsedTime,listaDibujable);
-            nave.render();
+            nave.desplazarse(elapsedTime,listaDibujable);
+            camara.cambiarPosicionCamara(nave);
+            if(!camara.getMode())
+                nave.render();
+            
+            //Refrescar panel lateral
+            //Refrescar User Vars
+            GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual());
+            GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);
+            GuiController.Instance.UserVars.setValue("Posicion Y:", objetoPrincipal.getPosicion().Y);
+            GuiController.Instance.UserVars.setValue("Posicion Z:", objetoPrincipal.getPosicion().Z);
+            //Obtener valores de Modifiers
+            objetoPrincipal.fisica.aceleracion = (float)GuiController.Instance.Modifiers["Aceleracion"];
+            objetoPrincipal.fisica.acelFrenado = (float)GuiController.Instance.Modifiers["Frenado"];
+            string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
+            //case
+            opcionElegida = (string)GuiController.Instance.Modifiers["Velocidad Manual"];
+            if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.velocidadManual = true; else objetoPrincipal.velocidadManual = false;
+            opcionElegida = (string)GuiController.Instance.Modifiers["Desplaz. Avanzado"];
+            if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.desplazamientoReal = true; else objetoPrincipal.desplazamientoReal = false;
+            opcionElegida = (string)GuiController.Instance.Modifiers["Rotacion Avanzada"];
+            if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.rotacionReal = true; else objetoPrincipal.rotacionReal = false;
         }
 
         public override void close()
@@ -174,7 +228,7 @@ namespace AlumnoEjemplos.MiGrupo
 
             asteroide.dispose();
             nave.dispose();
-            suelo.dispose();
+            //suelo.dispose();
 
         }
 

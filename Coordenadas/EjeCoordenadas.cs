@@ -26,15 +26,19 @@ namespace AlumnoEjemplos.TheGRID
         public void actualizarX() { vectorX = Vector3.Cross(vectorY, vectorZ); }
 
         public void centrar(float x, float y, float z) { centroObjeto = new Vector3(x, y, z); }
+        internal void trasnform(Matrix value)
+        {
+            
+        }
 
         public Vector3 getCentro() 
         {
             Vector3 temp = centroObjeto;
-            //temp.Multiply(-1);
+            temp.Multiply(-1);
             return temp; 
         }
 
-        Matrix rotation, rototranslation;
+        Matrix rotation, rototraslation;
         Vector4 normal4;
         public Matrix rotarX_desde(Vector3 posActual, float grados)
         {
@@ -49,11 +53,11 @@ namespace AlumnoEjemplos.TheGRID
 
             actualizarX();
 
-            rototranslation = Matrix.Translation(centroObjeto - posActual);
-            rototranslation *= rotation;
-            rototranslation *= Matrix.Translation(posActual - centroObjeto);
+            rototraslation = Matrix.Translation(centroObjeto - posActual);
+            rototraslation *= rotation;
+            rototraslation *= Matrix.Translation(posActual - centroObjeto);
 
-            return rototranslation;
+            return rototraslation;
         }
 
         public Matrix rotarY_desde(Vector3 posActual, float grados)
@@ -69,11 +73,11 @@ namespace AlumnoEjemplos.TheGRID
 
             actualizarX();
 
-            rototranslation = Matrix.Translation(centroObjeto - posActual);
-            rototranslation *= rotation;
-            rototranslation *= Matrix.Translation(posActual - centroObjeto);
+            rototraslation = Matrix.Translation(centroObjeto - posActual);
+            rototraslation *= rotation;
+            rototraslation *= Matrix.Translation(posActual - centroObjeto);
 
-            return rototranslation;
+            return rototraslation;
         }
 
         public Matrix rotarZ_desde(Vector3 posActual, float grados)
@@ -89,13 +93,14 @@ namespace AlumnoEjemplos.TheGRID
 
             actualizarX(); 
             
-            rototranslation = Matrix.Translation(centroObjeto - posActual);
-            rototranslation *= rotation;
-            rototranslation *= Matrix.Translation(posActual - centroObjeto);
+            rototraslation = Matrix.Translation(centroObjeto - posActual);
+            rototraslation *= rotation;
+            rototraslation *= Matrix.Translation(posActual - centroObjeto);
 
-            return rototranslation;
+            return rototraslation;
         }
         //De la subclase
         public Vector3 direccion() { return vectorZ; }
+
     }
 }
