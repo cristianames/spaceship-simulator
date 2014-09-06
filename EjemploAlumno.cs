@@ -228,8 +228,8 @@ namespace AlumnoEjemplos.MiGrupo
             skyBox.render();
             nave.rotar(elapsedTime,listaDibujable);
             nave.desplazarse(elapsedTime,listaDibujable);
-            camara.cambiarPosicionCamara(nave);
-            if(!camara.getMode())
+            camara.cambiarPosicionCamara();
+            if(!camara.soyFPS())
                 nave.render();
             
             //Refrescar panel lateral
