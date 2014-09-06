@@ -226,9 +226,9 @@ namespace AlumnoEjemplos.MiGrupo
 
 
             skyBox.render();
+            camara.cambiarPosicionCamara();
             nave.rotar(elapsedTime,listaDibujable);
             nave.desplazarse(elapsedTime,listaDibujable);
-            camara.cambiarPosicionCamara();
             if(!camara.soyFPS())
                 nave.render();
             
