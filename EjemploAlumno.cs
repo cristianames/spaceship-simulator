@@ -13,6 +13,7 @@ using AlumnoEjemplos.TheGRID;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Input;
 using AlumnoEjemplos.TheGRID.Camara;
+using TgcViewer.Utils.Terrain;
 
 namespace AlumnoEjemplos.MiGrupo
 {
@@ -40,6 +41,7 @@ namespace AlumnoEjemplos.MiGrupo
 
         //Modificador de la camara del proyecto
         CambioCamara camara;
+        TgcSkyBox skyBox;
 
         
 
@@ -50,8 +52,31 @@ namespace AlumnoEjemplos.MiGrupo
             //GuiController.Instance: acceso principal a todas las herramientas del Framework
             Device d3dDevice = GuiController.Instance.D3dDevice;
             //Carpeta de archivos Media del alumno
-            string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;          
- 
+            string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
+
+            //Crear SkyBox 
+            skyBox = new TgcSkyBox();
+            skyBox.Center = new Vector3(0, 0, 0);
+            skyBox.Size = new Vector3(1000, 1000, 50000);
+
+            //Configurar color
+            //skyBox.Color = Color.OrangeRed;
+
+            //Configurar las texturas para cada una de las 6 caras
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, alumnoMediaFolder + "Texture/arriba.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, alumnoMediaFolder + "Texture/abajo.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, alumnoMediaFolder + "Texture/izquierda.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, alumnoMediaFolder + "Texture/derecha.png");
+
+            //Hay veces es necesario invertir las texturas Front y Back si se pasa de un sistema RightHanded a uno LeftHanded
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, alumnoMediaFolder + "Texture/adelante.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, alumnoMediaFolder + "Texture/atras.png");
+
+
+
+            //Actualizar todos los valores para crear el SkyBox
+            skyBox.updateValues();
+
             //Crear suelo
             TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\Quake\\TexturePack2\\rock_floor1.jpg");
             //suelo = TgcBox.fromSize(new Vector3(0, -5, 0), new Vector3(500, 0, 500), pisoTexture);   
@@ -138,7 +163,7 @@ namespace AlumnoEjemplos.MiGrupo
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightAlt)) { nave.giro = -1; }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightControl)) { nave.giro = 1; }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F1)) { camara.modoFPS(); }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F2)) { camara.modoExterior(); }
+            //if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F2)) { camara.modoExterior(); }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F3)) { camara.modoTPS(); }
 
 
