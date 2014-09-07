@@ -7,7 +7,7 @@ using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.TheGRID.Colisiones
 {
-    interface IColision
+    public interface IColision
     {
         IRenderObject getBoundingBox();
         void setBoundingBox(IRenderObject bb);

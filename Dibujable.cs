@@ -66,7 +66,7 @@ namespace AlumnoEjemplos.TheGRID
     //------------------------------------------------------------------
     public interface IComun : IRenderObject, ITransformObject {}
     //------------------------------------------------------------------
-    class Dibujable
+    public class Dibujable
     {
         //----------------------------------------------------------------------------------------------------ATRIBUTOS-----
         private Vector3Doble posicion;

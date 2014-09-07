@@ -7,7 +7,7 @@ using System.Text;
 
 namespace AlumnoEjemplos.TheGRID
 {
-    class EjeCoordenadas
+    public class EjeCoordenadas
     {
         public Vector3 vectorX;
         public Vector3 vectorY;

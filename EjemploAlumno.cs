@@ -27,31 +27,39 @@ namespace AlumnoEjemplos.MiGrupo
         /// Completar con la descripción del TP
         public override string getDescription(){return "Viaje Interplanetario - Manejo: \nArriba/Abajo - Pitch                       \nIzq/Der - Roll                                  \nZ/X o AltGr/CtrlDer - Yaw                 \nSpaceBar - Acelerar                  \n CtrlIzq - Estabilizar                             \nA - Disparo Principal";}
         //--------------------------------------------------------
+        
         // ATRIBUTOS
+
+        static EjemploAlumno singleton;
         TgcBox suelo;
         Dibujable asteroide;
         //Dibujable caja;
         Dibujable nave;
         Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
+
         List<Dibujable> listaDibujable = new List<Dibujable>();
         float timeLaser = 0;
         const float betweenTime = 0.15f;
-        ManagerDibujables laserManager;
+        ManagerLaser laserManager;
+        ManagerAsteroide asteroidManager;
 
         //Modificador de la camara del proyecto
 //        CambioCamara camara;
         TgcSkyBox skyBox;
 
-        
-
-
         //--------------------------------------------------------
+
+        public static EjemploAlumno workspace() { return singleton; }
+
         public override void init()
         {
+            EjemploAlumno.singleton = this;
             //GuiController.Instance: acceso principal a todas las herramientas del Framework
             Device d3dDevice = GuiController.Instance.D3dDevice;
             //Carpeta de archivos Media del alumno
             string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
+            singleton = this;
+
 
             d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
 
@@ -80,24 +88,18 @@ namespace AlumnoEjemplos.MiGrupo
             
             //Actualizar todos los valores para crear el SkyBox
             skyBox.updateValues();
-            
-
          
             //Crear manager Lasers
-            laserManager = new ManagerDibujables(50);
+            laserManager = new ManagerLaser(50);
+            
+            //Crear 5 asteroides
+            asteroidManager = new ManagerAsteroide(5);
+            asteroidManager.fabricar(5);
 
-            //Crear 1 asteroide
-            Factory fabrica_dibujables = new Factory();
-
-            asteroide = fabrica_dibujables.crearAsteroide(20);
-            fabrica_dibujables.trasladar(asteroide, new Vector3(0, 0, 800));
-            asteroide.setPosicion(new Vector3(0, 0, 0));
             //GuiController.Instance.RotCamera.targetObject(((TgcMesh)asteroide.objeto).BoundingBox);
-            asteroide.setFisica(5, 10, 5000);
-           
             TgcSceneLoader loader = new TgcSceneLoader();
-            TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml"); 
-          
+            //TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml"); 
+            TgcScene scene;
             //Crear la nave
             nave = new Dibujable(0, -10, 15);
             scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Nave\\nave-TgcScene.xml");
@@ -130,8 +132,8 @@ namespace AlumnoEjemplos.MiGrupo
             //Crear un modifier para un ComboBox con opciones
             string[] opciones1 = new string[] { "Camara Fija", "Camara FPS", "Camara TPS" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
-            string[] opciones2 = new string[] { "Activado", "Desactivado" };
-            GuiController.Instance.Modifiers.addInterval("Velocidad Manual", opciones2, 0);
+            string[] opciones2 = new string[] { "Desactivado", "Activado" };
+            GuiController.Instance.Modifiers.addInterval("Velocidad Manual", opciones2, 1);
             string[] opciones3 = new string[] { "Activado", "Desactivado" };
             GuiController.Instance.Modifiers.addInterval("Desplaz. Avanzado", opciones3, 1);
             string[] opciones4 = new string[] { "Activado", "Desactivado" };
@@ -169,14 +171,15 @@ namespace AlumnoEjemplos.MiGrupo
 //            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F3)) { camara.modoTPS(); }
 
 
-            Factory fabrica = new Factory();
+
+
             
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.A))
             {
                 timeLaser += elapsedTime;
                 if (timeLaser > betweenTime)
                 {
-                    laserManager.addNew(fabrica.crearLaser(nave.Transform, nave.getEjes()));
+                    laserManager.fabricar(nave.Transform, nave.getEjes());
                     timeLaser = 0;
                 }
             }            
@@ -221,15 +224,13 @@ GuiController.Instance.setCamera(posicionDeCamara, nave.getPosicion()+temp);
                 }
             }
              */
-
             laserManager.operar(elapsedTime);
-            asteroide.render();
-            asteroide.renderBoundingBox();
+            asteroidManager.operar(elapsedTime);
+
+            //listaDibujable.Add(asteroide);
 
             suelo.render();
 
-            
-            listaDibujable.Add(asteroide);
             //listaDibujable.Add(nave);
 
 
@@ -261,11 +262,7 @@ GuiController.Instance.setCamera(posicionDeCamara, nave.getPosicion()+temp);
 
         public override void close()
         {
-
-            nave.dispose();
            // laser.dispose();
-
-            asteroide.dispose();
             nave.dispose();
             //suelo.dispose();
 
