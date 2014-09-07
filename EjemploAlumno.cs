@@ -198,11 +198,8 @@ namespace AlumnoEjemplos.MiGrupo
             laserManager.operar(elapsedTime);
             asteroidManager.operar(elapsedTime);
 
-
-            //dasdasdasddas
             //Cargar valores de la flecha
             Vector3 navePos = nave.getCentro();
-            //navePos -= nave.getCentro();
             Vector3 naveDir = Vector3.Subtract(new Vector3(0, 0, 10000), nave.getPosicion());
             naveDir.Normalize();
             naveDir.Multiply(75);
@@ -212,7 +209,6 @@ namespace AlumnoEjemplos.MiGrupo
             arrow.HeadSize = new Vector2(2,2);
             arrow.updateValues();
             arrow.render();
-            //dasdasdasddas
             
             //skyBox.render();
             //suelo.render();
