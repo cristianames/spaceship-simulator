@@ -113,14 +113,14 @@ namespace AlumnoEjemplos.TheGRID
         }
         */
 
-        public static Dibujable crearLaser(Matrix transformacion,EjeCoordenadas ejes,Vector3 posicionNave,Matrix rotacionNave) 
+        public static Dibujable crearLaser(Matrix transformacion,EjeCoordenadas ejes,Vector3 posicionNave,Vector3 rotacionNave) 
         {
             //Creemos la mesh
             TgcMesh mesh_laser = cargarMesh("Laser\\Laser_Box-TgcScene.xml");
             //mesh_laser.Transform = Matrix.Scaling(new Vector3(0.1F, 0.1F, 1F));
             //Cargamos las cosas en el dibujable
             Dibujable laser = new Dibujable();
-            laser.setObject(mesh_laser, 5000, 0, new Vector3(0, 0, 0), new Vector3(0.1F, 0.1F, 0.5F));
+            laser.setObject(mesh_laser, 5, 0, new Vector3(0, 0, 0), new Vector3(0.1F, 0.1F, 0.5F));
             laser.AutoTransformEnable = false;
             //Ubicamos el laser en el cañon
             laser.setEjes(ejes);
@@ -136,13 +136,25 @@ namespace AlumnoEjemplos.TheGRID
             Matrix centro = new Matrix();
            // centro.Translate(200,0,0);
             bb.scaleTranslate(posicionNave, new Vector3(0.1F, 0.1F, 0.5F));
-           // bb.transform(rotacionNave);
-            //bb.move(ejes.getCentro());
+            //bb.transform(transformacion);
+            bb.move(ejes.getCentro());
+
+            //CALCULO ROTACION LASER EN EJE X
+            Vector3 versorZ = new Vector3();
+            versorZ = laser.getEjes().vectorZ;
+            versorZ.X = 0;
+            //calculo angulo entre versorZ y el eje Z
+            float angX = FastMath.Acos(versorZ.Z / (FastMath.Sqrt((FastMath.Pow2(versorZ.X))) + FastMath.Sqrt((FastMath.Pow2(versorZ.Y))) + FastMath.Sqrt((FastMath.Pow2(versorZ.Z + 1)))));
+            Matrix rotacionX = new Matrix();
+            rotacionX.RotateX(angX);
+            //bb.transform(rotacionX);
+
             TgcObb obb = TgcObb.computeFromAABB(bb);
             laser.setColision(new ColisionLaser());
             laser.getColision().setBoundingBox(obb);
-           // laser.getColision().transladar(ejes.getCentro());
-          
+            //((TgcObb)laser.getColision().getBoundingBox()).setRotation(new Vector3 (1,0,0));
+            //laser.getColision().transladar(ejes.getCentro());
+           
             return laser;
         }
     }

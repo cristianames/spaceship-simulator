@@ -181,7 +181,7 @@ namespace AlumnoEjemplos.MiGrupo
                 timeLaser += elapsedTime;
                 if (timeLaser > betweenTime)
                 {
-                    laserManager.fabricar(nave.Transform, nave.getEjes(),nave.getPosicion(),nave.getRotacion(elapsedTime));                  
+                    laserManager.fabricar(nave.Transform, nave.getEjes(),nave.getCentro(),nave.getDireccion());                  
                     timeLaser = 0;
                 }
             }          

@@ -30,8 +30,8 @@ namespace AlumnoEjemplos.TheGRID
             foreach (var item in controlados)
             {
                 trasladar(item, time);
-                rotar(item, time);           
-                item.getColision().transladar(item.getCentro());                 
+                rotar(item, time);
+                item.getColision().transladar(item.getPosicion() - ((TgcObb)item.getColision().getBoundingBox()).Position + new Vector3(0,0,30));    //por q Z +30 es necesario?             
                 item.render();
                 item.getColision().render();
                 
@@ -55,7 +55,7 @@ namespace AlumnoEjemplos.TheGRID
     {
         public ManagerLaser(int limite) : base(limite) { }
         
-        public void fabricar(Matrix transformacion, EjeCoordenadas ejes, Vector3 posicionNave,Matrix rotacionNave)
+        public void fabricar(Matrix transformacion, EjeCoordenadas ejes, Vector3 posicionNave,Vector3 rotacionNave)
         {
             addNew(Factory.crearLaser(transformacion, ejes,posicionNave,rotacionNave));
         }
