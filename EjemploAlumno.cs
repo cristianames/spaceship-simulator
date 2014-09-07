@@ -93,7 +93,7 @@ namespace AlumnoEjemplos.MiGrupo
             laserManager = new ManagerLaser(50);
             
             //Crear 5 asteroides
-            asteroidManager = new ManagerAsteroide(5);
+            asteroidManager = new ManagerAsteroide(15);
             asteroidManager.fabricar(5);
             
             //Crear la nave
@@ -172,6 +172,16 @@ namespace AlumnoEjemplos.MiGrupo
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F1)) { camara.modoFPS(); }
 //            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F2)) { camara.modoExterior(); }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F3)) { camara.modoTPS(); }
+
+            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.P))
+            {
+                asteroidManager.explotaAlPrimero();
+            }
+
+            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.O))
+            {
+                asteroidManager.creaUno();
+            }
 
             camara.cambiarPosicionCamara();
 

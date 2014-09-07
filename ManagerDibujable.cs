@@ -65,6 +65,16 @@ namespace AlumnoEjemplos.TheGRID
     {
         public ManagerAsteroide(int limite) : base(limite) { }
 
+        public void explotaAlPrimero(){
+            Dibujable colisionador = controlados[1];
+            controlados.First().teChoque(colisionador);
+        }
+
+        public void creaUno()
+        {
+            addNew(Factory.crearAsteroide());
+        }
+
         public void fabricar(int cuantos)
         {
             int i;

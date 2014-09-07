@@ -82,8 +82,8 @@ namespace AlumnoEjemplos.TheGRID
         public Object objeto { set; get; }
         private EjeCoordenadas vectorDireccion;
         internal Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
-        private IColision colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
-        private IExplosion explosion; // Acá va el manejo de un objeto cuando es chocado por otro.
+        protected IColision colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
+       // protected IExplosion explosion; // Acá va el manejo de un objeto cuando es chocado por otro.
         
         //----------------------------------------------------------------------------------------------------INSTANCIADOR-----
         public Dibujable()
@@ -91,7 +91,7 @@ namespace AlumnoEjemplos.TheGRID
             posicion.setActual(0, 0, 0);
             fisica = null;
             colision = null;
-            explosion = null;
+            //explosion = null;
             vectorDireccion = new EjeCoordenadas();
             vectorDireccion.centrar(0, 0, 0);
             velocidadManual = false;
@@ -103,7 +103,7 @@ namespace AlumnoEjemplos.TheGRID
             posicion.setActual(0, 0, 0);
             fisica = null;
             colision = null;
-            explosion = null;
+            //explosion = null;
             vectorDireccion = new EjeCoordenadas();
             vectorDireccion.centrar(x, y, z);
             velocidadManual = false;
@@ -115,7 +115,7 @@ namespace AlumnoEjemplos.TheGRID
             posicion.setActual(0, 0, 0);
             fisica = null;
             colision = null;
-            explosion = null;
+            //explosion = null;
             vectorDireccion = new EjeCoordenadas();
             vectorDireccion.centrar(centro.X, centro.Y, centro.Z);
             velocidadManual = false;
@@ -348,6 +348,16 @@ namespace AlumnoEjemplos.TheGRID
             nuevoEje.vectorZ = vectorDireccion.vectorZ;
             nuevoEje.centroObjeto = vectorDireccion.centroObjeto;
             return nuevoEje; 
+        }
+
+        public virtual void teChoque(Dibujable colisionador)
+        {
+            //Explosion.exiteChoqueEntre(colisionador, this);
+        }
+
+        public virtual void exploto()
+        {
+
         }
     }
 }
