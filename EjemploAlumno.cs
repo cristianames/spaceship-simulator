@@ -62,7 +62,7 @@ namespace AlumnoEjemplos.MiGrupo
 
 
             d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
-
+            /*
             //Crear SkyBox 
             skyBox = new TgcSkyBox();
             skyBox.Center = new Vector3(0, 0, 0);
@@ -88,7 +88,8 @@ namespace AlumnoEjemplos.MiGrupo
             
             //Actualizar todos los valores para crear el SkyBox
             skyBox.updateValues();
-         
+            */
+
             //Crear manager Lasers
             laserManager = new ManagerLaser(50);
             
@@ -219,12 +220,12 @@ namespace AlumnoEjemplos.MiGrupo
 
             //listaDibujable.Add(asteroide);
 
-            suelo.render();
+            //suelo.render();
 
             //listaDibujable.Add(nave);
 
 
-            skyBox.render();
+            //skyBox.render();
             nave.rotar(elapsedTime,listaDibujable);
             nave.desplazarse(elapsedTime,listaDibujable);
             if(!camara.soyFPS())
