@@ -76,6 +76,12 @@ namespace AlumnoEjemplos.TheGRID
             posibilidades.Add(1);
             laser.rotacion = 0;     //DE MOMENTO EL LASER NO SE PUEDE ROTAR.
             laser.traslacion = 1;
+            TgcBoundingBox bb = ((TgcMesh)laser.objeto).BoundingBox;
+            bb.transform(laser.Transform);
+            TgcObb obb = TgcObb.computeFromAABB(bb);
+            laser.setColision(new ColisionLaser());
+            laser.getColision().setBoundingBox(obb);
+            
             return laser;
         }
     }
@@ -98,8 +104,12 @@ namespace AlumnoEjemplos.TheGRID
             foreach (var item in controlados)
             {
                 trasladar(item, time);
-                rotar(item, time);
+                rotar(item, time);               
+                item.getColision().transladar(item.getPosicion()-((TgcObb)item.getColision().getBoundingBox()).Position);
+                //item.getColision().transladar(new Vector3(1,1,1));
                 item.render();
+                item.getColision().render();
+                
             }
         }
         private void trasladar(Dibujable objeto, float time)
