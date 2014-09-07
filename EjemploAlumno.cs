@@ -26,51 +26,55 @@ namespace AlumnoEjemplos.MiGrupo
         /// Completar con la descripción del TP
         public override string getDescription(){return "Viaje Interplanetario - Manejo: \nArriba/Abajo - Pitch                       \nIzq/Der - Roll                                  \nZ/X o AltGr/CtrlDer - Yaw                 \nSpaceBar - Acelerar                  \n CtrlIzq - Estabilizar                             \nA - Disparo Principal";}
         //--------------------------------------------------------
+        
         // ATRIBUTOS
+
+        public static EjemploAlumno singleton;
+
         //TgcBox suelo;
-        Dibujable asteroide;
+        
         //Dibujable caja;
         Dibujable nave;
         Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
+        
         //Laser
         List<Dibujable> listaDibujable = new List<Dibujable>();
         float timeLaser = 0;
         const float betweenTime = 0.15f;
-        ManagerDibujables laserManager;
+        ManagerLaser laserManager;
+        ManagerAsteroide asteroidManager;
 
         //Modificador de la camara del proyecto
         CambioCamara camara;
 
-        
-
-
         //--------------------------------------------------------
+
+        public static EjemploAlumno workspace() { return singleton; }
+
         public override void init()
         {
             //GuiController.Instance: acceso principal a todas las herramientas del Framework
             Device d3dDevice = GuiController.Instance.D3dDevice;
             //Carpeta de archivos Media del alumno
-            string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;          
- 
+            string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
+
+            singleton = this;
+
             //Crear suelo
-            TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\Quake\\TexturePack2\\rock_floor1.jpg");
+            //TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\Quake\\TexturePack2\\rock_floor1.jpg");
             //suelo = TgcBox.fromSize(new Vector3(0, -5, 0), new Vector3(500, 0, 500), pisoTexture);   
          
             //Crear manager Lasers
-            laserManager = new ManagerDibujables(50);
+            laserManager = new ManagerLaser(50);
+            
+            //Crear 5 asteroides
+            asteroidManager = new ManagerAsteroide(5);
+            asteroidManager.fabricar(5);
 
-            //Crear 1 asteroide
-            Factory fabrica_dibujables = new Factory();
-
-            asteroide = fabrica_dibujables.crearAsteroide(20);
-            fabrica_dibujables.trasladar(asteroide, new Vector3(0, 0, 800));
-            asteroide.setPosicion(new Vector3(0, 0, 0));
             //GuiController.Instance.RotCamera.targetObject(((TgcMesh)asteroide.objeto).BoundingBox);
-            asteroide.setFisica(5, 10, 5000);
-           
             TgcSceneLoader loader = new TgcSceneLoader();
-            TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml"); 
-          
+            //TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml"); 
+            TgcScene scene;
             //Crear la nave
             nave = new Dibujable(0, -10, 15);
             scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Nave\\nave-TgcScene.xml");
@@ -83,7 +87,6 @@ namespace AlumnoEjemplos.MiGrupo
             //Cargamos la camara
             camara = new CambioCamara(nave);
 
-          
             //Cargamos valores en el panel lateral
             GuiController.Instance.UserVars.addVar("Vel-Actual:");
             GuiController.Instance.UserVars.addVar("Integtidad Nave:");
@@ -104,7 +107,7 @@ namespace AlumnoEjemplos.MiGrupo
             //Crear un modifier para un ComboBox con opciones
             string[] opciones1 = new string[] { "Camara Fija", "Camara FPS", "Camara TPS" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
-            string[] opciones2 = new string[] { "Activado", "Desactivado" };
+            string[] opciones2 = new string[] { "Desactivado", "Activado" };
             GuiController.Instance.Modifiers.addInterval("Velocidad Manual", opciones2, 1);
             string[] opciones3 = new string[] { "Activado", "Desactivado" };
             GuiController.Instance.Modifiers.addInterval("Desplaz. Avanzado", opciones3, 1);
@@ -138,18 +141,15 @@ namespace AlumnoEjemplos.MiGrupo
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightAlt)) { nave.giro = -1; }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightControl)) { nave.giro = 1; }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F1)) { camara.modoFPS(); }
-           // if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F2)) { camara.modoExterior(); }
+         // if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F2)) { camara.modoExterior(); }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F3)) { camara.modoTPS(); }
-
-
-            Factory fabrica = new Factory();
             
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.A))
             {
                 timeLaser += elapsedTime;
                 if (timeLaser > betweenTime)
                 {
-                    laserManager.addNew(fabrica.crearLaser(nave.Transform, nave.getEjes()));
+                    laserManager.fabricar(nave.Transform, nave.getEjes());
                     timeLaser = 0;
                 }
             }            
@@ -185,14 +185,11 @@ namespace AlumnoEjemplos.MiGrupo
             }
              */
 
+
             laserManager.operar(elapsedTime);
-            asteroide.render();
-            asteroide.renderBoundingBox();
-
+            asteroidManager.operar(elapsedTime);
             //suelo.render();
-
-            
-            listaDibujable.Add(asteroide);
+            //listaDibujable.Add(asteroide);
             //listaDibujable.Add(nave);
 
             nave.rotar(elapsedTime,listaDibujable);
@@ -222,11 +219,7 @@ namespace AlumnoEjemplos.MiGrupo
 
         public override void close()
         {
-
-            nave.dispose();
            // laser.dispose();
-
-            asteroide.dispose();
             nave.dispose();
             //suelo.dispose();
 

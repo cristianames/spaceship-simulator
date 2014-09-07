@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
+using AlumnoEjemplos.MiGrupo;
 
 namespace AlumnoEjemplos.TheGRID.Explosiones
 {
@@ -20,6 +21,7 @@ namespace AlumnoEjemplos.TheGRID.Explosiones
             if (limite < volumen)
             {
                 //Se divide el asteroide
+                
             }
             else
             {
