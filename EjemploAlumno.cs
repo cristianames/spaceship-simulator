@@ -14,6 +14,7 @@ using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Input;
 using AlumnoEjemplos.TheGRID.Camara;
 using TgcViewer.Utils.Terrain;
+using Microsoft.DirectX.DirectInput;
 
 namespace AlumnoEjemplos.MiGrupo
 {
@@ -25,7 +26,7 @@ namespace AlumnoEjemplos.MiGrupo
         /// Completar nombre del grupo en formato Grupo NN
         public override string getName(){ return "Grupo TheGRID"; }
         /// Completar con la descripción del TP
-        public override string getDescription(){return "Viaje Interplanetario - Manejo: \nArriba/Abajo - Pitch                       \nIzq/Der - Roll                                  \nZ/X o AltGr/CtrlDer - Yaw                 \nSpaceBar - Acelerar                  \n CtrlIzq - Estabilizar                             \nA - Disparo Principal";}
+        public override string getDescription(){return "Viaje Interplanetario - Manejo: \nArriba/Abajo - Pitch                       \nIzq/Der - Roll                                  \nA/D - Yaw                 \nW - Acelerar                  \nS - Estabilizar                             \nEspacio - Disparo Principal";}
         //--------------------------------------------------------
         
         // ATRIBUTOS
@@ -54,7 +55,7 @@ namespace AlumnoEjemplos.MiGrupo
         {
             EjemploAlumno.singleton = this;
             //GuiController.Instance: acceso principal a todas las herramientas del Framework
-            Device d3dDevice = GuiController.Instance.D3dDevice;
+            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             //Carpeta de archivos Media del alumno
             string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
             singleton = this;
@@ -150,45 +151,32 @@ namespace AlumnoEjemplos.MiGrupo
         public override void render(float elapsedTime)
         {
             //-----UPDATE-----
+            TgcD3dInput input = GuiController.Instance.D3dInput;
+
             //Flechas
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.Left)) { nave.rotacion = 1; }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.Right)) { nave.rotacion = -1; }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.Up)) { nave.inclinacion = 1; }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.Down)) { nave.inclinacion = -1; }
+            if (input.keyDown(Key.Left)) { nave.rotacion = -1; }
+            if (input.keyDown(Key.Right)) { nave.rotacion = 1; }
+            if (input.keyDown(Key.Up)) { nave.inclinacion = 1; }
+            if (input.keyDown(Key.Down)) { nave.inclinacion = -1; }
             //Letras
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.A)) { }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.D)) { }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.W)) { }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.S)) { }
+            if (input.keyDown(Key.A)) { nave.giro = -1; }
+            if (input.keyDown(Key.D)) { nave.giro = 1; }
+            if (input.keyDown(Key.W)) { nave.acelerar(); }
+            if (input.keyDown(Key.S)) { nave.frenar(); }
             //Otros
-            //if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.LeftShift)) { nave.acelerar(1); }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.LeftControl)) { nave.frenar(); }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.Space)) { nave.acelerar(); }
+            //if (input.keyDown(Key.LeftShift)) { nave.acelerar(1); }
 
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.Z)) { nave.giro = -1; }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.X)) { nave.giro = 1; }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightAlt)) { nave.giro = -1; }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightControl)) { nave.giro = 1; }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F1)) { camara.modoFPS(); }
-//            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F2)) { camara.modoExterior(); }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F3)) { camara.modoTPS(); }
+            if (input.keyDown(Key.F1)) { camara.modoFPS(); }
+            //            if (input.keyDown(Key.F2)) { camara.modoExterior(); }
+            if (input.keyDown(Key.F3)) { camara.modoTPS(); }
 
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.P))
-            {
-                asteroidManager.explotaAlPrimero();
-            }
-
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.O))
-            {
-                asteroidManager.creaUno();
-            }
+            if (input.keyDown(Key.P)) { asteroidManager.explotaAlPrimero(); }
+            if (input.keyDown(Key.O)) { asteroidManager.creaUno(); }
 
             camara.cambiarPosicionCamara();
 
-
-
             
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.A))
+            if (input.keyDown(Key.Space))
             {
                 timeLaser += elapsedTime;
                 if (timeLaser > betweenTime)
@@ -202,7 +190,7 @@ namespace AlumnoEjemplos.MiGrupo
 
 
             //Device de DirectX para renderizar
-            Device d3dDevice = GuiController.Instance.D3dDevice;
+            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
 
             laserManager.operar(elapsedTime);
