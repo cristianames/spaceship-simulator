@@ -18,9 +18,7 @@ namespace AlumnoEjemplos.TheGRID.Camara
         public Boolean soyFPS(){ if(modo == TipoModo.FPS) return true; else return false;}
         public CambioCamara(Dibujable dibujable)
         {
-            objeto_foco = dibujable;
-            cambiarPosicionCamara();
-
+            cambiarFoco(dibujable);
         }
         public void modoFPS()
         {
@@ -34,7 +32,8 @@ namespace AlumnoEjemplos.TheGRID.Camara
         }
         public void modoExterior()
         {
-            habilitarExterior();
+            modo = TipoModo.Exterior;
+            GuiController.Instance.CurrentCamera.Enable = false;
         }
         private void moverThird()
         {
@@ -51,12 +50,8 @@ namespace AlumnoEjemplos.TheGRID.Camara
         private void moverFirst()
         {
             GuiController.Instance.setCamera(objeto_foco.getPosicion() - objeto_foco.getDireccion(), objeto_foco.getPosicion());
-
         }
-        private void habilitarExterior()
-        {
 
-        }
         public void cambiarFoco(Dibujable dibujable){
             objeto_foco = dibujable;
             cambiarPosicionCamara();
@@ -73,10 +68,39 @@ namespace AlumnoEjemplos.TheGRID.Camara
                     moverThird();
                     break;
                 case TipoModo.Exterior:
-                    habilitarExterior();
                     break;
             }
             GuiController.Instance.CurrentCamera.updateCamera();
+        }
+        public void chequearCambio(string opcion) {
+            switch (opcion)
+            {
+                case "Tercera Persona":
+                    if(modo != TipoModo.TPS)
+                        modoTPS();
+                    break;
+                case "Camara FPS":
+                    if (modo != TipoModo.FPS)
+                        modoFPS();
+                    break;
+                case "Libre":
+                    if (modo != TipoModo.Exterior)
+                        modoExterior();
+                    break;
+            }
+        }
+        public string estado()
+        {
+            switch (modo)
+            {
+                case TipoModo.TPS:
+                    return "Tercera Persona";
+                case TipoModo.FPS:
+                    return "Camara FPS";
+                case TipoModo.Exterior:
+                    return "Libre";
+            }
+            return "";
         }
     }
 }

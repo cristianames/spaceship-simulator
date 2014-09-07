@@ -136,7 +136,7 @@ namespace AlumnoEjemplos.MiGrupo
             GuiController.Instance.Modifiers.addFloat("Aceleracion", 0f,500f, objetoPrincipal.getAceleracion());
             GuiController.Instance.Modifiers.addFloat("Frenado", 0f, 1000f, objetoPrincipal.getAcelFrenado());
             //Crear un modifier para un ComboBox con opciones
-            string[] opciones1 = new string[] { "Camara Fija", "Camara FPS", "Camara TPS" };
+            string[] opciones1 = new string[] { "Tercera Persona", "Camara FPS", "Libre" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
             string[] opciones2 = new string[] { "Desactivado", "Activado" };
             GuiController.Instance.Modifiers.addInterval("Velocidad Manual", opciones2, 1);
@@ -154,10 +154,10 @@ namespace AlumnoEjemplos.MiGrupo
             TgcD3dInput input = GuiController.Instance.D3dInput;
 
             //Flechas
-            if (input.keyDown(Key.Left)) { nave.rotacion = -1; }
-            if (input.keyDown(Key.Right)) { nave.rotacion = 1; }
-            if (input.keyDown(Key.Up)) { nave.inclinacion = 1; }
-            if (input.keyDown(Key.Down)) { nave.inclinacion = -1; }
+            if (input.keyDown(Key.Left)) { nave.rotacion = 1; }
+            if (input.keyDown(Key.Right)) { nave.rotacion = -1; }
+            if (input.keyDown(Key.Up)) { nave.inclinacion = -1; }
+            if (input.keyDown(Key.Down)) { nave.inclinacion = 1; }
             //Letras
             if (input.keyDown(Key.A)) { nave.giro = -1; }
             if (input.keyDown(Key.D)) { nave.giro = 1; }
@@ -166,9 +166,9 @@ namespace AlumnoEjemplos.MiGrupo
             //Otros
             //if (input.keyDown(Key.LeftShift)) { nave.acelerar(1); }
 
-            if (input.keyDown(Key.F1)) { camara.modoFPS(); }
-            //            if (input.keyDown(Key.F2)) { camara.modoExterior(); }
-            if (input.keyDown(Key.F3)) { camara.modoTPS(); }
+            //if (input.keyDown(Key.F1)) { camara.modoFPS(); }
+            //if (input.keyDown(Key.F2)) { camara.modoExterior(); }
+            //if (input.keyDown(Key.F3)) { camara.modoTPS(); }
 
             if (input.keyDown(Key.P)) { asteroidManager.explotaAlPrimero(); }
             if (input.keyDown(Key.O)) { asteroidManager.creaUno(); }
@@ -215,8 +215,17 @@ namespace AlumnoEjemplos.MiGrupo
             nave.desplazarse(elapsedTime,listaDibujable);
             if(!camara.soyFPS())
                 nave.render();
-            
+
             //Refrescar panel lateral
+            //case
+            string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
+            camara.chequearCambio(opcionElegida);
+            opcionElegida = (string)GuiController.Instance.Modifiers["Velocidad Manual"];
+            if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.velocidadManual = true; else objetoPrincipal.velocidadManual = false;
+            opcionElegida = (string)GuiController.Instance.Modifiers["Desplaz. Avanzado"];
+            if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.desplazamientoReal = true; else objetoPrincipal.desplazamientoReal = false;
+            opcionElegida = (string)GuiController.Instance.Modifiers["Rotacion Avanzada"];
+            if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.rotacionReal = true; else objetoPrincipal.rotacionReal = false;
             //Refrescar User Vars
             GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual());
             GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);
@@ -225,14 +234,6 @@ namespace AlumnoEjemplos.MiGrupo
             //Obtener valores de Modifiers
             objetoPrincipal.fisica.aceleracion = (float)GuiController.Instance.Modifiers["Aceleracion"];
             objetoPrincipal.fisica.acelFrenado = (float)GuiController.Instance.Modifiers["Frenado"];
-            string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
-            //case
-            opcionElegida = (string)GuiController.Instance.Modifiers["Velocidad Manual"];
-            if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.velocidadManual = true; else objetoPrincipal.velocidadManual = false;
-            opcionElegida = (string)GuiController.Instance.Modifiers["Desplaz. Avanzado"];
-            if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.desplazamientoReal = true; else objetoPrincipal.desplazamientoReal = false;
-            opcionElegida = (string)GuiController.Instance.Modifiers["Rotacion Avanzada"];
-            if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.rotacionReal = true; else objetoPrincipal.rotacionReal = false;
         }
 
         public override void close()
@@ -242,6 +243,10 @@ namespace AlumnoEjemplos.MiGrupo
             //suelo.dispose();
 
         }
+
+
+
+
 
         public void metodoUselessInit()
         {
