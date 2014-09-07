@@ -12,6 +12,7 @@ namespace AlumnoEjemplos.TheGRID
         public Vector3 vectorX;
         public Vector3 vectorY;
         public Vector3 vectorZ;
+        public Vector3 vectorK;
 
         public Vector3 centroObjeto;
 
@@ -21,15 +22,13 @@ namespace AlumnoEjemplos.TheGRID
             vectorY = new Vector3(0, 1, 0);
             vectorZ = new Vector3(0, 0, 1);
 
+            vectorK = new Vector3(0, 0, 1);
+
             centroObjeto = new Vector3(0, 0, 0);
         }
         public void actualizarX() { vectorX = Vector3.Cross(vectorY, vectorZ); }
 
         public void centrar(float x, float y, float z) { centroObjeto = new Vector3(x, y, z); }
-        internal void trasnform(Matrix value)
-        {
-            
-        }
 
         public Vector3 getCentro() 
         {
@@ -46,6 +45,7 @@ namespace AlumnoEjemplos.TheGRID
             rotation = Matrix.RotationYawPitchRoll(vectorX.Y * angulo, vectorX.X * angulo, vectorX.Z * angulo);
             
             normal4 = Vector3.Transform(vectorZ, rotation);
+            vectorK = vectorZ;
             vectorZ = new Vector3(normal4.X, normal4.Y, normal4.Z);
 
             normal4 = Vector3.Transform(vectorY, rotation);
@@ -69,6 +69,7 @@ namespace AlumnoEjemplos.TheGRID
             vectorY = new Vector3(normal4.X, normal4.Y, normal4.Z);
 
             normal4 = Vector3.Transform(vectorZ, rotation);
+            vectorK = vectorZ;
             vectorZ = new Vector3(normal4.X, normal4.Y, normal4.Z);
 
             actualizarX();
@@ -89,6 +90,7 @@ namespace AlumnoEjemplos.TheGRID
             vectorY = new Vector3(normal4.X, normal4.Y, normal4.Z);
 
             normal4 = Vector3.Transform(vectorZ, rotation);
+            vectorK = vectorZ;
             vectorZ = new Vector3(normal4.X, normal4.Y, normal4.Z);
 
             actualizarX(); 
@@ -101,6 +103,9 @@ namespace AlumnoEjemplos.TheGRID
         }
         //De la subclase
         public Vector3 direccion() { return vectorZ; }
+        public Vector3 direccion_Y() { return vectorY; }
+        public Vector3 direccion_X() { return vectorX; }
+        public Vector3 direccionAnterior() { return vectorK; }
 
     }
 }

@@ -132,6 +132,12 @@ namespace AlumnoEjemplos.TheGRID
             posibilidades.Add(1);
             laser.rotacion = 0;     //DE MOMENTO EL LASER NO SE PUEDE ROTAR.
             laser.traslacion = 1;
+            TgcBoundingBox bb = ((TgcMesh)laser.objeto).BoundingBox;
+            bb.transform(laser.Transform);
+            TgcObb obb = TgcObb.computeFromAABB(bb);
+            laser.setColision(new ColisionLaser());
+            laser.getColision().setBoundingBox(obb);
+            
             return laser;
         }
     }

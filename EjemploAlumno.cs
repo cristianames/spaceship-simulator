@@ -13,6 +13,7 @@ using AlumnoEjemplos.TheGRID;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Input;
 using AlumnoEjemplos.TheGRID.Camara;
+using TgcViewer.Utils.Terrain;
 
 namespace AlumnoEjemplos.MiGrupo
 {
@@ -29,15 +30,13 @@ namespace AlumnoEjemplos.MiGrupo
         
         // ATRIBUTOS
 
-        public static EjemploAlumno singleton;
-
-        //TgcBox suelo;
-        
+        static EjemploAlumno singleton;
+        TgcBox suelo;
+        Dibujable asteroide;
         //Dibujable caja;
         Dibujable nave;
         Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
-        
-        //Laser
+
         List<Dibujable> listaDibujable = new List<Dibujable>();
         float timeLaser = 0;
         const float betweenTime = 0.15f;
@@ -45,7 +44,8 @@ namespace AlumnoEjemplos.MiGrupo
         ManagerAsteroide asteroidManager;
 
         //Modificador de la camara del proyecto
-        CambioCamara camara;
+//        CambioCamara camara;
+        TgcSkyBox skyBox;
 
         //--------------------------------------------------------
 
@@ -53,16 +53,41 @@ namespace AlumnoEjemplos.MiGrupo
 
         public override void init()
         {
+            EjemploAlumno.singleton = this;
             //GuiController.Instance: acceso principal a todas las herramientas del Framework
             Device d3dDevice = GuiController.Instance.D3dDevice;
             //Carpeta de archivos Media del alumno
             string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
-
             singleton = this;
 
+
+            d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
+
+            //Crear SkyBox 
+            skyBox = new TgcSkyBox();
+            skyBox.Center = new Vector3(0, 0, 0);
+            skyBox.Size = new Vector3(15000, 15000, 150000);
+
+
             //Crear suelo
-            //TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\Quake\\TexturePack2\\rock_floor1.jpg");
-            //suelo = TgcBox.fromSize(new Vector3(0, -5, 0), new Vector3(500, 0, 500), pisoTexture);   
+            TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, alumnoMediaFolder + "SkyBox\\adelante.jpg");
+            suelo = TgcBox.fromSize(new Vector3(0, 0, 9500), new Vector3(1000, 1000, 0), pisoTexture);   
+
+            //Configurar color
+            //skyBox.Color = Color.OrangeRed;
+
+            //Configurar las texturas para cada una de las 6 caras
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, alumnoMediaFolder + "SkyBox\\arriba.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, alumnoMediaFolder + "SkyBox\\abajo.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, alumnoMediaFolder + "SkyBox\\izquierda.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, alumnoMediaFolder + "SkyBox\\derecha.jpg");
+
+            //Hay veces es necesario invertir las texturas Front y Back si se pasa de un sistema RightHanded a uno LeftHanded
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, alumnoMediaFolder + "SkyBox\\adelante.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, alumnoMediaFolder + "SkyBox\\atras.jpg");
+            
+            //Actualizar todos los valores para crear el SkyBox
+            skyBox.updateValues();
          
             //Crear manager Lasers
             laserManager = new ManagerLaser(50);
@@ -80,12 +105,12 @@ namespace AlumnoEjemplos.MiGrupo
             scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Nave\\nave-TgcScene.xml");
             nave.setObject(scene.Meshes[0], 200, 100, new Vector3(0, 180, 0), new Vector3(1, 1, 1));
             nave.setFisica(100, 500, 100);
-            //nave.SetPropiedades(true, true, false);
+            nave.SetPropiedades(true, false, false);
 
             //Cargamos la nave como objeto principal.
             objetoPrincipal = nave;
             //Cargamos la camara
-            camara = new CambioCamara(nave);
+//            camara = new CambioCamara(nave);
 
             //Cargamos valores en el panel lateral
             GuiController.Instance.UserVars.addVar("Vel-Actual:");
@@ -140,9 +165,14 @@ namespace AlumnoEjemplos.MiGrupo
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.X)) { nave.giro = 1; }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightAlt)) { nave.giro = -1; }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightControl)) { nave.giro = 1; }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F1)) { camara.modoFPS(); }
-         // if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F2)) { camara.modoExterior(); }
-            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F3)) { camara.modoTPS(); }
+//            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F1)) { camara.modoFPS(); }
+
+//            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F2)) { camara.modoExterior(); }
+//            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F3)) { camara.modoTPS(); }
+
+
+
+
             
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.A))
             {
@@ -170,7 +200,17 @@ namespace AlumnoEjemplos.MiGrupo
 
             //Device de DirectX para renderizar
             Device d3dDevice = GuiController.Instance.D3dDevice;
+            d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
 
+Vector3 posicionDeCamara = nave.getPosicion();
+Vector3 temp = nave.getDireccion();
+temp.Multiply(100);
+posicionDeCamara -= temp;
+temp = new Vector3(0, 50, 0);
+posicionDeCamara += temp;
+temp = nave.getDireccion_Y();
+temp.Multiply(15);
+GuiController.Instance.setCamera(posicionDeCamara, nave.getPosicion()+temp);
           
             //laser.trasladar(elapsedTime);
             /*
@@ -184,18 +224,21 @@ namespace AlumnoEjemplos.MiGrupo
                 }
             }
              */
-
-
             laserManager.operar(elapsedTime);
             asteroidManager.operar(elapsedTime);
-            //suelo.render();
+
             //listaDibujable.Add(asteroide);
+
+            suelo.render();
+
             //listaDibujable.Add(nave);
 
+
+            skyBox.render();
+//            camara.cambiarPosicionCamara();
             nave.rotar(elapsedTime,listaDibujable);
             nave.desplazarse(elapsedTime,listaDibujable);
-            camara.cambiarPosicionCamara(nave);
-            if(!camara.getMode())
+//            if(!camara.soyFPS())
                 nave.render();
             
             //Refrescar panel lateral
