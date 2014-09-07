@@ -32,8 +32,6 @@ namespace AlumnoEjemplos.MiGrupo
 
         static EjemploAlumno singleton;
         TgcBox suelo;
-        Dibujable asteroide;
-        //Dibujable caja;
         Dibujable nave;
         Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
 
@@ -46,6 +44,7 @@ namespace AlumnoEjemplos.MiGrupo
         //Modificador de la camara del proyecto
         CambioCamara camara;
         TgcSkyBox skyBox;
+        TgcArrow arrow;
 
         //--------------------------------------------------------
 
@@ -96,12 +95,10 @@ namespace AlumnoEjemplos.MiGrupo
             //Crear 5 asteroides
             asteroidManager = new ManagerAsteroide(5);
             asteroidManager.fabricar(5);
-
-            //GuiController.Instance.RotCamera.targetObject(((TgcMesh)asteroide.objeto).BoundingBox);
-            TgcSceneLoader loader = new TgcSceneLoader();
-            //TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Laser\\Laser_Box-TgcScene.xml"); 
-            TgcScene scene;
+            
             //Crear la nave
+            TgcSceneLoader loader = new TgcSceneLoader();
+            TgcScene scene;
             nave = new Dibujable(0, -10, 15);
             scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Nave\\nave-TgcScene.xml");
             nave.setObject(scene.Meshes[0], 200, 100, new Vector3(0, 180, 0), new Vector3(1, 1, 1));
@@ -112,6 +109,13 @@ namespace AlumnoEjemplos.MiGrupo
             objetoPrincipal = nave;
             //Cargamos la camara
             camara = new CambioCamara(nave);
+
+            //Flecha direccion objetivo
+            arrow = new TgcArrow();
+            //arrow.BodyColor = Color.Blue;
+            //arrow.HeadColor = Color.Yellow;
+            arrow.BodyColor = Color.FromArgb(230, Color.Cyan);
+            arrow.HeadColor = Color.FromArgb(230, Color.Yellow);
 
             //Cargamos valores en el panel lateral
             GuiController.Instance.UserVars.addVar("Vel-Actual:");
@@ -138,8 +142,7 @@ namespace AlumnoEjemplos.MiGrupo
             string[] opciones3 = new string[] { "Activado", "Desactivado" };
             GuiController.Instance.Modifiers.addInterval("Desplaz. Avanzado", opciones3, 1);
             string[] opciones4 = new string[] { "Activado", "Desactivado" };
-            GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);
-            
+            GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);            
         }
         //--------------------------------------------------------RENDER-----
 
@@ -183,18 +186,7 @@ namespace AlumnoEjemplos.MiGrupo
                     laserManager.fabricar(nave.Transform, nave.getEjes(),nave.getPosicion(),nave.getRotacion(elapsedTime));                  
                     timeLaser = 0;
                 }
-            }            
-            /*
-            if (laserLista.Count != 0)
-            {
-
-                foreach (Dibujable laser in laserLista)
-                {
-                    fabrica.dispararLaser(laser, nave.getDireccion() ,elapsedTime);
-
-                }
-            }
-             */
+            }          
                        
             //-----FIN-UPDATE-----
 
@@ -203,29 +195,28 @@ namespace AlumnoEjemplos.MiGrupo
             Device d3dDevice = GuiController.Instance.D3dDevice;
             d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
 
-            //laser.trasladar(elapsedTime);
-            /*
-            if (laserLista.Count != 0)
-            {
-
-                foreach (Dibujable laser in laserLista)
-                {
-                    laser.render();
-
-                }
-            }
-             */
             laserManager.operar(elapsedTime);
             asteroidManager.operar(elapsedTime);
 
-            //listaDibujable.Add(asteroide);
 
+            //dasdasdasddas
+            //Cargar valores de la flecha
+            Vector3 navePos = nave.getCentro();
+            //navePos -= nave.getCentro();
+            Vector3 naveDir = Vector3.Subtract(new Vector3(0, 0, 10000), nave.getPosicion());
+            naveDir.Normalize();
+            naveDir.Multiply(75);
+            arrow.PStart = navePos;
+            arrow.PEnd = navePos + naveDir;
+            arrow.Thickness = 0.5f;
+            arrow.HeadSize = new Vector2(2,2);
+            arrow.updateValues();
+            arrow.render();
+            //dasdasdasddas
+            
+            //skyBox.render();
             //suelo.render();
 
-            //listaDibujable.Add(nave);
-
-
-            //skyBox.render();
             nave.rotar(elapsedTime,listaDibujable);
             nave.desplazarse(elapsedTime,listaDibujable);
             if(!camara.soyFPS())

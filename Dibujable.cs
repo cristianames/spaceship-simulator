@@ -190,90 +190,13 @@ namespace AlumnoEjemplos.TheGRID
         }
         public void setCentro(float x, float y, float z) { vectorDireccion.centrar(x, y, z); } //Acomoda el centro de giro del objeto.
         public void setCentro(Vector3 centro) { vectorDireccion.centrar(centro.X, centro.Y, centro.Z); }
-        public Vector3 getCentro() 
-        {
-            Vector3 temp = getPosicion();
-            temp.Subtract(vectorDireccion.getCentro());
-            return temp;
-        }
         public void setPosicion(Vector3 pos) 
         {
             posicion.setActual(pos);
         }   //No manipular a menos que sea necesario. Se pierde coherencia con la posicion que lleva el objeto renderizable.
-        public Vector3 getPosicion() { return posicion.getActual(); }
         public void setEjes(EjeCoordenadas nuevoEje) { vectorDireccion = nuevoEje; }
 
         //----------------------------------------------------------------------------------------------------MOVIMIENTOS-----
-        public Vector3 getTrayectoria() { return posicion.direccion(); }   //Direccion en la que se desplaza un objeto.
-        public Vector3 getDireccion() { return vectorDireccion.direccion(); }   //Direccion en la que apunta el frente del objeto.
-        public Vector3 getDireccion_Y() { return vectorDireccion.direccion_Y(); }
-        public Vector3 getDireccion_X() { return vectorDireccion.direccion_X(); }
-        public Vector3 getDireccionAnterior() { return vectorDireccion.direccionAnterior(); } //Direccion anterior a la que apuntaba el frente del objeto
-        public void rotar(float time, List<Dibujable> dibujables)   //Movimiento de rotacion base de un dibujable.
-        {
-            if (fisica != null && rotacionReal) fisica.rotar(time, dibujables);
-            else
-            {
-                float angulo = velocidadRadial * time;
-                Matrix rotation;
-                if (inclinacion != 0) //Rotar en X
-                {
-                    rotation = vectorDireccion.rotarX_desde(posicion.getActual(), angulo * inclinacion);
-                    Transform *= rotation;
-                    
-                }
-                if (giro != 0) //Rotar en Y
-                {
-                    rotation = vectorDireccion.rotarY_desde(posicion.getActual(), angulo * giro);
-                    Transform *= rotation;
-                }
-                if (rotacion != 0) //Rotar en Z
-                {
-                    rotation = vectorDireccion.rotarZ_desde(posicion.getActual(), angulo * rotacion);
-                    Transform *= rotation;
-                }
-            }
-            if (velocidadManual)
-            {
-                inclinacion = 0;
-                rotacion = 0;
-                giro = 0;
-            }
-        }
-        internal Matrix getRotacion(float time) 
-        {
-           // if (fisica != null && rotacionReal) fisica.rotar(time, dibujables); REVISAR!!!!
-           // else
-            Matrix rotation;
-            Matrix rotacionDefinitiva = new Matrix();
-            {
-                float angulo = velocidadRadial * time;
-                
-                if (inclinacion != 0) //Rotar en X
-                {
-                    rotation = vectorDireccion.rotarX_desde(posicion.getActual(), angulo * inclinacion);
-                    rotacionDefinitiva *= rotation;
-
-                }
-                if (giro != 0) //Rotar en Y
-                {
-                    rotation = vectorDireccion.rotarY_desde(posicion.getActual(), angulo * giro);
-                    rotacionDefinitiva *= rotation;
-                }
-                if (rotacion != 0) //Rotar en Z
-                {
-                    rotation = vectorDireccion.rotarZ_desde(posicion.getActual(), angulo * rotacion);
-                    rotacionDefinitiva *= rotation;
-                }
-            }
-            if (velocidadManual)
-            {
-                inclinacion = 0;
-                rotacion = 0;
-                giro = 0;
-            }
-            return rotacionDefinitiva;
-        }
         internal void acelerar() { traslacion = 1; }
 
         internal void frenar()
@@ -323,6 +246,84 @@ namespace AlumnoEjemplos.TheGRID
             //setCentro(normal4.X, normal4.Y, normal4.Z);
         }
         //----------------------------------------------------------------------------------------------------CONSULTAS-----
+        public Vector3 getCentro()
+        {
+            Vector3 temp = getPosicion();
+            temp.Add(vectorDireccion.getCentro());
+            return temp;
+        }
+        public Vector3 getPosicion() { return posicion.getActual(); }
+
+        public Vector3 getTrayectoria() { return posicion.direccion(); }   //Direccion en la que se desplaza un objeto.
+        public Vector3 getDireccion() { return vectorDireccion.direccion(); }   //Direccion en la que apunta el frente del objeto.
+        public Vector3 getDireccion_Y() { return vectorDireccion.direccion_Y(); }
+        public Vector3 getDireccion_X() { return vectorDireccion.direccion_X(); }
+        public Vector3 getDireccionAnterior() { return vectorDireccion.direccionAnterior(); } //Direccion anterior a la que apuntaba el frente del objeto
+        public void rotar(float time, List<Dibujable> dibujables)   //Movimiento de rotacion base de un dibujable.
+        {
+            if (fisica != null && rotacionReal) fisica.rotar(time, dibujables);
+            else
+            {
+                float angulo = velocidadRadial * time;
+                Matrix rotation;
+                if (inclinacion != 0) //Rotar en X
+                {
+                    rotation = vectorDireccion.rotarX_desde(posicion.getActual(), angulo * inclinacion);
+                    Transform *= rotation;
+
+                }
+                if (giro != 0) //Rotar en Y
+                {
+                    rotation = vectorDireccion.rotarY_desde(posicion.getActual(), angulo * giro);
+                    Transform *= rotation;
+                }
+                if (rotacion != 0) //Rotar en Z
+                {
+                    rotation = vectorDireccion.rotarZ_desde(posicion.getActual(), angulo * rotacion);
+                    Transform *= rotation;
+                }
+            }
+            if (velocidadManual)
+            {
+                inclinacion = 0;
+                rotacion = 0;
+                giro = 0;
+            }
+        }
+        internal Matrix getRotacion(float time)
+        {
+            // if (fisica != null && rotacionReal) fisica.rotar(time, dibujables); REVISAR!!!!
+            // else
+            Matrix rotation;
+            Matrix rotacionDefinitiva = new Matrix();
+            {
+                float angulo = velocidadRadial * time;
+
+                if (inclinacion != 0) //Rotar en X
+                {
+                    rotation = vectorDireccion.rotarX_desde(posicion.getActual(), angulo * inclinacion);
+                    rotacionDefinitiva *= rotation;
+
+                }
+                if (giro != 0) //Rotar en Y
+                {
+                    rotation = vectorDireccion.rotarY_desde(posicion.getActual(), angulo * giro);
+                    rotacionDefinitiva *= rotation;
+                }
+                if (rotacion != 0) //Rotar en Z
+                {
+                    rotation = vectorDireccion.rotarZ_desde(posicion.getActual(), angulo * rotacion);
+                    rotacionDefinitiva *= rotation;
+                }
+            }
+            if (velocidadManual)
+            {
+                inclinacion = 0;
+                rotacion = 0;
+                giro = 0;
+            }
+            return rotacionDefinitiva;
+        }
         public Vector3 indicarGravedad(Vector3 pos, float mass){
             if (fisica != null) return this.fisica.indicarGravedad(pos, mass);
             else return new Vector3(0, 0, 0);
