@@ -44,7 +44,7 @@ namespace AlumnoEjemplos.MiGrupo
         ManagerAsteroide asteroidManager;
 
         //Modificador de la camara del proyecto
-//        CambioCamara camara;
+        CambioCamara camara;
         TgcSkyBox skyBox;
 
         //--------------------------------------------------------
@@ -110,7 +110,7 @@ namespace AlumnoEjemplos.MiGrupo
             //Cargamos la nave como objeto principal.
             objetoPrincipal = nave;
             //Cargamos la camara
-//            camara = new CambioCamara(nave);
+            camara = new CambioCamara(nave);
 
             //Cargamos valores en el panel lateral
             GuiController.Instance.UserVars.addVar("Vel-Actual:");
@@ -165,11 +165,11 @@ namespace AlumnoEjemplos.MiGrupo
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.X)) { nave.giro = 1; }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightAlt)) { nave.giro = -1; }
             if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.RightControl)) { nave.giro = 1; }
-//            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F1)) { camara.modoFPS(); }
-
+            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F1)) { camara.modoFPS(); }
 //            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F2)) { camara.modoExterior(); }
-//            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F3)) { camara.modoTPS(); }
+            if (GuiController.Instance.D3dInput.keyDown(Microsoft.DirectX.DirectInput.Key.F3)) { camara.modoTPS(); }
 
+            camara.cambiarPosicionCamara();
 
 
 
@@ -202,16 +202,6 @@ namespace AlumnoEjemplos.MiGrupo
             Device d3dDevice = GuiController.Instance.D3dDevice;
             d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
 
-Vector3 posicionDeCamara = nave.getPosicion();
-Vector3 temp = nave.getDireccion();
-temp.Multiply(100);
-posicionDeCamara -= temp;
-temp = new Vector3(0, 50, 0);
-posicionDeCamara += temp;
-temp = nave.getDireccion_Y();
-temp.Multiply(15);
-GuiController.Instance.setCamera(posicionDeCamara, nave.getPosicion()+temp);
-          
             //laser.trasladar(elapsedTime);
             /*
             if (laserLista.Count != 0)
@@ -235,10 +225,9 @@ GuiController.Instance.setCamera(posicionDeCamara, nave.getPosicion()+temp);
 
 
             skyBox.render();
-//            camara.cambiarPosicionCamara();
             nave.rotar(elapsedTime,listaDibujable);
             nave.desplazarse(elapsedTime,listaDibujable);
-//            if(!camara.soyFPS())
+            if(!camara.soyFPS())
                 nave.render();
             
             //Refrescar panel lateral
