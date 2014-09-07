@@ -220,6 +220,7 @@ namespace AlumnoEjemplos.TheGRID
                 {
                     rotation = vectorDireccion.rotarX_desde(posicion.getActual(), angulo * inclinacion);
                     Transform *= rotation;
+                    
                 }
                 if (giro != 0) //Rotar en Y
                 {
@@ -238,6 +239,40 @@ namespace AlumnoEjemplos.TheGRID
                 rotacion = 0;
                 giro = 0;
             }
+        }
+        internal Matrix getRotacion(float time) 
+        {
+           // if (fisica != null && rotacionReal) fisica.rotar(time, dibujables); REVISAR!!!!
+           // else
+            Matrix rotation;
+            Matrix rotacionDefinitiva = new Matrix();
+            {
+                float angulo = velocidadRadial * time;
+                
+                if (inclinacion != 0) //Rotar en X
+                {
+                    rotation = vectorDireccion.rotarX_desde(posicion.getActual(), angulo * inclinacion);
+                    rotacionDefinitiva *= rotation;
+
+                }
+                if (giro != 0) //Rotar en Y
+                {
+                    rotation = vectorDireccion.rotarY_desde(posicion.getActual(), angulo * giro);
+                    rotacionDefinitiva *= rotation;
+                }
+                if (rotacion != 0) //Rotar en Z
+                {
+                    rotation = vectorDireccion.rotarZ_desde(posicion.getActual(), angulo * rotacion);
+                    rotacionDefinitiva *= rotation;
+                }
+            }
+            if (velocidadManual)
+            {
+                inclinacion = 0;
+                rotacion = 0;
+                giro = 0;
+            }
+            return rotacionDefinitiva;
         }
         internal void acelerar() { traslacion = 1; }
 

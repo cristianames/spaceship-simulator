@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using TgcViewer.Utils.TgcGeometry;
 using Microsoft.DirectX;
+using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.TheGRID
 {
@@ -29,8 +30,11 @@ namespace AlumnoEjemplos.TheGRID
             foreach (var item in controlados)
             {
                 trasladar(item, time);
-                rotar(item, time);
+                rotar(item, time);           
+                item.getColision().transladar(item.getCentro());                 
                 item.render();
+                item.getColision().render();
+                
             }
         }
 
@@ -51,9 +55,9 @@ namespace AlumnoEjemplos.TheGRID
     {
         public ManagerLaser(int limite) : base(limite) { }
         
-        public void fabricar(Matrix transformacion, EjeCoordenadas ejes)
+        public void fabricar(Matrix transformacion, EjeCoordenadas ejes, Vector3 posicionNave,Matrix rotacionNave)
         {
-            addNew(Factory.crearLaser(transformacion, ejes));
+            addNew(Factory.crearLaser(transformacion, ejes,posicionNave,rotacionNave));
         }
     }
 

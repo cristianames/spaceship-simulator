@@ -113,7 +113,7 @@ namespace AlumnoEjemplos.TheGRID
         }
         */
 
-        public static Dibujable crearLaser(Matrix transformacion,EjeCoordenadas ejes) 
+        public static Dibujable crearLaser(Matrix transformacion,EjeCoordenadas ejes,Vector3 posicionNave,Matrix rotacionNave) 
         {
             //Creemos la mesh
             TgcMesh mesh_laser = cargarMesh("Laser\\Laser_Box-TgcScene.xml");
@@ -125,7 +125,7 @@ namespace AlumnoEjemplos.TheGRID
             //Ubicamos el laser en el cañon
             laser.setEjes(ejes);
             laser.trasladar(ejes.getCentro());
-            laser.Transform *= transformacion;
+            laser.Transform *= transformacion;           
             //Carga direccion de traslacion
             List<int> posibilidades = new List<int>(2);
             posibilidades.Add(-1);
@@ -133,11 +133,16 @@ namespace AlumnoEjemplos.TheGRID
             laser.rotacion = 0;     //DE MOMENTO EL LASER NO SE PUEDE ROTAR.
             laser.traslacion = 1;
             TgcBoundingBox bb = ((TgcMesh)laser.objeto).BoundingBox;
-            bb.transform(laser.Transform);
+            Matrix centro = new Matrix();
+           // centro.Translate(200,0,0);
+            bb.scaleTranslate(posicionNave, new Vector3(0.1F, 0.1F, 0.5F));
+           // bb.transform(rotacionNave);
+            //bb.move(ejes.getCentro());
             TgcObb obb = TgcObb.computeFromAABB(bb);
             laser.setColision(new ColisionLaser());
             laser.getColision().setBoundingBox(obb);
-            
+           // laser.getColision().transladar(ejes.getCentro());
+          
             return laser;
         }
     }
