@@ -56,7 +56,7 @@ namespace AlumnoEjemplos.TheGRID
         public static Dibujable crearAsteroide(TamanioAsteroide tamanio, Vector3 posicion)
         {
             FormatoAsteroide formato = elegirAsteroidePor(tamanio);
-            TgcMesh mesh_asteroide = cargarMesh("asteroid\\asteroid-TgcScene.xml");
+            TgcMesh mesh_asteroide = cargarMesh("TheGrid\\asteroid\\asteroid-TgcScene.xml");
             List<float> valores = new List<float>() { -4, -3, -2, -1, 1, 2, 3, 4 };
             Vector3 escalado = formato.getVolumen();
             Vector3 rotacion = new Vector3(numeroRandom(valores), numeroRandom(valores), numeroRandom(valores));
@@ -150,7 +150,7 @@ namespace AlumnoEjemplos.TheGRID
         public static Dibujable crearLaser(Matrix transformacion, EjeCoordenadas ejes, Vector3 posicionNave, Vector3 rotacionNave)
         {
             //Creemos la mesh
-            TgcMesh mesh_laser = cargarMesh("Laser\\Laser_Box-TgcScene.xml");
+            TgcMesh mesh_laser = cargarMesh("TheGrid\\Laser\\Laser_Box-TgcScene.xml");
             //Cargamos las cosas en el dibujable
             Dibujable laser = new Dibujable();
             laser.setObject(mesh_laser, 10, 100, new Vector3(0, 0, 0), new Vector3(0.09F, 0.09F, 0.13F));

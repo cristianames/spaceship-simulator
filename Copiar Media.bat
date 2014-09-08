@@ -1,1 +1,1 @@
-xcopy AlumnoMedia "..\AlumnoMedia" /s /y
+xcopy ArchivosMedia "..\AlumnoMedia\TheGrid" /s /y /I
