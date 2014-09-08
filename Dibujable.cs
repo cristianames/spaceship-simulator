@@ -359,7 +359,7 @@ namespace AlumnoEjemplos.TheGRID
             nuevoEje.vectorY = vectorDireccion.vectorY;
             nuevoEje.vectorZ = vectorDireccion.vectorZ;
             nuevoEje.centroObjeto = vectorDireccion.centroObjeto;
-            nuevoEje.rotor = vectorDireccion.rotor;
+            nuevoEje.lRotor = new List<Vector3>(vectorDireccion.lRotor);
             nuevoEje.mRotor = vectorDireccion.mRotor;
             return nuevoEje; 
         }
