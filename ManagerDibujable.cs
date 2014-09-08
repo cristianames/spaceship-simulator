@@ -72,13 +72,13 @@ namespace AlumnoEjemplos.TheGRID
 
         public void creaUno()
         {
-            addNew(Factory.crearAsteroide());
+            addNew(Factory.crearAsteroide(TamanioAsteroide.GRANDE,new Vector3(1,0,2)));
         }
 
         public void fabricar(int cuantos)
         {
             int i;
-            for (i = 0; i < cuantos; i++ ) addNew(Factory.crearAsteroide());
+            for (i = 0; i < cuantos; i++ ) addNew(Factory.crearAsteroide(TamanioAsteroide.CHICO, new Vector3(10*i, 20*i, 100)));
         }
 
         public override void operar(float time)

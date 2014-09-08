@@ -95,6 +95,7 @@ namespace AlumnoEjemplos.MiGrupo
             
             //Crear 5 asteroides
             asteroidManager = new ManagerAsteroide(15);
+            asteroidManager.creaUno();
             asteroidManager.fabricar(5);
             
             //Crear la nave
@@ -198,7 +199,7 @@ namespace AlumnoEjemplos.MiGrupo
 
             //Cargar valores de la flecha
             Vector3 navePos = nave.getCentro();
-            Vector3 naveDir = Vector3.Subtract(new Vector3(0, 0, 10000), nave.getPosicion());
+            Vector3 naveDir = Vector3.Subtract(new Vector3(0, 0, 10000), nave.getDireccion());
             naveDir.Normalize();
             naveDir.Multiply(75);
             arrow.PStart = navePos;

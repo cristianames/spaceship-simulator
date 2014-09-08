@@ -39,18 +39,27 @@ namespace AlumnoEjemplos.TheGRID
             asteroide.Transform *= traslacion;
             asteroide.getColision().transladar(vector);
         }
+        public static FormatoAsteroide elegirAsteroidePor(TamanioAsteroide tamanio){
+            switch(tamanio){
+                case TamanioAsteroide.MUYGRANDE:
+                    return new AsteroideMuyGrande();
+                case TamanioAsteroide.GRANDE:
+                    return new AsteroideGrande();
+                case TamanioAsteroide.MEDIANO:
+                    return new AsteroideMediano();
+                case TamanioAsteroide.CHICO:
+                    return new AsteroideChico();
+            }
+            return null;
+        }
 
-        public static Dibujable crearAsteroide()
+        public static Dibujable crearAsteroide(TamanioAsteroide tamanio, Vector3 posicion)
         {
+            FormatoAsteroide formato = elegirAsteroidePor(tamanio);
             TgcMesh mesh_asteroide = cargarMesh("asteroid\\asteroid-TgcScene.xml");
-            List<float> factoresEscalado = new List<float>() { 5, 5.5F, 6, 6.5F, 7 };
             List<float> valores = new List<float>() { -4, -3, -2, -1, 1, 2, 3, 4 };
-            List<float> valoresPosXY = new List<float>() { -100, 0, 100 };
-            List<float> valoresPosZ = new List<float>() { 500, 800 };
-            float factorEscalado = numeroRandom(factoresEscalado);
-            Vector3 escalado = new Vector3(factorEscalado, factorEscalado, factorEscalado);
+            Vector3 escalado = formato.getVolumen();
             Vector3 rotacion = new Vector3(numeroRandom(valores), numeroRandom(valores), numeroRandom(valores));
-            Vector3 posicion = new Vector3(numeroRandom(valoresPosXY), numeroRandom(valoresPosXY), numeroRandom(valoresPosZ));
             Vector3 ejeX = new Vector3(numeroRandom(valores), numeroRandom(valores), numeroRandom(valores));
             Vector3 ejeY = new Vector3(numeroRandom(valores), numeroRandom(valores), numeroRandom(valores));
             Vector3 ejeZ = new Vector3(numeroRandom(valores), numeroRandom(valores), numeroRandom(valores));
@@ -62,7 +71,7 @@ namespace AlumnoEjemplos.TheGRID
             //Creamos su bounding Sphere
             mesh_asteroide.AutoUpdateBoundingBox = false;
             float radioMalla3DsMax = 11.633f;
-            TgcBoundingSphere bounding_asteroide = new TgcBoundingSphere(posicion, radioMalla3DsMax * factorEscalado);
+            TgcBoundingSphere bounding_asteroide = new TgcBoundingSphere(posicion, radioMalla3DsMax * formato.getVolumen().X);
 
             //Cargamos las cosas en el dibujable
             Dibujable asteroide = new Dibujable();
@@ -75,6 +84,8 @@ namespace AlumnoEjemplos.TheGRID
             trasladar(asteroide, posicion);
             asteroide.setPosicion(posicion);
             asteroide.setEjes(ejes);
+            asteroide.fisica = new Fisica(asteroide,0,0,formato.getMasa());
+            asteroide.velocidad = formato.getVelocidad();
             return asteroide;
         }
 
@@ -157,5 +168,46 @@ namespace AlumnoEjemplos.TheGRID
            
             return laser;
         }
+    }
+    public enum TamanioAsteroide {MUYGRANDE, GRANDE, MEDIANO,CHICO}
+
+    public interface FormatoAsteroide
+    {
+        float getMasa(); //En toneladas
+        Vector3 getVolumen(); //En realidad un factor de escalado
+        float getVelocidad();
+    }
+
+    public class AsteroideMuyGrande : FormatoAsteroide
+    {
+        private float masa = 1000; 
+        private float longitud = 8;
+        public float getMasa() { return masa; }
+        public Vector3 getVolumen(){ return new Vector3(longitud,longitud,longitud); }
+        public float getVelocidad() { return 5; }
+    }
+    public class AsteroideGrande : FormatoAsteroide
+    {
+        private float masa = 800; 
+        private float longitud = 6;
+        public float getMasa() { return masa; }
+        public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
+        public float getVelocidad() { return 7; }
+    }
+    public class AsteroideMediano : FormatoAsteroide
+    {
+        private float masa = 500; 
+        private float longitud = 3;
+        public float getMasa() { return masa; }
+        public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
+        public float getVelocidad() { return 10; }
+    }
+    public class AsteroideChico : FormatoAsteroide
+    {
+        private float masa = 200;
+        private float longitud =0.7f;
+        public float getMasa() { return masa; }
+        public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
+        public float getVelocidad() { return 14; }
     }
 }
