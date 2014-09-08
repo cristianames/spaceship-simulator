@@ -41,15 +41,21 @@ namespace AlumnoEjemplos.TheGRID.Camara
             Vector3 temp = objeto_foco.getDireccion();
             temp.Multiply(100);
             posicionDeCamara -= temp;
-            temp = new Vector3(0, 50, 0);
-            posicionDeCamara += temp;
-            temp = objeto_foco.getDireccion_Y();
-            temp.Multiply(15);
+            posicionDeCamara += new Vector3(0, 20, 0);
             GuiController.Instance.setCamera(posicionDeCamara, objeto_foco.getPosicion() + temp);
         }
         private void moverFirst()
         {
-            GuiController.Instance.setCamera(objeto_foco.getPosicion() - objeto_foco.getDireccion(), objeto_foco.getPosicion());
+            Vector3 posicionDeCamara = objeto_foco.getPosicion();
+            Vector3 temp = objeto_foco.getDireccion_Y();
+            temp.Multiply(5);
+            posicionDeCamara += temp;
+            Vector3 focoCamara = objeto_foco.getPosicion();
+            temp = objeto_foco.getDireccion();
+            temp.Multiply(500);
+            focoCamara += temp;
+
+            GuiController.Instance.setCamera(posicionDeCamara, focoCamara);
         }
 
         public void cambiarFoco(Dibujable dibujable){

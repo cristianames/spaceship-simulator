@@ -52,9 +52,9 @@ namespace AlumnoEjemplos.TheGRID
     {
         public ManagerLaser(int limite) : base(limite) { }
         
-        public void fabricar(Matrix transformacion, EjeCoordenadas ejes, Vector3 posicionNave,Vector3 rotacionNave)
+        public void fabricar(EjeCoordenadas ejes, Vector3 posicionNave)
         {
-            addNew(Factory.crearLaser(transformacion, ejes,posicionNave,rotacionNave));
+            addNew(Factory.crearLaser(ejes,posicionNave));
         }
     }
 
@@ -69,7 +69,7 @@ namespace AlumnoEjemplos.TheGRID
 
         public void creaUno()
         {
-            addNew(Factory.crearAsteroide(TamanioAsteroide.GRANDE,new Vector3(1,0,2)));
+            addNew(Factory.crearAsteroide(TamanioAsteroide.GRANDE,new Vector3(10,40,50)));
         }
 
         public void fabricar(int cuantos)

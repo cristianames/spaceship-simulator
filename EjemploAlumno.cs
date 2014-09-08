@@ -37,8 +37,8 @@ namespace AlumnoEjemplos.MiGrupo
         Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
 
         List<Dibujable> listaDibujable = new List<Dibujable>();
-        float timeLaser = 0;
-        const float betweenTime = 0.15f;
+        float timeLaser = 0; //Inicializacion.
+        const float betweenTime = 0.3f;    //Tiempo de espera entre cada disparo.
         ManagerLaser laserManager;
         ManagerAsteroide asteroidManager;
 
@@ -182,7 +182,7 @@ namespace AlumnoEjemplos.MiGrupo
                 timeLaser += elapsedTime;
                 if (timeLaser > betweenTime)
                 {
-                    laserManager.fabricar(nave.Transform, nave.getEjes(),nave.getPosicion(),nave.getDireccion());                  
+                    laserManager.fabricar(nave.getEjes(),nave.getPosicion());                  
                     timeLaser = 0;
                 }
             }          

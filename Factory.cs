@@ -101,13 +101,13 @@ namespace AlumnoEjemplos.TheGRID
 
         }*/
 
-        public static Dibujable crearLaser(Matrix transformacion, EjeCoordenadas ejes, Vector3 posicionNave, Vector3 rotacionNave)
+        public static Dibujable crearLaser(EjeCoordenadas ejes, Vector3 posicionNave)
         {
             //Creemos la mesh
             TgcMesh mesh_laser = cargarMesh("TheGrid\\Laser\\Laser_Box-TgcScene.xml");
             //Cargamos las cosas en el dibujable
             Dibujable laser = new Dibujable();
-            laser.setObject(mesh_laser, 150, 100, new Vector3(0, 0, 0), new Vector3(0.09F, 0.09F, 0.13F));
+            laser.setObject(mesh_laser, 5000, 100, new Vector3(0, 0, 0), new Vector3(0.09F, 0.09F, 0.13F));
             laser.AutoTransformEnable = false;
             //Ubicamos el laser en el cañon
             laser.setEjes(ejes);
