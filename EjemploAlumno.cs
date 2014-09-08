@@ -101,9 +101,9 @@ namespace AlumnoEjemplos.MiGrupo
             //Crear la nave
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene scene;
-            nave = new Dibujable(0, -10, 15);
-            scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Nave\\nave-TgcScene.xml");
-            nave.setObject(scene.Meshes[0], 200, 100, new Vector3(0, 180, 0), new Vector3(1, 1, 1));
+            nave = new Dibujable(0, 0, 0);
+            scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Nave\\nave3-TgcScene.xml");
+            nave.setObject(scene.Meshes[0], 200, 100, new Vector3(0, 180, 0), new Vector3(0.5f, 0.5f, 0.5f));
             nave.setFisica(100, 500, 100);
             nave.SetPropiedades(true, false, false);
 
@@ -157,8 +157,8 @@ namespace AlumnoEjemplos.MiGrupo
             //Flechas
             if (input.keyDown(Key.Left)) { nave.rotacion = 1; }
             if (input.keyDown(Key.Right)) { nave.rotacion = -1; }
-            if (input.keyDown(Key.Up)) { nave.inclinacion = -1; }
-            if (input.keyDown(Key.Down)) { nave.inclinacion = 1; }
+            if (input.keyDown(Key.Up)) { nave.inclinacion = 1; }
+            if (input.keyDown(Key.Down)) { nave.inclinacion = -1; }
             //Letras
             if (input.keyDown(Key.A)) { nave.giro = -1; }
             if (input.keyDown(Key.D)) { nave.giro = 1; }
@@ -182,7 +182,7 @@ namespace AlumnoEjemplos.MiGrupo
                 timeLaser += elapsedTime;
                 if (timeLaser > betweenTime)
                 {
-                    laserManager.fabricar(nave.Transform, nave.getEjes(),nave.getCentro(),nave.getDireccion());                  
+                    laserManager.fabricar(nave.Transform, nave.getEjes(),nave.getPosicion(),nave.getDireccion());                  
                     timeLaser = 0;
                 }
             }          

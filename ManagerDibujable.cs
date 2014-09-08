@@ -31,10 +31,7 @@ namespace AlumnoEjemplos.TheGRID
             {
                 trasladar(item, time);
                 rotar(item, time);
-                item.getColision().transladar(item.getPosicion() - ((TgcObb)item.getColision().getBoundingBox()).Position + new Vector3(0,0,30));    //por q Z +30 es necesario?             
                 item.render();
-                item.getColision().render();
-                
             }
         }
 

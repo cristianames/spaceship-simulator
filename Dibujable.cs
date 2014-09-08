@@ -7,8 +7,9 @@ using TgcViewer;
 using TgcViewer.Utils.TgcSceneLoader;
 using System.Drawing;
 using Microsoft.DirectX.Direct3D;
-using AlumnoEjemplos.TheGRID.Explosiones;
+//using AlumnoEjemplos.TheGRID.Explosiones;
 using AlumnoEjemplos.TheGRID.Colisiones;
+using TgcViewer.Utils.TgcGeometry;
 
 
 namespace AlumnoEjemplos.TheGRID
@@ -33,6 +34,11 @@ namespace AlumnoEjemplos.TheGRID
         public void setActual(Vector3 nuevo){
             anterior = actual;
             actual = nuevo;
+        }
+        public void addActual(Vector3 nuevo)
+        {
+            anterior = actual;
+            actual.Add(new Vector3(0,FastMath.PI_HALF,0));
         }
         public void setActual(float X, float Y, float Z)
         {
@@ -123,7 +129,11 @@ namespace AlumnoEjemplos.TheGRID
             rotacionReal = false;
         }
         //-------------------------------------------------------------------------------------METODOS--------IRenderObject-----
-        public void render() { ((IRenderObject)objeto).render(); }
+        public void render() 
+        {
+            ((IRenderObject)objeto).render();
+            if (colision != null) colision.render();
+        }
         public void dispose() 
         {
             try { ((IRenderObject)objeto).dispose(); }
@@ -220,8 +230,40 @@ namespace AlumnoEjemplos.TheGRID
                 posicion.setActual(vector4.X, vector4.Y, vector4.Z);
 
                 Transform *= translate;
+                if (colision != null) colision.transladar(director);
             }
             if (velocidadManual) traslacion = 0;
+        }
+        public void rotar(float time, List<Dibujable> dibujables)   //Movimiento de rotacion base de un dibujable.
+        {
+            if (fisica != null && rotacionReal) fisica.rotar(time, dibujables);
+            else
+            {
+                float angulo = velocidadRadial * time;
+                Matrix rotation;
+                if (inclinacion != 0) //Rotar en X
+                {
+                    rotation = vectorDireccion.rotarX_desde(posicion.getActual(), angulo * inclinacion);
+                    Transform *= rotation;
+
+                }
+                if (giro != 0) //Rotar en Y
+                {
+                    rotation = vectorDireccion.rotarY_desde(posicion.getActual(), angulo * giro);
+                    Transform *= rotation;
+                }
+                if (rotacion != 0) //Rotar en Z
+                {
+                    rotation = vectorDireccion.rotarZ_desde(posicion.getActual(), angulo * rotacion);
+                    Transform *= rotation;
+                }
+            }
+            if (velocidadManual)
+            {
+                inclinacion = 0;
+                rotacion = 0;
+                giro = 0;
+            }
         }
         //----------------------------------------------------------------------------------------------------TRANSFORMACIONES-----
         public void escalar(Vector3 escalado)
@@ -259,37 +301,7 @@ namespace AlumnoEjemplos.TheGRID
         public Vector3 getDireccion_Y() { return vectorDireccion.direccion_Y(); }
         public Vector3 getDireccion_X() { return vectorDireccion.direccion_X(); }
         public Vector3 getDireccionAnterior() { return vectorDireccion.direccionAnterior(); } //Direccion anterior a la que apuntaba el frente del objeto
-        public void rotar(float time, List<Dibujable> dibujables)   //Movimiento de rotacion base de un dibujable.
-        {
-            if (fisica != null && rotacionReal) fisica.rotar(time, dibujables);
-            else
-            {
-                float angulo = velocidadRadial * time;
-                Matrix rotation;
-                if (inclinacion != 0) //Rotar en X
-                {
-                    rotation = vectorDireccion.rotarX_desde(posicion.getActual(), angulo * inclinacion);
-                    Transform *= rotation;
-
-                }
-                if (giro != 0) //Rotar en Y
-                {
-                    rotation = vectorDireccion.rotarY_desde(posicion.getActual(), angulo * giro);
-                    Transform *= rotation;
-                }
-                if (rotacion != 0) //Rotar en Z
-                {
-                    rotation = vectorDireccion.rotarZ_desde(posicion.getActual(), angulo * rotacion);
-                    Transform *= rotation;
-                }
-            }
-            if (velocidadManual)
-            {
-                inclinacion = 0;
-                rotacion = 0;
-                giro = 0;
-            }
-        }
+        /*          WTF!!!
         internal Matrix getRotacion(float time)
         {
             // if (fisica != null && rotacionReal) fisica.rotar(time, dibujables); REVISAR!!!!
@@ -323,7 +335,7 @@ namespace AlumnoEjemplos.TheGRID
                 giro = 0;
             }
             return rotacionDefinitiva;
-        }
+        }*/
         public Vector3 indicarGravedad(Vector3 pos, float mass){
             if (fisica != null) return this.fisica.indicarGravedad(pos, mass);
             else return new Vector3(0, 0, 0);
@@ -347,6 +359,8 @@ namespace AlumnoEjemplos.TheGRID
             nuevoEje.vectorY = vectorDireccion.vectorY;
             nuevoEje.vectorZ = vectorDireccion.vectorZ;
             nuevoEje.centroObjeto = vectorDireccion.centroObjeto;
+            nuevoEje.rotor = vectorDireccion.rotor;
+            nuevoEje.mRotor = vectorDireccion.mRotor;
             return nuevoEje; 
         }
 

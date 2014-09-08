@@ -13,6 +13,8 @@ namespace AlumnoEjemplos.TheGRID
         public Vector3 vectorY;
         public Vector3 vectorZ;
         public Vector3 vectorK;
+        public Vector3 rotor;
+        public Matrix mRotor;
 
         public Vector3 centroObjeto;
 
@@ -21,10 +23,10 @@ namespace AlumnoEjemplos.TheGRID
             vectorX = new Vector3(1, 0, 0);
             vectorY = new Vector3(0, 1, 0);
             vectorZ = new Vector3(0, 0, 1);
-
             vectorK = new Vector3(0, 0, 1);
-
+            rotor = new Vector3(0, 0, 0);
             centroObjeto = new Vector3(0, 0, 0);
+            mRotor = Matrix.Identity;
         }
         public void actualizarX() { vectorX = Vector3.Cross(vectorY, vectorZ); }
 
@@ -42,6 +44,7 @@ namespace AlumnoEjemplos.TheGRID
         public Matrix rotarX_desde(Vector3 posActual, float grados)
         {
             float angulo = Geometry.DegreeToRadian(grados);
+            rotor.Add(new Vector3(vectorX.X * angulo, vectorX.Y * angulo, vectorX.Z * angulo));
             rotation = Matrix.RotationYawPitchRoll(vectorX.Y * angulo, vectorX.X * angulo, vectorX.Z * angulo);
             
             normal4 = Vector3.Transform(vectorZ, rotation);
@@ -50,6 +53,8 @@ namespace AlumnoEjemplos.TheGRID
 
             normal4 = Vector3.Transform(vectorY, rotation);
             vectorY = new Vector3(normal4.X, normal4.Y, normal4.Z);
+
+            mRotor *= rotation;
 
             actualizarX();
 
@@ -63,6 +68,7 @@ namespace AlumnoEjemplos.TheGRID
         public Matrix rotarY_desde(Vector3 posActual, float grados)
         {
             float angulo = Geometry.DegreeToRadian(grados);
+            rotor.Add(new Vector3(vectorY.X * angulo, vectorY.Y * angulo, vectorY.Z * angulo));
             rotation = Matrix.RotationYawPitchRoll(vectorY.Y * angulo, vectorY.X * angulo, vectorY.Z * angulo);
 
             normal4 = Vector3.Transform(vectorY, rotation);
@@ -71,6 +77,8 @@ namespace AlumnoEjemplos.TheGRID
             normal4 = Vector3.Transform(vectorZ, rotation);
             vectorK = vectorZ;
             vectorZ = new Vector3(normal4.X, normal4.Y, normal4.Z);
+
+            mRotor *= rotation;
 
             actualizarX();
 
@@ -84,6 +92,7 @@ namespace AlumnoEjemplos.TheGRID
         public Matrix rotarZ_desde(Vector3 posActual, float grados)
         {
             float angulo = Geometry.DegreeToRadian(grados);
+            rotor.Add(new Vector3(vectorZ.X * angulo, vectorZ.Y * angulo, vectorZ.Z * angulo));
             rotation = Matrix.RotationYawPitchRoll(vectorZ.Y * angulo, vectorZ.X * angulo, vectorZ.Z * angulo);
             
             normal4 = Vector3.Transform(vectorY, rotation);
@@ -92,6 +101,8 @@ namespace AlumnoEjemplos.TheGRID
             normal4 = Vector3.Transform(vectorZ, rotation);
             vectorK = vectorZ;
             vectorZ = new Vector3(normal4.X, normal4.Y, normal4.Z);
+
+            mRotor *= rotation;
 
             actualizarX(); 
             
