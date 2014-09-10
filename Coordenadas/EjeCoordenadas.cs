@@ -41,10 +41,11 @@ namespace AlumnoEjemplos.TheGRID
 
         Matrix rotation, rototraslation;
         Vector4 normal4;
-        public Matrix rotarX_desde(Vector3 posActual, float grados)
+        public Matrix rotarX_desde(Vector3 posActual, float grados, ref Vector3 rotacionActual)
         {
             float angulo = Geometry.DegreeToRadian(grados);
-            lRotor.Add(new Vector3(vectorX.X * angulo, vectorX.Y * angulo, vectorX.Z * angulo));
+            rotacionActual = new Vector3(vectorX.X * angulo, vectorX.Y * angulo, vectorX.Z * angulo);
+            lRotor.Add(rotacionActual);
             rotation = Matrix.RotationYawPitchRoll(vectorX.Y * angulo, vectorX.X * angulo, vectorX.Z * angulo);
             
             normal4 = Vector3.Transform(vectorZ, rotation);
@@ -65,10 +66,11 @@ namespace AlumnoEjemplos.TheGRID
             return rototraslation;
         }
 
-        public Matrix rotarY_desde(Vector3 posActual, float grados)
+        public Matrix rotarY_desde(Vector3 posActual, float grados, ref Vector3 rotacionActual)
         {
             float angulo = Geometry.DegreeToRadian(grados);
-            lRotor.Add(new Vector3(vectorY.X * angulo, vectorY.Y * angulo, vectorY.Z * angulo));
+            rotacionActual = new Vector3(vectorY.X * angulo, vectorY.Y * angulo, vectorY.Z * angulo);
+            lRotor.Add(rotacionActual);           
             rotation = Matrix.RotationYawPitchRoll(vectorY.Y * angulo, vectorY.X * angulo, vectorY.Z * angulo);
 
             normal4 = Vector3.Transform(vectorY, rotation);
@@ -89,10 +91,11 @@ namespace AlumnoEjemplos.TheGRID
             return rototraslation;
         }
 
-        public Matrix rotarZ_desde(Vector3 posActual, float grados)
+        public Matrix rotarZ_desde(Vector3 posActual, float grados, ref Vector3 rotacionActual)
         {
             float angulo = Geometry.DegreeToRadian(grados);
-            lRotor.Add(new Vector3(vectorZ.X * angulo, vectorZ.Y * angulo, vectorZ.Z * angulo));
+            rotacionActual = new Vector3(vectorZ.X * angulo, vectorZ.Y * angulo, vectorZ.Z * angulo);
+            lRotor.Add(rotacionActual);
             rotation = Matrix.RotationYawPitchRoll(vectorZ.Y * angulo, vectorZ.X * angulo, vectorZ.Z * angulo);
             
             normal4 = Vector3.Transform(vectorY, rotation);

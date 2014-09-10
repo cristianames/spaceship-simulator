@@ -241,21 +241,26 @@ namespace AlumnoEjemplos.TheGRID
             {
                 float angulo = velocidadRadial * time;
                 Matrix rotation;
+                Vector3 rotacionActual = new Vector3() ;
                 if (inclinacion != 0) //Rotar en X
                 {
-                    rotation = vectorDireccion.rotarX_desde(posicion.getActual(), angulo * inclinacion);
+                    rotation = vectorDireccion.rotarX_desde(posicion.getActual(), angulo * inclinacion, ref rotacionActual);// paso un vector por referencia para luego poder aplicarsselo a la obb
                     Transform *= rotation;
+                    this.getColision().rotar(rotacionActual);
+                   
 
                 }
                 if (giro != 0) //Rotar en Y
                 {
-                    rotation = vectorDireccion.rotarY_desde(posicion.getActual(), angulo * giro);
+                    rotation = vectorDireccion.rotarY_desde(posicion.getActual(), angulo * giro, ref rotacionActual);
                     Transform *= rotation;
+                    this.getColision().rotar(rotacionActual);
                 }
                 if (rotacion != 0) //Rotar en Z
                 {
-                    rotation = vectorDireccion.rotarZ_desde(posicion.getActual(), angulo * rotacion);
+                    rotation = vectorDireccion.rotarZ_desde(posicion.getActual(), angulo * rotacion, ref rotacionActual);
                     Transform *= rotation;
+                    this.getColision().rotar(rotacionActual);
                 }
             }
             if (velocidadManual)
