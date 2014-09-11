@@ -72,15 +72,14 @@ namespace AlumnoEjemplos.TheGRID
             controlados.First().teChoque(colisionador);
         }
 
-        public void creaUno()
+        public void creaUno(TamanioAsteroide tam)
         {
-            addNew(Factory.crearAsteroide(TamanioAsteroide.GRANDE,new Vector3(10,40,50)));
+            addNew(Factory.crearAsteroide(tam,new Vector3(10,40,50)));
         }
 
-        public void fabricar(int cuantos)
+        public void fabricar(int cuantos, TamanioAsteroide tam)
         {
-            int i;
-            for (i = 0; i < cuantos; i++ ) addNew(Factory.crearAsteroide(TamanioAsteroide.CHICO, new Vector3(10*i, 20*i, 100)));
+            for (int i = 0; i < cuantos; i++ ) addNew(Factory.crearAsteroide(tam, new Vector3(10*i, 20*i, 100)));
         }
 
         public override void operar(float time)
@@ -95,7 +94,28 @@ namespace AlumnoEjemplos.TheGRID
             }
         }
 
-        public void fabricar()
+        public void fabricarCinturonAsteroides(Vector3 pos_nave)
+        {
+            int raizCantidadAsteroides = 20;
+            int distanciaEntreAsteroides = 150;
+
+            int distancia = raizCantidadAsteroides * distanciaEntreAsteroides; //150 de separacion entre cada asteroides
+            float pos_x;
+            float pos_y = pos_nave.Y;
+            float pos_z = pos_nave.Z - (distancia/2);
+
+            for (int i = 0; i < raizCantidadAsteroides; i++)
+            {
+                pos_x = pos_nave.X - (distancia / 2);
+                for (int j = 0; j < raizCantidadAsteroides; j++)
+                {
+                    pos_x += distanciaEntreAsteroides * j;
+                    addNew(Factory.crearAsteroide(TamanioAsteroide.MUYGRANDE, new Vector3(pos_x, pos_y, pos_z)));
+                }
+                pos_z += distanciaEntreAsteroides * i;
+            }
+        }
+        public void mostrarAsteroides(Vector3 pos_nave)
         {
 
         }

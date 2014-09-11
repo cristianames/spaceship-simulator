@@ -147,7 +147,7 @@ namespace AlumnoEjemplos.TheGRID
         private float longitud = 8;
         public float getMasa() { return masa; }
         public Vector3 getVolumen(){ return new Vector3(longitud,longitud,longitud); }
-        public float getVelocidad() { return 5; }
+        public float getVelocidad() { return 20; }
     }
     public class AsteroideGrande : FormatoAsteroide
     {
@@ -155,7 +155,7 @@ namespace AlumnoEjemplos.TheGRID
         private float longitud = 6;
         public float getMasa() { return masa; }
         public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
-        public float getVelocidad() { return 7; }
+        public float getVelocidad() { return 25; }
     }
     public class AsteroideMediano : FormatoAsteroide
     {
@@ -163,7 +163,7 @@ namespace AlumnoEjemplos.TheGRID
         private float longitud = 3;
         public float getMasa() { return masa; }
         public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
-        public float getVelocidad() { return 10; }
+        public float getVelocidad() { return 30; }
     }
     public class AsteroideChico : FormatoAsteroide
     {
@@ -171,6 +171,6 @@ namespace AlumnoEjemplos.TheGRID
         private float longitud =0.7f;
         public float getMasa() { return masa; }
         public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
-        public float getVelocidad() { return 14; }
+        public float getVelocidad() { return 40; }
     }
 }

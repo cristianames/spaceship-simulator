@@ -95,9 +95,7 @@ namespace AlumnoEjemplos.MiGrupo
             laserManager = new ManagerLaser(50);
             
             //Crear 5 asteroides
-            asteroidManager = new ManagerAsteroide(15);
-            asteroidManager.creaUno();
-            asteroidManager.fabricar(5);
+            asteroidManager = new ManagerAsteroide(500);
             
             //Crear la nave
             TgcSceneLoader loader = new TgcSceneLoader();
@@ -121,6 +119,10 @@ namespace AlumnoEjemplos.MiGrupo
             objetoPrincipal = nave;
             //Cargamos la camara
             camara = new CambioCamara(nave);
+
+            asteroidManager.creaUno(TamanioAsteroide.MUYGRANDE);
+            asteroidManager.fabricar(5, TamanioAsteroide.MEDIANO);
+            //asteroidManager.fabricarCinturonAsteroides(nave.getCentro());
 
             //Flecha direccion objetivo
             arrow = new TgcArrow();
@@ -182,7 +184,7 @@ namespace AlumnoEjemplos.MiGrupo
             //if (input.keyDown(Key.F3)) { camara.modoTPS(); }
 
             if (input.keyDown(Key.P)) { asteroidManager.explotaAlPrimero(); }
-            if (input.keyDown(Key.O)) { asteroidManager.creaUno(); }
+            if (input.keyDown(Key.O)) { asteroidManager.creaUno(TamanioAsteroide.CHICO); }
 
             camara.cambiarPosicionCamara();
 
