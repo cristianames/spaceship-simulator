@@ -246,7 +246,7 @@ namespace AlumnoEjemplos.TheGRID
                 {
                     rotation = vectorDireccion.rotarX_desde(posicion.getActual(), angulo * inclinacion, ref rotacionActual);// paso un vector por referencia para luego poder aplicarsselo a la obb
                     Transform *= rotation;
-                    this.getColision().rotar(rotacionActual);
+                    if (colision != null) this.getColision().rotar(rotacionActual);
                    
 
                 }
@@ -254,13 +254,13 @@ namespace AlumnoEjemplos.TheGRID
                 {
                     rotation = vectorDireccion.rotarY_desde(posicion.getActual(), angulo * giro, ref rotacionActual);
                     Transform *= rotation;
-                    this.getColision().rotar(rotacionActual);
+                    if (colision != null) this.getColision().rotar(rotacionActual);
                 }
                 if (rotacion != 0) //Rotar en Z
                 {
                     rotation = vectorDireccion.rotarZ_desde(posicion.getActual(), angulo * rotacion, ref rotacionActual);
                     Transform *= rotation;
-                    this.getColision().rotar(rotacionActual);
+                    if (colision!=null)this.getColision().rotar(rotacionActual);
                 }
             }
             if (velocidadManual)

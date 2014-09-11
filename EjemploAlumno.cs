@@ -35,6 +35,7 @@ namespace AlumnoEjemplos.MiGrupo
         static EjemploAlumno singleton;
         TgcBox suelo;
         Dibujable nave;
+        Dibujable sol;
         Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
 
         List<Dibujable> listaDibujable = new List<Dibujable>();
@@ -105,15 +106,25 @@ namespace AlumnoEjemplos.MiGrupo
             nave.setObject(scene.Meshes[0], 200, 100, new Vector3(0, 180, 0), new Vector3(0.5f, 0.5f, 0.5f));
             nave.setFisica(100, 500, 100);
             nave.SetPropiedades(true, false, false);
-
+            //Cargamos su BB
             TgcBoundingBox naveBb = ((TgcMesh)nave.objeto).BoundingBox;
             naveBb.scaleTranslate(new Vector3(0, 0, 0), new Vector3(0.5f, 0.5f, 0.5f));
-            
             TgcObb naveObb = TgcObb.computeFromAABB(naveBb);
             foreach (var vRotor in nave.getEjes().lRotor) { naveObb.rotate(vRotor); } //Le aplicamos TODAS las rotaciones que hasta ahora lleva la nave.
             nave.setColision(new ColisionNave());
             nave.getColision().setBoundingBox(naveObb);
             //nave.getColision().transladar(posicionNave);
+
+            //Creamos.....EL SOL
+            TgcSceneLoader loaderSol = new TgcSceneLoader();
+            TgcScene sceneSol = loaderSol.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "TheGrid\\Sol\\sol-TgcScene.xml");
+            TgcMesh mesh_Sol = sceneSol.Meshes[0];
+            //Cargamos las cosas en el dibujable
+            sol = new Dibujable();
+            sol.setObject(mesh_Sol, 0, 100, new Vector3(0, 0, 0), new Vector3(1F, 1F, 1F));
+            sol.trasladar(new Vector3(0, 0, 2500));
+            sol.rotacion = 1;
+
 
             //Cargamos la nave como objeto principal.
             objetoPrincipal = nave;
@@ -126,8 +137,6 @@ namespace AlumnoEjemplos.MiGrupo
 
             //Flecha direccion objetivo
             arrow = new TgcArrow();
-            //arrow.BodyColor = Color.Blue;
-            //arrow.HeadColor = Color.Yellow;
             arrow.BodyColor = Color.FromArgb(230, Color.Cyan);
             arrow.HeadColor = Color.FromArgb(230, Color.Yellow);
 
@@ -221,6 +230,8 @@ namespace AlumnoEjemplos.MiGrupo
             arrow.HeadSize = new Vector2(2,2);
             arrow.updateValues();
             arrow.render();
+            sol.rotar(elapsedTime, listaDibujable);
+            sol.render();
             
             //skyBox.render();
             //suelo.render();
