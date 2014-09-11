@@ -108,7 +108,6 @@ namespace AlumnoEjemplos.TheGRID
             //Cargamos las cosas en el dibujable
             Dibujable laser = new Dibujable();
             laser.setObject(mesh_laser, 5000, 100, new Vector3(0, 0, 0), new Vector3(0.09F, 0.09F, 0.13F));
-            laser.AutoTransformEnable = false;
             //Ubicamos el laser en el cañon
             laser.setEjes(ejes);
             laser.Transform *= ejes.mRotor;
