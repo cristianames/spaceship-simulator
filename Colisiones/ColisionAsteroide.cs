@@ -33,10 +33,22 @@ namespace AlumnoEjemplos.TheGRID.Colisiones
         }
 
 
-        public void rotar() { ; }
+        public void rotar(Vector3 rotacion) { ; }
         public void escalar(Vector3 tamanio)
         {
             this.bounding_sphere.setValues(this.bounding_sphere.Center, tamanio.Length());
+        }
+
+        public bool colisiono(TgcBoundingSphere objeto)
+        {
+            return TgcCollisionUtils.testSphereSphere(this.bounding_sphere,objeto);
+
+        }
+
+        public bool colisiono(TgcObb objeto)
+        {
+            return TgcCollisionUtils.testSphereOBB(this.bounding_sphere,objeto);
+
         }
     }
 }

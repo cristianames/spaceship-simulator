@@ -8,10 +8,10 @@ using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.TheGRID.Colisiones
 {
-    class ColisionLaser: IColision
+    class ColisionNave : IColision
     {
         private TgcObb Obb;
-        
+
 
         public IRenderObject getBoundingBox()
         {
@@ -33,15 +33,19 @@ namespace AlumnoEjemplos.TheGRID.Colisiones
             Obb.render();
         }
 
-        public void rotar(Vector3 rotacion) { ; }
+        public void rotar(Vector3 rotacion) 
+        {
+            Obb.rotate(rotacion);
+        }
         public void escalar(Vector3 tamanio)
         {
             ;
         }
-        public bool colisiono(TgcBoundingSphere objeto)
-        {
-            return TgcCollisionUtils.testSphereOBB(objeto, this.Obb);
 
+        public bool colisiono(TgcBoundingSphere objeto) 
+        {
+           return TgcCollisionUtils.testSphereOBB(objeto,this.Obb);
+            
         }
 
         public bool colisiono(TgcObb objeto)

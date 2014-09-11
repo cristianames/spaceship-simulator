@@ -15,6 +15,7 @@ using TgcViewer.Utils.Input;
 using AlumnoEjemplos.TheGRID.Camara;
 using TgcViewer.Utils.Terrain;
 using Microsoft.DirectX.DirectInput;
+using AlumnoEjemplos.TheGRID.Colisiones;
 
 namespace AlumnoEjemplos.MiGrupo
 {
@@ -107,9 +108,16 @@ namespace AlumnoEjemplos.MiGrupo
             nave.setObject(scene.Meshes[0], 200, 100, new Vector3(0, 180, 0), new Vector3(0.5f, 0.5f, 0.5f));
             nave.setFisica(100, 500, 100);
             nave.SetPropiedades(true, false, false);
+            //Cargamos su BB
+            TgcBoundingBox naveBb = ((TgcMesh)nave.objeto).BoundingBox;
+            naveBb.scaleTranslate(new Vector3(0, 0, 0), new Vector3(0.5f, 0.5f, 0.5f));
+            TgcObb naveObb = TgcObb.computeFromAABB(naveBb);
+            foreach (var vRotor in nave.getEjes().lRotor) { naveObb.rotate(vRotor); } //Le aplicamos TODAS las rotaciones que hasta ahora lleva la nave.
+            nave.setColision(new ColisionNave());
+            nave.getColision().setBoundingBox(naveObb);
+            //nave.getColision().transladar(posicionNave);
 
             //Creamos.....EL SOL
-
             TgcSceneLoader loaderSol = new TgcSceneLoader();
             TgcScene sceneSol = loaderSol.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "TheGrid\\Sol\\sol-TgcScene.xml");
             TgcMesh mesh_Sol = sceneSol.Meshes[0];
@@ -118,6 +126,7 @@ namespace AlumnoEjemplos.MiGrupo
             sol.setObject(mesh_Sol, 0, 100, new Vector3(0, 0, 0), new Vector3(1F, 1F, 1F));
             sol.trasladar(new Vector3(0, 0, 2500));
             sol.rotacion = 1;
+
 
             //Cargamos la nave como objeto principal.
             objetoPrincipal = nave;
@@ -195,8 +204,9 @@ namespace AlumnoEjemplos.MiGrupo
                     laserManager.fabricar(nave.getEjes(),nave.getPosicion());                  
                     timeLaser = 0;
                 }
-            }          
-                       
+            }
+
+
             //-----FIN-UPDATE-----
 
 
@@ -224,11 +234,70 @@ namespace AlumnoEjemplos.MiGrupo
             //skyBox.render();
             //suelo.render();
 
+            //Chequeo de colision
+           //Chequeo si la nave choco con algun asteroide
+            bool naveColision = false;
+            foreach (Dibujable asteroide in asteroidManager.lista())
+            {
+
+                if (nave.getColision().colisiono(((TgcBoundingSphere)asteroide.getColision().getBoundingBox())))
+                {
+                    ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(Color.Red);
+                    ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Red);
+                    naveColision = true;
+                }
+                else
+                {                  
+                    ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Yellow);
+                }            
+            }
+            if (!naveColision) ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(Color.Yellow);
+
+            //no chequeo si los asteroides chocaron con la nave
+
+            //Chequeo si los lasers chocaron con algun asteroide
+            foreach(Dibujable asteroide in asteroidManager.lista())
+            {
+                foreach (Dibujable laser in laserManager.lista())
+                {
+                    if (laser.getColision().colisiono(((TgcBoundingSphere)asteroide.getColision().getBoundingBox())))
+                    {
+                        ((TgcObb)laser.getColision().getBoundingBox()).setRenderColor(Color.Blue);
+                        ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Blue);
+
+                    }
+                    //  else
+                    //((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Yellow); 
+
+                } 
+            }
+            //no chequeo si los asteorides chocaron con algun laser
+            //no chequeo si algun laser choco con algun otro
+            //Chequeo colision entre asteroides ---metodo poco optimo, si un asteroide impacto otro estaria preguntandolo 2 veces
+            //Hay que fixearlo, comportamiendo impredecible, un asteroide podria detectar que colisono consigo mismo
+            /*foreach (Dibujable asteroide in asteroidManager.lista())
+            {
+                foreach (Dibujable asteroide2 in asteroidManager.lista())
+                {
+                    if (asteroide2.getColision().colisiono(((TgcBoundingSphere)asteroide.getColision().getBoundingBox())))
+                    {
+                        ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.DarkGreen);
+                        ((TgcBoundingSphere)asteroide2.getColision().getBoundingBox()).setRenderColor(Color.DarkGreen);
+
+                    }
+                    else
+                        ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Yellow);
+
+                }
+            }
+
+            */
             nave.rotar(elapsedTime,listaDibujable);
             nave.desplazarse(elapsedTime,listaDibujable);
             if(!camara.soyFPS())
                 nave.render();
 
+                       
             //Refrescar panel lateral
             //case
             string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
@@ -247,6 +316,7 @@ namespace AlumnoEjemplos.MiGrupo
             //Obtener valores de Modifiers
             objetoPrincipal.fisica.aceleracion = (float)GuiController.Instance.Modifiers["Aceleracion"];
             objetoPrincipal.fisica.acelFrenado = (float)GuiController.Instance.Modifiers["Frenado"];
+            
         }
 
         public override void close()

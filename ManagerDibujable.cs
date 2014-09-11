@@ -46,6 +46,11 @@ namespace AlumnoEjemplos.TheGRID
             List<Dibujable> lista = new List<Dibujable>(0);
             objeto.rotar(time, lista);
         }
+
+        public List<Dibujable> lista() 
+        {
+            return controlados;
+        }
     }
 
     class ManagerLaser : ManagerDibujable
