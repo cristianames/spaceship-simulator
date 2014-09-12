@@ -260,43 +260,16 @@ namespace AlumnoEjemplos.MiGrupo
 
             //no chequeo si los asteroides chocaron con la nave
 
+           //Chequeo si la nave choco con algun asteroide
+            asteroidManager.chocoNave(nave);                     
             //Chequeo si los lasers chocaron con algun asteroide
-            foreach(Dibujable asteroide in asteroidManager.lista())
-            {
-                foreach (Dibujable laser in laserManager.lista())
-                {
-                    if (laser.getColision().colisiono(((TgcBoundingSphere)asteroide.getColision().getBoundingBox())))
-                    {
-                        ((TgcObb)laser.getColision().getBoundingBox()).setRenderColor(Color.Blue);
-                        ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Blue);
-
-                    }
-                    //  else
-                    //((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Yellow); 
-
-                } 
-            }
-            //no chequeo si los asteorides chocaron con algun laser
+            asteroidManager.chocoLasers(laserManager);
             //no chequeo si algun laser choco con algun otro
-            //Chequeo colision entre asteroides ---metodo poco optimo, si un asteroide impacto otro estaria preguntandolo 2 veces
-            //Hay que fixearlo, comportamiendo impredecible, un asteroide podria detectar que colisono consigo mismo
-            /*foreach (Dibujable asteroide in asteroidManager.lista())
-            {
-                foreach (Dibujable asteroide2 in asteroidManager.lista())
-                {
-                    if (asteroide2.getColision().colisiono(((TgcBoundingSphere)asteroide.getColision().getBoundingBox())))
-                    {
-                        ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.DarkGreen);
-                        ((TgcBoundingSphere)asteroide2.getColision().getBoundingBox()).setRenderColor(Color.DarkGreen);
 
-                    }
-                    else
-                        ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Yellow);
-
-                }
-            }
-
-            */
+            //Chequeo colision entre asteroides 
+            asteroidManager.colisionEntreAsteroides(0); //hay que pasarle el 0 como parametro para que empieze a preguntar desde el asteoride 0, es una funcion recursiva
+            
+            
             nave.rotar(elapsedTime,listaDibujable);
             nave.desplazarse(elapsedTime,listaDibujable);
             if(!camara.soyFPS())
