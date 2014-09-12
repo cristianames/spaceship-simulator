@@ -89,7 +89,7 @@ namespace AlumnoEjemplos.TheGRID
         private EjeCoordenadas vectorDireccion;
         internal Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
         protected IColision colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
-       // protected IExplosion explosion; // Acá va el manejo de un objeto cuando es chocado por otro.
+        protected Explosion explosion; // Acá va el manejo de un objeto cuando es chocado por otro.
         
         //----------------------------------------------------------------------------------------------------INSTANCIADOR-----
         public Dibujable()
@@ -377,6 +377,11 @@ namespace AlumnoEjemplos.TheGRID
         public virtual void exploto()
         {
 
+        }
+
+        internal void morite()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -2,22 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TgcViewer.Utils.TgcGeometry;
-using TgcViewer.Utils.TgcSceneLoader;
-using AlumnoEjemplos.MiGrupo;
 
 namespace AlumnoEjemplos.TheGRID.Explosiones
 {
-    public static class Explosion
+    abstract class Explosion
     {
-        public static void explosionAsteroide(Asteroide asteroide)
-        {
+        internal float vida;
+        abstract internal Dibujable duenio;
 
-        }
-
-        public static void explosionNave(Nave nave)
-        {
-
-        }
+        abstract public void daniateEn(float danio);
     }
 }

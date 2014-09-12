@@ -17,7 +17,7 @@ namespace AlumnoEjemplos.TheGRID
     {
         static Device d3dDevice = GuiController.Instance.D3dDevice;
         static string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;        
-        private static T numeroRandom<T>(List<T> valores)
+        public static T numeroRandom<T>(List<T> valores)
         {
             Random random = new Random();
             int numero = random.Next();
@@ -84,7 +84,8 @@ namespace AlumnoEjemplos.TheGRID
             trasladar(asteroide, posicion);
             asteroide.setPosicion(posicion);
             asteroide.setEjes(ejes);
-            asteroide.fisica = new Fisica(asteroide,0,0,formato.getMasa());
+            asteroide.setFisica(0, 0, formato.getMasa());
+            asteroide.ex
             asteroide.velocidad = formato.getVelocidad();
             return asteroide;
         }
