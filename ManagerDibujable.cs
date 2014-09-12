@@ -5,6 +5,7 @@ using System.Text;
 using TgcViewer.Utils.TgcGeometry;
 using Microsoft.DirectX;
 using TgcViewer.Utils.TgcSceneLoader;
+using TgcViewer;
 
 namespace AlumnoEjemplos.TheGRID
 {
@@ -51,6 +52,14 @@ namespace AlumnoEjemplos.TheGRID
         {
             return controlados;
         }
+
+        public void destruirLista()
+        {
+            foreach (var item in controlados)
+            {
+                item.dispose();
+            }
+        }
     }
 
     class ManagerLaser : ManagerDibujable
@@ -89,15 +98,16 @@ namespace AlumnoEjemplos.TheGRID
                 trasladar(item, time);
                 rotar(item, time);
                 ((TgcBoundingSphere)item.getColision().getBoundingBox()).setCenter(item.getPosicion());
-                item.render();
+                //Chequea si esta dentro del frustrum
+                TgcFrustum frustrum = GuiController.Instance.Frustum;
+                TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult resultado = TgcCollisionUtils.classifyFrustumSphere(frustrum, (TgcBoundingSphere)item.getColision().getBoundingBox());
+                //if (resultado != TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult.OUTSIDE)
+                    item.render();
             }
         }
 
-        public void fabricarCinturonAsteroides(Vector3 pos_nave)
+        public void fabricarCinturonAsteroides(Vector3 pos_nave, int raizCantidadAsteroides, int distanciaEntreAsteroides)
         {
-            int raizCantidadAsteroides = 20;
-            int distanciaEntreAsteroides = 150;
-
             int distancia = raizCantidadAsteroides * distanciaEntreAsteroides; //150 de separacion entre cada asteroides
             float pos_x;
             float pos_y = pos_nave.Y;

@@ -17,6 +17,7 @@ using TgcViewer.Utils.Terrain;
 using Microsoft.DirectX.DirectInput;
 using AlumnoEjemplos.TheGRID.Colisiones;
 
+
 namespace AlumnoEjemplos.MiGrupo
 {
     public class EjemploAlumno : TgcExample
@@ -131,9 +132,9 @@ namespace AlumnoEjemplos.MiGrupo
             //Cargamos la camara
             camara = new CambioCamara(nave);
 
-            asteroidManager.creaUno(TamanioAsteroide.MUYGRANDE);
-            asteroidManager.fabricar(5, TamanioAsteroide.MEDIANO);
-            //asteroidManager.fabricarCinturonAsteroides(nave.getCentro());
+            //asteroidManager.creaUno(TamanioAsteroide.MUYGRANDE);
+            //asteroidManager.fabricar(5, TamanioAsteroide.MEDIANO);
+            asteroidManager.fabricarCinturonAsteroides(nave.getCentro(),20,100);
 
             //Flecha direccion objetivo
             arrow = new TgcArrow();
@@ -165,7 +166,8 @@ namespace AlumnoEjemplos.MiGrupo
             string[] opciones3 = new string[] { "Activado", "Desactivado" };
             GuiController.Instance.Modifiers.addInterval("Desplaz. Avanzado", opciones3, 1);
             string[] opciones4 = new string[] { "Activado", "Desactivado" };
-            GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);            
+            GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);
+
         }
         //--------------------------------------------------------RENDER-----
 
@@ -219,6 +221,7 @@ namespace AlumnoEjemplos.MiGrupo
             laserManager.operar(elapsedTime);
             asteroidManager.operar(elapsedTime);
 
+
             //Cargar valores de la flecha
             Vector3 navePos = nave.getCentro();
             Vector3 naveDir = Vector3.Subtract(new Vector3(0, 0, 10000), nave.getDireccion());
@@ -237,7 +240,7 @@ namespace AlumnoEjemplos.MiGrupo
             //suelo.render();
 
             //Chequeo de colision
-           //Chequeo si la nave choco con algun asteroide
+            //Chequeo si la nave choco con algun asteroide
             bool naveColision = false;
             foreach (Dibujable asteroide in asteroidManager.lista())
             {
@@ -298,8 +301,7 @@ namespace AlumnoEjemplos.MiGrupo
             nave.desplazarse(elapsedTime,listaDibujable);
             if(!camara.soyFPS())
                 nave.render();
-
-                       
+       
             //Refrescar panel lateral
             //case
             string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
@@ -323,8 +325,10 @@ namespace AlumnoEjemplos.MiGrupo
 
         public override void close()
         {
-           // laser.dispose();
+            asteroidManager.destruirLista();
+            laserManager.destruirLista();
             nave.dispose();
+
             //suelo.dispose();
 
         }
