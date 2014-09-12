@@ -88,9 +88,8 @@ namespace AlumnoEjemplos.TheGRID
             {
                 trasladar(item, time);
                 rotar(item, time);
-                item.render();
                 ((TgcBoundingSphere)item.getColision().getBoundingBox()).setCenter(item.getPosicion());
-                item.renderBoundingBox();
+                item.render();
             }
         }
 
