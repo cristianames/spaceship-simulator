@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 using TgcViewer.Utils.TgcGeometry;
 using Microsoft.DirectX;
 using TgcViewer.Utils.TgcSceneLoader;
@@ -61,6 +62,19 @@ namespace AlumnoEjemplos.TheGRID
         {
             addNew(Factory.crearLaser(ejes,posicionNave));
         }
+
+        public void chocoAsteroide(Dibujable asteroide)
+        {
+            foreach (Dibujable laser in controlados)
+            {
+                 if (laser.getColision().colisiono(((TgcBoundingSphere)asteroide.getColision().getBoundingBox())))
+                    {
+                        ((TgcObb)laser.getColision().getBoundingBox()).setRenderColor(Color.Blue);
+                        ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Blue);
+
+                    }
+            }
+        }
     }
 
     class ManagerAsteroide : ManagerDibujable
@@ -117,6 +131,58 @@ namespace AlumnoEjemplos.TheGRID
         public void mostrarAsteroides(Vector3 pos_nave)
         {
 
+        }
+
+        public void chocoNave(Dibujable nave)
+        {
+            bool naveColision = false;
+            foreach (Dibujable asteroide in controlados)
+            {
+                if (nave.getColision().colisiono(((TgcBoundingSphere)asteroide.getColision().getBoundingBox())))
+                {
+                    ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(Color.Red);
+                    ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Red);
+                    naveColision = true;
+                }
+                else
+                {
+                    ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Yellow);
+                }            
+            }
+            if (!naveColision) ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(Color.Yellow);
+        }
+
+        public void chocoLasers(ManagerLaser lasers)
+        {
+            foreach (Dibujable asteroide in controlados)
+            {
+                lasers.chocoAsteroide(asteroide);
+            }
+        }
+
+        //public void chocoAsteroide(Dibuajb)
+
+        public void colisionEntreAsteroides(int i) 
+        {            
+            int pos = i;
+            int cant = controlados.Count();
+            if (i + 1 == controlados.Count()) //osea es el ultimo
+            {
+                //no hace nada
+            }
+
+            else
+            {
+                for (++i; i < cant; i++)
+                {
+                    if (controlados[pos].getColision().colisiono(((TgcBoundingSphere)controlados[i].getColision().getBoundingBox()))) 
+                    {
+                        ((TgcBoundingSphere)controlados[pos].getColision().getBoundingBox()).setRenderColor(Color.DarkGreen);
+                        ((TgcBoundingSphere)controlados[i].getColision().getBoundingBox()).setRenderColor(Color.DarkGreen);
+                    }
+                }
+                colisionEntreAsteroides(++pos);
+            }
         }
     }
 }
