@@ -8,7 +8,8 @@ namespace AlumnoEjemplos.TheGRID.Explosiones
     abstract class Explosion
     {
         internal float vida;
-        abstract internal Dibujable duenio;
+        internal float escudo;
+        internal Dibujable duenio;
 
         abstract public void daniateEn(float danio);
     }

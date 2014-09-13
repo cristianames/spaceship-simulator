@@ -7,8 +7,7 @@ namespace AlumnoEjemplos.TheGRID.Explosiones
 {
     class ExplosionNave : Explosion
     {
-        private float escudo;
-        ExplosionNave(Dibujable owner, float life, float shield)
+        public ExplosionNave(Dibujable owner, float life, float shield)
         {
             duenio = owner;
             vida = life;

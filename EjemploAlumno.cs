@@ -16,6 +16,7 @@ using AlumnoEjemplos.TheGRID.Camara;
 using TgcViewer.Utils.Terrain;
 using Microsoft.DirectX.DirectInput;
 using AlumnoEjemplos.TheGRID.Colisiones;
+using AlumnoEjemplos.TheGRID.Explosiones;
 
 
 namespace AlumnoEjemplos.MiGrupo
@@ -107,6 +108,10 @@ namespace AlumnoEjemplos.MiGrupo
             nave.setObject(scene.Meshes[0], 200, 100, new Vector3(0, 180, 0), new Vector3(0.5f, 0.5f, 0.5f));
             nave.setFisica(100, 500, 100);
             nave.SetPropiedades(true, false, false);
+            ExplosionNave modulo;
+            modulo = new ExplosionNave(nave,100,200);
+            nave.explosion = modulo;
+            
             //Cargamos su BB
             TgcBoundingBox naveBb = ((TgcMesh)nave.objeto).BoundingBox;
             naveBb.scaleTranslate(new Vector3(0, 0, 0), new Vector3(0.5f, 0.5f, 0.5f));
@@ -150,8 +155,8 @@ namespace AlumnoEjemplos.MiGrupo
             GuiController.Instance.UserVars.addVar("Posicion Z:");
             //Cargar valor en UserVar
             GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual());
-            GuiController.Instance.UserVars.setValue("Integtidad Nave:", 100);
-            GuiController.Instance.UserVars.setValue("Integridad Escudos:", 100);
+            GuiController.Instance.UserVars.setValue("Integtidad Nave:", objetoPrincipal.explosion.vida);
+            GuiController.Instance.UserVars.setValue("Integridad Escudos:", objetoPrincipal.explosion.escudo);
             GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);
             GuiController.Instance.UserVars.setValue("Posicion Y:", objetoPrincipal.getPosicion().Y);
             GuiController.Instance.UserVars.setValue("Posicion Z:", objetoPrincipal.getPosicion().Z);
@@ -290,6 +295,8 @@ namespace AlumnoEjemplos.MiGrupo
             GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);
             GuiController.Instance.UserVars.setValue("Posicion Y:", objetoPrincipal.getPosicion().Y);
             GuiController.Instance.UserVars.setValue("Posicion Z:", objetoPrincipal.getPosicion().Z);
+            GuiController.Instance.UserVars.setValue("Integtidad Nave:", objetoPrincipal.explosion.vida);
+            GuiController.Instance.UserVars.setValue("Integridad Escudos:", objetoPrincipal.explosion.escudo);
             //Obtener valores de Modifiers
             objetoPrincipal.fisica.aceleracion = (float)GuiController.Instance.Modifiers["Aceleracion"];
             objetoPrincipal.fisica.acelFrenado = (float)GuiController.Instance.Modifiers["Frenado"];

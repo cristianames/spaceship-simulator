@@ -7,7 +7,7 @@ using TgcViewer;
 using TgcViewer.Utils.TgcSceneLoader;
 using System.Drawing;
 using Microsoft.DirectX.Direct3D;
-//using AlumnoEjemplos.TheGRID.Explosiones;
+using AlumnoEjemplos.TheGRID.Explosiones;
 using AlumnoEjemplos.TheGRID.Colisiones;
 using TgcViewer.Utils.TgcGeometry;
 
@@ -89,7 +89,7 @@ namespace AlumnoEjemplos.TheGRID
         private EjeCoordenadas vectorDireccion;
         internal Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
         protected IColision colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
-        protected Explosion explosion; // Acá va el manejo de un objeto cuando es chocado por otro.
+        internal Explosion explosion; // Acá va el manejo de un objeto cuando es chocado por otro.
         
         //----------------------------------------------------------------------------------------------------INSTANCIADOR-----
         public Dibujable()
