@@ -19,7 +19,7 @@ using AlumnoEjemplos.TheGRID.Colisiones;
 using AlumnoEjemplos.TheGRID.Explosiones;
 
 
-namespace AlumnoEjemplos.MiGrupo
+namespace AlumnoEjemplos.TheGrid
 {
     public class EjemploAlumno : TgcExample
     {

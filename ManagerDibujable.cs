@@ -81,7 +81,7 @@ namespace AlumnoEjemplos.TheGRID
         public void chocoAsteroide()
         {
             foreach (Dibujable laser in controlados)
-                MiGrupo.EjemploAlumno.workspace().AsteroidManager.chocoLaser(laser);
+                TheGrid.EjemploAlumno.workspace().AsteroidManager.chocoLaser(laser);
         }
     }
 
@@ -110,7 +110,7 @@ namespace AlumnoEjemplos.TheGRID
                 ((TgcBoundingSphere)item.getColision().getBoundingBox()).setCenter(item.getPosicion());
                 //Chequea si esta dentro del frustrum
                 //TgcFrustum frustrum = GuiController.Instance.Frustum;
-                TgcFrustum frustrum = MiGrupo.EjemploAlumno.workspace().getCurrentFrustrum();
+                TgcFrustum frustrum = TheGrid.EjemploAlumno.workspace().getCurrentFrustrum();
                 TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult resultado = TgcCollisionUtils.classifyFrustumSphere(frustrum, (TgcBoundingSphere)item.getColision().getBoundingBox());
                 if (resultado != TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult.OUTSIDE)
                     item.render();
