@@ -13,8 +13,8 @@ namespace AlumnoEjemplos.TheGRID
 
         public override void teChoque(Dibujable colisionador)
         {
-            if (vida <= 0) Explosion.explosionNave(this);
-            else restaVida(colisionador);
+            //if (vida <= 0) Explosion.explosionNave(this);
+            //else restaVida(colisionador);
         }
 
         private void restaVida(Dibujable colisionador)

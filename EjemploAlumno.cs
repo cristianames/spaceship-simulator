@@ -50,10 +50,12 @@ namespace AlumnoEjemplos.MiGrupo
         CambioCamara camara;
         TgcSkyBox skyBox;
         TgcArrow arrow;
+        TgcFrustum currentFrustrum;
 
         //--------------------------------------------------------
 
         public static EjemploAlumno workspace() { return singleton; }
+        public TgcFrustum getCurrentFrustrum() { return currentFrustrum; }
 
         public override void init()
         {
@@ -63,7 +65,7 @@ namespace AlumnoEjemplos.MiGrupo
             //Carpeta de archivos Media del alumno
             string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
             singleton = this;
-
+            currentFrustrum = new TgcFrustum();
 
             d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
             /*
@@ -139,7 +141,7 @@ namespace AlumnoEjemplos.MiGrupo
 
             //asteroidManager.creaUno(TamanioAsteroide.MUYGRANDE);
             //asteroidManager.fabricar(5, TamanioAsteroide.MEDIANO);
-            asteroidManager.fabricarCinturonAsteroides(nave.getCentro(),20,100);
+            asteroidManager.fabricarCinturonAsteroides(nave.getCentro(),10,200);
 
             //Flecha direccion objetivo
             arrow = new TgcArrow();
@@ -203,7 +205,7 @@ namespace AlumnoEjemplos.MiGrupo
             if (input.keyDown(Key.O)) { asteroidManager.creaUno(TamanioAsteroide.CHICO); }
 
             camara.cambiarPosicionCamara();
-
+            currentFrustrum.updateMesh(GuiController.Instance.CurrentCamera.getPosition(),GuiController.Instance.CurrentCamera.getLookAt());
             
             if (input.keyDown(Key.Space))
             {

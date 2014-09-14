@@ -21,7 +21,7 @@ namespace AlumnoEjemplos.TheGRID
             }
             else
             {
-                Explosion.explosionAsteroide(this);
+               // Explosion.explosionAsteroide(this);
             }
         }
 
