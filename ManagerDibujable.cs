@@ -10,7 +10,7 @@ using TgcViewer;
 
 namespace AlumnoEjemplos.TheGRID
 {
-    abstract class ManagerDibujable
+    public abstract class ManagerDibujable
     {
         protected List<Dibujable> controlados;
         protected int limiteControlados;
@@ -54,6 +54,12 @@ namespace AlumnoEjemplos.TheGRID
             return controlados;
         }
 
+        public void eliminarElemento(Dibujable aEliminar)
+        {
+            controlados.Remove(aEliminar);
+            aEliminar.dispose();
+        }
+
         public void destruirLista()
         {
             foreach (var item in controlados)
@@ -63,7 +69,7 @@ namespace AlumnoEjemplos.TheGRID
         }
     }
 
-    class ManagerLaser : ManagerDibujable
+    public class ManagerLaser : ManagerDibujable
     {
         public ManagerLaser(int limite) : base(limite) { }
         
@@ -72,22 +78,17 @@ namespace AlumnoEjemplos.TheGRID
             addNew(Factory.crearLaser(ejes,posicionNave));
         }
 
-        public void chocoAsteroide(Dibujable asteroide)
+        public void chocoAsteroide()
         {
             foreach (Dibujable laser in controlados)
-            {
-                 if (laser.getColision().colisiono(((TgcBoundingSphere)asteroide.getColision().getBoundingBox())))
-                    {
-                        ((TgcObb)laser.getColision().getBoundingBox()).setRenderColor(Color.Blue);
-                        ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Blue);
-
-                    }
-            }
+                MiGrupo.EjemploAlumno.workspace().AsteroidManager.chocoLaser(laser);
         }
     }
 
-    class ManagerAsteroide : ManagerDibujable
+    public class ManagerAsteroide : ManagerDibujable
     {
+        private List<Dibujable> buffer = new List<Dibujable>();
+        
         public ManagerAsteroide(int limite) : base(limite) { }
 
         public void explotaAlPrimero(){
@@ -97,12 +98,7 @@ namespace AlumnoEjemplos.TheGRID
 
         public void creaUno(TamanioAsteroide tam)
         {
-            addNew(Factory.crearAsteroide(tam,new Vector3(10,40,50)));
-        }
-
-        public void fabricar(int cuantos, TamanioAsteroide tam)
-        {
-            for (int i = 0; i < cuantos; i++ ) addNew(Factory.crearAsteroide(tam, new Vector3(10*i, 20*i, 100)));
+            addNew(Factory.crearAsteroide(tam,new Vector3(200,200,400)));
         }
 
         public override void operar(float time)
@@ -119,6 +115,16 @@ namespace AlumnoEjemplos.TheGRID
                 if (resultado != TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult.OUTSIDE)
                     item.render();
             }
+        }
+
+        public void fabricar(int cuantos, TamanioAsteroide tam)
+        {
+            for (int i = 0; i < cuantos; i++ ) addNew(Factory.crearAsteroide(tam, new Vector3(10*i, 20*i, 100)));
+        }
+
+        public void fabricarMiniAsteroides(int cuantos, TamanioAsteroide tam, Vector3 pos)
+        {
+            for (int i = 0; i < cuantos; i++) addNew(Factory.crearAsteroide(tam, pos));
         }
 
         public void fabricarCinturonAsteroides(Vector3 pos_nave, int raizCantidadAsteroides, int distanciaEntreAsteroides)
@@ -149,25 +155,34 @@ namespace AlumnoEjemplos.TheGRID
             bool naveColision = false;
             foreach (Dibujable asteroide in controlados)
             {
+                Color color = Color.Yellow;
                 if (nave.getColision().colisiono(((TgcBoundingSphere)asteroide.getColision().getBoundingBox())))
                 {
-                    ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(Color.Red);
-                    ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Red);
+                    color = Color.Red;
+                    ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(color);
                     naveColision = true;
+                    nave.teChoque(asteroide);
+                    asteroide.teChoque(nave);
+                    break;
                 }
-                else
-                {
-                    ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Yellow);
-                }            
+                ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(color);
             }
+            //controlados.Concat(buffer);
+            //buffer.Clear();
             if (!naveColision) ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(Color.Yellow);
         }
 
-        public void chocoLasers(ManagerLaser lasers)
+        public void chocoLaser(Dibujable laser)
         {
             foreach (Dibujable asteroide in controlados)
             {
-                lasers.chocoAsteroide(asteroide);
+                if (laser.getColision().colisiono(((TgcBoundingSphere)asteroide.getColision().getBoundingBox())))
+                {
+                    ((TgcObb)laser.getColision().getBoundingBox()).setRenderColor(Color.Blue);
+                    ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Blue);
+                    asteroide.teChoque(laser);
+                    break;
+                }
             }
         }
 

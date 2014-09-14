@@ -44,7 +44,8 @@ namespace AlumnoEjemplos.MiGrupo
         float timeLaser = 0; //Inicializacion.
         const float betweenTime = 0.3f;    //Tiempo de espera entre cada disparo.
         ManagerLaser laserManager;
-        ManagerAsteroide asteroidManager;
+        private ManagerAsteroide asteroidManager;
+        public ManagerAsteroide AsteroidManager { get { return asteroidManager; } }
 
         //Modificador de la camara del proyecto
         CambioCamara camara;
@@ -97,7 +98,7 @@ namespace AlumnoEjemplos.MiGrupo
             */
 
             //Crear manager Lasers
-            laserManager = new ManagerLaser(50);
+            laserManager = new ManagerLaser(5);
             
             //Crear 5 asteroides
             asteroidManager = new ManagerAsteroide(500);
@@ -139,8 +140,8 @@ namespace AlumnoEjemplos.MiGrupo
             //Cargamos la camara
             camara = new CambioCamara(nave);
 
-            //asteroidManager.creaUno(TamanioAsteroide.MUYGRANDE);
-            //asteroidManager.fabricar(5, TamanioAsteroide.MEDIANO);
+            asteroidManager.creaUno(TamanioAsteroide.MUYGRANDE);
+            asteroidManager.fabricar(5, TamanioAsteroide.MEDIANO);
             asteroidManager.fabricarCinturonAsteroides(nave.getCentro(),10,200);
 
             //Flecha direccion objetivo
@@ -178,7 +179,10 @@ namespace AlumnoEjemplos.MiGrupo
         }
         //--------------------------------------------------------RENDER-----
 
-        // <param name="elapsedTime">Tiempo en segundos transcurridos desde el último frame</param>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elapsedTime">Tiempo en segundos transcurridos desde el último frame</param>
         public override void render(float elapsedTime)
         {
             //-----UPDATE-----
@@ -194,9 +198,9 @@ namespace AlumnoEjemplos.MiGrupo
             if (input.keyDown(Key.D)) { nave.giro = 1; }
             if (input.keyDown(Key.W)) { nave.acelerar(); }
             if (input.keyDown(Key.S)) { nave.frenar(); }
+
             //Otros
             //if (input.keyDown(Key.LeftShift)) { nave.acelerar(1); }
-
             //if (input.keyDown(Key.F1)) { camara.modoFPS(); }
             //if (input.keyDown(Key.F2)) { camara.modoExterior(); }
             //if (input.keyDown(Key.F3)) { camara.modoTPS(); }
@@ -248,7 +252,10 @@ namespace AlumnoEjemplos.MiGrupo
 
             //Chequeo de colision
             //Chequeo si la nave choco con algun asteroide
-            bool naveColision = false;
+
+            //Eze: Codigo repetido, esto ya se realiza en asteroidManager.chocoNave(nave);
+
+            /*bool naveColision = false;
             foreach (Dibujable asteroide in asteroidManager.lista())
             {
 
@@ -264,13 +271,18 @@ namespace AlumnoEjemplos.MiGrupo
                 }            
             }
             if (!naveColision) ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(Color.Yellow);
+            */
 
             //no chequeo si los asteroides chocaron con la nave
 
            //Chequeo si la nave choco con algun asteroide
             asteroidManager.chocoNave(nave);                     
             //Chequeo si los lasers chocaron con algun asteroide
-            asteroidManager.chocoLasers(laserManager);
+            
+            //Invierto el flujo de este mensaje por cuestiones tecnicas
+            //asteroidManager.chocoLasers(laserManager);
+            laserManager.chocoAsteroide(); //no hace falta pasar el manager de asteroides, lo saca del singleton
+            
             //no chequeo si algun laser choco con algun otro
 
             //Chequeo colision entre asteroides 
