@@ -36,8 +36,9 @@ namespace AlumnoEjemplos.TheGRID
         {
             //duenio.rotar(time, dibujables);
         }
-        public void trasladar(float time, List<Dibujable> dibujables)
+        public Vector3 trasladar(float time, List<Dibujable> dibujables)
         {
+            Vector3 devolucion = new Vector3();
             if (!frenado)
             {
                 if (velocidadInstantanea < 0) velocidadInstantanea = 0;
@@ -67,6 +68,7 @@ namespace AlumnoEjemplos.TheGRID
                 dDireccion += dGravedad;
                 dDireccion += dTrayectoria;
                 Matrix translate = Matrix.Translation(dDireccion);
+                devolucion = dDireccion;
 
                 Vector4 vector4 = Vector3.Transform(duenio.getPosicion(), translate);
                 duenio.setPosicion(new Vector3(vector4.X, vector4.Y, vector4.Z));
@@ -95,6 +97,7 @@ namespace AlumnoEjemplos.TheGRID
 
                     //Armamos la matriz
                     Matrix translate = Matrix.Translation(dTrayectoria);
+                    devolucion = dTrayectoria;
                     Vector4 vector4 = Vector3.Transform(duenio.getPosicion(), translate);
                     duenio.setPosicion(new Vector3(vector4.X, vector4.Y, vector4.Z));
 
@@ -105,6 +108,7 @@ namespace AlumnoEjemplos.TheGRID
                 }
             frenado = false;
             }
+            return devolucion;
         }
         public Vector3 indicarGravedad(Vector3 posicionSolicitante, float mass)
         {

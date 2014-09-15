@@ -63,36 +63,31 @@ namespace AlumnoEjemplos.TheGrid
             EjemploAlumno.singleton = this;
             //GuiController.Instance: acceso principal a todas las herramientas del Framework
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
+            //GuiController.Instance.FpsCounterEnable = true;
+            //GuiController.Instance.FullScreenEnable = true;
             //Carpeta de archivos Media del alumno
             string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
             singleton = this;
             currentFrustrum = new TgcFrustum();
-
-            d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
+            //d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
             /*
             //Crear SkyBox 
             skyBox = new TgcSkyBox();
             skyBox.Center = new Vector3(0, 0, 0);
             skyBox.Size = new Vector3(15000, 15000, 150000);
-
-
             //Crear suelo
             TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, alumnoMediaFolder + "TheGrid\\SkyBox\\adelante.jpg");
             suelo = TgcBox.fromSize(new Vector3(0, 0, 9500), new Vector3(1000, 1000, 0), pisoTexture);   
-
             //Configurar color
             //skyBox.Color = Color.OrangeRed;
-
             //Configurar las texturas para cada una de las 6 caras
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, alumnoMediaFolder + "TheGrid\\SkyBox\\arriba.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, alumnoMediaFolder + "TheGrid\\SkyBox\\abajo.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, alumnoMediaFolder + "TheGrid\\SkyBox\\izquierda.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, alumnoMediaFolder + "TheGrid\\SkyBox\\derecha.jpg");
-
             //Hay veces es necesario invertir las texturas Front y Back si se pasa de un sistema RightHanded a uno LeftHanded
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, alumnoMediaFolder + "TheGrid\\SkyBox\\adelante.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, alumnoMediaFolder + "TheGrid\\SkyBox\\atras.jpg");
-            
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, alumnoMediaFolder + "TheGrid\\SkyBox\\atras.jpg");           
             //Actualizar todos los valores para crear el SkyBox
             skyBox.updateValues();
             */
@@ -108,8 +103,8 @@ namespace AlumnoEjemplos.TheGrid
             TgcScene scene;
             nave = new Dibujable(0, 0, 0);
             scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "TheGrid\\Nave\\nave3-TgcScene.xml");
-            nave.setObject(scene.Meshes[0], 200, 100, new Vector3(0, 180, 0), new Vector3(0.5f, 0.5f, 0.5f));
-            nave.setFisica(100, 500, 100);
+            nave.setObject(scene.Meshes[0], 100, 25, new Vector3(0, 180, 0), new Vector3(0.5f, 0.5f, 0.5f));
+            nave.setFisica(50, 400, 100);
             nave.SetPropiedades(true, false, false);
             ExplosionNave modulo;
             modulo = new ExplosionNave(nave,100,200);
@@ -132,7 +127,7 @@ namespace AlumnoEjemplos.TheGrid
             sol = new Dibujable();
             sol.setObject(mesh_Sol, 0, 100, new Vector3(0, 0, 0), new Vector3(1F, 1F, 1F));
             sol.trasladar(new Vector3(0, 0, 2500));
-            sol.rotacion = 1;
+            sol.giro = 1;
 
 
             //Cargamos la nave como objeto principal.
@@ -142,7 +137,7 @@ namespace AlumnoEjemplos.TheGrid
 
             asteroidManager.creaUno(TamanioAsteroide.MUYGRANDE);
             asteroidManager.fabricar(5, TamanioAsteroide.MEDIANO);
-            asteroidManager.fabricarCinturonAsteroides(nave.getCentro(),10,200);
+            asteroidManager.fabricarCinturonAsteroides(nave.getCentro(),10,50);
 
             //Flecha direccion objetivo
             arrow = new TgcArrow();
@@ -187,6 +182,7 @@ namespace AlumnoEjemplos.TheGrid
         {
             //-----UPDATE-----
             TgcD3dInput input = GuiController.Instance.D3dInput;
+            GuiController.Instance.FpsCounterEnable = true;
 
             //Flechas
             if (input.keyDown(Key.Left)) { nave.rotacion = 1; }
@@ -227,7 +223,8 @@ namespace AlumnoEjemplos.TheGrid
 
             //Device de DirectX para renderizar
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
-            d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
+            //d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
+            //GuiController.Instance.FpsCounterEnable = true;
 
             laserManager.operar(elapsedTime);
             asteroidManager.operar(elapsedTime);
