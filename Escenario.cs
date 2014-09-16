@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TgcViewer.Utils.TgcGeometry;
 
 namespace AlumnoEjemplos.TheGRID
 {
@@ -11,6 +12,8 @@ namespace AlumnoEjemplos.TheGRID
         public ManagerLaser laserManager;
         public ManagerAsteroide asteroidManager;
         public Dibujable principal;
+        public TgcBoundingCylinder limite;
+        private Boolean fuera_limite = false;
         enum TipoModo { THE_OPENIG, IMPULSE_DRIVE, WELCOME_HOME, VACUUM };
         private TipoModo escenarioActual = TipoModo.THE_OPENIG;
 
@@ -26,7 +29,8 @@ namespace AlumnoEjemplos.TheGRID
             disposeOld();
             laserManager = new ManagerLaser(5);
             asteroidManager = new ManagerAsteroide(1000);
-            asteroidManager.fabricarCinturonAsteroides(new Vector3(-500, 0, 2000), 10, 50);
+            asteroidManager.fabricarCinturonAsteroides(principal.getCentro(), 10, 100);
+            limite = new TgcBoundingCylinder(principal.getCentro(), 10000, 100000);
         }
         //-------------------------------------------------------------------------------------------CHAPTER-2
         public void loadChapter2() 
@@ -98,6 +102,10 @@ namespace AlumnoEjemplos.TheGRID
             //Chequeo colision entre asteroides 
             asteroidManager.colisionEntreAsteroides(0); //hay que pasarle el 0 como parametro para que empieze a preguntar desde el asteoride 0, es una funcion recursiva
             
+            if(TgcCollisionUtils.testPointCylinder(principal.getCentro(),limite)){
+                fuera_limite = true;
+                //Aca activaria el bombardeo de asteroides que te destrozarian la carroceria
+            }
         }
 
         internal void chequearCambio(string opcion)

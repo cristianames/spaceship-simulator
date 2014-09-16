@@ -129,14 +129,14 @@ namespace AlumnoEjemplos.TheGRID
 
         public void fabricarCinturonAsteroides(Vector3 pos_base, int raizCantidadAsteroides, int distanciaEntreAsteroides)
         {
-            int distancia = raizCantidadAsteroides * distanciaEntreAsteroides; //150 de separacion entre cada asteroides
+            int distancia = raizCantidadAsteroides * distanciaEntreAsteroides; //150 de separacion entre cada asteroides lo usual
             float pos_x;
             float pos_y = pos_base.Y;
-            float pos_z = pos_base.Z - (distancia/2);
+            float pos_z = pos_base.Z - (distancia /2);
 
             for (int i = 0; i < raizCantidadAsteroides; i++)
             {
-                pos_x = pos_base.X - (distancia / 2);
+                pos_x = pos_base.X - distancia;
                 for (int j = 0; j < raizCantidadAsteroides; j++)
                 {
                     pos_x += distanciaEntreAsteroides * j;
@@ -144,11 +144,9 @@ namespace AlumnoEjemplos.TheGRID
                 }
                 pos_z += distanciaEntreAsteroides * i;
             }
-        }
-        public void mostrarAsteroides(Vector3 pos_nave)
-        {
 
         }
+
 
         public void chocoNave(Dibujable nave)
         {
@@ -203,6 +201,7 @@ namespace AlumnoEjemplos.TheGRID
                 {
                     if (controlados[pos].getColision().colisiono(((TgcBoundingSphere)controlados[i].getColision().getBoundingBox()))) 
                     {
+                        //controlados[pos].teChoque(controlados[i]);
                         ((TgcBoundingSphere)controlados[pos].getColision().getBoundingBox()).setRenderColor(Color.DarkGreen);
                         ((TgcBoundingSphere)controlados[i].getColision().getBoundingBox()).setRenderColor(Color.DarkGreen);
                     }

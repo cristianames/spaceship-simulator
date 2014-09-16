@@ -28,7 +28,8 @@ namespace AlumnoEjemplos.TheGRID
         private void fraccionate(Dibujable colisionador)
         {
             ManagerAsteroide manager = TheGrid.EjemploAlumno.workspace().Escenario.asteroidManager;
-            manager.fabricarMiniAsteroides(3, formato.tamanioAnterior(), getPosicion());
+            if (formato.tamanioAnterior() != TamanioAsteroide.NULO) 
+                manager.fabricarMiniAsteroides(3, formato.tamanioAnterior(), getPosicion());
             manager.eliminarElemento(this);
         }
 
@@ -45,7 +46,7 @@ namespace AlumnoEjemplos.TheGRID
         }
     }
 
-    public enum TamanioAsteroide { MUYGRANDE, GRANDE, MEDIANO, CHICO }
+    public enum TamanioAsteroide { MUYGRANDE, GRANDE, MEDIANO, CHICO, NULO }
 
     public interface FormatoAsteroide
     {
@@ -92,6 +93,6 @@ namespace AlumnoEjemplos.TheGRID
         public float getMasa() { return masa; }
         public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
         public float getVelocidad() { return 40; }
-        public TamanioAsteroide tamanioAnterior() { return TamanioAsteroide.CHICO; }
+        public TamanioAsteroide tamanioAnterior() { return TamanioAsteroide.NULO; }
     }
 }
