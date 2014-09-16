@@ -81,7 +81,7 @@ namespace AlumnoEjemplos.TheGRID
         public void chocoAsteroide()
         {
             foreach (Dibujable laser in controlados)
-                TheGrid.EjemploAlumno.workspace().AsteroidManager.chocoLaser(laser);
+                TheGrid.EjemploAlumno.workspace().Escenario.asteroidManager.chocoLaser(laser);
         }
     }
 
@@ -127,16 +127,16 @@ namespace AlumnoEjemplos.TheGRID
             for (int i = 0; i < cuantos; i++) addNew(Factory.crearAsteroide(tam, pos));
         }
 
-        public void fabricarCinturonAsteroides(Vector3 pos_nave, int raizCantidadAsteroides, int distanciaEntreAsteroides)
+        public void fabricarCinturonAsteroides(Vector3 pos_base, int raizCantidadAsteroides, int distanciaEntreAsteroides)
         {
             int distancia = raizCantidadAsteroides * distanciaEntreAsteroides; //150 de separacion entre cada asteroides
             float pos_x;
-            float pos_y = pos_nave.Y;
-            float pos_z = pos_nave.Z - (distancia/2);
+            float pos_y = pos_base.Y;
+            float pos_z = pos_base.Z - (distancia/2);
 
             for (int i = 0; i < raizCantidadAsteroides; i++)
             {
-                pos_x = pos_nave.X - (distancia / 2);
+                pos_x = pos_base.X - (distancia / 2);
                 for (int j = 0; j < raizCantidadAsteroides; j++)
                 {
                     pos_x += distanciaEntreAsteroides * j;

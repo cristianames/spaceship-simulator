@@ -65,7 +65,7 @@ namespace AlumnoEjemplos.TheGRID
 
             //Cargamos las cosas en el dibujable
             Asteroide asteroide = new Asteroide();
-            asteroide.setObject(mesh_asteroide, 10, 4, rotacion, escalado);
+            asteroide.setObject(mesh_asteroide, 2, 4, rotacion, escalado);
             asteroide.AutoTransformEnable = false;
             asteroide.setColision(new ColisionAsteroide());
             asteroide.getColision().setBoundingBox(bounding_asteroide);

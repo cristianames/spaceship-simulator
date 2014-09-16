@@ -27,7 +27,7 @@ namespace AlumnoEjemplos.TheGRID
 
         private void fraccionate(Dibujable colisionador)
         {
-            ManagerAsteroide manager = TheGrid.EjemploAlumno.workspace().AsteroidManager;
+            ManagerAsteroide manager = TheGrid.EjemploAlumno.workspace().Escenario.asteroidManager;
             manager.fabricarMiniAsteroides(3, formato.tamanioAnterior(), getPosicion());
             manager.eliminarElemento(this);
         }
