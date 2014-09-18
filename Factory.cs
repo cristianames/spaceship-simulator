@@ -43,7 +43,7 @@ namespace AlumnoEjemplos.TheGRID
         // public static FormatoAsteroide elegirAsteroidePor(TamanioAsteroide tamanio)
         // movido a la clase Asteroide
 
-        public static Dibujable crearAsteroide(TamanioAsteroide tamanio, Vector3 posicion)
+        public static Dibujable crearAsteroide(TamanioAsteroide tamanio, Vector3 posicion, ManagerAsteroide manager)
         {
             FormatoAsteroide formato = Asteroide.elegirAsteroidePor(tamanio);
             TgcMesh mesh_asteroide = cargarMesh("TheGrid\\asteroid\\asteroid-TgcScene.xml");
@@ -65,7 +65,7 @@ namespace AlumnoEjemplos.TheGRID
 
             //Cargamos las cosas en el dibujable
             Asteroide asteroide = new Asteroide();
-            asteroide.setObject(mesh_asteroide, 10, 4, rotacion, escalado);
+            asteroide.setObject(mesh_asteroide, 2, 4, rotacion, escalado);
             asteroide.AutoTransformEnable = false;
             asteroide.setColision(new ColisionAsteroide());
             asteroide.getColision().setBoundingBox(bounding_asteroide);
@@ -76,8 +76,9 @@ namespace AlumnoEjemplos.TheGRID
             asteroide.setEjes(ejes);
             asteroide.setFisica(0, 0, formato.getMasa());
             asteroide.velocidad = formato.getVelocidad();
-            asteroide.TamanioAnterior = formato.tamanioAnterior();
+            asteroide.tamanioAnterior = formato.tamanioAnterior();
             asteroide.Vida = formato.vidaInicial();
+            asteroide.manager = manager;
             return asteroide;
         }
 

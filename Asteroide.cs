@@ -12,8 +12,8 @@ namespace AlumnoEjemplos.TheGRID
     {
         public Asteroide() : base() {}
         private float limite = 300f;
-        private TamanioAsteroide tamanioAnterior;
-        public TamanioAsteroide TamanioAnterior { set { tamanioAnterior = value; } get { return tamanioAnterior;} }
+        public TamanioAsteroide tamanioAnterior;
+        public ManagerAsteroide manager;
         private float vida; 
         public float Vida { set { vida = value; } }
 
@@ -34,7 +34,7 @@ namespace AlumnoEjemplos.TheGRID
             else
             {
                 // Explosion.explosionAsteroide(this);
-                ManagerAsteroide manager = MiGrupo.EjemploAlumno.workspace().AsteroidManager;
+                //ManagerAsteroide manager = TheGrid.EjemploAlumno.workspace().AsteroidManager;
                 manager.eliminarElemento(this);
             }
         }
@@ -47,8 +47,10 @@ namespace AlumnoEjemplos.TheGRID
 
         private void fraccionate()
         {
-            ManagerAsteroide manager = MiGrupo.EjemploAlumno.workspace().AsteroidManager;
-            manager.fabricarMiniAsteroides(3, tamanioAnterior, getPosicion());
+            //ManagerAsteroide manager = TheGrid.EjemploAlumno.workspace().Escenario.asteroidManager;
+            if (tamanioAnterior != TamanioAsteroide.NULO) 
+                manager.fabricarMiniAsteroides(3, tamanioAnterior, getPosicion());
+
             manager.eliminarElemento(this);
         }
 
@@ -65,7 +67,7 @@ namespace AlumnoEjemplos.TheGRID
         }
     }
 
-    public enum TamanioAsteroide { MUYGRANDE, GRANDE, MEDIANO, CHICO }
+    public enum TamanioAsteroide { MUYGRANDE, GRANDE, MEDIANO, CHICO, NULO }
 
     public interface FormatoAsteroide
     {
@@ -116,7 +118,7 @@ namespace AlumnoEjemplos.TheGRID
         public float getMasa() { return masa; }
         public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
         public float getVelocidad() { return 40; }
-        public TamanioAsteroide tamanioAnterior() { return TamanioAsteroide.CHICO; }
         public float vidaInicial() { return 500; }
+        public TamanioAsteroide tamanioAnterior() { return TamanioAsteroide.NULO; }
     }
 }

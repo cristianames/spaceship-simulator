@@ -19,7 +19,7 @@ using AlumnoEjemplos.TheGRID.Colisiones;
 using AlumnoEjemplos.TheGRID.Explosiones;
 
 
-namespace AlumnoEjemplos.MiGrupo
+namespace AlumnoEjemplos.TheGrid
 {
     public class EjemploAlumno : TgcExample
     {
@@ -33,23 +33,23 @@ namespace AlumnoEjemplos.MiGrupo
         //--------------------------------------------------------
         
         // ATRIBUTOS
-
+        Escenario scheme;
         static EjemploAlumno singleton;
-        TgcBox suelo;
+        //TgcBox suelo;
         Dibujable nave;
         Dibujable sol;
         Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
 
         List<Dibujable> listaDibujable = new List<Dibujable>();
         float timeLaser = 0; //Inicializacion.
-        const float betweenTime = 0.3f;    //Tiempo de espera entre cada disparo.
-        ManagerLaser laserManager;
-        private ManagerAsteroide asteroidManager;
-        public ManagerAsteroide AsteroidManager { get { return asteroidManager; } }
+        const float betweenTime = 0.3f;    //Tiempo de espera entre cada disparo de laser.
+        //ManagerLaser laserManager;
+        //private ManagerAsteroide asteroidManager;
+        internal Escenario Escenario { get { return scheme; } }
 
         //Modificador de la camara del proyecto
         CambioCamara camara;
-        TgcSkyBox skyBox;
+        //TgcSkyBox skyBox;
         TgcArrow arrow;
         TgcFrustum currentFrustrum;
 
@@ -67,49 +67,42 @@ namespace AlumnoEjemplos.MiGrupo
             string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
             singleton = this;
             currentFrustrum = new TgcFrustum();
-
-            d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
+            //d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
             /*
             //Crear SkyBox 
             skyBox = new TgcSkyBox();
             skyBox.Center = new Vector3(0, 0, 0);
             skyBox.Size = new Vector3(15000, 15000, 150000);
-
-
             //Crear suelo
             TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, alumnoMediaFolder + "TheGrid\\SkyBox\\adelante.jpg");
             suelo = TgcBox.fromSize(new Vector3(0, 0, 9500), new Vector3(1000, 1000, 0), pisoTexture);   
-
             //Configurar color
             //skyBox.Color = Color.OrangeRed;
-
             //Configurar las texturas para cada una de las 6 caras
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, alumnoMediaFolder + "TheGrid\\SkyBox\\arriba.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, alumnoMediaFolder + "TheGrid\\SkyBox\\abajo.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, alumnoMediaFolder + "TheGrid\\SkyBox\\izquierda.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, alumnoMediaFolder + "TheGrid\\SkyBox\\derecha.jpg");
-
             //Hay veces es necesario invertir las texturas Front y Back si se pasa de un sistema RightHanded a uno LeftHanded
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, alumnoMediaFolder + "TheGrid\\SkyBox\\adelante.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, alumnoMediaFolder + "TheGrid\\SkyBox\\atras.jpg");
-            
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, alumnoMediaFolder + "TheGrid\\SkyBox\\atras.jpg");           
             //Actualizar todos los valores para crear el SkyBox
             skyBox.updateValues();
             */
 
             //Crear manager Lasers
-            laserManager = new ManagerLaser(5);
+            //laserManager = new ManagerLaser(5);
             
             //Crear 5 asteroides
-            asteroidManager = new ManagerAsteroide(500);
+            //asteroidManager = new ManagerAsteroide(1000);
             
             //Crear la nave
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene scene;
             nave = new Dibujable(0, 0, 0);
             scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "TheGrid\\Nave\\nave3-TgcScene.xml");
-            nave.setObject(scene.Meshes[0], 200, 100, new Vector3(0, 180, 0), new Vector3(0.5f, 0.5f, 0.5f));
-            nave.setFisica(100, 500, 100);
+            nave.setObject(scene.Meshes[0], 100, 25, new Vector3(0, 180, 0), new Vector3(0.5f, 0.5f, 0.5f));
+            nave.setFisica(50, 400, 100);
             nave.SetPropiedades(true, false, false);
             ExplosionNave modulo;
             modulo = new ExplosionNave(nave,100,200);
@@ -124,6 +117,10 @@ namespace AlumnoEjemplos.MiGrupo
             nave.getColision().setBoundingBox(naveObb);
             //nave.getColision().transladar(posicionNave);
 
+            //Creamos el escenario.
+            scheme = new Escenario(nave);
+            scheme.loadChapter1();
+
             //Creamos.....EL SOL
             TgcSceneLoader loaderSol = new TgcSceneLoader();
             TgcScene sceneSol = loaderSol.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "TheGrid\\Sol\\sol-TgcScene.xml");
@@ -132,7 +129,7 @@ namespace AlumnoEjemplos.MiGrupo
             sol = new Dibujable();
             sol.setObject(mesh_Sol, 0, 100, new Vector3(0, 0, 0), new Vector3(1F, 1F, 1F));
             sol.trasladar(new Vector3(0, 0, 2500));
-            sol.rotacion = 1;
+            sol.giro = 1;
 
 
             //Cargamos la nave como objeto principal.
@@ -140,9 +137,9 @@ namespace AlumnoEjemplos.MiGrupo
             //Cargamos la camara
             camara = new CambioCamara(nave);
 
-            asteroidManager.creaUno(TamanioAsteroide.MUYGRANDE);
-            asteroidManager.fabricar(5, TamanioAsteroide.MEDIANO);
-            asteroidManager.fabricarCinturonAsteroides(nave.getCentro(),10,200);
+            //asteroidManager.creaUno(TamanioAsteroide.MUYGRANDE);
+            //asteroidManager.fabricar(5, TamanioAsteroide.MEDIANO);
+            //asteroidManager.fabricarCinturonAsteroides(new Vector3(-500,0,2000),10,50);
 
             //Flecha direccion objetivo
             arrow = new TgcArrow();
@@ -164,17 +161,19 @@ namespace AlumnoEjemplos.MiGrupo
             GuiController.Instance.UserVars.setValue("Posicion Y:", objetoPrincipal.getPosicion().Y);
             GuiController.Instance.UserVars.setValue("Posicion Z:", objetoPrincipal.getPosicion().Z);
             //Crear un modifier para un valor FLOAT
-            GuiController.Instance.Modifiers.addFloat("Aceleracion", 0f,500f, objetoPrincipal.getAceleracion());
-            GuiController.Instance.Modifiers.addFloat("Frenado", 0f, 1000f, objetoPrincipal.getAcelFrenado());
+            //GuiController.Instance.Modifiers.addFloat("Aceleracion", 0f,500f, objetoPrincipal.getAceleracion());  De momento lo saco.
+            //GuiController.Instance.Modifiers.addFloat("Frenado", 0f, 1000f, objetoPrincipal.getAcelFrenado());    De momento lo saco.
             //Crear un modifier para un ComboBox con opciones
+            string[] opciones0 = new string[] { "THE OPENIG", "IMPULSE DRIVE", "WELCOME HOME", "VACUUM" };
+            GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 0);
             string[] opciones1 = new string[] { "Tercera Persona", "Camara FPS", "Libre" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
             string[] opciones2 = new string[] { "Desactivado", "Activado" };
             GuiController.Instance.Modifiers.addInterval("Velocidad Manual", opciones2, 1);
             string[] opciones3 = new string[] { "Activado", "Desactivado" };
             GuiController.Instance.Modifiers.addInterval("Desplaz. Avanzado", opciones3, 1);
-            string[] opciones4 = new string[] { "Activado", "Desactivado" };
-            GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);
+            //string[] opciones4 = new string[] { "Activado", "Desactivado" };
+            //GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);  De momento lo saco.
 
         }
         //--------------------------------------------------------RENDER-----
@@ -187,6 +186,7 @@ namespace AlumnoEjemplos.MiGrupo
         {
             //-----UPDATE-----
             TgcD3dInput input = GuiController.Instance.D3dInput;
+            GuiController.Instance.FpsCounterEnable = true;
 
             //Flechas
             if (input.keyDown(Key.Left)) { nave.rotacion = 1; }
@@ -205,8 +205,8 @@ namespace AlumnoEjemplos.MiGrupo
             //if (input.keyDown(Key.F2)) { camara.modoExterior(); }
             //if (input.keyDown(Key.F3)) { camara.modoTPS(); }
 
-            if (input.keyDown(Key.P)) { asteroidManager.explotaAlPrimero(); }
-            if (input.keyDown(Key.O)) { asteroidManager.creaUno(TamanioAsteroide.CHICO); }
+            if (input.keyDown(Key.P)) { scheme.asteroidManager.explotaAlPrimero(); }
+            if (input.keyDown(Key.O)) { scheme.asteroidManager.creaUno(TamanioAsteroide.CHICO); }
 
             camara.cambiarPosicionCamara();
             currentFrustrum.updateMesh(GuiController.Instance.CurrentCamera.getPosition(),GuiController.Instance.CurrentCamera.getLookAt());
@@ -216,7 +216,8 @@ namespace AlumnoEjemplos.MiGrupo
                 timeLaser += elapsedTime;
                 if (timeLaser > betweenTime)
                 {
-                    laserManager.fabricar(nave.getEjes(),nave.getPosicion());                  
+                    scheme.dispararLaser();
+                    //laserManager.fabricar(nave.getEjes(),nave.getPosicion());                  
                     timeLaser = 0;
                 }
             }
@@ -227,11 +228,10 @@ namespace AlumnoEjemplos.MiGrupo
 
             //Device de DirectX para renderizar
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
-            d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
+            //d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
+            //GuiController.Instance.FpsCounterEnable = true;
 
-            laserManager.operar(elapsedTime);
-            asteroidManager.operar(elapsedTime);
-
+            scheme.refrescar(elapsedTime);
 
             //Cargar valores de la flecha
             Vector3 navePos = nave.getCentro();
@@ -250,44 +250,7 @@ namespace AlumnoEjemplos.MiGrupo
             //skyBox.render();
             //suelo.render();
 
-            //Chequeo de colision
-            //Chequeo si la nave choco con algun asteroide
 
-            //Eze: Codigo repetido, esto ya se realiza en asteroidManager.chocoNave(nave);
-
-            /*bool naveColision = false;
-            foreach (Dibujable asteroide in asteroidManager.lista())
-            {
-
-                if (nave.getColision().colisiono(((TgcBoundingSphere)asteroide.getColision().getBoundingBox())))
-                {
-                    ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(Color.Red);
-                    ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Red);
-                    naveColision = true;
-                }
-                else
-                {                  
-                    ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Yellow);
-                }            
-            }
-            if (!naveColision) ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(Color.Yellow);
-            */
-
-            //no chequeo si los asteroides chocaron con la nave
-
-           //Chequeo si la nave choco con algun asteroide
-            asteroidManager.chocoNave(nave);                     
-            //Chequeo si los lasers chocaron con algun asteroide
-            
-            //Invierto el flujo de este mensaje por cuestiones tecnicas
-            //asteroidManager.chocoLasers(laserManager);
-            laserManager.chocoAsteroide(); //no hace falta pasar el manager de asteroides, lo saca del singleton
-            
-            //no chequeo si algun laser choco con algun otro
-
-            //Chequeo colision entre asteroides 
-            asteroidManager.colisionEntreAsteroides(0); //hay que pasarle el 0 como parametro para que empieze a preguntar desde el asteoride 0, es una funcion recursiva
-            
             
             nave.rotar(elapsedTime,listaDibujable);
             nave.desplazarse(elapsedTime,listaDibujable);
@@ -298,12 +261,14 @@ namespace AlumnoEjemplos.MiGrupo
             //case
             string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
             camara.chequearCambio(opcionElegida);
+            opcionElegida = (string)GuiController.Instance.Modifiers["Escenario Actual"];
+            scheme.chequearCambio(opcionElegida);
             opcionElegida = (string)GuiController.Instance.Modifiers["Velocidad Manual"];
             if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.velocidadManual = true; else objetoPrincipal.velocidadManual = false;
             opcionElegida = (string)GuiController.Instance.Modifiers["Desplaz. Avanzado"];
             if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.desplazamientoReal = true; else objetoPrincipal.desplazamientoReal = false;
-            opcionElegida = (string)GuiController.Instance.Modifiers["Rotacion Avanzada"];
-            if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.rotacionReal = true; else objetoPrincipal.rotacionReal = false;
+            //opcionElegida = (string)GuiController.Instance.Modifiers["Rotacion Avanzada"];
+            //if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.rotacionReal = true; else objetoPrincipal.rotacionReal = false;   De momento lo saco.
             //Refrescar User Vars
             GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual());
             GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);
@@ -312,15 +277,16 @@ namespace AlumnoEjemplos.MiGrupo
             GuiController.Instance.UserVars.setValue("Integtidad Nave:", objetoPrincipal.explosion.vida);
             GuiController.Instance.UserVars.setValue("Integridad Escudos:", objetoPrincipal.explosion.escudo);
             //Obtener valores de Modifiers
-            objetoPrincipal.fisica.aceleracion = (float)GuiController.Instance.Modifiers["Aceleracion"];
-            objetoPrincipal.fisica.acelFrenado = (float)GuiController.Instance.Modifiers["Frenado"];
+            //objetoPrincipal.fisica.aceleracion = (float)GuiController.Instance.Modifiers["Aceleracion"];  De momento lo saco.
+            //objetoPrincipal.fisica.acelFrenado = (float)GuiController.Instance.Modifiers["Frenado"];      De momento lo saco.
+
             
         }
 
         public override void close()
         {
-            asteroidManager.destruirLista();
-            laserManager.destruirLista();
+            scheme.asteroidManager.destruirLista();
+            scheme.laserManager.destruirLista();
             nave.dispose();
 
             //suelo.dispose();

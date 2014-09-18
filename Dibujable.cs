@@ -216,10 +216,11 @@ namespace AlumnoEjemplos.TheGRID
         }
         public void desplazarse(float time, List<Dibujable> dibujables)   //Movimiento de traslacion base de un dibujable.
         {
-            if (fisica != null && desplazamientoReal) fisica.trasladar(time, dibujables);
+            Vector3 director;
+            if (fisica != null && desplazamientoReal) director = fisica.trasladar(time, dibujables);
             else
             {
-                Vector3 director = vectorDireccion.direccion();
+                director = vectorDireccion.direccion();
                 director.Normalize();
                 director.X *= traslacion * velocidad * time;
                 director.Y *= traslacion * velocidad * time;
@@ -230,9 +231,9 @@ namespace AlumnoEjemplos.TheGRID
                 posicion.setActual(vector4.X, vector4.Y, vector4.Z);
 
                 Transform *= translate;
-                if (colision != null) colision.transladar(director);
             }
             if (velocidadManual) traslacion = 0;
+            if (colision != null) colision.transladar(director);
         }
         public void rotar(float time, List<Dibujable> dibujables)   //Movimiento de rotacion base de un dibujable.
         {
@@ -258,7 +259,7 @@ namespace AlumnoEjemplos.TheGRID
                 }
                 if (rotacion != 0) //Rotar en Z
                 {
-                    rotation = vectorDireccion.rotarZ_desde(posicion.getActual(), angulo * rotacion, ref rotacionActual);
+                    rotation = vectorDireccion.rotarZ_desde(posicion.getActual(), angulo * rotacion * 2, ref rotacionActual);
                     Transform *= rotation;
                     if (colision!=null)this.getColision().rotar(rotacionActual);
                 }

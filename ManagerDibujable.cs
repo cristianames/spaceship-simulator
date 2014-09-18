@@ -81,7 +81,7 @@ namespace AlumnoEjemplos.TheGRID
         public void chocoAsteroide()
         {
             foreach (Dibujable laser in controlados)
-                MiGrupo.EjemploAlumno.workspace().AsteroidManager.chocoLaser(laser);
+                TheGrid.EjemploAlumno.workspace().Escenario.asteroidManager.chocoLaser(laser);
         }
     }
 
@@ -98,7 +98,7 @@ namespace AlumnoEjemplos.TheGRID
 
         public void creaUno(TamanioAsteroide tam)
         {
-            addNew(Factory.crearAsteroide(tam,new Vector3(200,200,400)));
+            addNew(Factory.crearAsteroide(tam,new Vector3(200,200,400),this));
         }
 
         public override void operar(float time)
@@ -110,7 +110,7 @@ namespace AlumnoEjemplos.TheGRID
                 ((TgcBoundingSphere)item.getColision().getBoundingBox()).setCenter(item.getPosicion());
                 //Chequea si esta dentro del frustrum
                 //TgcFrustum frustrum = GuiController.Instance.Frustum;
-                TgcFrustum frustrum = MiGrupo.EjemploAlumno.workspace().getCurrentFrustrum();
+                TgcFrustum frustrum = TheGrid.EjemploAlumno.workspace().getCurrentFrustrum();
                 TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult resultado = TgcCollisionUtils.classifyFrustumSphere(frustrum, (TgcBoundingSphere)item.getColision().getBoundingBox());
                 if (resultado != TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult.OUTSIDE)
                     item.render();
@@ -119,36 +119,34 @@ namespace AlumnoEjemplos.TheGRID
 
         public void fabricar(int cuantos, TamanioAsteroide tam)
         {
-            for (int i = 0; i < cuantos; i++ ) addNew(Factory.crearAsteroide(tam, new Vector3(10*i, 20*i, 100)));
+            for (int i = 0; i < cuantos; i++ ) addNew(Factory.crearAsteroide(tam, new Vector3(10*i, 20*i, 100),this));
         }
 
         public void fabricarMiniAsteroides(int cuantos, TamanioAsteroide tam, Vector3 pos)
         {
-            for (int i = 0; i < cuantos; i++) addNew(Factory.crearAsteroide(tam, pos));
+            for (int i = 0; i < cuantos; i++) addNew(Factory.crearAsteroide(tam, pos,this));
         }
 
-        public void fabricarCinturonAsteroides(Vector3 pos_nave, int raizCantidadAsteroides, int distanciaEntreAsteroides)
+        public void fabricarCinturonAsteroides(Vector3 pos_base, int raizCantidadAsteroides, int distanciaEntreAsteroides)
         {
-            int distancia = raizCantidadAsteroides * distanciaEntreAsteroides; //150 de separacion entre cada asteroides
+            int distancia = raizCantidadAsteroides * distanciaEntreAsteroides; //150 de separacion entre cada asteroides lo usual
             float pos_x;
-            float pos_y = pos_nave.Y;
-            float pos_z = pos_nave.Z - (distancia/2);
+            float pos_y = pos_base.Y;
+            float pos_z = pos_base.Z - (distancia /2);
 
             for (int i = 0; i < raizCantidadAsteroides; i++)
             {
-                pos_x = pos_nave.X - (distancia / 2);
+                pos_x = pos_base.X - distancia;
                 for (int j = 0; j < raizCantidadAsteroides; j++)
                 {
                     pos_x += distanciaEntreAsteroides * j;
-                    addNew(Factory.crearAsteroide(TamanioAsteroide.MUYGRANDE, new Vector3(pos_x, pos_y, pos_z)));
+                    addNew(Factory.crearAsteroide(TamanioAsteroide.MUYGRANDE, new Vector3(pos_x, pos_y, pos_z),this));
                 }
                 pos_z += distanciaEntreAsteroides * i;
             }
-        }
-        public void mostrarAsteroides(Vector3 pos_nave)
-        {
 
         }
+
 
         public void chocoNave(Dibujable nave)
         {
@@ -204,6 +202,7 @@ namespace AlumnoEjemplos.TheGRID
                 {
                     if (controlados[pos].getColision().colisiono(((TgcBoundingSphere)controlados[i].getColision().getBoundingBox()))) 
                     {
+                        //controlados[pos].teChoque(controlados[i]);
                         ((TgcBoundingSphere)controlados[pos].getColision().getBoundingBox()).setRenderColor(Color.DarkGreen);
                         ((TgcBoundingSphere)controlados[i].getColision().getBoundingBox()).setRenderColor(Color.DarkGreen);
                     }
