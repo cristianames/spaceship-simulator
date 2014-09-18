@@ -13,6 +13,7 @@ namespace AlumnoEjemplos.TheGRID
         internal float aceleracion { set; get; }
         public float velocidadInstantanea;
         private float masa;
+        public float Masa { get { return masa; } }
         internal bool frenado;
         internal float acelFrenado { set; get; }
         //-------------------

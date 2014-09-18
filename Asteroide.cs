@@ -11,24 +11,44 @@ namespace AlumnoEjemplos.TheGRID
     public class Asteroide : Dibujable
     {
         public Asteroide() : base() {}
-        private float limite = 100f;
-        private FormatoAsteroide formato;
-        public FormatoAsteroide Formato { set { formato = value; } }
+        private float limite = 300f;
+        private TamanioAsteroide tamanioAnterior;
+        public TamanioAsteroide TamanioAnterior { set { tamanioAnterior = value; } get { return tamanioAnterior;} }
+        private float vida; 
+        public float Vida { set { vida = value; } }
 
-        public override void teChoque(Dibujable colisionador)
-        { 
-            float volumen = FastMath.PI * 2 * FastMath.Pow2(((TgcBoundingSphere)this.getColision().getBoundingBox()).Radius);
-            if (limite < volumen) fraccionate(colisionador);
+        public override void teChoque(Dibujable colisionador, float moduloVelocidad)
+        {
+            //Verificacion de mierda por culpa del diseño de mieeeeeerda
+            float masa = 50;
+            if (colisionador.fisica != null) masa = colisionador.fisica.Masa;
+            
+            daniate(masa, moduloVelocidad);
+            if (vida <= 0) sinVida();
+        }
+
+        private void sinVida()
+        {
+            //float volumen = FastMath.PI * 2 * FastMath.Pow2(((TgcBoundingSphere)getColision().getBoundingBox()).Radius);
+            if (limite < fisica.Masa) fraccionate();
             else
             {
                 // Explosion.explosionAsteroide(this);
+                ManagerAsteroide manager = MiGrupo.EjemploAlumno.workspace().AsteroidManager;
+                manager.eliminarElemento(this);
             }
         }
 
-        private void fraccionate(Dibujable colisionador)
+        private void daniate(float masa, float moduloVelocidad)
+        {
+            //Flaseada para bajar la vida
+            vida -= 2*masa + 5*moduloVelocidad;
+        }
+
+        private void fraccionate()
         {
             ManagerAsteroide manager = MiGrupo.EjemploAlumno.workspace().AsteroidManager;
-            manager.fabricarMiniAsteroides(3, formato.tamanioAnterior(), getPosicion());
+            manager.fabricarMiniAsteroides(3, tamanioAnterior, getPosicion());
             manager.eliminarElemento(this);
         }
 
@@ -53,6 +73,7 @@ namespace AlumnoEjemplos.TheGRID
         Vector3 getVolumen(); //En realidad un factor de escalado
         float getVelocidad();
         TamanioAsteroide tamanioAnterior();
+        float vidaInicial();
     }
 
     public class AsteroideMuyGrande : FormatoAsteroide
@@ -63,6 +84,7 @@ namespace AlumnoEjemplos.TheGRID
         public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
         public float getVelocidad() { return 20; }
         public TamanioAsteroide tamanioAnterior() { return TamanioAsteroide.GRANDE; }
+        public float vidaInicial() { return 10000; }
     }
 
     public class AsteroideGrande : FormatoAsteroide
@@ -73,6 +95,7 @@ namespace AlumnoEjemplos.TheGRID
         public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
         public float getVelocidad() { return 25; }
         public TamanioAsteroide tamanioAnterior() { return TamanioAsteroide.MEDIANO; }
+        public float vidaInicial() { return 5000; }
     }
 
     public class AsteroideMediano : FormatoAsteroide
@@ -83,6 +106,7 @@ namespace AlumnoEjemplos.TheGRID
         public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
         public float getVelocidad() { return 30; }
         public TamanioAsteroide tamanioAnterior() { return TamanioAsteroide.CHICO; }
+        public float vidaInicial() { return 2000; }
     }
 
     public class AsteroideChico : FormatoAsteroide
@@ -93,5 +117,6 @@ namespace AlumnoEjemplos.TheGRID
         public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
         public float getVelocidad() { return 40; }
         public TamanioAsteroide tamanioAnterior() { return TamanioAsteroide.CHICO; }
+        public float vidaInicial() { return 500; }
     }
 }

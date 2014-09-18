@@ -11,7 +11,7 @@ namespace AlumnoEjemplos.TheGRID
         public Nave() : base() {}
         private float vida;
 
-        public override void teChoque(Dibujable colisionador)
+        public override void teChoque(Dibujable colisionador, float velocidadColisionador)
         {
             //if (vida <= 0) Explosion.explosionNave(this);
             //else restaVida(colisionador);

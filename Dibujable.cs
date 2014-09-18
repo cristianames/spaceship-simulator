@@ -369,7 +369,7 @@ namespace AlumnoEjemplos.TheGRID
             return nuevoEje; 
         }
 
-        public virtual void teChoque(Dibujable colisionador)
+        public virtual void teChoque(Dibujable colisionador, float moduloVelocidad)
         {
             //Explosion.exiteChoqueEntre(colisionador, this);
         }

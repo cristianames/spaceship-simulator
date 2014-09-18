@@ -93,7 +93,7 @@ namespace AlumnoEjemplos.TheGRID
 
         public void explotaAlPrimero(){
             Dibujable colisionador = controlados[1];
-            controlados.First().teChoque(colisionador);
+            controlados.First().teChoque(colisionador,50);
         }
 
         public void creaUno(TamanioAsteroide tam)
@@ -161,8 +161,9 @@ namespace AlumnoEjemplos.TheGRID
                     color = Color.Red;
                     ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(color);
                     naveColision = true;
-                    nave.teChoque(asteroide);
-                    asteroide.teChoque(nave);
+                    float velocidadNave = nave.velocidadActual();
+                    nave.teChoque(asteroide, asteroide.velocidadActual());
+                    asteroide.teChoque(nave, velocidadNave);
                     break;
                 }
                 ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(color);
@@ -180,7 +181,7 @@ namespace AlumnoEjemplos.TheGRID
                 {
                     ((TgcObb)laser.getColision().getBoundingBox()).setRenderColor(Color.Blue);
                     ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Blue);
-                    asteroide.teChoque(laser);
+                    asteroide.teChoque(laser,laser.velocidadActual());
                     break;
                 }
             }

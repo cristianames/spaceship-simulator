@@ -76,7 +76,8 @@ namespace AlumnoEjemplos.TheGRID
             asteroide.setEjes(ejes);
             asteroide.setFisica(0, 0, formato.getMasa());
             asteroide.velocidad = formato.getVelocidad();
-            asteroide.Formato = formato;
+            asteroide.TamanioAnterior = formato.tamanioAnterior();
+            asteroide.Vida = formato.vidaInicial();
             return asteroide;
         }
 
