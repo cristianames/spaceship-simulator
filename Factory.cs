@@ -10,6 +10,7 @@ using System.Drawing;
 using TgcViewer.Utils.Modifiers;
 using TgcViewer.Utils.TgcGeometry;
 using AlumnoEjemplos.TheGRID.Colisiones;
+using AlumnoEjemplos.TheGRID.Shaders;
 
 namespace AlumnoEjemplos.TheGRID
 {
@@ -120,7 +121,6 @@ namespace AlumnoEjemplos.TheGRID
             laser.setColision(new ColisionLaser());
             laser.getColision().setBoundingBox(obb);
             laser.getColision().transladar(posicionNave);
-
             return laser;
         }
     }

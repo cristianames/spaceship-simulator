@@ -10,6 +10,7 @@ using Microsoft.DirectX.Direct3D;
 using AlumnoEjemplos.TheGRID.Explosiones;
 using AlumnoEjemplos.TheGRID.Colisiones;
 using TgcViewer.Utils.TgcGeometry;
+using AlumnoEjemplos.TheGRID.Shaders;
 
 
 namespace AlumnoEjemplos.TheGRID
@@ -90,7 +91,8 @@ namespace AlumnoEjemplos.TheGRID
         internal Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
         protected IColision colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
         internal Explosion explosion; // Acá va el manejo de un objeto cuando es chocado por otro.
-        
+
+        internal ShaderInterface shaderManager = new ShaderDefault(); // Acá va el manager que se encarga de generar el efecto del shader segun corresponda
         //----------------------------------------------------------------------------------------------------INSTANCIADOR-----
         public Dibujable()
         {
@@ -115,6 +117,7 @@ namespace AlumnoEjemplos.TheGRID
             velocidadManual = false;
             desplazamientoReal = false;
             rotacionReal = false;
+
         }
         public Dibujable(Vector3 centro)
         {
@@ -127,16 +130,22 @@ namespace AlumnoEjemplos.TheGRID
             velocidadManual = false;
             desplazamientoReal = false;
             rotacionReal = false;
+
         }
         //-------------------------------------------------------------------------------------METODOS--------IRenderObject-----
-        public void render() 
+        public void render(float elapsedTime) 
         {
-            ((IRenderObject)objeto).render();
+            this.shaderManager.shadear((TgcMesh)objeto, elapsedTime);
+            //((IRenderObject)objeto).render();
             if (colision != null) colision.render();
         }
         public void dispose() 
         {
-            try { ((IRenderObject)objeto).dispose(); }
+            try
+            {
+                this.shaderManager.close();
+                ((IRenderObject)objeto).dispose();
+            }
             catch { }
             //fisica.dispose();
             //colisiones.dispose();            
@@ -384,5 +393,12 @@ namespace AlumnoEjemplos.TheGRID
         {
             throw new NotImplementedException();
         }
+
+        public void setShader(ShaderInterface shader)
+        {
+            shaderManager = shader;
+            shader.setShader(this);
+        }
+
     }
 }

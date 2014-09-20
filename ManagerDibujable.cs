@@ -7,6 +7,7 @@ using TgcViewer.Utils.TgcGeometry;
 using Microsoft.DirectX;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer;
+using AlumnoEjemplos.TheGRID.Shaders;
 
 namespace AlumnoEjemplos.TheGRID
 {
@@ -33,7 +34,7 @@ namespace AlumnoEjemplos.TheGRID
             {
                 trasladar(item, time);
                 rotar(item, time);
-                item.render();
+                item.render(time);
             }
         }
 
@@ -58,6 +59,14 @@ namespace AlumnoEjemplos.TheGRID
         {
             controlados.Remove(aEliminar);
             aEliminar.dispose();
+        }
+
+        public void setShader(ShaderInterface shader)
+        {
+            foreach (var item in controlados)
+            {
+                item.setShader(shader);
+            }
         }
 
         public void destruirLista()
@@ -113,7 +122,7 @@ namespace AlumnoEjemplos.TheGRID
                 TgcFrustum frustrum = TheGrid.EjemploAlumno.workspace().getCurrentFrustrum();
                 TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult resultado = TgcCollisionUtils.classifyFrustumSphere(frustrum, (TgcBoundingSphere)item.getColision().getBoundingBox());
                 if (resultado != TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult.OUTSIDE)
-                    item.render();
+                    item.render(time);
             }
         }
 

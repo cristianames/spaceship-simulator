@@ -1,4 +1,5 @@
-﻿using Microsoft.DirectX;
+﻿using AlumnoEjemplos.TheGRID.Shaders;
+using Microsoft.DirectX;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,11 @@ namespace AlumnoEjemplos.TheGRID
         public void loadChapter2() 
         {
             disposeOld();
+            laserManager = new ManagerLaser(5);
+            asteroidManager = new ManagerAsteroide(1000);
+            asteroidManager.fabricarCinturonAsteroides(principal.getCentro(), 10, 100);
+            limite = new TgcBoundingCylinder(principal.getCentro(), 10000, 100000);
+
         }
         //-------------------------------------------------------------------------------------------CHAPTER-3
         public void loadChapter3() 

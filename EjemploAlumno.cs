@@ -17,6 +17,7 @@ using TgcViewer.Utils.Terrain;
 using Microsoft.DirectX.DirectInput;
 using AlumnoEjemplos.TheGRID.Colisiones;
 using AlumnoEjemplos.TheGRID.Explosiones;
+using AlumnoEjemplos.TheGRID.Shaders;
 
 
 namespace AlumnoEjemplos.TheGrid
@@ -67,6 +68,8 @@ namespace AlumnoEjemplos.TheGrid
             string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
             singleton = this;
             currentFrustrum = new TgcFrustum();
+            GuiController.Instance.CustomRenderEnabled = true;
+
             //d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
             /*
             //Crear SkyBox 
@@ -107,7 +110,6 @@ namespace AlumnoEjemplos.TheGrid
             ExplosionNave modulo;
             modulo = new ExplosionNave(nave,100,200);
             nave.explosion = modulo;
-            
             //Cargamos su BB
             TgcBoundingBox naveBb = ((TgcMesh)nave.objeto).BoundingBox;
             naveBb.scaleTranslate(new Vector3(0, 0, 0), new Vector3(0.5f, 0.5f, 0.5f));
@@ -120,7 +122,6 @@ namespace AlumnoEjemplos.TheGrid
             //Creamos el escenario.
             scheme = new Escenario(nave);
             scheme.loadChapter1();
-
             //Creamos.....EL SOL
             TgcSceneLoader loaderSol = new TgcSceneLoader();
             TgcScene sceneSol = loaderSol.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "TheGrid\\Sol\\sol-TgcScene.xml");
@@ -245,7 +246,7 @@ namespace AlumnoEjemplos.TheGrid
             arrow.updateValues();
             arrow.render();
             sol.rotar(elapsedTime, listaDibujable);
-            sol.render();
+            sol.render(elapsedTime);
             
             //skyBox.render();
             //suelo.render();
@@ -255,7 +256,7 @@ namespace AlumnoEjemplos.TheGrid
             nave.rotar(elapsedTime,listaDibujable);
             nave.desplazarse(elapsedTime,listaDibujable);
             if(!camara.soyFPS())
-                nave.render();
+                nave.render(elapsedTime);
        
             //Refrescar panel lateral
             //case
