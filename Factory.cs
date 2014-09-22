@@ -28,7 +28,7 @@ namespace AlumnoEjemplos.TheGRID
             return valores[resto];
         }
 
-        private static TgcMesh cargarMesh(string path){
+        public static TgcMesh cargarMesh(string path){
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + path);
             return scene.Meshes[0];

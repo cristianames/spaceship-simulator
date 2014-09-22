@@ -53,6 +53,8 @@ namespace AlumnoEjemplos.TheGrid
         //TgcSkyBox skyBox;
         TgcArrow arrow;
         TgcFrustum currentFrustrum;
+        //TgcSphere horizonteVision;
+        TgcMesh horizonteVision;
 
         //--------------------------------------------------------
 
@@ -71,7 +73,7 @@ namespace AlumnoEjemplos.TheGrid
             GuiController.Instance.CustomRenderEnabled = true;
 
             //d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
-            
+
             /*
             //Crear SkyBox 
             //skyBox = new TgcSkyBox();
@@ -92,14 +94,26 @@ namespace AlumnoEjemplos.TheGrid
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, alumnoMediaFolder + "TheGrid\\SkyBox\\atras.jpg");           
             //Actualizar todos los valores para crear el SkyBox
             skyBox.updateValues();
-            */
+            
+             
+            TgcTexture textura = 
+                TgcTexture.createTexture(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "TheGrid\\SkyBox\\atras.jpg");
+            horizonteVision = new TgcSphere(1500f, textura, new Vector3(0, 0, 0));
+            horizonteVision.Radius = 1500f;
+            horizonteVision.updateValues();
+             */
+
+            horizonteVision = Factory.cargarMesh(@"TheGRID\SkyBox\skysphere-TgcScene.xml");
+            horizonteVision.Position = new Vector3(0, 0, 0);
+            horizonteVision.Scale = new Vector3(86, 86, 86);
 
             //Crear manager Lasers
             //laserManager = new ManagerLaser(5);
             
             //Crear 5 asteroides
             //asteroidManager = new ManagerAsteroide(1000);
-            
+
+
             //Crear la nave
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene scene;
@@ -198,7 +212,9 @@ namespace AlumnoEjemplos.TheGrid
             //Letras
             if (input.keyDown(Key.A)) { nave.giro = -1; }
             if (input.keyDown(Key.D)) { nave.giro = 1; }
-            if (input.keyDown(Key.W)) { nave.acelerar(); }
+            if (input.keyDown(Key.W)) { nave.acelerar(); 
+                horizonteVision.Position = nave.getPosicion(); 
+                 }
             if (input.keyDown(Key.S)) { nave.frenar(); }
 
             //Otros
@@ -280,7 +296,7 @@ namespace AlumnoEjemplos.TheGrid
             //objetoPrincipal.fisica.aceleracion = (float)GuiController.Instance.Modifiers["Aceleracion"];  De momento lo saco.
             //objetoPrincipal.fisica.acelFrenado = (float)GuiController.Instance.Modifiers["Frenado"];      De momento lo saco.
 
-            
+            horizonteVision.render();
         }
 
         public override void close()
