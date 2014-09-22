@@ -35,7 +35,7 @@ namespace AlumnoEjemplos.TheGRID
             {
                 // Explosion.explosionAsteroide(this);
                 //ManagerAsteroide manager = TheGrid.EjemploAlumno.workspace().AsteroidManager;
-                manager.eliminarElemento(this);
+                manager.desactivar(this);
             }
         }
 
@@ -51,7 +51,7 @@ namespace AlumnoEjemplos.TheGRID
             if (tamanioAnterior != TamanioAsteroide.NULO) 
                 manager.fabricarMiniAsteroides(3, tamanioAnterior, getPosicion());
 
-            manager.eliminarElemento(this);
+            manager.desactivar(this);
         }
 
         public static FormatoAsteroide elegirAsteroidePor(TamanioAsteroide tamanio)

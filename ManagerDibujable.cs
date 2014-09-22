@@ -14,17 +14,19 @@ namespace AlumnoEjemplos.TheGRID
     public abstract class ManagerDibujable
     {
         protected List<Dibujable> controlados;
+        protected List<Dibujable> inactivos;
         protected int limiteControlados;
 
         public ManagerDibujable(int limite)
         {
+            inactivos = new List<Dibujable>(limite);
             controlados = new List<Dibujable>(limite);
             limiteControlados = limite;
         }
 
         internal void addNew(Dibujable nuevo)
         {
-            if (controlados.Count == limiteControlados) controlados.RemoveAt(0);
+            if (inactivos.Count == limiteControlados) controlados.RemoveAt(0);
             controlados.Add(nuevo);
         }
 
@@ -75,6 +77,23 @@ namespace AlumnoEjemplos.TheGRID
             {
                 item.dispose();
             }
+            foreach (var item in inactivos)
+            {
+                item.dispose();
+            }
+        }
+
+        public void activar()
+        {
+            Dibujable objeto = inactivos[0];
+            inactivos.RemoveAt(0);
+            controlados.Add(objeto);
+        }
+
+        public void desactivar(Dibujable objeto)
+        {
+            controlados.Remove(objeto);
+            inactivos.Add(objeto);
         }
     }
 
@@ -98,7 +117,13 @@ namespace AlumnoEjemplos.TheGRID
     {
         private List<Dibujable> buffer = new List<Dibujable>();
         
-        public ManagerAsteroide(int limite) : base(limite) { }
+        public ManagerAsteroide(int limite) : base(limite) 
+        {
+            for(int i=0;i< limite;i++)
+            {
+                inactivos.Add(Factory.crearAsteroide(TamanioAsteroide.CHICO, new Vector3(0, 0, 0), this));
+            }
+        }
 
         public void explotaAlPrimero(){
             Dibujable colisionador = controlados[1];
@@ -126,6 +151,20 @@ namespace AlumnoEjemplos.TheGRID
             }
         }
 
+        public void activarAsteroide(Formato formato)
+        {
+            if(inactivos.Count > 0)
+            {      
+                Asteroide asteroide = (Asteroide) inactivos[0];
+                inactivos.RemoveAt(0);
+
+                //Darle el formato al asteroide
+                formato.actualizarAsteroide(asteroide);
+
+                controlados.Add(asteroide);
+            }
+        }
+
         public void fabricar(int cuantos, TamanioAsteroide tam)
         {
             for (int i = 0; i < cuantos; i++ ) addNew(Factory.crearAsteroide(tam, new Vector3(10*i, 20*i, 100),this));
@@ -133,15 +172,32 @@ namespace AlumnoEjemplos.TheGRID
 
         public void fabricarMiniAsteroides(int cuantos, TamanioAsteroide tam, Vector3 pos)
         {
-            for (int i = 0; i < cuantos; i++) addNew(Factory.crearAsteroide(tam, pos,this));
+            if (tam != TamanioAsteroide.NULO)
+            {
+                for(int i=0; i<cuantos;i++)
+                {
+                    Formato format = new Formato();
+                    //Setear Formato
+                    format.tamanio = tam;
+                    format.posicion = pos;
+                    activarAsteroide(format);
+                }
+                //for (int i = 0; i < cuantos; i++) addNew(Factory.crearAsteroide(tam, pos, this));
+
+            }
         }
 
         public void fabricarCinturonAsteroides(Vector3 pos_base, int raizCantidadAsteroides, int distanciaEntreAsteroides)
         {
+            foreach (var asteroide in controlados)
+            {
+                desactivar(asteroide);
+            }
             int distancia = raizCantidadAsteroides * distanciaEntreAsteroides; //150 de separacion entre cada asteroides lo usual
             float pos_x;
             float pos_y = pos_base.Y;
-            float pos_z = pos_base.Z - (distancia /2);
+            float pos_z = pos_base.Z - (distancia / 2);
+            Formato formatoAsteroide = new Formato();
 
             for (int i = 0; i < raizCantidadAsteroides; i++)
             {
@@ -149,7 +205,13 @@ namespace AlumnoEjemplos.TheGRID
                 for (int j = 0; j < raizCantidadAsteroides; j++)
                 {
                     pos_x += distanciaEntreAsteroides * j;
-                    addNew(Factory.crearAsteroide(TamanioAsteroide.MUYGRANDE, new Vector3(pos_x, pos_y, pos_z),this));
+                    //Setear Formato
+                    formatoAsteroide.tamanio = TamanioAsteroide.MUYGRANDE;
+                    formatoAsteroide.posicion = new Vector3(pos_x, pos_y, pos_z);
+
+                    //Pasaje de asteroides con formato
+                    activarAsteroide(formatoAsteroide);
+                    //addNew(Factory.crearAsteroide(TamanioAsteroide.MUYGRANDE, new Vector3(pos_x, pos_y, pos_z),this));
                 }
                 pos_z += distanciaEntreAsteroides * i;
             }
@@ -219,5 +281,31 @@ namespace AlumnoEjemplos.TheGRID
                 colisionEntreAsteroides(++pos);
             }
         }
+    }
+    public class Formato
+    {
+        public TamanioAsteroide tamanio;
+        public Vector3 posicion;
+
+        public void actualizarAsteroide(Asteroide asteroide)
+        {
+
+            FormatoAsteroide formatoAUsar = Asteroide.elegirAsteroidePor(tamanio);
+
+            asteroide.escalar(formatoAUsar.getVolumen());
+            asteroide.setFisica(0, 0, formatoAUsar.getMasa());
+            asteroide.velocidad = formatoAUsar.getVelocidad();
+            asteroide.tamanioAnterior = formatoAUsar.tamanioAnterior();
+            asteroide.Vida = formatoAUsar.vidaInicial();
+            
+            float radioMalla3DsMax = 11.633f;
+            ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setValues(posicion, radioMalla3DsMax*formatoAUsar.getVolumen().X);
+                
+            Matrix traslacion = Matrix.Translation(posicion);
+            asteroide.Transform *= traslacion;
+            asteroide.getColision().transladar(posicion);
+            asteroide.setPosicion(posicion);
+        }
+
     }
 }

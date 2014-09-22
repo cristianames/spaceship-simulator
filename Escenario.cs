@@ -10,8 +10,8 @@ namespace AlumnoEjemplos.TheGRID
 {
     class Escenario
     {
-        public ManagerLaser laserManager;
-        public ManagerAsteroide asteroidManager;
+        public ManagerLaser laserManager = new ManagerLaser(10);
+        public ManagerAsteroide asteroidManager = new ManagerAsteroide(150); //Siempre debe ser mucho mayor que la cantidad de asteroides que queremos tener, pero no tanto sino colapsa
         public Dibujable principal;
         public TgcBoundingCylinder limite;
         private Boolean fuera_limite = false;
@@ -28,8 +28,7 @@ namespace AlumnoEjemplos.TheGRID
         public void loadChapter1()
         {
             disposeOld();
-            laserManager = new ManagerLaser(5);
-            asteroidManager = new ManagerAsteroide(1000);
+            asteroidManager = new ManagerAsteroide(100);
             asteroidManager.fabricarCinturonAsteroides(principal.getCentro(), 10, 100);
             limite = new TgcBoundingCylinder(principal.getCentro(), 10000, 100000);
         }
@@ -37,10 +36,9 @@ namespace AlumnoEjemplos.TheGRID
         public void loadChapter2() 
         {
             disposeOld();
-            laserManager = new ManagerLaser(5);
-            asteroidManager = new ManagerAsteroide(1000);
             asteroidManager.fabricarCinturonAsteroides(principal.getCentro(), 10, 100);
             limite = new TgcBoundingCylinder(principal.getCentro(), 10000, 100000);
+            principal.setShader(new MotionBlur());
 
         }
         //-------------------------------------------------------------------------------------------CHAPTER-3

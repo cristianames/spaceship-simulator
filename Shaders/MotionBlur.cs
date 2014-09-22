@@ -117,6 +117,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             effect.Technique = "VelocityMap";
             // necesito mandarle la matrix de view proj anterior
             effect.SetValue("matWorldViewProjAnt", antMatWorldView * device.Transform.Projection);
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
             renderScene(mesh, "VelocityMap");
             device.EndScene();
@@ -127,6 +128,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             effect.Technique = "DefaultTechnique";
             pSurf = g_pRenderTarget.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
             renderScene(mesh, "DefaultTechnique");
             device.EndScene();
@@ -141,6 +143,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             effect.SetValue("g_RenderTarget", g_pRenderTarget);
             effect.SetValue("texVelocityMap", g_pVel1);
             effect.SetValue("texVelocityMapAnt", g_pVel2);
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             effect.Begin(FX.None);
             effect.BeginPass(0);
             device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
