@@ -71,11 +71,12 @@ namespace AlumnoEjemplos.TheGrid
             GuiController.Instance.CustomRenderEnabled = true;
 
             //d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
+            
             /*
             //Crear SkyBox 
-            skyBox = new TgcSkyBox();
+            //skyBox = new TgcSkyBox();
             skyBox.Center = new Vector3(0, 0, 0);
-            skyBox.Size = new Vector3(15000, 15000, 150000);
+            skyBox.Size = new Vector3(15000, 15000, 15000);
             //Crear suelo
             TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, alumnoMediaFolder + "TheGrid\\SkyBox\\adelante.jpg");
             suelo = TgcBox.fromSize(new Vector3(0, 0, 9500), new Vector3(1000, 1000, 0), pisoTexture);   
@@ -250,8 +251,6 @@ namespace AlumnoEjemplos.TheGrid
             
             //skyBox.render();
             //suelo.render();
-
-
             
             nave.rotar(elapsedTime,listaDibujable);
             nave.desplazarse(elapsedTime,listaDibujable);
