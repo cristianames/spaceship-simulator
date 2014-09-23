@@ -28,7 +28,7 @@ namespace AlumnoEjemplos.TheGRID
         public void loadChapter1()
         {
             disposeOld();
-            asteroidManager = new ManagerAsteroide(100);
+            asteroidManager = new ManagerAsteroide(150);
             asteroidManager.fabricarCinturonAsteroides(principal.getCentro(), 10, 100);
             limite = new TgcBoundingCylinder(principal.getCentro(), 10000, 100000);
         }

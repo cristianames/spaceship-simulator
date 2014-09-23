@@ -49,7 +49,7 @@ namespace AlumnoEjemplos.TheGRID
         {
             //ManagerAsteroide manager = TheGrid.EjemploAlumno.workspace().Escenario.asteroidManager;
             if (tamanioAnterior != TamanioAsteroide.NULO) 
-                manager.fabricarMiniAsteroides(3, tamanioAnterior, getPosicion());
+                    manager.fabricarMiniAsteroides(3, tamanioAnterior, getPosicion());
 
             manager.desactivar(this);
         }
@@ -84,7 +84,7 @@ namespace AlumnoEjemplos.TheGRID
         private float longitud = 8;
         public float getMasa() { return masa; }
         public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
-        public float getVelocidad() { return 20; }
+        public float getVelocidad() { return 8; }
         public TamanioAsteroide tamanioAnterior() { return TamanioAsteroide.GRANDE; }
         public float vidaInicial() { return 10000; }
     }
@@ -95,7 +95,7 @@ namespace AlumnoEjemplos.TheGRID
         private float longitud = 6;
         public float getMasa() { return masa; }
         public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
-        public float getVelocidad() { return 25; }
+        public float getVelocidad() { return 13; }
         public TamanioAsteroide tamanioAnterior() { return TamanioAsteroide.MEDIANO; }
         public float vidaInicial() { return 5000; }
     }
@@ -106,7 +106,7 @@ namespace AlumnoEjemplos.TheGRID
         private float longitud = 3;
         public float getMasa() { return masa; }
         public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
-        public float getVelocidad() { return 30; }
+        public float getVelocidad() { return 18; }
         public TamanioAsteroide tamanioAnterior() { return TamanioAsteroide.CHICO; }
         public float vidaInicial() { return 2000; }
     }
@@ -117,7 +117,7 @@ namespace AlumnoEjemplos.TheGRID
         private float longitud = 0.7f;
         public float getMasa() { return masa; }
         public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
-        public float getVelocidad() { return 40; }
+        public float getVelocidad() { return 24; }
         public float vidaInicial() { return 500; }
         public TamanioAsteroide tamanioAnterior() { return TamanioAsteroide.NULO; }
     }

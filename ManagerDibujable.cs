@@ -299,12 +299,14 @@ namespace AlumnoEjemplos.TheGRID
             asteroide.Vida = formatoAUsar.vidaInicial();
             
             float radioMalla3DsMax = 11.633f;
-            ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setValues(posicion, radioMalla3DsMax*formatoAUsar.getVolumen().X);
+            TgcBoundingSphere bounding = (TgcBoundingSphere) asteroide.getColision().getBoundingBox();
+            bounding.setValues(bounding.Center, radioMalla3DsMax * formatoAUsar.getVolumen().X);
                 
-            Matrix traslacion = Matrix.Translation(posicion);
-            asteroide.Transform *= traslacion;
+            asteroide.Transform *= Matrix.Translation(posicion);
+            asteroide.Transform *= Matrix.Identity;
+
+            asteroide.trasladar(posicion);
             asteroide.getColision().transladar(posicion);
-            asteroide.setPosicion(posicion);
         }
 
     }
