@@ -145,7 +145,8 @@ namespace AlumnoEjemplos.TheGRID
                 //Chequea si esta dentro del frustrum
                 //TgcFrustum frustrum = GuiController.Instance.Frustum;
                 TgcFrustum frustrum = TheGrid.EjemploAlumno.workspace().getCurrentFrustrum();
-                TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult resultado = TgcCollisionUtils.classifyFrustumSphere(frustrum, (TgcBoundingSphere)item.getColision().getBoundingBox());
+                TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult resultado = 
+                    TgcCollisionUtils.classifyFrustumSphere(frustrum, (TgcBoundingSphere)item.getColision().getBoundingBox());
                 if (resultado != TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult.OUTSIDE)
                     item.render(time);
             }

@@ -18,8 +18,6 @@ namespace AlumnoEjemplos.TheGRID
         enum TipoModo { THE_OPENIG, IMPULSE_DRIVE, WELCOME_HOME, VACUUM };
         private TipoModo escenarioActual = TipoModo.THE_OPENIG;
 
-        
-
         public Escenario(Dibujable ppal) 
         {
             principal = ppal;
