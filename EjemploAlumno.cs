@@ -1,29 +1,32 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using TgcViewer.Example;
-using TgcViewer;
-using System.Linq;
-using Microsoft.DirectX.Direct3D;
 using System.Drawing;
+using System.Linq;
+
 using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
+using Microsoft.DirectX.DirectInput;
+
+using TgcViewer;
+using TgcViewer.Example;
 using TgcViewer.Utils.Modifiers;
 using TgcViewer.Utils.TgcGeometry;
-using AlumnoEjemplos.TheGRID;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Input;
-using AlumnoEjemplos.TheGRID.Camara;
 using TgcViewer.Utils.Terrain;
-using Microsoft.DirectX.DirectInput;
+
+using AlumnoEjemplos.TheGRID;
 using AlumnoEjemplos.TheGRID.Colisiones;
 using AlumnoEjemplos.TheGRID.Explosiones;
 using AlumnoEjemplos.TheGRID.Shaders;
-
+using AlumnoEjemplos.TheGRID.Camara;
 
 namespace AlumnoEjemplos.TheGrid
 {
     public class EjemploAlumno : TgcExample
     {
+        #region TGCVIEWER METADATA
         /// Categoría a la que pertenece el ejemplo.
         /// Influye en donde se va a ver en el árbol de la derecha de la pantalla.
         public override string getCategory(){ return "AlumnoEjemplos"; }
@@ -31,49 +34,35 @@ namespace AlumnoEjemplos.TheGrid
         public override string getName(){ return "Grupo TheGRID"; }
         /// Completar con la descripción del TP
         public override string getDescription(){return "Viaje Interplanetario - Manejo: \nArriba/Abajo - Pitch                       \nIzq/Der - Roll                                  \nA/D - Yaw                 \nW - Acelerar                  \nS - Estabilizar                             \nEspacio - Disparo Principal";}
-        //--------------------------------------------------------
-        
-        // ATRIBUTOS
+        #endregion
+
+        #region ATRIBUTOS
         Escenario scheme;
+        internal Escenario Escenario { get { return scheme; } }
         static EjemploAlumno singleton;
-        //TgcBox suelo;
         Dibujable nave;
         Dibujable sol;
         Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
-
         List<Dibujable> listaDibujable = new List<Dibujable>();
         float timeLaser = 0; //Inicializacion.
         const float betweenTime = 0.3f;    //Tiempo de espera entre cada disparo de laser.
-        //ManagerLaser laserManager;
-        //private ManagerAsteroide asteroidManager;
-        internal Escenario Escenario { get { return scheme; } }
 
         //Modificador de la camara del proyecto
         CambioCamara camara;
-        //TgcSkyBox skyBox;
         TgcArrow arrow;
         TgcFrustum currentFrustrum;
-        //TgcSphere horizonteVision;
-        TgcMesh horizonteVision;
+        SkySphere skySphere;
+        //TgcBox suelo;
+        //TgcSkyBox skyBox;
+        //ManagerLaser laserManager;
+        //private ManagerAsteroide asteroidManager;
+        #endregion
 
-        //--------------------------------------------------------
-
+        #region METODOS AUXILIARES
         public static EjemploAlumno workspace() { return singleton; }
         public TgcFrustum getCurrentFrustrum() { return currentFrustrum; }
-
-        public override void init()
+        private void crearSkyBox()
         {
-            EjemploAlumno.singleton = this;
-            //GuiController.Instance: acceso principal a todas las herramientas del Framework
-            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
-            //Carpeta de archivos Media del alumno
-            string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
-            singleton = this;
-            currentFrustrum = new TgcFrustum();
-            GuiController.Instance.CustomRenderEnabled = true;
-
-            //d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
-
             /*
             //Crear SkyBox 
             //skyBox = new TgcSkyBox();
@@ -81,7 +70,7 @@ namespace AlumnoEjemplos.TheGrid
             skyBox.Size = new Vector3(15000, 15000, 15000);
             //Crear suelo
             TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, alumnoMediaFolder + "TheGrid\\SkyBox\\adelante.jpg");
-            suelo = TgcBox.fromSize(new Vector3(0, 0, 9500), new Vector3(1000, 1000, 0), pisoTexture);   
+            suelo = TgcBox.fromSize(new Vector3(0, 0, 9500), new Vector3(1000, 1000, 0), pisoTexture);
             //Configurar color
             //skyBox.Color = Color.OrangeRed;
             //Configurar las texturas para cada una de las 6 caras
@@ -91,40 +80,37 @@ namespace AlumnoEjemplos.TheGrid
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, alumnoMediaFolder + "TheGrid\\SkyBox\\derecha.jpg");
             //Hay veces es necesario invertir las texturas Front y Back si se pasa de un sistema RightHanded a uno LeftHanded
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, alumnoMediaFolder + "TheGrid\\SkyBox\\adelante.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, alumnoMediaFolder + "TheGrid\\SkyBox\\atras.jpg");           
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, alumnoMediaFolder + "TheGrid\\SkyBox\\atras.jpg");
             //Actualizar todos los valores para crear el SkyBox
             skyBox.updateValues();
-            
-             
-            TgcTexture textura = 
-                TgcTexture.createTexture(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "TheGrid\\SkyBox\\atras.jpg");
-            horizonteVision = new TgcSphere(1500f, textura, new Vector3(0, 0, 0));
-            horizonteVision.Radius = 1500f;
-            horizonteVision.updateValues();
              */
+            skySphere = new SkySphere();
+        }
+        #endregion
 
-            horizonteVision = Factory.cargarMesh(@"TheGRID\SkyBox\skysphere-TgcScene.xml");
-            horizonteVision.Position = new Vector3(0, 0, 0);
-            horizonteVision.Scale = new Vector3(86, 86, 86);
+        public override void init()
+        {
+            EjemploAlumno.singleton = this;
+            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
+            string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
+            currentFrustrum = new TgcFrustum();
+            GuiController.Instance.CustomRenderEnabled = true;
 
+            //d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
             //Crear manager Lasers
             //laserManager = new ManagerLaser(5);
-            
             //Crear 5 asteroides
             //asteroidManager = new ManagerAsteroide(1000);
-
+            crearSkyBox();
 
             //Crear la nave
-            TgcSceneLoader loader = new TgcSceneLoader();
-            TgcScene scene;
+            TgcMesh meshNave = Factory.cargarMesh("TheGrid\\Nave\\nave3-TgcScene.xml");
             nave = new Dibujable(0, 0, 0);
-            scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "TheGrid\\Nave\\nave3-TgcScene.xml");
-            nave.setObject(scene.Meshes[0], 100, 25, new Vector3(0, 180, 0), new Vector3(0.5f, 0.5f, 0.5f));
+            nave.setObject(meshNave, 100, 25, new Vector3(0, 180, 0), new Vector3(0.5f, 0.5f, 0.5f));
             nave.setFisica(50, 400, 100);
             nave.SetPropiedades(true, false, false);
-            ExplosionNave modulo;
-            modulo = new ExplosionNave(nave,100,200);
-            nave.explosion = modulo;
+            nave.explosion = new ExplosionNave(nave,100,200);
+            
             //Cargamos su BB
             TgcBoundingBox naveBb = ((TgcMesh)nave.objeto).BoundingBox;
             naveBb.scaleTranslate(new Vector3(0, 0, 0), new Vector3(0.5f, 0.5f, 0.5f));
@@ -137,30 +123,27 @@ namespace AlumnoEjemplos.TheGrid
             //Creamos el escenario.
             scheme = new Escenario(nave);
             scheme.loadChapter1();
+            
             //Creamos.....EL SOL
-            TgcSceneLoader loaderSol = new TgcSceneLoader();
-            TgcScene sceneSol = loaderSol.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "TheGrid\\Sol\\sol-TgcScene.xml");
-            TgcMesh mesh_Sol = sceneSol.Meshes[0];
-            //Cargamos las cosas en el dibujable
+            TgcMesh mesh_Sol = Factory.cargarMesh("TheGrid\\Sol\\sol-TgcScene.xml");
             sol = new Dibujable();
             sol.setObject(mesh_Sol, 0, 100, new Vector3(0, 0, 0), new Vector3(1F, 1F, 1F));
             sol.trasladar(new Vector3(0, 0, 2500));
             sol.giro = 1;
 
-
             //Cargamos la nave como objeto principal.
             objetoPrincipal = nave;
-            //Cargamos la camara
             camara = new CambioCamara(nave);
-
             //asteroidManager.creaUno(TamanioAsteroide.MUYGRANDE);
             //asteroidManager.fabricar(5, TamanioAsteroide.MEDIANO);
             //asteroidManager.fabricarCinturonAsteroides(new Vector3(-500,0,2000),10,50);
-
+            
             //Flecha direccion objetivo
             arrow = new TgcArrow();
             arrow.BodyColor = Color.FromArgb(230, Color.Cyan);
             arrow.HeadColor = Color.FromArgb(230, Color.Yellow);
+
+            #region PANEL DERECHO
 
             //Cargamos valores en el panel lateral
             GuiController.Instance.UserVars.addVar("Vel-Actual:");
@@ -191,16 +174,12 @@ namespace AlumnoEjemplos.TheGrid
             //string[] opciones4 = new string[] { "Activado", "Desactivado" };
             //GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);  De momento lo saco.
 
-        }
-        //--------------------------------------------------------RENDER-----
+            #endregion
+        }   
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="elapsedTime">Tiempo en segundos transcurridos desde el último frame</param>
         public override void render(float elapsedTime)
         {
-            //-----UPDATE-----
+            #region -----UPDATE-----
             TgcD3dInput input = GuiController.Instance.D3dInput;
             GuiController.Instance.FpsCounterEnable = true;
 
@@ -212,9 +191,7 @@ namespace AlumnoEjemplos.TheGrid
             //Letras
             if (input.keyDown(Key.A)) { nave.giro = -1; }
             if (input.keyDown(Key.D)) { nave.giro = 1; }
-            if (input.keyDown(Key.W)) { nave.acelerar(); 
-                horizonteVision.Position = nave.getPosicion(); 
-                 }
+            if (input.keyDown(Key.W)) { nave.acelerar(); skySphere.actualizaPos(nave.getPosicion()); }
             if (input.keyDown(Key.S)) { nave.frenar(); }
 
             //Otros
@@ -239,16 +216,11 @@ namespace AlumnoEjemplos.TheGrid
                     timeLaser = 0;
                 }
             }
+            #endregion
 
-
-            //-----FIN-UPDATE-----
-
-
-            //Device de DirectX para renderizar
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             //d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
             //GuiController.Instance.FpsCounterEnable = true;
-
             scheme.refrescar(elapsedTime);
 
             //Cargar valores de la flecha
@@ -264,8 +236,7 @@ namespace AlumnoEjemplos.TheGrid
             arrow.render();
             sol.rotar(elapsedTime, listaDibujable);
             sol.render(elapsedTime);
-            
-            //skyBox.render();
+            skySphere.render();
             //suelo.render();
             
             nave.rotar(elapsedTime,listaDibujable);
@@ -273,8 +244,7 @@ namespace AlumnoEjemplos.TheGrid
             if(!camara.soyFPS())
                 nave.render(elapsedTime);
        
-            //Refrescar panel lateral
-            //case
+            #region Refrescar panel lateral
             string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
             camara.chequearCambio(opcionElegida);
             opcionElegida = (string)GuiController.Instance.Modifiers["Escenario Actual"];
@@ -295,8 +265,7 @@ namespace AlumnoEjemplos.TheGrid
             //Obtener valores de Modifiers
             //objetoPrincipal.fisica.aceleracion = (float)GuiController.Instance.Modifiers["Aceleracion"];  De momento lo saco.
             //objetoPrincipal.fisica.acelFrenado = (float)GuiController.Instance.Modifiers["Frenado"];      De momento lo saco.
-
-            horizonteVision.render();
+            #endregion
         }
 
         public override void close()
@@ -304,9 +273,7 @@ namespace AlumnoEjemplos.TheGrid
             scheme.asteroidManager.destruirLista();
             scheme.laserManager.destruirLista();
             nave.dispose();
-
             //suelo.dispose();
-
         }
     }
 }
