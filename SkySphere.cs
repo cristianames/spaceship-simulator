@@ -28,5 +28,9 @@ namespace AlumnoEjemplos.TheGRID
         {
             horizonteVision.Position = pos;
         }
+        public void dispose()
+        {
+            dispose();
+        }
     }
 }

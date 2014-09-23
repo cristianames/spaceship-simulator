@@ -70,8 +70,8 @@ namespace AlumnoEjemplos.TheGRID
             asteroide.AutoTransformEnable = false;
             asteroide.setColision(new ColisionAsteroide());
             asteroide.getColision().setBoundingBox(bounding_asteroide);
-            asteroide.traslacion = 1;
-            asteroide.rotacion = 1;
+            asteroide.traslacion = 0;
+            asteroide.rotacion = 0;
             trasladar(asteroide, posicion);
             asteroide.setPosicion(posicion);
             asteroide.setEjes(ejes);

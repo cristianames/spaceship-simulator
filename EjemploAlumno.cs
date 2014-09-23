@@ -201,7 +201,6 @@ namespace AlumnoEjemplos.TheGrid
             //if (input.keyDown(Key.F3)) { camara.modoTPS(); }
 
             if (input.keyDown(Key.P)) { scheme.asteroidManager.explotaAlPrimero(); }
-            if (input.keyDown(Key.O)) { scheme.asteroidManager.creaUno(TamanioAsteroide.CHICO); }
 
             camara.cambiarPosicionCamara();
             currentFrustrum.updateMesh(GuiController.Instance.CurrentCamera.getPosition(),GuiController.Instance.CurrentCamera.getLookAt());
@@ -272,7 +271,11 @@ namespace AlumnoEjemplos.TheGrid
         {
             scheme.asteroidManager.destruirLista();
             scheme.laserManager.destruirLista();
+            scheme.dispose();
             nave.dispose();
+            sol.dispose();
+            arrow.dispose();
+            skySphere.dispose();
             //suelo.dispose();
         }
     }

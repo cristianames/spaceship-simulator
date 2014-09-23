@@ -92,6 +92,8 @@ namespace AlumnoEjemplos.TheGRID
 
         public void desactivar(Dibujable objeto)
         {
+            objeto.traslacion = 1;
+            objeto.rotacion = 1;
             controlados.Remove(objeto);
             inactivos.Add(objeto);
         }
@@ -130,11 +132,6 @@ namespace AlumnoEjemplos.TheGRID
             controlados.First().teChoque(colisionador,50);
         }
 
-        public void creaUno(TamanioAsteroide tam)
-        {
-            addNew(Factory.crearAsteroide(tam,new Vector3(200,200,400),this));
-        }
-
         public override void operar(float time)
         {
             foreach (var item in controlados)
@@ -145,8 +142,7 @@ namespace AlumnoEjemplos.TheGRID
                 //Chequea si esta dentro del frustrum
                 //TgcFrustum frustrum = GuiController.Instance.Frustum;
                 TgcFrustum frustrum = TheGrid.EjemploAlumno.workspace().getCurrentFrustrum();
-                TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult resultado = 
-                    TgcCollisionUtils.classifyFrustumSphere(frustrum, (TgcBoundingSphere)item.getColision().getBoundingBox());
+                TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult resultado = TgcCollisionUtils.classifyFrustumSphere(frustrum, (TgcBoundingSphere)item.getColision().getBoundingBox());
                 if (resultado != TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult.OUTSIDE)
                     item.render(time);
             }
@@ -173,19 +169,10 @@ namespace AlumnoEjemplos.TheGRID
 
         public void fabricarMiniAsteroides(int cuantos, TamanioAsteroide tam, Vector3 pos)
         {
-            if (tam != TamanioAsteroide.NULO)
-            {
-                for(int i=0; i<cuantos;i++)
-                {
-                    Formato format = new Formato();
-                    //Setear Formato
-                    format.tamanio = tam;
-                    format.posicion = pos;
-                    activarAsteroide(format);
-                }
-                //for (int i = 0; i < cuantos; i++) addNew(Factory.crearAsteroide(tam, pos, this));
-
-            }
+            Formato format = new Formato();
+            format.tamanio = tam;
+            format.posicion = pos;
+            for(int i=0; i<cuantos;i++) { activarAsteroide(format); }
         }
 
         public void fabricarCinturonAsteroides(Vector3 pos_base, int raizCantidadAsteroides, int distanciaEntreAsteroides)
@@ -216,7 +203,6 @@ namespace AlumnoEjemplos.TheGRID
                 }
                 pos_z += distanciaEntreAsteroides * i;
             }
-
         }
 
 
@@ -298,17 +284,19 @@ namespace AlumnoEjemplos.TheGRID
             asteroide.velocidad = formatoAUsar.getVelocidad();
             asteroide.tamanioAnterior = formatoAUsar.tamanioAnterior();
             asteroide.Vida = formatoAUsar.vidaInicial();
-            
-            float radioMalla3DsMax = 11.633f;
+
+            asteroide.traslacion = 1;
+            asteroide.rotacion = 1;
+
+            float radioMalla3DsMax = 7.633f;
             TgcBoundingSphere bounding = (TgcBoundingSphere) asteroide.getColision().getBoundingBox();
             bounding.setValues(bounding.Center, radioMalla3DsMax * formatoAUsar.getVolumen().X);
                 
             asteroide.Transform *= Matrix.Translation(posicion);
             asteroide.Transform *= Matrix.Identity;
 
-            asteroide.trasladar(posicion);
             asteroide.getColision().transladar(posicion);
+            asteroide.setPosicion(posicion);
         }
-
     }
 }

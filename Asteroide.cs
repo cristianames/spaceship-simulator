@@ -48,10 +48,10 @@ namespace AlumnoEjemplos.TheGRID
         private void fraccionate()
         {
             //ManagerAsteroide manager = TheGrid.EjemploAlumno.workspace().Escenario.asteroidManager;
+            manager.desactivar(this);
             if (tamanioAnterior != TamanioAsteroide.NULO) 
                     manager.fabricarMiniAsteroides(3, tamanioAnterior, getPosicion());
 
-            manager.desactivar(this);
         }
 
         public static FormatoAsteroide elegirAsteroidePor(TamanioAsteroide tamanio)
