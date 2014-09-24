@@ -44,7 +44,7 @@ namespace AlumnoEjemplos.TheGRID
         // public static FormatoAsteroide elegirAsteroidePor(TamanioAsteroide tamanio)
         // movido a la clase Asteroide
 
-        public static Dibujable crearAsteroide(TamanioAsteroide tamanio, Vector3 posicion, ManagerAsteroide manager)
+        public static Asteroide crearAsteroide(TamanioAsteroide tamanio, Vector3 posicion, ManagerAsteroide manager)
         {
             FormatoAsteroide formato = Asteroide.elegirAsteroidePor(tamanio);
             TgcMesh mesh_asteroide = cargarMesh("TheGrid\\asteroid\\asteroid-TgcScene.xml");

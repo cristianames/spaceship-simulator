@@ -52,10 +52,7 @@ namespace AlumnoEjemplos.TheGRID
             objeto.rotar(time, lista);
         }
 
-        public List<Dibujable> lista() 
-        {
-            return controlados;
-        }
+        public List<Dibujable> lista() { return controlados;}
 
         public void eliminarElemento(Dibujable aEliminar)
         {
@@ -65,22 +62,13 @@ namespace AlumnoEjemplos.TheGRID
 
         public void setShader(ShaderInterface shader)
         {
-            foreach (var item in controlados)
-            {
-                item.setShader(shader);
-            }
+            foreach (var item in controlados) item.setShader(shader);
         }
 
         public void destruirLista()
         {
-            foreach (var item in controlados)
-            {
-                item.dispose();
-            }
-            foreach (var item in inactivos)
-            {
-                item.dispose();
-            }
+            foreach (var item in controlados) item.dispose();
+            foreach (var item in inactivos) item.dispose();
         }
 
         public void activar()
@@ -134,17 +122,35 @@ namespace AlumnoEjemplos.TheGRID
 
         public override void operar(float time)
         {
+            TgcFrustum frustrum = TheGrid.EjemploAlumno.workspace().getCurrentFrustrum();
             foreach (var item in controlados)
             {
                 trasladar(item, time);
                 rotar(item, time);
                 ((TgcBoundingSphere)item.getColision().getBoundingBox()).setCenter(item.getPosicion());
                 //Chequea si esta dentro del frustrum
-                //TgcFrustum frustrum = GuiController.Instance.Frustum;
-                TgcFrustum frustrum = TheGrid.EjemploAlumno.workspace().getCurrentFrustrum();
-                TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult resultado = TgcCollisionUtils.classifyFrustumSphere(frustrum, (TgcBoundingSphere)item.getColision().getBoundingBox());
-                if (resultado != TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult.OUTSIDE)
-                    item.render(time);
+                TgcCollisionUtils.FrustumResult resultado = 
+                    TgcCollisionUtils.classifyFrustumSphere(frustrum, (TgcBoundingSphere)item.getColision().getBoundingBox());
+                if (resultado != TgcCollisionUtils.FrustumResult.OUTSIDE) item.render(time);
+            }
+
+            //reciclajeAsteroidesFueraDelSky();
+        }
+
+        private void reciclajeAsteroidesFueraDelSky()
+        {
+            SkySphere skysphere = TheGrid.EjemploAlumno.workspace().SkySphere;
+            bool breakForzoso = true;
+            while (breakForzoso && controlados.Count > 0)
+            {
+                breakForzoso = false;
+                foreach (var asteroide in controlados)
+                    if (!asteroide.getColision().colisiono(skysphere.bordeSky))
+                    {
+                        desactivar(asteroide);
+                        breakForzoso = true;
+                        break;
+                    }
             }
         }
 
@@ -152,12 +158,11 @@ namespace AlumnoEjemplos.TheGRID
         {
             if(inactivos.Count > 0)
             {      
-                Asteroide asteroide = (Asteroide) inactivos[0];
+                Asteroide asteroide = (Asteroide)inactivos[0];
                 inactivos.RemoveAt(0);
 
                 //Darle el formato al asteroide
                 formato.actualizarAsteroide(asteroide);
-
                 controlados.Add(asteroide);
             }
         }
@@ -172,7 +177,7 @@ namespace AlumnoEjemplos.TheGRID
             Formato format = new Formato();
             format.tamanio = tam;
             format.posicion = pos;
-            for(int i=0; i<cuantos;i++) { activarAsteroide(format); }
+            for(int i=0; i<cuantos;i++)  activarAsteroide(format); 
         }
 
         public void fabricarCinturonAsteroides(Vector3 pos_base, int raizCantidadAsteroides, int distanciaEntreAsteroides)
@@ -204,7 +209,6 @@ namespace AlumnoEjemplos.TheGRID
                 pos_z += distanciaEntreAsteroides * i;
             }
         }
-
 
         public void chocoNave(Dibujable nave)
         {
@@ -243,8 +247,6 @@ namespace AlumnoEjemplos.TheGRID
             }
         }
 
-        //public void chocoAsteroide(Dibuajb)
-
         public void colisionEntreAsteroides(int i) 
         {            
             int pos = i;
@@ -276,7 +278,6 @@ namespace AlumnoEjemplos.TheGRID
 
         public void actualizarAsteroide(Asteroide asteroide)
         {
-
             FormatoAsteroide formatoAUsar = Asteroide.elegirAsteroidePor(tamanio);
 
             asteroide.escalar(formatoAUsar.getVolumen());

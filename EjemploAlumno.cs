@@ -40,7 +40,7 @@ namespace AlumnoEjemplos.TheGrid
         Escenario scheme;
         internal Escenario Escenario { get { return scheme; } }
         static EjemploAlumno singleton;
-        Dibujable nave;
+        Nave nave;
         Dibujable sol;
         Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
         List<Dibujable> listaDibujable = new List<Dibujable>();
@@ -50,8 +50,10 @@ namespace AlumnoEjemplos.TheGrid
         //Modificador de la camara del proyecto
         CambioCamara camara;
         TgcArrow arrow;
-        TgcFrustum currentFrustrum;
-        SkySphere skySphere;
+        private TgcFrustum currentFrustrum;
+        public TgcFrustum CurrentFrustrum { get { return currentFrustrum; } }
+        private SkySphere skySphere;
+        public SkySphere SkySphere { get { return skySphere; } }
         //TgcBox suelo;
         //TgcSkyBox skyBox;
         //ManagerLaser laserManager;
@@ -84,46 +86,40 @@ namespace AlumnoEjemplos.TheGrid
             //Actualizar todos los valores para crear el SkyBox
             skyBox.updateValues();
              */
-            skySphere = new SkySphere();
         }
         #endregion
 
         public override void init()
         {
+            #region INICIALIZACIONES POCO IMPORTANTES
+            
             EjemploAlumno.singleton = this;
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
-            currentFrustrum = new TgcFrustum();
             GuiController.Instance.CustomRenderEnabled = true;
-
             //d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
             //Crear manager Lasers
             //laserManager = new ManagerLaser(5);
             //Crear 5 asteroides
             //asteroidManager = new ManagerAsteroide(1000);
-            crearSkyBox();
+            //asteroidManager.creaUno(TamanioAsteroide.MUYGRANDE);
+            //asteroidManager.fabricar(5, TamanioAsteroide.MEDIANO);
+            //asteroidManager.fabricarCinturonAsteroides(new Vector3(-500,0,2000),10,50);
 
-            //Crear la nave
-            TgcMesh meshNave = Factory.cargarMesh("TheGrid\\Nave\\nave3-TgcScene.xml");
-            nave = new Dibujable(0, 0, 0);
-            nave.setObject(meshNave, 100, 25, new Vector3(0, 180, 0), new Vector3(0.5f, 0.5f, 0.5f));
-            nave.setFisica(50, 400, 100);
-            nave.SetPropiedades(true, false, false);
-            nave.explosion = new ExplosionNave(nave,100,200);
+            #endregion
+
+            currentFrustrum = new TgcFrustum();
+            crearSkyBox();
             
-            //Cargamos su BB
-            TgcBoundingBox naveBb = ((TgcMesh)nave.objeto).BoundingBox;
-            naveBb.scaleTranslate(new Vector3(0, 0, 0), new Vector3(0.5f, 0.5f, 0.5f));
-            TgcObb naveObb = TgcObb.computeFromAABB(naveBb);
-            foreach (var vRotor in nave.getEjes().lRotor) { naveObb.rotate(vRotor); } //Le aplicamos TODAS las rotaciones que hasta ahora lleva la nave.
-            nave.setColision(new ColisionNave());
-            nave.getColision().setBoundingBox(naveObb);
-            //nave.getColision().transladar(posicionNave);
+            //Crear la nave
+            nave = new Nave(0, 0, 0);
 
             //Creamos el escenario.
             scheme = new Escenario(nave);
             scheme.loadChapter1();
-            
+
+            skySphere = new SkySphere();
+
             //Creamos.....EL SOL
             TgcMesh mesh_Sol = Factory.cargarMesh("TheGrid\\Sol\\sol-TgcScene.xml");
             sol = new Dibujable();
@@ -134,9 +130,6 @@ namespace AlumnoEjemplos.TheGrid
             //Cargamos la nave como objeto principal.
             objetoPrincipal = nave;
             camara = new CambioCamara(nave);
-            //asteroidManager.creaUno(TamanioAsteroide.MUYGRANDE);
-            //asteroidManager.fabricar(5, TamanioAsteroide.MEDIANO);
-            //asteroidManager.fabricarCinturonAsteroides(new Vector3(-500,0,2000),10,50);
             
             //Flecha direccion objetivo
             arrow = new TgcArrow();
