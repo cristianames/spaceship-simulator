@@ -103,7 +103,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
             // guardo el Render target anterior y seteo la textura como render target
             Surface pOldRT = device.GetRenderTarget(0);
-            Surface pSurf = g_pVel1.GetSurfaceLevel(0);
+            Surface pSurf = g_pRenderTarget.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
             // hago lo mismo con el depthbuffer, necesito el que no tiene multisampling
             Surface pOldDS = device.DepthStencilSurface;
@@ -125,8 +125,9 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             if (motionBlurActivado)
             {
                 // 2 - Genero un mapa de velocidad 
+
                 effect.Technique = "VelocityMap";
-                pSurf = g_pRenderTarget.GetSurfaceLevel(0);
+                pSurf = g_pVel1.GetSurfaceLevel(0);
                 device.SetRenderTarget(0, pSurf);
                 // necesito mandarle la matrix de view proj anterior
                 effect.SetValue("matWorldViewProjAnt", antMatWorldView * device.Transform.Projection);
@@ -157,18 +158,17 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 effect.EndPass();
                 effect.End();
                 device.EndScene();
-
-                //Cosas a mostrar por pantalla, como el FPS y demaces
-                GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
-                //GuiController.Instance.Text3d.drawText("Pos: " + GuiController.Instance.CurrentCamera.getPosition(), 0, 0, Color.Yellow);
-                //GuiController.Instance.Text3d.drawText("Look At: " + GuiController.Instance.CurrentCamera.getLookAt(), 500, 0, Color.Yellow);
-
-                // actualizo los valores para el proximo frame
-                antMatWorldView = nave.Transform * device.Transform.View;
-                Texture aux = g_pVel2;
-                g_pVel2 = g_pVel1;
-                g_pVel1 = aux;
             }
+            //Cosas a mostrar por pantalla, como el FPS y demaces
+            GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
+            //GuiController.Instance.Text3d.drawText("Pos: " + GuiController.Instance.CurrentCamera.getPosition(), 0, 0, Color.Yellow);
+            //GuiController.Instance.Text3d.drawText("Look At: " + GuiController.Instance.CurrentCamera.getLookAt(), 500, 0, Color.Yellow);
+            
+            // actualizo los valores para el proximo frame
+            antMatWorldView = nave.Transform * device.Transform.View;
+            Texture aux = g_pVel2;
+            g_pVel2 = g_pVel1;
+            g_pVel1 = aux;
             //throw new NotImplementedException();
         }
 

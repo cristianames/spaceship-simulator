@@ -40,8 +40,6 @@ namespace AlumnoEjemplos.TheGRID
             disposeOld();
             asteroidManager.fabricarCinturonAsteroides(principal.getCentro(), 10, 100);
             limite = new TgcBoundingCylinder(principal.getCentro(), 10000, 100000);
-            principal.setShader(new MotionBlur());
-
         }
         //-------------------------------------------------------------------------------------------CHAPTER-3
         public void loadChapter3() 
