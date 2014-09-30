@@ -18,6 +18,7 @@ namespace AlumnoEjemplos.TheGRID
             horizonteVision = Factory.cargarMesh(@"TheGRID\SkyBox\skysphere-TgcScene.xml");
             horizonteVision.Position = new Vector3(0, 0, 0);
             horizonteVision.Scale = new Vector3(86, 86, 86);
+            EjemploAlumno.addMesh(horizonteVision);
             bordeSky = new TgcBoundingSphere(new Vector3(0, 0, 0), 500);
         }
 
@@ -29,8 +30,8 @@ namespace AlumnoEjemplos.TheGRID
 
         public void actualizaPos(Vector3 pos)
         {
-            //horizonteVision.Position = pos;
-            //bordeSky.setCenter(pos);
+            horizonteVision.Position = pos;
+            bordeSky.setCenter(pos);
         }
         
     }

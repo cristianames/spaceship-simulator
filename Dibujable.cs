@@ -400,5 +400,7 @@ namespace AlumnoEjemplos.TheGRID
             shader.setShader(this);
         }
 
+        public void activar() { ((TgcMesh)objeto).Enabled = false; }
+        public void desactivar() { ((TgcMesh)objeto).Enabled = true; }
     }
 }

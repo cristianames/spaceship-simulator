@@ -22,7 +22,7 @@ using AlumnoEjemplos.TheGRID.Explosiones;
 using AlumnoEjemplos.TheGRID.Shaders;
 using AlumnoEjemplos.TheGRID.Camara;
 
-namespace AlumnoEjemplos.TheGrid
+namespace AlumnoEjemplos.TheGRID
 {
     public class EjemploAlumno : TgcExample
     {
@@ -41,11 +41,13 @@ namespace AlumnoEjemplos.TheGrid
         internal Escenario Escenario { get { return scheme; } }
         static EjemploAlumno singleton;
         Nave nave;
-        Dibujable sol;
-        Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
+        Dibujable sol, objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
         List<Dibujable> listaDibujable = new List<Dibujable>();
         float timeLaser = 0; //Inicializacion.
         const float betweenTime = 0.3f;    //Tiempo de espera entre cada disparo de laser.
+
+        //lista de meshes para implementar el motion blur
+        public List<TgcMesh> meshCollection = new List<TgcMesh>();
 
         //Modificador de la camara del proyecto
         CambioCamara camara;
@@ -62,6 +64,9 @@ namespace AlumnoEjemplos.TheGrid
 
         #region METODOS AUXILIARES
         public static EjemploAlumno workspace() { return singleton; }
+        public static void addMesh(TgcMesh unMesh){
+            singleton.meshCollection.Add(unMesh);
+        }
         public TgcFrustum getCurrentFrustrum() { return currentFrustrum; }
         private void crearSkyBox()
         {

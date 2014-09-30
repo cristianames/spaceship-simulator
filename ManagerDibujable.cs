@@ -76,6 +76,7 @@ namespace AlumnoEjemplos.TheGRID
             Dibujable objeto = inactivos[0];
             inactivos.RemoveAt(0);
             controlados.Add(objeto);
+            objeto.activar();
         }
 
         public void desactivar(Dibujable objeto)
@@ -84,6 +85,7 @@ namespace AlumnoEjemplos.TheGRID
             objeto.rotacion = 1;
             controlados.Remove(objeto);
             inactivos.Add(objeto);
+            objeto.desactivar();
         }
     }
 
@@ -99,7 +101,7 @@ namespace AlumnoEjemplos.TheGRID
         public void chocoAsteroide()
         {
             foreach (Dibujable laser in controlados)
-                TheGrid.EjemploAlumno.workspace().Escenario.asteroidManager.chocoLaser(laser);
+                EjemploAlumno.workspace().Escenario.asteroidManager.chocoLaser(laser);
         }
     }
 
@@ -122,7 +124,7 @@ namespace AlumnoEjemplos.TheGRID
 
         public override void operar(float time)
         {
-            TgcFrustum frustrum = TheGrid.EjemploAlumno.workspace().getCurrentFrustrum();
+            TgcFrustum frustrum = EjemploAlumno.workspace().getCurrentFrustrum();
             foreach (var item in controlados)
             {
                 trasladar(item, time);
@@ -139,7 +141,7 @@ namespace AlumnoEjemplos.TheGRID
 
         private void reciclajeAsteroidesFueraDelSky()
         {
-            SkySphere skysphere = TheGrid.EjemploAlumno.workspace().SkySphere;
+            SkySphere skysphere = EjemploAlumno.workspace().SkySphere;
             bool breakForzoso = true;
             while (breakForzoso && controlados.Count > 0)
             {

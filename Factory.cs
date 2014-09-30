@@ -80,6 +80,7 @@ namespace AlumnoEjemplos.TheGRID
             asteroide.tamanioAnterior = formato.tamanioAnterior();
             asteroide.Vida = formato.vidaInicial();
             asteroide.manager = manager;
+            EjemploAlumno.addMesh(mesh_asteroide);
             return asteroide;
         }
 
@@ -96,7 +97,7 @@ namespace AlumnoEjemplos.TheGRID
         }*/
 
         public static Dibujable crearLaser(EjeCoordenadas ejes, Vector3 posicionNave)
-        {
+         {
             //Creemos la mesh
             TgcMesh mesh_laser = cargarMesh("TheGrid\\Laser\\Laser_Box-TgcScene.xml");
             //Cargamos las cosas en el dibujable
@@ -121,6 +122,7 @@ namespace AlumnoEjemplos.TheGRID
             laser.setColision(new ColisionLaser());
             laser.getColision().setBoundingBox(obb);
             laser.getColision().transladar(posicionNave);
+            EjemploAlumno.addMesh(mesh_laser);
             return laser;
         }
     }
