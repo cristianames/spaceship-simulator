@@ -117,7 +117,7 @@ namespace AlumnoEjemplos.TheGRID
             currentFrustrum = new TgcFrustum();
             crearSkyBox();
 
-            //shader.motionBlurActivado = true; //Descomentar para activar el motion
+            shader.motionBlurActivado = true; //Descomentar para activar el motion
 
             //Crear la nave
             nave = new Nave(0, 0, 0);
