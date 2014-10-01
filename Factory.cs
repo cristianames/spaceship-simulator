@@ -80,7 +80,9 @@ namespace AlumnoEjemplos.TheGRID
             asteroide.tamanioAnterior = formato.tamanioAnterior();
             asteroide.Vida = formato.vidaInicial();
             asteroide.manager = manager;
+            
             EjemploAlumno.addMesh(mesh_asteroide);
+            
             return asteroide;
         }
 

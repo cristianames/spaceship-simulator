@@ -391,7 +391,7 @@ namespace AlumnoEjemplos.TheGRID
         }
 
 
-        public void activar() { ((TgcMesh)objeto).Enabled = false; }
-        public void desactivar() { ((TgcMesh)objeto).Enabled = true; }
+        public void activar() { ((TgcMesh)objeto).Enabled = true; }
+        public void desactivar() { ((TgcMesh)objeto).Enabled = false; }
     }
 }

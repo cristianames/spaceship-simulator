@@ -232,7 +232,7 @@ namespace AlumnoEjemplos.TheGRID
 
         public void chocoLaser(Dibujable laser)
         {
-            foreach (Dibujable asteroide in controlados)
+            foreach (Asteroide asteroide in controlados)
             {
                 if (laser.getColision().colisiono(((TgcBoundingSphere)asteroide.getColision().getBoundingBox())))
                 {
