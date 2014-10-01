@@ -11,7 +11,9 @@ float4x4 matWorld; //Matriz de transformacion World
 float4x4 matWorldView; //Matriz World * View
 float4x4 matWorldViewProj; //Matriz World * View * Projection
 float4x4 matInverseTransposeWorld; //Matriz Transpose(Invert(World))
-float4x4 matWorldViewProjAnt;		//Matriz World * View * Proj anterior
+float4x4 matView; //Matriz View actual
+float4x4 matProj; //Matriz Projection actual
+float4x4 matViewAnt;		//Matriz View anterior
 
 //Textura para DiffuseMap
 texture texDiffuseMap;
@@ -76,8 +78,10 @@ struct VS_OUTPUT
    float4 Position :    POSITION0;
    float2 Texcoord :    TEXCOORD0;
    float3 Norm :        TEXCOORD1;			// Normales
-   float3 Pos :   		TEXCOORD2;		// Posicion real 3d
-   float2 Vel :			TEXCOORD3;		// velocidad por pixel
+   float4 vPosActual:	TEXCOORD2;			// Posicion actual
+   float4 vPosAnterior:	TEXCOORD3;			// Posicion anterior
+   
+   //float2 Vel :			TEXCOORD3;		// velocidad por pixel
 
 };
 
@@ -88,30 +92,27 @@ VS_OUTPUT vs_main( VS_INPUT Input )
 
    //Proyectar posicion
    Output.Position         = mul( Input.Position, matWorldViewProj);
-   
    //Las Texcoord quedan igual
    Output.Texcoord         = Input.Texcoord;
-
-   // Calculo la posicion real
-   float4 pos_real = mul(Input.Position,matWorld);
-   Output.Pos = float3(pos_real.x,pos_real.y,pos_real.z);
-   
    // Transformo la normal y la normalizo
    Output.Norm = normalize(mul(Input.Normal,matWorld));
 
-
-    // Computo la velocidad del vertice
+   /*
+   // Computo la velocidad del vertice
 	// posicion actual
 	float4 vPosActual = Output.Position;
 	// posicion anterior
-	float4 vPosAnterior = mul( Input.Position,matWorldViewProjAnt);
+	float4 vPosAnterior = mul( Input.Position,matWorld * matViewAnt * matProj);
 	vPosActual /= vPosActual.w;
 	vPosAnterior /= vPosAnterior.w;
 	float2 velocity = vPosActual - vPosAnterior;    
     // lo propago
-    Output.Vel = velocity;
+    Output.Vel = velocity;*/
 
-
+   // posicion actual
+	Output.vPosActual = Output.Position;
+	// posicion anterior
+	Output.vPosAnterior = mul( Input.Position,matWorld * matViewAnt * matProj);
 
    return( Output );
    
@@ -128,12 +129,18 @@ float4 ps_main( float3 Texcoord: TEXCOORD0) : COLOR0
 
 
 //Pixel Shader Velocity
-float4 ps_velocity( float3 Texcoord: TEXCOORD0, float2 Vel:TEXCOORD3) : COLOR0
+float4 ps_velocity( float3 Texcoord: TEXCOORD0, float4 vPosActual:TEXCOORD2, float4 vPosAnterior:TEXCOORD3) : COLOR0
 {      
 	//Obtener el texel de textura
 	float4 fvBaseColor      = tex2D( diffuseMap, Texcoord );
 	if(fvBaseColor.a<0.1)
 		discard;
+
+
+	vPosActual /= vPosActual.w;
+	vPosAnterior /= vPosAnterior.w;
+	float2 Vel = vPosActual - vPosAnterior;    
+
 	return float4(Vel.x,Vel.y,0.0f,1.0f);
 }
 
@@ -167,7 +174,7 @@ void vs_copy( float4 vPos : POSITION, float2 vTex : TEXCOORD0,out float4 oPos : 
 }
 
 
-float PixelBlurConst = 400;
+float PixelBlurConst = 0.05f;
 static const float NumberOfPostProcessSamples = 12.0f;
 
 float4 ps_motion_blur( in float2 Tex : TEXCOORD0) : COLOR0
@@ -193,9 +200,6 @@ float4 ps_motion_blur( in float2 Tex : TEXCOORD0) : COLOR0
     }
 	
 	
-	//= curFramePixelVelocity.rg* PixelBlurConst;
-	//pixelVelocity.y *= -1;
-
     float3 Blurred = 0;    
     for(float i = 0; i < NumberOfPostProcessSamples; i++)
     {   
@@ -203,11 +207,10 @@ float4 ps_motion_blur( in float2 Tex : TEXCOORD0) : COLOR0
         float4 Current = tex2D(RenderTarget, lookup);
         Blurred += Current.rgb;
     }
-	return float4(Blurred / NumberOfPostProcessSamples, 1.0f);
 
+	return float4(Blurred / NumberOfPostProcessSamples, 1.0f);
 //	return tex2D(velocityMap,Tex)  ;
 //	return tex2D(RenderTarget,Tex) ;
-
 }
 
 
@@ -219,6 +222,25 @@ technique PostProcessMotionBlur
    {
 	  VertexShader = compile vs_3_0 vs_copy();
 	  PixelShader = compile ps_3_0 ps_motion_blur();
+   }
+
+}
+
+float4 ps_draw_grid( in float2 Tex : TEXCOORD0, float2 vPos: VPOS) : COLOR0
+{
+	int x = round(vPos.x / 4);
+	int y = round(vPos.y / 4);
+	if(x % 5 != 0  || y % 5 != 0 )
+		discard;
+	return float4(1,1,1,1);
+}
+
+technique DrawGrid
+{
+   pass Pass_0
+   {
+	  VertexShader = compile vs_3_0 vs_copy();
+	  PixelShader = compile ps_3_0 ps_draw_grid();
    }
 
 }

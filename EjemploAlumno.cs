@@ -116,7 +116,9 @@ namespace AlumnoEjemplos.TheGRID
 
             currentFrustrum = new TgcFrustum();
             crearSkyBox();
-            //shader.motionBlurActivado = true;
+
+            //shader.motionBlurActivado = true; //Descomentar para activar el motion
+
             //Crear la nave
             nave = new Nave(0, 0, 0);
 
@@ -241,7 +243,7 @@ namespace AlumnoEjemplos.TheGRID
             nave.desplazarse(elapsedTime,listaDibujable);
             if(!camara.soyFPS())
                 nave.render(elapsedTime);
-            //shader.shadear((TgcMesh)nave.objeto, meshCollection, elapsedTime);
+            shader.shadear((TgcMesh)nave.objeto, meshCollection, elapsedTime);
             #region Refrescar panel lateral
             string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
             camara.chequearCambio(opcionElegida);

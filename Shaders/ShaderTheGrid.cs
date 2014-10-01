@@ -27,7 +27,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         private Surface g_pDepthStencil;     // Depth-stencil buffer 
         private Texture g_pRenderTarget;
         private Texture g_pVel1, g_pVel2;   // velocidad
-        private Matrix antMatWorldView;
+        private Matrix antMatView;
 
         public ShaderTheGrid()
         {
@@ -44,6 +44,9 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 throw new Exception("Error al cargar shader. Errores: " + compilationErrors);
             }
             
+            //Configurar Technique dentro del shader
+            effect.Technique = "DefaultTechnique";
+
             // stencil
             g_pDepthStencil = d3dDevice.CreateDepthStencilSurface(d3dDevice.PresentationParameters.BackBufferWidth,
                                                                          d3dDevice.PresentationParameters.BackBufferHeight,
@@ -82,8 +85,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                     4, d3dDevice, Usage.Dynamic | Usage.WriteOnly,
                         CustomVertex.PositionTextured.Format, Pool.Default);
             g_pVBV3D.SetData(vertices, 0, LockFlags.None);
-
-            antMatWorldView = Matrix.Identity;
+            antMatView = d3dDevice.Transform.View;
         }
 
         public void renderScene(List<TgcMesh> meshes, String technique)
@@ -95,81 +97,87 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 mesh.render();
             }
         }
+        public void renderScene(TgcMesh mesh, String technique)
+        {
+            mesh.Effect = effect;
+            mesh.Technique = technique;
+            mesh.render();
+        }
 
         public void shadear(TgcMesh nave ,List<TgcMesh> meshes, float elapsedTime)
         {
             time += elapsedTime;
             Device device = GuiController.Instance.D3dDevice;
 
+            if (!motionBlurActivado)
+            {
+                // dibujar sin motion blur
+                effect.Technique = "DefaultTechnique";
+                device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+                device.BeginScene();
+                renderScene(meshes, "DefaultTechnique");
+                renderScene(nave, "DefaultTechnique");
+                device.EndScene();
+                GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
+                return;
+            }
+
+            effect.SetValue("PixelBlurConst", 0.1f); //Despues veo como hacerlo mas global
+
             // guardo el Render target anterior y seteo la textura como render target
             Surface pOldRT = device.GetRenderTarget(0);
-            Surface pSurf = g_pRenderTarget.GetSurfaceLevel(0);
+            Surface pSurf = g_pVel1.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
             // hago lo mismo con el depthbuffer, necesito el que no tiene multisampling
             Surface pOldDS = device.DepthStencilSurface;
             device.DepthStencilSurface = g_pDepthStencil;
 
-            // 1- Genero la imagen pp dicha 
-            effect.Technique = "DefaultTechnique";
+            // 1 - Genero un mapa de velocidad 
+            effect.Technique = "VelocityMap";
+            // necesito mandarle la matrix de view actual y la anterior
+            effect.SetValue("matView", device.Transform.View);
+            effect.SetValue("matViewAnt", antMatView);
             device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
-            //Renderizemos
-            renderScene(meshes, "DefaultTechnique");
-            //Renderizamos la nave
-            nave.Effect = effect;
-            nave.Technique = "DefaultTechnique";
-            nave.render();
+            renderScene(meshes, "VelocityMap");
+            renderScene(nave, "VelocityMap");
             device.EndScene();
             pSurf.Dispose();
 
-            if (motionBlurActivado)
-            {
-                // 2 - Genero un mapa de velocidad 
+            // 2- Genero la imagen pp dicha 
+            effect.Technique = "DefaultTechnique";
+            pSurf = g_pRenderTarget.GetSurfaceLevel(0);
+            device.SetRenderTarget(0, pSurf);
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+            device.BeginScene();
+            renderScene(meshes, "DefaultTechnique");
+            renderScene(nave, "DefaultTechnique");
+            device.EndScene();
+            pSurf.Dispose();
 
-                effect.Technique = "VelocityMap";
-                pSurf = g_pVel1.GetSurfaceLevel(0);
-                device.SetRenderTarget(0, pSurf);
-                // necesito mandarle la matrix de view proj anterior
-                effect.SetValue("matWorldViewProjAnt", antMatWorldView * device.Transform.Projection);
-                device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
-                device.BeginScene();
-                //Renderizemos
-                renderScene(meshes, "VelocityMap");
-                //Renderizamos la nave
-                nave.Effect = effect;
-                nave.Technique = "VelocityMap";
-                nave.render();
-                device.EndScene();
-                pSurf.Dispose();
+            // Ultima pasada vertical va sobre la pantalla pp dicha
+            device.SetRenderTarget(0, pOldRT);
+            device.DepthStencilSurface = pOldDS;
+            device.BeginScene();
+            effect.Technique = "PostProcessMotionBlur";
+            device.VertexFormat = CustomVertex.PositionTextured.Format;
+            device.SetStreamSource(0, g_pVBV3D, 0);
+            effect.SetValue("g_RenderTarget", g_pRenderTarget);
+            effect.SetValue("texVelocityMap", g_pVel1);
+            effect.SetValue("texVelocityMapAnt", g_pVel2);
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+            effect.Begin(FX.None);
+            effect.BeginPass(0);
+            device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+            effect.EndPass();
+            effect.End();
+            device.EndScene();
 
-                // Ultima pasada vertical va sobre la pantalla pp dicha
-                device.SetRenderTarget(0, pOldRT);
-                device.BeginScene();
-                effect.Technique = "PostProcessMotionBlur";
-                device.VertexFormat = CustomVertex.PositionTextured.Format;
-                device.SetStreamSource(0, g_pVBV3D, 0);
-                effect.SetValue("g_RenderTarget", g_pRenderTarget);
-                effect.SetValue("texVelocityMap", g_pVel1);
-                effect.SetValue("texVelocityMapAnt", g_pVel2);
-                device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
-                effect.Begin(FX.None);
-                effect.BeginPass(0);
-                device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
-                effect.EndPass();
-                effect.End();
-                device.EndScene();
-            }
-            //Cosas a mostrar por pantalla, como el FPS y demaces
-            GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
-            //GuiController.Instance.Text3d.drawText("Pos: " + GuiController.Instance.CurrentCamera.getPosition(), 0, 0, Color.Yellow);
-            //GuiController.Instance.Text3d.drawText("Look At: " + GuiController.Instance.CurrentCamera.getLookAt(), 500, 0, Color.Yellow);
-            
             // actualizo los valores para el proximo frame
-            antMatWorldView = nave.Transform * device.Transform.View;
+            antMatView = device.Transform.View;
             Texture aux = g_pVel2;
             g_pVel2 = g_pVel1;
             g_pVel1 = aux;
-            //throw new NotImplementedException();
         }
 
         public void close()

@@ -91,8 +91,6 @@ namespace AlumnoEjemplos.TheGRID
         internal Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
         protected IColision colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
         internal Explosion explosion; // Acá va el manejo de un objeto cuando es chocado por otro.
-
-        internal ShaderInterface shaderManager = new ShaderDefault(); // Acá va el manager que se encarga de generar el efecto del shader segun corresponda
         //----------------------------------------------------------------------------------------------------INSTANCIADOR-----
         public Dibujable()
         {
@@ -135,7 +133,6 @@ namespace AlumnoEjemplos.TheGRID
         //-------------------------------------------------------------------------------------METODOS--------IRenderObject-----
         public void render(float elapsedTime) 
         {
-            this.shaderManager.shadear((TgcMesh)objeto, elapsedTime);
             //((IRenderObject)objeto).render();
             if (colision != null) colision.render();
         }
@@ -143,7 +140,6 @@ namespace AlumnoEjemplos.TheGRID
         {
             try
             {
-                this.shaderManager.close();
                 ((IRenderObject)objeto).dispose();
             }
             catch { }
@@ -394,11 +390,6 @@ namespace AlumnoEjemplos.TheGRID
             throw new NotImplementedException();
         }
 
-        public void setShader(ShaderInterface shader)
-        {
-            shaderManager = shader;
-            shader.setShader(this);
-        }
 
         public void activar() { ((TgcMesh)objeto).Enabled = false; }
         public void desactivar() { ((TgcMesh)objeto).Enabled = true; }

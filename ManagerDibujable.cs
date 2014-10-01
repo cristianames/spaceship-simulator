@@ -60,11 +60,6 @@ namespace AlumnoEjemplos.TheGRID
             aEliminar.dispose();
         }
 
-        public void setShader(ShaderInterface shader)
-        {
-            foreach (var item in controlados) item.setShader(shader);
-        }
-
         public void destruirLista()
         {
             foreach (var item in controlados) item.dispose();
