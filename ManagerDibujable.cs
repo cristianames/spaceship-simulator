@@ -151,6 +151,14 @@ namespace AlumnoEjemplos.TheGRID
             }
         }
 
+        public void desactivarTodos()
+        {
+            while (controlados.Count() > 0)
+            {
+                desactivar(controlados.First());
+            }
+        }
+
         public void activarAsteroide(Formato formato)
         {
             if(inactivos.Count > 0)
@@ -161,6 +169,7 @@ namespace AlumnoEjemplos.TheGRID
                 //Darle el formato al asteroide
                 formato.actualizarAsteroide(asteroide);
                 controlados.Add(asteroide);
+                asteroide.activar();                                    //ATENCION - No se realmente si habria que activarlo o no.
             }
         }
 
@@ -179,10 +188,10 @@ namespace AlumnoEjemplos.TheGRID
 
         public void fabricarCinturonAsteroides(Vector3 pos_base, int raizCantidadAsteroides, int distanciaEntreAsteroides)
         {
-            foreach (var asteroide in controlados)
+            /*foreach (var asteroide in controlados)  //No se realmente si conviene desactivar los que ya estaban activos.
             {
                 desactivar(asteroide);
-            }
+            }*/
             int distancia = raizCantidadAsteroides * distanciaEntreAsteroides; //150 de separacion entre cada asteroides lo usual
             float pos_x;
             float pos_y = pos_base.Y;
@@ -218,9 +227,8 @@ namespace AlumnoEjemplos.TheGRID
                     color = Color.Red;
                     ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(color);
                     naveColision = true;
-                    float velocidadNave = nave.velocidadActual();
                     nave.teChoque(asteroide, asteroide.velocidadActual());
-                    asteroide.teChoque(nave, velocidadNave);
+                    asteroide.teChoque(nave, nave.velocidadActual());
                     break;
                 }
                 ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(color);
@@ -232,6 +240,7 @@ namespace AlumnoEjemplos.TheGRID
 
         public void chocoLaser(Dibujable laser)
         {
+            //if (controlados.Count() < 1) return;      No hace falta
             foreach (Asteroide asteroide in controlados)
             {
                 if (laser.getColision().colisiono(((TgcBoundingSphere)asteroide.getColision().getBoundingBox())))
@@ -245,10 +254,11 @@ namespace AlumnoEjemplos.TheGRID
         }
 
         public void colisionEntreAsteroides(int i) 
-        {            
+        {
             int pos = i;
             int cant = controlados.Count();
-            if (i + 1 == controlados.Count()) //osea es el ultimo
+            if (cant<2) return;
+            if (i + 1 == cant/*controlados.Count()*/) //osea es el ultimo
             {
                 //no hace nada
             }

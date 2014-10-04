@@ -41,7 +41,7 @@ namespace AlumnoEjemplos.TheGRID
         internal Escenario Escenario { get { return scheme; } }
         static EjemploAlumno singleton;
         Nave nave;
-        Dibujable sol, objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
+        Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
         List<Dibujable> listaDibujable = new List<Dibujable>();
         float timeLaser = 0; //Inicializacion.
         const float betweenTime = 0.3f;    //Tiempo de espera entre cada disparo de laser.
@@ -60,7 +60,8 @@ namespace AlumnoEjemplos.TheGRID
         //TgcSkyBox skyBox;
         //ManagerLaser laserManager;
         //private ManagerAsteroide asteroidManager;
-        ShaderTheGrid shader = new ShaderTheGrid();
+        ShaderTheGrid shader;
+        internal ShaderTheGrid Shader { get { return shader; } }
         #endregion
 
         #region METODOS AUXILIARES
@@ -117,23 +118,17 @@ namespace AlumnoEjemplos.TheGRID
             currentFrustrum = new TgcFrustum();
             crearSkyBox();
 
-            shader.motionBlurActivado = true; //Descomentar para activar el motion
+            shader = new ShaderTheGrid();
+            //shader.motionBlurActivado = true; //Descomentar para activar el motion
 
             //Crear la nave
             nave = new Nave(0, 0, 0);
 
             //Creamos el escenario.
             scheme = new Escenario(nave);
-            scheme.loadChapter1();
+            //scheme.loadChapter2();
 
             skySphere = new SkySphere();
-
-            //Creamos.....EL SOL
-            TgcMesh mesh_Sol = Factory.cargarMesh("TheGrid\\Sol\\sol-TgcScene.xml");
-            sol = new Dibujable();
-            sol.setObject(mesh_Sol, 0, 100, new Vector3(0, 0, 0), new Vector3(1F, 1F, 1F));
-            sol.trasladar(new Vector3(0, 0, 2500));
-            sol.giro = 1;
 
             //Cargamos la nave como objeto principal.
             objetoPrincipal = nave;
@@ -164,8 +159,8 @@ namespace AlumnoEjemplos.TheGRID
             //GuiController.Instance.Modifiers.addFloat("Aceleracion", 0f,500f, objetoPrincipal.getAceleracion());  De momento lo saco.
             //GuiController.Instance.Modifiers.addFloat("Frenado", 0f, 1000f, objetoPrincipal.getAcelFrenado());    De momento lo saco.
             //Crear un modifier para un ComboBox con opciones
-            string[] opciones0 = new string[] { "THE OPENIG", "IMPULSE DRIVE", "WELCOME HOME", "VACUUM" };
-            GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 0);
+            string[] opciones0 = new string[] { "THE OPENING", "IMPULSE DRIVE", "WELCOME HOME", "VACUUM" };
+            GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 3);
             string[] opciones1 = new string[] { "Tercera Persona", "Camara FPS", "Libre" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
             string[] opciones2 = new string[] { "Desactivado", "Activado" };
@@ -174,6 +169,8 @@ namespace AlumnoEjemplos.TheGRID
             GuiController.Instance.Modifiers.addInterval("Desplaz. Avanzado", opciones3, 1);
             //string[] opciones4 = new string[] { "Activado", "Desactivado" };
             //GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);  De momento lo saco.
+            string opcionElegida = (string)GuiController.Instance.Modifiers["Escenario Actual"];
+            scheme.chequearCambio(opcionElegida);
 
             #endregion
         }   
@@ -234,8 +231,6 @@ namespace AlumnoEjemplos.TheGRID
             arrow.HeadSize = new Vector2(2,2);
             arrow.updateValues();
             arrow.render();
-            sol.rotar(elapsedTime, listaDibujable);
-            sol.render(elapsedTime);
             skySphere.render();
             //suelo.render();
             
@@ -274,7 +269,6 @@ namespace AlumnoEjemplos.TheGRID
             scheme.laserManager.destruirLista();
             scheme.dispose();
             nave.dispose();
-            sol.dispose();
             arrow.dispose();
             skySphere.dispose();
             //suelo.dispose();

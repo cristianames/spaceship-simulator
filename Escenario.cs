@@ -1,10 +1,12 @@
 ﻿using AlumnoEjemplos.TheGRID.Shaders;
+using AlumnoEjemplos.TheGRID;
 using Microsoft.DirectX;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TgcViewer.Utils.TgcGeometry;
+using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.TheGRID
 {
@@ -15,58 +17,98 @@ namespace AlumnoEjemplos.TheGRID
         public Dibujable principal;
         public TgcBoundingCylinder limite;
         private Boolean fuera_limite = false;
-        enum TipoModo { THE_OPENIG, IMPULSE_DRIVE, WELCOME_HOME, VACUUM };
-        private TipoModo escenarioActual = TipoModo.THE_OPENIG;
+        enum TipoModo { THE_OPENING, IMPULSE_DRIVE, WELCOME_HOME, VACUUM };
+        private TipoModo escenarioActual = TipoModo.VACUUM;
+        //Objetos
+        Dibujable sol;
+        private List<Dibujable> estrellas;
+        private List<TgcMesh> texturasEstrellas;
+
 
         public Escenario(Dibujable ppal) 
         {
             principal = ppal;
+            asteroidManager = new ManagerAsteroide(180); //Siempre debe ser mucho mayor que la cantidad de asteroides que queremos tener, pero no tanto sino colapsa
+            limite = new TgcBoundingCylinder(principal.getCentro(), 10000, 100000);
+            crearEstrellas();
+           
+        }
+
+        private void crearEstrellas()
+        {
+            //Creamos.....EL SOL
+            TgcMesh mesh_Sol = Factory.cargarMesh("TheGrid\\Sol\\sol-TgcScene.xml");
+            sol = new Dibujable();
+            sol.setObject(mesh_Sol, 0, 2500, new Vector3(0, 0, 0), new Vector3(0.5F, 0.5F, 0.5F));
+            sol.giro = -1;
+            sol.activar();
+            EjemploAlumno.workspace().meshCollection.Add((TgcMesh)sol.objeto);
+
+            texturasEstrellas = new List<TgcMesh>();
+
+            texturasEstrellas.Add(Factory.cargarMesh(@"\TheGRID\Estrella\Estrella-Azul-TgcScene.xml"));
+            texturasEstrellas.Add(Factory.cargarMesh(@"\TheGRID\Estrella\Estrella-Blanca-TgcScene.xml"));
+            texturasEstrellas.Add(Factory.cargarMesh(@"\TheGRID\Estrella\Estrella-Brillante-TgcScene.xml"));
+            texturasEstrellas.Add(Factory.cargarMesh(@"\TheGRID\Estrella\Estrella-Celeste-TgcScene.xml"));
+            texturasEstrellas.Add(Factory.cargarMesh(@"\TheGRID\Estrella\Estrella-Marron-TgcScene.xml"));
+            texturasEstrellas.Add(Factory.cargarMesh(@"\TheGRID\Estrella\Estrella-Negra-TgcScene.xml"));
+            texturasEstrellas.Add(Factory.cargarMesh(@"\TheGRID\Estrella\Estrella-Roja-TgcScene.xml"));
+            
         }
         public void dispose()
         {
+            sol.dispose();
             dispose();
         }
         //-------------------------------------------------------------------------------------------CHAPTER-1
         public void loadChapter1()
         {
             disposeOld();
-            asteroidManager = new ManagerAsteroide(180); //Siempre debe ser mucho mayor que la cantidad de asteroides que queremos tener, pero no tanto sino colapsa
             asteroidManager.fabricarCinturonAsteroides(principal.getCentro(), 10, 100);
-            limite = new TgcBoundingCylinder(principal.getCentro(), 10000, 100000);
+            escenarioActual = TipoModo.THE_OPENING;
         }
         //-------------------------------------------------------------------------------------------CHAPTER-2
         public void loadChapter2() 
         {
             disposeOld();
-            asteroidManager.fabricarCinturonAsteroides(principal.getCentro(), 10, 100);
-            limite = new TgcBoundingCylinder(principal.getCentro(), 10000, 100000);
+            escenarioActual = TipoModo.IMPULSE_DRIVE;
+            EjemploAlumno.workspace().Shader.motionBlurActivado = true;
         }
         //-------------------------------------------------------------------------------------------CHAPTER-3
         public void loadChapter3() 
         {
             disposeOld();
+            escenarioActual = TipoModo.WELCOME_HOME;
         }
         //-------------------------------------------------------------------------------------------VACUUM
         public void loadVacuum() 
         {
             disposeOld();
-            laserManager = new ManagerLaser(1);
-            asteroidManager = new ManagerAsteroide(1);
+            escenarioActual = TipoModo.VACUUM;
         }
 
         private void disposeOld()
         {
-            //Aca deberian borrarse todas las cosas de ser necesarias.
+            asteroidManager.desactivarTodos();
+            EjemploAlumno.workspace().Shader.motionBlurActivado = false;
+            // Aca se deben borran todas las cosas para un reinicializado.
         }
         //-------------------------------------------------------------------------------------------
         internal void dispararLaser()
         {
             laserManager.fabricar(principal.getEjes(), principal.getPosicion());
         }
-        internal void refrescar(float elapsedTime)
+        internal void refrescar(float elapsedTime)                                                  //RENDER DEL ESCENARIO
         {            
             laserManager.operar(elapsedTime);
             asteroidManager.operar(elapsedTime);
+                        
+            
+            Vector3 temporal = principal.getPosicion();
+            temporal.Z+=9000;
+            sol.ubicarEn(temporal);
+            sol.rotar(elapsedTime, new List<Dibujable>());
+            sol.render(elapsedTime);
 
             //Chequeo de colision
             //Chequeo si la nave choco con algun asteroide
@@ -116,8 +158,8 @@ namespace AlumnoEjemplos.TheGRID
         {
             switch (opcion)
             {
-                case "THE OPENIG":
-                    if (escenarioActual != TipoModo.THE_OPENIG)
+                case "THE OPENING":
+                    if (escenarioActual != TipoModo.THE_OPENING)
                         loadChapter1();
                     break;
                 case "IMPULSE DRIVE":

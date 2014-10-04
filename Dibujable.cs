@@ -205,10 +205,10 @@ namespace AlumnoEjemplos.TheGRID
         }
         public void setCentro(float x, float y, float z) { vectorDireccion.centrar(x, y, z); } //Acomoda el centro de giro del objeto.
         public void setCentro(Vector3 centro) { vectorDireccion.centrar(centro.X, centro.Y, centro.Z); }
-        public void setPosicion(Vector3 pos) 
+        public void setPosicion(Vector3 pos)//No manipular a menos que sea necesario. Se pierde coherencia con la posicion que lleva el objeto renderizable.
         {
             posicion.setActual(pos);
-        }   //No manipular a menos que sea necesario. Se pierde coherencia con la posicion que lleva el objeto renderizable.
+        }   
         public void setEjes(EjeCoordenadas nuevoEje) { vectorDireccion = nuevoEje; }
 
         //----------------------------------------------------------------------------------------------------MOVIMIENTOS-----
@@ -295,8 +295,16 @@ namespace AlumnoEjemplos.TheGRID
             Transform *= matriz;
             Vector4 normal4 = Vector3.Transform(getPosicion(), matriz);
             setPosicion(new Vector3(normal4.X, normal4.Y, normal4.Z));
-            normal4 = Vector3.Transform(getCentro(), matriz);
+            //normal4 = Vector3.Transform(getCentro(), matriz);
             //setCentro(normal4.X, normal4.Y, normal4.Z);
+        }
+
+        public void ubicarEn(Vector3 posicion)   //Ubica el objeto en esa posicion.
+        {
+            Vector3 movimiento = Vector3.Subtract(posicion, getPosicion());
+            Matrix matriz = Matrix.Translation(movimiento);
+            Transform *= matriz;
+            setPosicion(posicion);
         }
         //----------------------------------------------------------------------------------------------------CONSULTAS-----
         public Vector3 getCentro()
@@ -312,41 +320,7 @@ namespace AlumnoEjemplos.TheGRID
         public Vector3 getDireccion_Y() { return vectorDireccion.direccion_Y(); }
         public Vector3 getDireccion_X() { return vectorDireccion.direccion_X(); }
         public Vector3 getDireccionAnterior() { return vectorDireccion.direccionAnterior(); } //Direccion anterior a la que apuntaba el frente del objeto
-        /*          WTF!!!
-        internal Matrix getRotacion(float time)
-        {
-            // if (fisica != null && rotacionReal) fisica.rotar(time, dibujables); REVISAR!!!!
-            // else
-            Matrix rotation;
-            Matrix rotacionDefinitiva = new Matrix();
-            {
-                float angulo = velocidadRadial * time;
-
-                if (inclinacion != 0) //Rotar en X
-                {
-                    rotation = vectorDireccion.rotarX_desde(posicion.getActual(), angulo * inclinacion);
-                    rotacionDefinitiva *= rotation;
-
-                }
-                if (giro != 0) //Rotar en Y
-                {
-                    rotation = vectorDireccion.rotarY_desde(posicion.getActual(), angulo * giro);
-                    rotacionDefinitiva *= rotation;
-                }
-                if (rotacion != 0) //Rotar en Z
-                {
-                    rotation = vectorDireccion.rotarZ_desde(posicion.getActual(), angulo * rotacion);
-                    rotacionDefinitiva *= rotation;
-                }
-            }
-            if (velocidadManual)
-            {
-                inclinacion = 0;
-                rotacion = 0;
-                giro = 0;
-            }
-            return rotacionDefinitiva;
-        }*/
+       
         public Vector3 indicarGravedad(Vector3 pos, float mass){
             if (fisica != null) return this.fisica.indicarGravedad(pos, mass);
             else return new Vector3(0, 0, 0);
