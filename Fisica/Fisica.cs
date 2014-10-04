@@ -26,7 +26,7 @@ namespace AlumnoEjemplos.TheGRID
             frenado = false;
             acelFrenado = aFrenado;
         }
-        private float desplazamiento(float vel, float acel, float tiempo)
+        private float calcularDistanciaDesplazada(float vel, float acel, float tiempo)
         {
             float resultado;
             resultado = vel * tiempo;
@@ -37,7 +37,7 @@ namespace AlumnoEjemplos.TheGRID
         {
             //duenio.rotar(time, dibujables);
         }
-        public Vector3 trasladar(float time, List<Dibujable> dibujables)
+        public Vector3 calcularTraslado(float time, List<Dibujable> dibujables)
         {
             Vector3 devolucion = new Vector3();
             if (!frenado)
@@ -49,32 +49,26 @@ namespace AlumnoEjemplos.TheGRID
                 Vector3 dGravedad = auxiliar1;
                 float gravedad = Vector3.Length(dGravedad);
                 dGravedad.Normalize();
-                float atraccion = desplazamiento(0, gravedad, time);
+                float atraccion = calcularDistanciaDesplazada(0, gravedad, time);
                 dGravedad.Multiply(atraccion);
 
                 //Desplazamiento Inercial
                 Vector3 dTrayectoria = duenio.getTrayectoria();
                 dTrayectoria.Normalize();
-                float trayecto = desplazamiento(velocidadInstantanea, 0, time);
+                float trayecto = calcularDistanciaDesplazada(velocidadInstantanea, 0, time);
                 dTrayectoria.Multiply(trayecto);
 
                 //Desplazamiento Direccional
                 Vector3 auxiliar2 = duenio.getDireccion();
                 Vector3 dDireccion = auxiliar2;
                 //direccion.Normalize();   //Ya viene normalizado.
-                float desplazo = desplazamiento(0, duenio.traslacion * aceleracion, time);
+                float desplazo = calcularDistanciaDesplazada(0, duenio.traslacion * aceleracion, time);
                 dDireccion.Multiply(desplazo);
 
-                //Unimos y armamos la matriz
+                //Unimos
                 dDireccion += dGravedad;
                 dDireccion += dTrayectoria;
-                Matrix translate = Matrix.Translation(dDireccion);
                 devolucion = dDireccion;
-
-                Vector4 vector4 = Vector3.Transform(duenio.getPosicion(), translate);
-                duenio.setPosicion(new Vector3(vector4.X, vector4.Y, vector4.Z));
-
-                duenio.Transform *= translate;
 
                 //Calculo de la Velocidad actual.
                 auxiliar1.Normalize();
@@ -92,17 +86,10 @@ namespace AlumnoEjemplos.TheGRID
                     //Solo vamos a usar desplazamiento en trayectoria, es decir, el inercial.
                     Vector3 dTrayectoria = duenio.getTrayectoria();
                     dTrayectoria.Normalize();
-                    float trayecto = desplazamiento(velocidadInstantanea, -acelFrenado, time);
+                    float trayecto = calcularDistanciaDesplazada(velocidadInstantanea, -acelFrenado, time);
                     if (trayecto < 0) trayecto = 0;
                     dTrayectoria.Multiply(trayecto);
-
-                    //Armamos la matriz
-                    Matrix translate = Matrix.Translation(dTrayectoria);
                     devolucion = dTrayectoria;
-                    Vector4 vector4 = Vector3.Transform(duenio.getPosicion(), translate);
-                    duenio.setPosicion(new Vector3(vector4.X, vector4.Y, vector4.Z));
-
-                    duenio.Transform *= translate;
 
                     velocidadInstantanea -= acelFrenado * time;
                     if (velocidadInstantanea < 0) velocidadInstantanea = 0;

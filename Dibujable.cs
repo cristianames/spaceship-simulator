@@ -71,8 +71,6 @@ namespace AlumnoEjemplos.TheGRID
         }
     }
     //------------------------------------------------------------------
-    public interface IComun : IRenderObject, ITransformObject {}
-    //------------------------------------------------------------------
     public class Dibujable
     {
         //----------------------------------------------------------------------------------------------------ATRIBUTOS-----
@@ -87,6 +85,7 @@ namespace AlumnoEjemplos.TheGRID
         internal bool desplazamientoReal { set; get; }    //Se usa o no el modulo de Fisica para el desplazamiento.
         internal bool rotacionReal { set; get; }  //Se usa o no el modulo de Fisica para la rotacion.
         public Object objeto { set; get; }
+        internal Matrix ultimaTraslacion;
         private EjeCoordenadas vectorDireccion;
         internal Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
         protected IColision colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
@@ -103,6 +102,7 @@ namespace AlumnoEjemplos.TheGRID
             velocidadManual = false;
             desplazamientoReal = false;
             rotacionReal = false;
+            ultimaTraslacion = Matrix.Identity;
         }
         public Dibujable(float x, float y, float z)
         {
@@ -115,7 +115,7 @@ namespace AlumnoEjemplos.TheGRID
             velocidadManual = false;
             desplazamientoReal = false;
             rotacionReal = false;
-
+            ultimaTraslacion = Matrix.Identity;
         }
         public Dibujable(Vector3 centro)
         {
@@ -128,7 +128,7 @@ namespace AlumnoEjemplos.TheGRID
             velocidadManual = false;
             desplazamientoReal = false;
             rotacionReal = false;
-
+            ultimaTraslacion = Matrix.Identity;
         }
         //-------------------------------------------------------------------------------------METODOS--------IRenderObject-----
         public void render(float elapsedTime) 
@@ -155,11 +155,7 @@ namespace AlumnoEjemplos.TheGRID
         public Matrix Transform
         {
             get { return ((ITransformObject)objeto).Transform; }
-            set 
-            {
-                ((ITransformObject)objeto).Transform = value;
-                //vectorDireccion.trasnform(value);
-            }
+            set { ((ITransformObject)objeto).Transform = value; }
         }
         public bool AutoTransformEnable
         {
@@ -219,10 +215,11 @@ namespace AlumnoEjemplos.TheGRID
             if (fisica != null && velocidadManual) fisica.frenado = true;
             else traslacion = 0;
         }
-        public void desplazarse(float time, List<Dibujable> dibujables)   //Movimiento de traslacion base de un dibujable.
+        public void desplazarsePorTiempo(float time, List<Dibujable> dibujables)   //Movimiento de traslacion base de un dibujable.
         {
             Vector3 director;
-            if (fisica != null && desplazamientoReal) director = fisica.trasladar(time, dibujables);
+            Matrix move = Matrix.Identity;
+            if (fisica != null && desplazamientoReal) director = fisica.calcularTraslado(time, dibujables);
             else
             {
                 director = vectorDireccion.direccion();
@@ -230,15 +227,12 @@ namespace AlumnoEjemplos.TheGRID
                 director.X *= traslacion * velocidad * time;
                 director.Y *= traslacion * velocidad * time;
                 director.Z *= traslacion * velocidad * time;
-                Matrix translate = Matrix.Translation(director);
-
-                Vector4 vector4 = Vector3.Transform(posicion.getActual(), translate);
-                posicion.setActual(vector4.X, vector4.Y, vector4.Z);
-
-                Transform *= translate;
             }
+            move = Matrix.Translation(director);
+            desplazarUnaDistancia(move);
             if (velocidadManual) traslacion = 0;
             if (colision != null) colision.transladar(director);
+            ultimaTraslacion = move;
         }
         public void rotar(float time, List<Dibujable> dibujables)   //Movimiento de rotacion base de un dibujable.
         {
@@ -295,16 +289,20 @@ namespace AlumnoEjemplos.TheGRID
             Transform *= matriz;
             Vector4 normal4 = Vector3.Transform(getPosicion(), matriz);
             setPosicion(new Vector3(normal4.X, normal4.Y, normal4.Z));
-            //normal4 = Vector3.Transform(getCentro(), matriz);
-            //setCentro(normal4.X, normal4.Y, normal4.Z);
         }
 
-        public void ubicarEn(Vector3 posicion)   //Ubica el objeto en esa posicion.
+        public void ubicarEnUnaPosicion(Vector3 posicion)   //Ubica el objeto en esa posicion.
         {
             Vector3 movimiento = Vector3.Subtract(posicion, getPosicion());
             Matrix matriz = Matrix.Translation(movimiento);
             Transform *= matriz;
             setPosicion(posicion);
+        }
+        public void desplazarUnaDistancia(Matrix desplazamiento)
+        {
+            Vector4 vector4 = Vector3.Transform(posicion.getActual(), desplazamiento);
+            posicion.setActual(vector4.X, vector4.Y, vector4.Z);
+            Transform *= desplazamiento;
         }
         //----------------------------------------------------------------------------------------------------CONSULTAS-----
         public Vector3 getCentro()

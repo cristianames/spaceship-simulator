@@ -1,1 +1,0 @@
-xcopy ArchivosMedia "..\AlumnoMedia\TheGRID" /s /y /I

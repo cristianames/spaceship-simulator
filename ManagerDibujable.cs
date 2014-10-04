@@ -43,7 +43,7 @@ namespace AlumnoEjemplos.TheGRID
         protected void trasladar(Dibujable objeto, float time)
         {
             List<Dibujable> lista = new List<Dibujable>(0);
-            objeto.desplazarse(time, lista);
+            objeto.desplazarsePorTiempo(time, lista);
         }
 
         protected void rotar(Dibujable objeto, float time)

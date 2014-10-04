@@ -39,8 +39,9 @@ namespace AlumnoEjemplos.TheGRID
             //Creamos.....EL SOL
             TgcMesh mesh_Sol = Factory.cargarMesh(@"Sol\sol-TgcScene.xml");
             sol = new Dibujable();
-            sol.setObject(mesh_Sol, 0, 2500, new Vector3(0, 0, 0), new Vector3(0.5F, 0.5F, 0.5F));
+            sol.setObject(mesh_Sol, 0, 200, new Vector3(0, 0, 0), new Vector3(0.5F, 0.5F, 0.5F));
             sol.giro = -1;
+            sol.ubicarEnUnaPosicion(new Vector3(0,0,9000));
             sol.activar();
             EjemploAlumno.workspace().meshCollection.Add((TgcMesh)sol.objeto);
 
@@ -55,6 +56,7 @@ namespace AlumnoEjemplos.TheGRID
             texturasEstrellas.Add(Factory.cargarMesh(@"Estrella\Estrella-Negra-TgcScene.xml"));
             texturasEstrellas.Add(Factory.cargarMesh(@"Estrella\Estrella-Roja-TgcScene.xml"));
             
+
         }
         public void dispose()
         {
@@ -103,11 +105,8 @@ namespace AlumnoEjemplos.TheGRID
         {            
             laserManager.operar(elapsedTime);
             asteroidManager.operar(elapsedTime);
-                        
-            
-            Vector3 temporal = principal.getPosicion();
-            temporal.Z+=9000;
-            sol.ubicarEn(temporal);
+
+            sol.desplazarUnaDistancia(principal.ultimaTraslacion);
             sol.rotar(elapsedTime, new List<Dibujable>());
             sol.render(elapsedTime);
 

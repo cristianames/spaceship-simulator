@@ -237,7 +237,7 @@ namespace AlumnoEjemplos.TheGRID
             //suelo.render();
             
             nave.rotar(elapsedTime,listaDibujable);
-            nave.desplazarse(elapsedTime,listaDibujable);
+            nave.desplazarsePorTiempo(elapsedTime,listaDibujable);
             if(!camara.soyFPS())
                 nave.render(elapsedTime);
             shader.shadear((TgcMesh)nave.objeto, meshCollection, elapsedTime);
