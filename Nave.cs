@@ -14,7 +14,7 @@ namespace AlumnoEjemplos.TheGRID
     {
         public Nave(float x, float y, float z) : base(x,y,z) 
         {
-            TgcMesh meshNave = Factory.cargarMesh("TheGrid\\Nave\\nave3-TgcScene.xml");
+            TgcMesh meshNave = Factory.cargarMesh("Nave\\naveTrooper-TgcScene.xml");
             setObject(meshNave, 100, 25, new Vector3(0, 180, 0), new Vector3(0.5f, 0.5f, 0.5f));
             setFisica(50, 400, 100);
             SetPropiedades(true, false, false);

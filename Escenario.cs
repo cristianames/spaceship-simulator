@@ -51,7 +51,7 @@ namespace AlumnoEjemplos.TheGRID
         {
             disposeOld();
             laserManager = new ManagerLaser(1);
-            asteroidManager = new ManagerAsteroide(1);
+            asteroidManager = new ManagerAsteroide(181);
         }
 
         private void disposeOld()
@@ -104,7 +104,7 @@ namespace AlumnoEjemplos.TheGRID
             //no chequeo si algun laser choco con algun otro
 
             //Chequeo colision entre asteroides 
-            asteroidManager.colisionEntreAsteroides(0); //hay que pasarle el 0 como parametro para que empieze a preguntar desde el asteoride 0, es una funcion recursiva
+            //asteroidManager.colisionEntreAsteroides(0); //hay que pasarle el 0 como parametro para que empieze a preguntar desde el asteoride 0, es una funcion recursiva
             
             if(TgcCollisionUtils.testPointCylinder(principal.getCentro(),limite)){
                 fuera_limite = true;

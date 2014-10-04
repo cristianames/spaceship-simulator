@@ -108,7 +108,9 @@ namespace AlumnoEjemplos.TheGRID
         {
             for(int i=0;i< limite;i++)
             {
-                inactivos.Add(Factory.crearAsteroide(TamanioAsteroide.CHICO, new Vector3(0, 0, 0), this));
+                Asteroide asteroide = Factory.crearAsteroide(TamanioAsteroide.CHICO, new Vector3(0, 0, 0), this);
+                asteroide.desactivar();
+                inactivos.Add(asteroide);
             }
         }
 
@@ -128,7 +130,8 @@ namespace AlumnoEjemplos.TheGRID
                 //Chequea si esta dentro del frustrum
                 TgcCollisionUtils.FrustumResult resultado = 
                     TgcCollisionUtils.classifyFrustumSphere(frustrum, (TgcBoundingSphere)item.getColision().getBoundingBox());
-                if (resultado != TgcCollisionUtils.FrustumResult.OUTSIDE) item.render(time);
+                if (resultado != TgcCollisionUtils.FrustumResult.OUTSIDE) 
+                    item.render(time);
             }
 
             //reciclajeAsteroidesFueraDelSky();
@@ -160,6 +163,7 @@ namespace AlumnoEjemplos.TheGRID
 
                 //Darle el formato al asteroide
                 formato.actualizarAsteroide(asteroide);
+                asteroide.activar();
                 controlados.Add(asteroide);
             }
         }

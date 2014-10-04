@@ -93,6 +93,8 @@ namespace AlumnoEjemplos.TheGRID
             skyBox.updateValues();
              */
         }
+        private static string tg_Folder = GuiController.Instance.AlumnoEjemplosDir + "\\TheGrid\\ArchivosMedia\\";
+        public static string TG_Folder { get { return tg_Folder; } }
         #endregion
 
         public override void init()
@@ -117,19 +119,21 @@ namespace AlumnoEjemplos.TheGRID
             currentFrustrum = new TgcFrustum();
             crearSkyBox();
 
-            shader.motionBlurActivado = true; //Descomentar para activar el motion
+            //shader.motionBlurActivado = true; //Descomentar para activar el motion
 
             //Crear la nave
             nave = new Nave(0, 0, 0);
+
+            skySphere = new SkySphere();
 
             //Creamos el escenario.
             scheme = new Escenario(nave);
             scheme.loadChapter1();
 
-            skySphere = new SkySphere();
+            
 
             //Creamos.....EL SOL
-            TgcMesh mesh_Sol = Factory.cargarMesh("TheGrid\\Sol\\sol-TgcScene.xml");
+            TgcMesh mesh_Sol = Factory.cargarMesh("Sol\\sol-TgcScene.xml");
             sol = new Dibujable();
             sol.setObject(mesh_Sol, 0, 100, new Vector3(0, 0, 0), new Vector3(1F, 1F, 1F));
             sol.trasladar(new Vector3(0, 0, 2500));
