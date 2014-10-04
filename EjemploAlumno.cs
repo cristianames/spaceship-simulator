@@ -94,6 +94,8 @@ namespace AlumnoEjemplos.TheGRID
             skyBox.updateValues();
              */
         }
+        private static string tg_Folder = GuiController.Instance.AlumnoEjemplosDir + "\\TheGrid\\ArchivosMedia\\";
+        public static string TG_Folder { get { return tg_Folder; } }
         #endregion
 
         public override void init()
@@ -119,16 +121,16 @@ namespace AlumnoEjemplos.TheGRID
             crearSkyBox();
 
             shader = new ShaderTheGrid();
-            //shader.motionBlurActivado = true; //Descomentar para activar el motion
+            //shader.motionBlurActivado = true; //Descomentar para activar el motion---Ahora mismo esta en Escenario
 
             //Crear la nave
             nave = new Nave(0, 0, 0);
 
+            skySphere = new SkySphere();
+
             //Creamos el escenario.
             scheme = new Escenario(nave);
             //scheme.loadChapter2();
-
-            skySphere = new SkySphere();
 
             //Cargamos la nave como objeto principal.
             objetoPrincipal = nave;

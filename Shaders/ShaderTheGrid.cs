@@ -33,7 +33,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         {
             Device d3dDevice = GuiController.Instance.D3dDevice;
 
-            ShaderDirectory = GuiController.Instance.AlumnoEjemplosMediaDir + "\\TheGrid\\Shaders\\";
+            ShaderDirectory = GuiController.Instance.AlumnoEjemplosDir + "\\TheGRID\\ArchivosMedia\\Shaders\\";
 
             //Cargar Shader personalizado
             string compilationErrors;

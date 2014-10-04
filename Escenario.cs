@@ -37,7 +37,7 @@ namespace AlumnoEjemplos.TheGRID
         private void crearEstrellas()
         {
             //Creamos.....EL SOL
-            TgcMesh mesh_Sol = Factory.cargarMesh("TheGrid\\Sol\\sol-TgcScene.xml");
+            TgcMesh mesh_Sol = Factory.cargarMesh(@"Sol\sol-TgcScene.xml");
             sol = new Dibujable();
             sol.setObject(mesh_Sol, 0, 2500, new Vector3(0, 0, 0), new Vector3(0.5F, 0.5F, 0.5F));
             sol.giro = -1;
@@ -46,13 +46,14 @@ namespace AlumnoEjemplos.TheGRID
 
             texturasEstrellas = new List<TgcMesh>();
 
-            texturasEstrellas.Add(Factory.cargarMesh(@"\TheGRID\Estrella\Estrella-Azul-TgcScene.xml"));
-            texturasEstrellas.Add(Factory.cargarMesh(@"\TheGRID\Estrella\Estrella-Blanca-TgcScene.xml"));
-            texturasEstrellas.Add(Factory.cargarMesh(@"\TheGRID\Estrella\Estrella-Brillante-TgcScene.xml"));
-            texturasEstrellas.Add(Factory.cargarMesh(@"\TheGRID\Estrella\Estrella-Celeste-TgcScene.xml"));
-            texturasEstrellas.Add(Factory.cargarMesh(@"\TheGRID\Estrella\Estrella-Marron-TgcScene.xml"));
-            texturasEstrellas.Add(Factory.cargarMesh(@"\TheGRID\Estrella\Estrella-Negra-TgcScene.xml"));
-            texturasEstrellas.Add(Factory.cargarMesh(@"\TheGRID\Estrella\Estrella-Roja-TgcScene.xml"));
+            
+            texturasEstrellas.Add(Factory.cargarMesh(@"Estrella\Estrella-Azul-TgcScene.xml"));
+            texturasEstrellas.Add(Factory.cargarMesh(@"Estrella\Estrella-Blanca-TgcScene.xml"));
+            texturasEstrellas.Add(Factory.cargarMesh(@"Estrella\Estrella-Brillante-TgcScene.xml"));
+            texturasEstrellas.Add(Factory.cargarMesh(@"Estrella\Estrella-Celeste-TgcScene.xml"));
+            texturasEstrellas.Add(Factory.cargarMesh(@"Estrella\Estrella-Marron-TgcScene.xml"));
+            texturasEstrellas.Add(Factory.cargarMesh(@"Estrella\Estrella-Negra-TgcScene.xml"));
+            texturasEstrellas.Add(Factory.cargarMesh(@"Estrella\Estrella-Roja-TgcScene.xml"));
             
         }
         public void dispose()
@@ -146,7 +147,7 @@ namespace AlumnoEjemplos.TheGRID
             //no chequeo si algun laser choco con algun otro
 
             //Chequeo colision entre asteroides 
-            asteroidManager.colisionEntreAsteroides(0); //hay que pasarle el 0 como parametro para que empieze a preguntar desde el asteoride 0, es una funcion recursiva
+            //asteroidManager.colisionEntreAsteroides(0); //hay que pasarle el 0 como parametro para que empieze a preguntar desde el asteoride 0, es una funcion recursiva
             
             if(TgcCollisionUtils.testPointCylinder(principal.getCentro(),limite)){
                 fuera_limite = true;
