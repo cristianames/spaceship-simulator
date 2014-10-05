@@ -19,12 +19,13 @@ namespace AlumnoEjemplos.TheGRID
             horizonteVision = Factory.cargarMesh("SkyBox\\skysphere-TgcScene.xml");
             horizonteVision.Position = new Vector3(0, 0, 0);
             horizonteVision.Scale = new Vector3(86, 86, 86);
-            horizonteVision.Enabled = false;
+            horizonteVision.Enabled = true;
             EjemploAlumno.addMesh(horizonteVision);
             bordeSky = new TgcBoundingSphere(new Vector3(0, 0, 0), 500);
         }
 
-        internal void render(){ 
+        internal void render(){
+            actualizaPos(EjemploAlumno.workspace().ObjetoPrincipal.getPosicion());
             horizonteVision.render();
             bordeSky.render();
         }

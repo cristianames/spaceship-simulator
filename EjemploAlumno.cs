@@ -41,7 +41,8 @@ namespace AlumnoEjemplos.TheGRID
         internal Escenario Escenario { get { return scheme; } }
         static EjemploAlumno singleton;
         Nave nave;
-        Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
+        private Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
+        public Dibujable ObjetoPrincipal { get { return objetoPrincipal; } }
         List<Dibujable> listaDibujable = new List<Dibujable>();
         float timeLaser = 0; //Inicializacion.
         const float betweenTime = 0.3f;    //Tiempo de espera entre cada disparo de laser.
@@ -162,7 +163,7 @@ namespace AlumnoEjemplos.TheGRID
             //GuiController.Instance.Modifiers.addFloat("Frenado", 0f, 1000f, objetoPrincipal.getAcelFrenado());    De momento lo saco.
             //Crear un modifier para un ComboBox con opciones
             string[] opciones0 = new string[] { "THE OPENING", "IMPULSE DRIVE", "WELCOME HOME", "VACUUM" };
-            GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 3);
+            GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 0);
             string[] opciones1 = new string[] { "Tercera Persona", "Camara FPS", "Libre" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
             string[] opciones2 = new string[] { "Desactivado", "Activado" };
@@ -191,7 +192,7 @@ namespace AlumnoEjemplos.TheGRID
             //Letras
             if (input.keyDown(Key.A)) { nave.giro = -1; }
             if (input.keyDown(Key.D)) { nave.giro = 1; }
-            if (input.keyDown(Key.W)) { nave.acelerar(); skySphere.actualizaPos(nave.getPosicion()); }
+            if (input.keyDown(Key.W)) { nave.acelerar(); }
             if (input.keyDown(Key.S)) { nave.frenar(); }
 
 
@@ -238,12 +239,12 @@ namespace AlumnoEjemplos.TheGRID
             arrow.render();
             skySphere.render();
             //suelo.render();
-            
+
             nave.rotarPorTiempo(elapsedTime,listaDibujable);
-            nave.desplazarsePorTiempo(elapsedTime,listaDibujable);
+            nave.desplazarsePorTiempo(elapsedTime,new List<Dibujable>(scheme.cuerpos()));
             if(!camara.soyFPS())
                 nave.render(elapsedTime);
-            shader.shadear((TgcMesh)nave.objeto, meshCollection, elapsedTime);
+            //shader.shadear((TgcMesh)nave.objeto, meshCollection, elapsedTime);
             #region Refrescar panel lateral
             string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
             camara.chequearCambio(opcionElegida);

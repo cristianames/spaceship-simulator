@@ -131,6 +131,8 @@ namespace AlumnoEjemplos.TheGRID
             ultimaTraslacion = new Vector3();
         }
         //-------------------------------------------------------------------------------------METODOS--------IRenderObject-----
+        public void impulsate(Vector3 vector, float velocidad) {}
+        
         public void render(float elapsedTime) 
         {
             //((IRenderObject)objeto).render();

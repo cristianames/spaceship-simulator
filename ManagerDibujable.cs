@@ -8,6 +8,7 @@ using Microsoft.DirectX;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer;
 using AlumnoEjemplos.TheGRID.Shaders;
+using AlumnoEjemplos.TheGRID.Helpers;
 
 namespace AlumnoEjemplos.TheGRID
 {
@@ -42,7 +43,7 @@ namespace AlumnoEjemplos.TheGRID
 
         protected void trasladar(Dibujable objeto, float time)
         {
-            List<Dibujable> lista = new List<Dibujable>(0);
+            List<Dibujable> lista = new List<Dibujable>(controlados);
             objeto.desplazarsePorTiempo(time, lista);
         }
 
@@ -173,6 +174,12 @@ namespace AlumnoEjemplos.TheGRID
                 formato.actualizarAsteroide(asteroide);
                 asteroide.activar();
                 controlados.Add(asteroide);
+                
+                List<float> valores = new List<float>() { -4, -3, -2, -1, 1, 2, 3, 4 };
+                Vector3 direccionImpulso = new Vector3(Factory.elementoRandom(valores), Factory.elementoRandom(valores), Factory.elementoRandom(valores));
+                float velocidadImpulso = new Random().Next(1, 3);
+                asteroide.fisica.impulsar(direccionImpulso, velocidadImpulso, 0.01f);
+                
                 asteroide.activar();                                    //ATENCION - No se realmente si habria que activarlo o no.
             }
         }
@@ -269,17 +276,29 @@ namespace AlumnoEjemplos.TheGRID
 
             else
             {
-                for (++i; i < cant; i++)
+                for (++i; i < controlados.Count(); i++)
                 {
+                    //float velocidad;
+                    Dupla<Vector3> velocidades;
                     if (controlados[pos].getColision().colisiono(((TgcBoundingSphere)controlados[i].getColision().getBoundingBox()))) 
                     {
                         //controlados[pos].teChoque(controlados[i]);
                         ((TgcBoundingSphere)controlados[pos].getColision().getBoundingBox()).setRenderColor(Color.DarkGreen);
                         ((TgcBoundingSphere)controlados[i].getColision().getBoundingBox()).setRenderColor(Color.DarkGreen);
+                        velocidades = Fisica.CalcularChoqueElastico(controlados[i], controlados[pos]);
+                        //controlados[pos].teChoque(controlados[i], controlados[i].velocidad);
+                        //controlados[i].teChoque(controlados[pos], velocidad);
+                        controlados[pos].impulsate(velocidades.fst, controlados[pos].velocidad*12);
+                        controlados[i].impulsate(velocidades.snd, controlados[i].velocidad*6);
                     }
                 }
                 colisionEntreAsteroides(++pos);
             }
+        }
+
+        internal List<Dibujable> Controlados()
+        {
+            return controlados;
         }
     }
     public class Formato

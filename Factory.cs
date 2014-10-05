@@ -72,13 +72,10 @@ namespace AlumnoEjemplos.TheGRID
             List<float> valores = new List<float>() { -4, -3, -2, -1, 1, 2, 3, 4 };
             Vector3 escalado = formato.getVolumen();
             Vector3 rotacion = new Vector3(elementoRandom(valores), elementoRandom(valores), elementoRandom(valores));
-            Vector3 ejeX = new Vector3(elementoRandom(valores), elementoRandom(valores), elementoRandom(valores));
-            Vector3 ejeY = new Vector3(elementoRandom(valores), elementoRandom(valores), elementoRandom(valores));
-            Vector3 ejeZ = new Vector3(elementoRandom(valores), elementoRandom(valores), elementoRandom(valores));
             EjeCoordenadas ejes = new EjeCoordenadas();
-            ejes.vectorX = ejeX;
-            ejes.vectorY = ejeY;
-            ejes.vectorZ = ejeZ;
+            //ejes.vectorX = ejeX;
+            //ejes.vectorY = ejeY;
+            //ejes.vectorZ = ejeZ;
 
             //Creamos su bounding Sphere
             mesh_asteroide.AutoUpdateBoundingBox = false;
@@ -96,12 +93,16 @@ namespace AlumnoEjemplos.TheGRID
             trasladar(asteroide, posicion);
             asteroide.setPosicion(posicion);
             asteroide.setEjes(ejes);
+
             asteroide.setFisica(0, 0, formato.getMasa());
+            
+
             asteroide.velocidad = formato.getVelocidad();
             asteroide.tamanioAnterior = formato.tamanioAnterior();
             asteroide.Vida = formato.vidaInicial();
             asteroide.manager = manager;
-            
+            asteroide.SetPropiedades(false, true, false);
+           
             EjemploAlumno.addMesh(mesh_asteroide);
             
             return asteroide;
