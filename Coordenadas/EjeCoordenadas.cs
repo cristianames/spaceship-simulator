@@ -16,7 +16,7 @@ namespace AlumnoEjemplos.TheGRID
         public Matrix mRotor;
         public List<Vector3> lRotor { get; set; }
 
-        public Vector3 centroObjeto;
+        private Vector3 centroObjeto;
 
         public EjeCoordenadas()
         {
@@ -31,6 +31,7 @@ namespace AlumnoEjemplos.TheGRID
         public void actualizarX() { vectorX = Vector3.Cross(vectorY, vectorZ); }
 
         public void centrar(float x, float y, float z) { centroObjeto = new Vector3(x, y, z); }
+        public void centrar(Vector3 centro) { centroObjeto = centro; }
 
         public Vector3 getCentro() 
         {
@@ -39,9 +40,36 @@ namespace AlumnoEjemplos.TheGRID
             return temp; 
         }
 
+        public Matrix calculoRotarManualmente(Vector3 posActual, Vector3 rotacion, ref Vector3 rotacionActual)
+        {
+            rotacion.X = Geometry.DegreeToRadian(rotacion.X);
+            rotacion.Y = Geometry.DegreeToRadian(rotacion.Y);
+            rotacion.Z = Geometry.DegreeToRadian(rotacion.Z);
+            rotacionActual = rotacion;
+            lRotor.Add(rotacionActual);
+            rotation = Matrix.RotationYawPitchRoll(rotacion.Y, rotacion.X, rotacion.Z);
+
+            normal4 = Vector3.Transform(vectorZ, rotation);
+            vectorK = vectorZ;
+            vectorZ = new Vector3(normal4.X, normal4.Y, normal4.Z);
+
+            normal4 = Vector3.Transform(vectorY, rotation);
+            vectorY = new Vector3(normal4.X, normal4.Y, normal4.Z);
+
+            mRotor *= rotation;
+
+            actualizarX();
+
+            rototraslation = Matrix.Translation(centroObjeto - posActual);
+            rototraslation *= rotation;
+            rototraslation *= Matrix.Translation(posActual - centroObjeto);
+
+            return rototraslation;
+        }
+
         Matrix rotation, rototraslation;
         Vector4 normal4;
-        public Matrix rotarX_desde(Vector3 posActual, float grados, ref Vector3 rotacionActual)
+        public Matrix calculoRotarX_desde(Vector3 posActual, float grados, ref Vector3 rotacionActual)
         {
             float angulo = Geometry.DegreeToRadian(grados);
             rotacionActual = new Vector3(vectorX.X * angulo, vectorX.Y * angulo, vectorX.Z * angulo);
@@ -66,7 +94,7 @@ namespace AlumnoEjemplos.TheGRID
             return rototraslation;
         }
 
-        public Matrix rotarY_desde(Vector3 posActual, float grados, ref Vector3 rotacionActual)
+        public Matrix calculoRotarY_desde(Vector3 posActual, float grados, ref Vector3 rotacionActual)
         {
             float angulo = Geometry.DegreeToRadian(grados);
             rotacionActual = new Vector3(vectorY.X * angulo, vectorY.Y * angulo, vectorY.Z * angulo);
@@ -91,7 +119,7 @@ namespace AlumnoEjemplos.TheGRID
             return rototraslation;
         }
 
-        public Matrix rotarZ_desde(Vector3 posActual, float grados, ref Vector3 rotacionActual)
+        public Matrix calculoRotarZ_desde(Vector3 posActual, float grados, ref Vector3 rotacionActual)
         {
             float angulo = Geometry.DegreeToRadian(grados);
             rotacionActual = new Vector3(vectorZ.X * angulo, vectorZ.Y * angulo, vectorZ.Z * angulo);

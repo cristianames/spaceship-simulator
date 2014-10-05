@@ -58,7 +58,7 @@ namespace AlumnoEjemplos.TheGRID
             if (v1.Z != v2.Z) iguales = false;
             return iguales;
         }
-        public Vector3 direccion(){
+        public Vector3 direccionDesplazamiento(){
             Vector3 dir;
             if (sonIguales(actual, anterior)) dir = new Vector3(0, 0, 1);
             else
@@ -85,7 +85,7 @@ namespace AlumnoEjemplos.TheGRID
         internal bool desplazamientoReal { set; get; }    //Se usa o no el modulo de Fisica para el desplazamiento.
         internal bool rotacionReal { set; get; }  //Se usa o no el modulo de Fisica para la rotacion.
         public Object objeto { set; get; }
-        internal Matrix ultimaTraslacion;
+        internal Vector3 ultimaTraslacion;
         private EjeCoordenadas vectorDireccion;
         internal Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
         protected IColision colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
@@ -102,7 +102,7 @@ namespace AlumnoEjemplos.TheGRID
             velocidadManual = false;
             desplazamientoReal = false;
             rotacionReal = false;
-            ultimaTraslacion = Matrix.Identity;
+            ultimaTraslacion = new Vector3();
         }
         public Dibujable(float x, float y, float z)
         {
@@ -115,7 +115,7 @@ namespace AlumnoEjemplos.TheGRID
             velocidadManual = false;
             desplazamientoReal = false;
             rotacionReal = false;
-            ultimaTraslacion = Matrix.Identity;
+            ultimaTraslacion = new Vector3();
         }
         public Dibujable(Vector3 centro)
         {
@@ -128,7 +128,7 @@ namespace AlumnoEjemplos.TheGRID
             velocidadManual = false;
             desplazamientoReal = false;
             rotacionReal = false;
-            ultimaTraslacion = Matrix.Identity;
+            ultimaTraslacion = new Vector3();
         }
         //-------------------------------------------------------------------------------------METODOS--------IRenderObject-----
         public void render(float elapsedTime) 
@@ -167,7 +167,7 @@ namespace AlumnoEjemplos.TheGRID
         {
             objeto = cosa;
             AutoTransformEnable = false;
-            Transform *= Matrix.Identity;
+            //Transform *= Matrix.Identity;
         }
         public void setObject(Object cosa, float vLineal, float vRadial)    //Le agregas la velocidad maxima lineal y radial.
         {
@@ -175,7 +175,7 @@ namespace AlumnoEjemplos.TheGRID
             AutoTransformEnable = false;
             velocidad = vLineal;
             velocidadRadial = vRadial;
-            Transform *= Matrix.Identity;
+            //Transform *= Matrix.Identity;
         }
         public void setObject(Object cosa, float vLineal, float vRadial, Vector3 rotacion, Vector3 escalado)
         {  //Le agregas ademas un vector para la matriz de rotacion y otro para la de escalado. Para acomodar el objeto de forma inicial.
@@ -189,7 +189,6 @@ namespace AlumnoEjemplos.TheGRID
             Matrix matriz = Matrix.Scaling(escalado);
             matriz *= Matrix.RotationYawPitchRoll(rotacion.Y, rotacion.X, rotacion.Z);
             Transform *= matriz;
-            Transform *= Matrix.Identity;
         }
         public void setFisica(float acel, float aFrenado, float masaCuerpo) { fisica = new Fisica(this, acel, aFrenado, masaCuerpo); }
                 //Carga un nuevo módulo de fisica.
@@ -199,8 +198,7 @@ namespace AlumnoEjemplos.TheGRID
             desplazamientoReal = despReal;
             rotacionReal = rotReal;
         }
-        public void setCentro(float x, float y, float z) { vectorDireccion.centrar(x, y, z); } //Acomoda el centro de giro del objeto.
-        public void setCentro(Vector3 centro) { vectorDireccion.centrar(centro.X, centro.Y, centro.Z); }
+        public void setCentro(Vector3 centro) { vectorDireccion.centrar(centro.X, centro.Y, centro.Z); } //Acomoda el centro de giro del objeto.
         public void setPosicion(Vector3 pos)//No manipular a menos que sea necesario. Se pierde coherencia con la posicion que lleva el objeto renderizable.
         {
             posicion.setActual(pos);
@@ -229,12 +227,12 @@ namespace AlumnoEjemplos.TheGRID
                 director.Z *= traslacion * velocidad * time;
             }
             move = Matrix.Translation(director);
-            desplazarUnaDistancia(move);
+            desplazarUnaDistancia(director);
             if (velocidadManual) traslacion = 0;
             if (colision != null) colision.transladar(director);
-            ultimaTraslacion = move;
+            ultimaTraslacion = director;
         }
-        public void rotar(float time, List<Dibujable> dibujables)   //Movimiento de rotacion base de un dibujable.
+        public void rotarPorTiempo(float time, List<Dibujable> dibujables)   //Movimiento de rotacion base de un dibujable.
         {
             if (fisica != null && rotacionReal) fisica.rotar(time, dibujables);
             else
@@ -244,7 +242,7 @@ namespace AlumnoEjemplos.TheGRID
                 Vector3 rotacionActual = new Vector3() ;
                 if (inclinacion != 0) //Rotar en X
                 {
-                    rotation = vectorDireccion.rotarX_desde(posicion.getActual(), angulo * inclinacion, ref rotacionActual);// paso un vector por referencia para luego poder aplicarsselo a la obb
+                    rotation = vectorDireccion.calculoRotarX_desde(posicion.getActual(), angulo * inclinacion, ref rotacionActual);// paso un vector por referencia para luego poder aplicarsselo a la obb
                     Transform *= rotation;
                     if (colision != null) this.getColision().rotar(rotacionActual);
                    
@@ -252,13 +250,13 @@ namespace AlumnoEjemplos.TheGRID
                 }
                 if (giro != 0) //Rotar en Y
                 {
-                    rotation = vectorDireccion.rotarY_desde(posicion.getActual(), angulo * giro, ref rotacionActual);
+                    rotation = vectorDireccion.calculoRotarY_desde(posicion.getActual(), angulo * giro, ref rotacionActual);
                     Transform *= rotation;
                     if (colision != null) this.getColision().rotar(rotacionActual);
                 }
                 if (rotacion != 0) //Rotar en Z
                 {
-                    rotation = vectorDireccion.rotarZ_desde(posicion.getActual(), angulo * rotacion * 2, ref rotacionActual);
+                    rotation = vectorDireccion.calculoRotarZ_desde(posicion.getActual(), angulo * rotacion * 2, ref rotacionActual);
                     Transform *= rotation;
                     if (colision!=null)this.getColision().rotar(rotacionActual);
                 }
@@ -297,13 +295,26 @@ namespace AlumnoEjemplos.TheGRID
             Matrix matriz = Matrix.Translation(movimiento);
             Transform *= matriz;
             setPosicion(posicion);
+            if (colision != null) this.getColision().transladar(movimiento);
         }
-        public void desplazarUnaDistancia(Matrix desplazamiento)
+        public void desplazarUnaDistancia(Vector3 VDesplazamiento)
         {
+            Matrix desplazamiento = Matrix.Translation(VDesplazamiento);
             Vector4 vector4 = Vector3.Transform(posicion.getActual(), desplazamiento);
             posicion.setActual(vector4.X, vector4.Y, vector4.Z);
             Transform *= desplazamiento;
+            if (colision != null) this.getColision().transladar(VDesplazamiento);
         }
+        public void rotarPorVectorDeAngulos(Vector3 rotacion)
+        {
+            Matrix rotation;
+            Vector3 rotacionActual = new Vector3() ;
+            rotation = vectorDireccion.calculoRotarManualmente(posicion.getActual(), rotacion, ref rotacionActual);
+            Transform *= rotation;
+            if (colision != null) this.getColision().rotar(rotacionActual);
+        }
+
+                
         //----------------------------------------------------------------------------------------------------CONSULTAS-----
         public Vector3 getCentro()
         {
@@ -313,7 +324,7 @@ namespace AlumnoEjemplos.TheGRID
         }
         public Vector3 getPosicion() { return posicion.getActual(); }
 
-        public Vector3 getTrayectoria() { return posicion.direccion(); }   //Direccion en la que se desplaza un objeto.
+        public Vector3 getTrayectoria() { return posicion.direccionDesplazamiento(); }   //Direccion en la que se desplaza un objeto.
         public Vector3 getDireccion() { return vectorDireccion.direccion(); }   //Direccion en la que apunta el frente del objeto.
         public Vector3 getDireccion_Y() { return vectorDireccion.direccion_Y(); }
         public Vector3 getDireccion_X() { return vectorDireccion.direccion_X(); }
@@ -341,7 +352,7 @@ namespace AlumnoEjemplos.TheGRID
             nuevoEje.vectorX = vectorDireccion.vectorX;
             nuevoEje.vectorY = vectorDireccion.vectorY;
             nuevoEje.vectorZ = vectorDireccion.vectorZ;
-            nuevoEje.centroObjeto = vectorDireccion.centroObjeto;
+            nuevoEje.centrar(vectorDireccion.getCentro());
             nuevoEje.lRotor = new List<Vector3>(vectorDireccion.lRotor);
             nuevoEje.mRotor = vectorDireccion.mRotor;
             return nuevoEje; 

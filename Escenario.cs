@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
+using TgcViewer;
+using Microsoft.DirectX.Direct3D;
 
 namespace AlumnoEjemplos.TheGRID
 {
@@ -22,8 +24,7 @@ namespace AlumnoEjemplos.TheGRID
         //Objetos
         Dibujable sol;
         private List<Dibujable> estrellas;
-        private List<TgcMesh> texturasEstrellas;
-
+        private List<TgcTexture> texturasEstrellas;
 
         public Escenario(Dibujable ppal) 
         {
@@ -45,19 +46,68 @@ namespace AlumnoEjemplos.TheGRID
             sol.activar();
             EjemploAlumno.workspace().meshCollection.Add((TgcMesh)sol.objeto);
 
-            texturasEstrellas = new List<TgcMesh>();
+            //Cargamos la lista de texturas
+            texturasEstrellas = new List<TgcTexture>();
+            texturasEstrellas.Add(TgcTexture.createTexture(GuiController.Instance.D3dDevice, EjemploAlumno.TG_Folder + @"Estrella\Textures\Azul.jpg"));
+            texturasEstrellas.Add(TgcTexture.createTexture(GuiController.Instance.D3dDevice, EjemploAlumno.TG_Folder + @"Estrella\Textures\Blanca.jpg"));
+            texturasEstrellas.Add(TgcTexture.createTexture(GuiController.Instance.D3dDevice, EjemploAlumno.TG_Folder + @"Estrella\Textures\Brillante.jpg"));
+            texturasEstrellas.Add(TgcTexture.createTexture(GuiController.Instance.D3dDevice, EjemploAlumno.TG_Folder + @"Estrella\Textures\Celeste.jpg"));
+            texturasEstrellas.Add(TgcTexture.createTexture(GuiController.Instance.D3dDevice, EjemploAlumno.TG_Folder + @"Estrella\Textures\Marron.jpg"));
+            texturasEstrellas.Add(TgcTexture.createTexture(GuiController.Instance.D3dDevice, EjemploAlumno.TG_Folder + @"Estrella\Textures\Negra.jpg"));
+            texturasEstrellas.Add(TgcTexture.createTexture(GuiController.Instance.D3dDevice, EjemploAlumno.TG_Folder + @"Estrella\Textures\Roja.jpg"));
 
-            
-            texturasEstrellas.Add(Factory.cargarMesh(@"Estrella\Estrella-Azul-TgcScene.xml"));
-            texturasEstrellas.Add(Factory.cargarMesh(@"Estrella\Estrella-Blanca-TgcScene.xml"));
-            texturasEstrellas.Add(Factory.cargarMesh(@"Estrella\Estrella-Brillante-TgcScene.xml"));
-            texturasEstrellas.Add(Factory.cargarMesh(@"Estrella\Estrella-Celeste-TgcScene.xml"));
-            texturasEstrellas.Add(Factory.cargarMesh(@"Estrella\Estrella-Marron-TgcScene.xml"));
-            texturasEstrellas.Add(Factory.cargarMesh(@"Estrella\Estrella-Negra-TgcScene.xml"));
-            texturasEstrellas.Add(Factory.cargarMesh(@"Estrella\Estrella-Roja-TgcScene.xml"));
-            
+            //Cargamos la lista de estrellas
+            estrellas = new List<Dibujable>();
 
+            int i;
+            for (i = 0; i < 10; i++)
+            {
+                //Estrella como esfera            
+                TgcSphere star = new TgcSphere();
+                star.Radius = 20;
+                star.setTexture(Factory.elementoRandom<TgcTexture>(texturasEstrellas));
+                star.Position = new Vector3(0, 0, 0);
+                star.BasePoly = TgcSphere.eBasePoly.ICOSAHEDRON;
+                star.Inflate = true;
+                star.LevelOfDetail = 0;
+                star.updateValues();
+                TgcMesh meshTemporal = star.toMesh("Estrellita");
+                //Estrella como dibujable
+                Dibujable estrella;
+                estrella = new Dibujable(0, 0, 0);
+                meshTemporal.AutoTransformEnable = false;
+                estrella.setObject(meshTemporal, 0, 200, new Vector3(0, 0, 0), new Vector3(1F, 1F, 1F));
+                List<int> opcionesRotacion = new List<int>();
+                opcionesRotacion.Add(1);
+                opcionesRotacion.Add(-1);
+                estrella.giro = Factory.elementoRandom<int>(opcionesRotacion);
+                estrella.activar();
+                //Rotamos la posicion de la estrella
+                List<Vector3> opcionesPosiciones = new List<Vector3>();
+               opcionesPosiciones.Add(new Vector3(200, 0, 0));
+               opcionesPosiciones.Add(new Vector3(-200,0,0));
+               opcionesPosiciones.Add(new Vector3(0,200,0));
+               opcionesPosiciones.Add(new Vector3(0,-200,0));
+               opcionesPosiciones.Add(new Vector3(0,0,200));
+               opcionesPosiciones.Add(new Vector3(0,0,-200));
+
+               Vector3 posicionFinal = Factory.elementoRandom<Vector3>(opcionesPosiciones);
+                Vector3 rotacion = Factory.VectorRandom(-90,90);  // Aca va una rotacion random
+                rotacion.X = Geometry.DegreeToRadian(rotacion.X);
+                rotacion.Y = Geometry.DegreeToRadian(rotacion.Y);
+                rotacion.Z = Geometry.DegreeToRadian(rotacion.Z);
+                Matrix rotation = Matrix.RotationYawPitchRoll(rotacion.Y, rotacion.X, rotacion.Z);
+                Vector4 normal4 = Vector3.Transform(posicionFinal, rotation);
+                posicionFinal = new Vector3(normal4.X, normal4.Y, normal4.Z);
+                //Llevamos a la estrella a su posicion final
+                estrella.ubicarEnUnaPosicion(posicionFinal);
+                //Añadimos la estrella a las listas
+                EjemploAlumno.workspace().meshCollection.Add((TgcMesh)estrella.objeto);
+                estrellas.Add(estrella);
+            }
         }
+
+
         public void dispose()
         {
             sol.dispose();
@@ -107,8 +157,9 @@ namespace AlumnoEjemplos.TheGRID
             asteroidManager.operar(elapsedTime);
 
             sol.desplazarUnaDistancia(principal.ultimaTraslacion);
-            sol.rotar(elapsedTime, new List<Dibujable>());
-            sol.render(elapsedTime);
+            sol.rotarPorTiempo(elapsedTime, new List<Dibujable>());
+
+            foreach (Dibujable estrella in estrellas) estrella.rotarPorTiempo(elapsedTime, new List<Dibujable>());
 
             //Chequeo de colision
             //Chequeo si la nave choco con algun asteroide

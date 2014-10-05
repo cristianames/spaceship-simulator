@@ -49,7 +49,7 @@ namespace AlumnoEjemplos.TheGRID
         protected void rotar(Dibujable objeto, float time)
         {
             List<Dibujable> lista = new List<Dibujable>(0);
-            objeto.rotar(time, lista);
+            objeto.rotarPorTiempo(time, lista);
         }
 
         public List<Dibujable> lista() { return controlados;}

@@ -17,16 +17,37 @@ namespace AlumnoEjemplos.TheGRID
     public static class Factory
     {
         static Device d3dDevice = GuiController.Instance.D3dDevice;
-        static string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;        
-        public static T numeroRandom<T>(List<T> valores)
+        static string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
+
+        public static int numeroRandom()
         {
+            int resto;
             Random random = new Random();
-            int numero = random.Next();
+            random = new Random(random.Next());
+            Math.DivRem(random.Next(), DateTime.Now.Millisecond + 1, out resto);
+            random = new Random(resto);
+            Math.DivRem(random.Next(), DateTime.Now.Second + 1, out resto);
+            random = new Random(resto);
+            Math.DivRem(random.Next(), DateTime.Now.Hour + 1, out resto);
+            random = new Random(resto);
+            return random.Next();
+        }
+        public static T elementoRandom<T>(List<T> valores)
+        {
             int resto, length;
             length = valores.Count;
-            Math.DivRem(numero, length, out resto);
+            Math.DivRem(numeroRandom(), length, out resto);
             return valores[resto];
         }
+        public static Vector3 VectorRandom(int valorMinimo, int valorMaximo){
+            Vector3 victima = new Vector3();
+            victima.X = numeroRandom()+1;
+            victima.Y = numeroRandom()+1;
+            victima.Z = numeroRandom()+1;
+            return victima;
+        }
+            
+
 
         public static TgcMesh cargarMesh(string path){
             TgcSceneLoader loader = new TgcSceneLoader();
@@ -50,10 +71,10 @@ namespace AlumnoEjemplos.TheGRID
             TgcMesh mesh_asteroide = cargarMesh("asteroid\\asteroid-TgcScene.xml");
             List<float> valores = new List<float>() { -4, -3, -2, -1, 1, 2, 3, 4 };
             Vector3 escalado = formato.getVolumen();
-            Vector3 rotacion = new Vector3(numeroRandom(valores), numeroRandom(valores), numeroRandom(valores));
-            Vector3 ejeX = new Vector3(numeroRandom(valores), numeroRandom(valores), numeroRandom(valores));
-            Vector3 ejeY = new Vector3(numeroRandom(valores), numeroRandom(valores), numeroRandom(valores));
-            Vector3 ejeZ = new Vector3(numeroRandom(valores), numeroRandom(valores), numeroRandom(valores));
+            Vector3 rotacion = new Vector3(elementoRandom(valores), elementoRandom(valores), elementoRandom(valores));
+            Vector3 ejeX = new Vector3(elementoRandom(valores), elementoRandom(valores), elementoRandom(valores));
+            Vector3 ejeY = new Vector3(elementoRandom(valores), elementoRandom(valores), elementoRandom(valores));
+            Vector3 ejeZ = new Vector3(elementoRandom(valores), elementoRandom(valores), elementoRandom(valores));
             EjeCoordenadas ejes = new EjeCoordenadas();
             ejes.vectorX = ejeX;
             ejes.vectorY = ejeY;

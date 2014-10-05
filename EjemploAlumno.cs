@@ -194,6 +194,9 @@ namespace AlumnoEjemplos.TheGRID
             if (input.keyDown(Key.W)) { nave.acelerar(); skySphere.actualizaPos(nave.getPosicion()); }
             if (input.keyDown(Key.S)) { nave.frenar(); }
 
+
+            if (input.keyDown(Key.Z)) { nave.rotarPorVectorDeAngulos(new Vector3(0, 0, 15)); }
+
             //Otros
             //if (input.keyDown(Key.LeftShift)) { nave.acelerar(1); }
             //if (input.keyDown(Key.F1)) { camara.modoFPS(); }
@@ -236,7 +239,7 @@ namespace AlumnoEjemplos.TheGRID
             skySphere.render();
             //suelo.render();
             
-            nave.rotar(elapsedTime,listaDibujable);
+            nave.rotarPorTiempo(elapsedTime,listaDibujable);
             nave.desplazarsePorTiempo(elapsedTime,listaDibujable);
             if(!camara.soyFPS())
                 nave.render(elapsedTime);

@@ -98,6 +98,14 @@ namespace AlumnoEjemplos.TheGRID
             }
             return devolucion;
         }
+        public void impulsar(Vector3 direccionDeImpulso, float velocidadDeImpulso, float elapsedTimed)
+        {
+            direccionDeImpulso.Normalize();
+            direccionDeImpulso.Multiply(velocidadDeImpulso * elapsedTimed);
+            Matrix desplazamiento = Matrix.Translation(direccionDeImpulso);
+            duenio.desplazarUnaDistancia(direccionDeImpulso);
+            velocidadInstantanea = velocidadDeImpulso;
+        }
         public Vector3 indicarGravedad(Vector3 posicionSolicitante, float mass)
         {
             posicionSolicitante -= duenio.getPosicion();
