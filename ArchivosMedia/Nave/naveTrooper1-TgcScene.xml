@@ -11,7 +11,7 @@
 				<specular>[229.5,229.5,229.5,255.0]</specular>
 				<opacity>100.0</opacity>
 				<alphaBlendEnable>false</alphaBlendEnable>
-				<bitmap uvTiling='[1.0,1.0]' uvOffset='[0.0,0.0]'>0133_Gra.png</bitmap>
+				<bitmap uvTiling='[1.0,1.0]' uvOffset='[0.0,0.0]'>_2.png</bitmap>
 			</subM>
 			<subM name='nave__1' type='Standardmaterial'>
 				<ambient>[255.0,255.0,255.0,255.0]</ambient>
