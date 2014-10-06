@@ -16,7 +16,7 @@ namespace AlumnoEjemplos.TheGRID
         {
             TgcMesh meshNave = Factory.cargarMesh("Nave\\naveTrooper-TgcScene.xml");
             setObject(meshNave, 100, 25, new Vector3(0, 180, 0), new Vector3(0.5f, 0.5f, 0.5f));
-            setFisica(50, 400, 100);
+            setFisica(50, 100, 100);
             SetPropiedades(true, false, false);
             explosion = new ExplosionNave(this, 100, 200);
 

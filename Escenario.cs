@@ -41,14 +41,18 @@ namespace AlumnoEjemplos.TheGRID
 
         private void crearEstrellas()
         {
+            //Cargamos la lista de estrellas
+            estrellas = new List<Dibujable>();
+
             //Creamos.....EL SOL
             TgcMesh mesh_Sol = Factory.cargarMesh(@"Sol\sol-TgcScene.xml");
             sol = new Dibujable();
-            sol.setObject(mesh_Sol, 0, 200, new Vector3(0, 0, 0), new Vector3(0.5F, 0.5F, 0.5F));
+            sol.setObject(mesh_Sol, 0, 200, new Vector3(0, 0, 0), new Vector3(1F, 1F, 1F));
             sol.giro = -1;
             sol.ubicarEnUnaPosicion(new Vector3(0,0,9000));
             sol.activar();
             EjemploAlumno.workspace().meshCollection.Add((TgcMesh)sol.objeto);
+            estrellas.Add(sol);
 
             //Cargamos la lista de texturas
             texturasEstrellas = new List<TgcTexture>();
@@ -60,16 +64,15 @@ namespace AlumnoEjemplos.TheGRID
             texturasEstrellas.Add(TgcTexture.createTexture(GuiController.Instance.D3dDevice, EjemploAlumno.TG_Folder + @"Estrella\Textures\Negra.jpg"));
             texturasEstrellas.Add(TgcTexture.createTexture(GuiController.Instance.D3dDevice, EjemploAlumno.TG_Folder + @"Estrella\Textures\Roja.jpg"));
 
-            //Cargamos la lista de estrellas
-            estrellas = new List<Dibujable>();
-
             int i;
-            for (i = 0; i < 10; i++)
+            for (i = 0; i < 1000; i++)
             {
                 //Estrella como esfera            
                 TgcSphere star = new TgcSphere();
                 star.Radius = 20;
-                star.setTexture(Factory.elementoRandom<TgcTexture>(texturasEstrellas));
+                int resto;
+                Math.DivRem(i,texturasEstrellas.Count(), out resto);
+                star.setTexture(texturasEstrellas[resto]);         //(Factory.elementoRandom<TgcTexture>(texturasEstrellas));
                 star.Position = new Vector3(0, 0, 0);
                 star.BasePoly = TgcSphere.eBasePoly.ICOSAHEDRON;
                 star.Inflate = true;
@@ -88,18 +91,18 @@ namespace AlumnoEjemplos.TheGRID
                 estrella.activar();
                 //Rotamos la posicion de la estrella
                 List<Vector3> opcionesPosiciones = new List<Vector3>();
-               opcionesPosiciones.Add(new Vector3(200, 0, 0));
-               opcionesPosiciones.Add(new Vector3(-200,0,0));
-               opcionesPosiciones.Add(new Vector3(0,200,0));
-               opcionesPosiciones.Add(new Vector3(0,-200,0));
-               opcionesPosiciones.Add(new Vector3(0,0,200));
-               opcionesPosiciones.Add(new Vector3(0,0,-200));
+               opcionesPosiciones.Add(new Vector3(9500, 0, 0));
+               opcionesPosiciones.Add(new Vector3(-9500,0,0));
+               opcionesPosiciones.Add(new Vector3(0,9500,0));
+               opcionesPosiciones.Add(new Vector3(0,-9500,0));
+               opcionesPosiciones.Add(new Vector3(0,0,9500));
+               opcionesPosiciones.Add(new Vector3(0,0,-9500));
 
                Vector3 posicionFinal = Factory.elementoRandom<Vector3>(opcionesPosiciones);
-                Vector3 rotacion = Factory.VectorRandom(-90,90);  // Aca va una rotacion random
-                rotacion.X = Geometry.DegreeToRadian(rotacion.X);
-                rotacion.Y = Geometry.DegreeToRadian(rotacion.Y);
-                rotacion.Z = Geometry.DegreeToRadian(rotacion.Z);
+                Vector3 rotacion = Factory.VectorRandom(0,360);  // Aca va una rotacion random
+                rotacion.X = Geometry.DegreeToRadian(rotacion.X + i);
+                rotacion.Y = Geometry.DegreeToRadian(rotacion.Y * i);
+                rotacion.Z = Geometry.DegreeToRadian(rotacion.Z + 3 * i);
                 Matrix rotation = Matrix.RotationYawPitchRoll(rotacion.Y, rotacion.X, rotacion.Z);
                 Vector4 normal4 = Vector3.Transform(posicionFinal, rotation);
                 posicionFinal = new Vector3(normal4.X, normal4.Y, normal4.Z);
@@ -159,11 +162,8 @@ namespace AlumnoEjemplos.TheGRID
         {            
             laserManager.operar(elapsedTime);
             asteroidManager.operar(elapsedTime);
-
-            sol.desplazarUnaDistancia(principal.ultimaTraslacion);
-            sol.rotarPorTiempo(elapsedTime, new List<Dibujable>());
-
-            foreach (Dibujable estrella in estrellas) estrella.rotarPorTiempo(elapsedTime, new List<Dibujable>());
+            sol.rotarPorTiempo(elapsedTime, new List<Dibujable>());             
+            foreach (Dibujable estrella in estrellas) estrella.desplazarUnaDistancia(principal.ultimaTraslacion);
 
             //Chequeo de colision
             //Chequeo si la nave choco con algun asteroide

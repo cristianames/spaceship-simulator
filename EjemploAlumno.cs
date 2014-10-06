@@ -41,6 +41,9 @@ namespace AlumnoEjemplos.TheGRID
         internal Escenario Escenario { get { return scheme; } }
         static EjemploAlumno singleton;
         Nave nave;
+        float velocidadBlur;
+        bool velocidadBlurBool = false;
+        float tiempoBlur;
         private Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
         public Dibujable ObjetoPrincipal { get { return objetoPrincipal; } }
         List<Dibujable> listaDibujable = new List<Dibujable>();
@@ -163,7 +166,7 @@ namespace AlumnoEjemplos.TheGRID
             //GuiController.Instance.Modifiers.addFloat("Frenado", 0f, 1000f, objetoPrincipal.getAcelFrenado());    De momento lo saco.
             //Crear un modifier para un ComboBox con opciones
             string[] opciones0 = new string[] { "THE OPENING", "IMPULSE DRIVE", "WELCOME HOME", "VACUUM" };
-            GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 0);
+            GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 3);
             string[] opciones1 = new string[] { "Tercera Persona", "Camara FPS", "Libre" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
             string[] opciones2 = new string[] { "Desactivado", "Activado" };
@@ -193,10 +196,25 @@ namespace AlumnoEjemplos.TheGRID
             if (input.keyDown(Key.A)) { nave.giro = -1; }
             if (input.keyDown(Key.D)) { nave.giro = 1; }
             if (input.keyDown(Key.W)) { nave.acelerar(); }
-            if (input.keyDown(Key.S)) { nave.frenar(); }
+            if (input.keyDown(Key.S)) { if (!velocidadBlurBool)nave.frenar(); }
 
 
             if (input.keyDown(Key.Z)) { nave.rotarPorVectorDeAngulos(new Vector3(0, 0, 15)); }
+
+            if (input.keyPressed(Key.LeftShift)) 
+            {
+                if (velocidadBlurBool) velocidadBlurBool = false;
+                else 
+                {
+                    if (objetoPrincipal.velocidadActual() == 200) 
+                    {
+                        velocidadBlurBool = true;
+                        tiempoBlur = 0;
+                        //velocidadBlur = objetoPrincipal.velocidadActual();
+                    }
+                    
+                }
+            }
 
             //Otros
             //if (input.keyDown(Key.LeftShift)) { nave.acelerar(1); }
@@ -220,6 +238,8 @@ namespace AlumnoEjemplos.TheGRID
                 }
             }
             #endregion
+            
+
 
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             //d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
@@ -244,7 +264,7 @@ namespace AlumnoEjemplos.TheGRID
             nave.desplazarsePorTiempo(elapsedTime,new List<Dibujable>(scheme.cuerpos()));
             if(!camara.soyFPS())
                 nave.render(elapsedTime);
-            //shader.shadear((TgcMesh)nave.objeto, meshCollection, elapsedTime);
+            shader.shadear((TgcMesh)nave.objeto, meshCollection, elapsedTime);
             #region Refrescar panel lateral
             string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
             camara.chequearCambio(opcionElegida);
@@ -257,7 +277,14 @@ namespace AlumnoEjemplos.TheGRID
             //opcionElegida = (string)GuiController.Instance.Modifiers["Rotacion Avanzada"];
             //if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.rotacionReal = true; else objetoPrincipal.rotacionReal = false;   De momento lo saco.
             //Refrescar User Vars
-            GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual());
+            if (velocidadBlurBool)
+            {
+                tiempoBlur += elapsedTime;
+                velocidadBlur = (float)Math.Pow(7D, tiempoBlur);
+                if (velocidadBlur > 299800) velocidadBlur = 299800;
+                GuiController.Instance.UserVars.setValue("Vel-Actual:", velocidadBlur + objetoPrincipal.velocidadActual());
+            }
+            else GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual());            
             GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);
             GuiController.Instance.UserVars.setValue("Posicion Y:", objetoPrincipal.getPosicion().Y);
             GuiController.Instance.UserVars.setValue("Posicion Z:", objetoPrincipal.getPosicion().Z);

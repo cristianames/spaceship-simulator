@@ -80,8 +80,10 @@ namespace AlumnoEjemplos.TheGRID
                 auxiliar2.Multiply(duenio.traslacion * aceleracion);
                 auxiliar1 += auxiliar2;
                 float acelGlobal = Vector3.Length(auxiliar1);
-                velocidadInstantanea += acelGlobal * time;
-                if (velocidadInstantanea < 0) velocidadInstantanea = 0;
+                float temp = velocidadInstantanea + acelGlobal * time;
+                //if (velocidadInstantanea < 0) velocidadInstantanea = 0;
+                if (temp > 200) velocidadInstantanea = 200;
+                else velocidadInstantanea = temp;
             }
             else
             {

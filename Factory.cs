@@ -11,6 +11,7 @@ using TgcViewer.Utils.Modifiers;
 using TgcViewer.Utils.TgcGeometry;
 using AlumnoEjemplos.TheGRID.Colisiones;
 using AlumnoEjemplos.TheGRID.Shaders;
+using System.Threading;
 
 namespace AlumnoEjemplos.TheGRID
 {
@@ -41,8 +42,11 @@ namespace AlumnoEjemplos.TheGRID
         }
         public static Vector3 VectorRandom(int valorMinimo, int valorMaximo){
             Vector3 victima = new Vector3();
+            Thread.Sleep(5);
             victima.X = numeroRandom()+1;
+            Thread.Sleep(5);
             victima.Y = numeroRandom()+1;
+            Thread.Sleep(5);
             victima.Z = numeroRandom()+1;
             return victima;
         }
