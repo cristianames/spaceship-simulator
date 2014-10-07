@@ -42,11 +42,11 @@ namespace AlumnoEjemplos.TheGRID
         }
         public static Vector3 VectorRandom(int valorMinimo, int valorMaximo){
             Vector3 victima = new Vector3();
-            Thread.Sleep(5);
+            //Thread.Sleep(5);
             victima.X = numeroRandom()+1;
-            Thread.Sleep(5);
+            //Thread.Sleep(5);
             victima.Y = numeroRandom()+1;
-            Thread.Sleep(5);
+            //Thread.Sleep(5);
             victima.Z = numeroRandom()+1;
             return victima;
         }
@@ -134,7 +134,7 @@ namespace AlumnoEjemplos.TheGRID
             //Ubicamos el laser en el cañon
             laser.setEjes(ejes);
             laser.Transform *= ejes.mRotor;
-            laser.trasladar(posicionNave);
+            laser.ubicarEnUnaPosicion(posicionNave);
             laser.setPosicion(((TgcMesh)laser.objeto).Position);
             //Carga sentido de traslacion y rotacion
             List<int> valores = new List<int>(2);

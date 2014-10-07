@@ -35,7 +35,7 @@ namespace AlumnoEjemplos.TheGRID.Explosiones
         {
             int pedazos;
             pedazos = Factory.elementoRandom<int>(fragmentos);
-            duenio.morite();
+            //duenio.morite();
 
         }
     }

@@ -17,6 +17,7 @@ namespace AlumnoEjemplos.TheGRID
         protected List<Dibujable> controlados;
         protected List<Dibujable> inactivos;
         protected int limiteControlados;
+        List<int> opciones = new List<int>() { -1, 1, 0 };
 
         public ManagerDibujable(int limite)
         {
@@ -43,7 +44,7 @@ namespace AlumnoEjemplos.TheGRID
 
         protected void trasladar(Dibujable objeto, float time)
         {
-            List<Dibujable> lista = new List<Dibujable>(controlados);
+            List<Dibujable> lista = new List<Dibujable>(0);
             objeto.desplazarsePorTiempo(time, lista);
         }
 
@@ -78,7 +79,7 @@ namespace AlumnoEjemplos.TheGRID
         public void desactivar(Dibujable objeto)
         {
             objeto.traslacion = 1;
-            objeto.rotacion = 1;
+            objeto.rotacion = Factory.elementoRandom<int>(opciones);
             controlados.Remove(objeto);
             inactivos.Add(objeto);
             objeto.desactivar();
@@ -172,15 +173,13 @@ namespace AlumnoEjemplos.TheGRID
 
                 //Darle el formato al asteroide
                 formato.actualizarAsteroide(asteroide);
-                asteroide.activar();
                 controlados.Add(asteroide);
                 
                 List<float> valores = new List<float>() { -4, -3, -2, -1, 1, 2, 3, 4 };
-                Vector3 direccionImpulso = new Vector3(Factory.elementoRandom(valores), Factory.elementoRandom(valores), Factory.elementoRandom(valores));
+                Vector3 direccionImpulso = Factory.VectorRandom(-500, 500); // new Vector3(Factory.elementoRandom(valores), Factory.elementoRandom(valores), Factory.elementoRandom(valores));
                 float velocidadImpulso = new Random().Next(1, 3);
-                asteroide.fisica.impulsar(direccionImpulso, velocidadImpulso, 0.01f);
-                
-                asteroide.activar();                                    //ATENCION - No se realmente si habria que activarlo o no.
+                asteroide.fisica.impulsar(direccionImpulso, velocidadImpulso, 0.01f);                
+                asteroide.activar();                                   
             }
         }
 
@@ -305,29 +304,35 @@ namespace AlumnoEjemplos.TheGRID
     {
         public TamanioAsteroide tamanio;
         public Vector3 posicion;
+        List<int> opciones = new List<int>() { -1, 1, 0 };
 
         public void actualizarAsteroide(Asteroide asteroide)
         {
             FormatoAsteroide formatoAUsar = Asteroide.elegirAsteroidePor(tamanio);
 
-            asteroide.escalar(formatoAUsar.getVolumen());
+            asteroide.escalarSinBB(formatoAUsar.getVolumen());
             asteroide.setFisica(0, 0, formatoAUsar.getMasa());
             asteroide.velocidad = formatoAUsar.getVelocidad();
             asteroide.tamanioAnterior = formatoAUsar.tamanioAnterior();
             asteroide.Vida = formatoAUsar.vidaInicial();
 
             asteroide.traslacion = 1;
-            asteroide.rotacion = 1;
+            asteroide.rotacion = Factory.elementoRandom<int>(opciones);
+            asteroide.giro = Factory.elementoRandom<int>(opciones);
+            asteroide.inclinacion = Factory.elementoRandom<int>(opciones);
 
             float radioMalla3DsMax = 7.633f;
             TgcBoundingSphere bounding = (TgcBoundingSphere) asteroide.getColision().getBoundingBox();
             bounding.setValues(bounding.Center, radioMalla3DsMax * formatoAUsar.getVolumen().X);
-                
+
+            asteroide.ubicarEnUnaPosicion(posicion);
+            /*    
             asteroide.Transform *= Matrix.Translation(posicion);
             asteroide.Transform *= Matrix.Identity;
 
             asteroide.getColision().transladar(posicion);
             asteroide.setPosicion(posicion);
+             //* */
         }
     }
 }

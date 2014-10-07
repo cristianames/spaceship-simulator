@@ -57,7 +57,7 @@ namespace AlumnoEjemplos.TheGRID
                 dGravedad.Multiply(atraccion);
 
                 //Desplazamiento Inercial
-                Vector3 dTrayectoria = duenio.getTrayectoria();
+                Vector3 dTrayectoria = duenio.getTrayectoriaInercial();
                 dTrayectoria.Normalize();
                 float trayecto = calcularDistanciaDesplazada(velocidadInstantanea, 0, time);
                 dTrayectoria.Multiply(trayecto);
@@ -90,7 +90,7 @@ namespace AlumnoEjemplos.TheGRID
                 if (velocidadInstantanea != 0)
                 {
                     //Solo vamos a usar desplazamiento en trayectoria, es decir, el inercial.
-                    Vector3 dTrayectoria = duenio.getTrayectoria();
+                    Vector3 dTrayectoria = duenio.getTrayectoriaInercial();
                     dTrayectoria.Normalize();
                     float trayecto = calcularDistanciaDesplazada(velocidadInstantanea, -acelFrenado, time);
                     if (trayecto < 0) trayecto = 0;

@@ -24,7 +24,7 @@ namespace AlumnoEjemplos.TheGRID.Explosiones
                 else
                 {
                     vida = 0;
-                    duenio.morite();
+                    //.morite();
                 }
             }
         }

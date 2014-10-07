@@ -15,6 +15,7 @@ using AlumnoEjemplos.TheGRID.Shaders;
 
 namespace AlumnoEjemplos.TheGRID
 {
+    #region Estructuras previas
     public struct Doble
     {
         private float actual;
@@ -70,10 +71,11 @@ namespace AlumnoEjemplos.TheGRID
             return dir;
         }
     }
-    //------------------------------------------------------------------
+    #endregion
+
     public class Dibujable
     {
-        //----------------------------------------------------------------------------------------------------ATRIBUTOS-----
+        #region Atributos
         private Vector3Doble posicion;
         public float velocidad { set; get; }
         public float velocidadRadial { set; get; }
@@ -90,7 +92,9 @@ namespace AlumnoEjemplos.TheGRID
         internal Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
         protected IColision colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
         internal Explosion explosion; // Acá va el manejo de un objeto cuando es chocado por otro.
-        //----------------------------------------------------------------------------------------------------INSTANCIADOR-----
+        #endregion
+
+        #region Instanciador
         public Dibujable()
         {
             posicion.setActual(0, 0, 0);
@@ -104,81 +108,9 @@ namespace AlumnoEjemplos.TheGRID
             rotacionReal = false;
             ultimaTraslacion = new Vector3();
         }
-        public Dibujable(float x, float y, float z)
-        {
-            posicion.setActual(0, 0, 0);
-            fisica = null;
-            colision = null;
-            //explosion = null;
-            vectorDireccion = new EjeCoordenadas();
-            vectorDireccion.centrar(x, y, z);
-            velocidadManual = false;
-            desplazamientoReal = false;
-            rotacionReal = false;
-            ultimaTraslacion = new Vector3();
-        }
-        public Dibujable(Vector3 centro)
-        {
-            posicion.setActual(0, 0, 0);
-            fisica = null;
-            colision = null;
-            //explosion = null;
-            vectorDireccion = new EjeCoordenadas();
-            vectorDireccion.centrar(centro.X, centro.Y, centro.Z);
-            velocidadManual = false;
-            desplazamientoReal = false;
-            rotacionReal = false;
-            ultimaTraslacion = new Vector3();
-        }
-        //-------------------------------------------------------------------------------------METODOS--------IRenderObject-----
-        public void impulsate(Vector3 vector, float velocidad) {}
-        
-        public void render(float elapsedTime) 
-        {
-            //((IRenderObject)objeto).render();
-            if (colision != null) colision.render();
-        }
-        public void dispose() 
-        {
-            try
-            {
-                ((IRenderObject)objeto).dispose();
-            }
-            catch { }
-            //fisica.dispose();
-            //colisiones.dispose();            
-        }
-        bool AlphaBlendEnable
-        {
-            get { return ((IRenderObject)objeto).AlphaBlendEnable; }
-            set { ((IRenderObject)objeto).AlphaBlendEnable = value; }
-        }
-        //-------------------------------------------------------------------------------------METODOS--------ITransformObject-----
-        public Matrix Transform
-        {
-            get { return ((ITransformObject)objeto).Transform; }
-            set { ((ITransformObject)objeto).Transform = value; }
-        }
-        public bool AutoTransformEnable
-        {
-            get { return ((ITransformObject)objeto).AutoTransformEnable; }
-            set { ((ITransformObject)objeto).AutoTransformEnable = value; }
-        }
-        //----------------------------------------------------------------------------------------------------SETTERS-----
-        public void setObject(Object cosa)  //Solo le pasas el objeto renderizable.
-        {
-            objeto = cosa;
-            AutoTransformEnable = false;
-            //Transform *= Matrix.Identity;
-        }
-        public void setObject(Object cosa, float vLineal, float vRadial)    //Le agregas la velocidad maxima lineal y radial.
-        {
-            objeto = cosa;
-            AutoTransformEnable = false;
-            velocidad = vLineal;
-            velocidadRadial = vRadial;
-            //Transform *= Matrix.Identity;
-        }
+        #endregion
+
+        #region Setter Modular
         public void setObject(Object cosa, float vLineal, float vRadial, Vector3 rotacion, Vector3 escalado)
         {  //Le agregas ademas un vector para la matriz de rotacion y otro para la de escalado. Para acomodar el objeto de forma inicial.
             objeto = cosa;
@@ -192,29 +124,124 @@ namespace AlumnoEjemplos.TheGRID
             matriz *= Matrix.RotationYawPitchRoll(rotacion.Y, rotacion.X, rotacion.Z);
             Transform *= matriz;
         }
-        public void setFisica(float acel, float aFrenado, float masaCuerpo) { fisica = new Fisica(this, acel, aFrenado, masaCuerpo); }
-                //Carga un nuevo módulo de fisica.
+        public void setFisica(float acel, float aFrenado, float masaCuerpo) { fisica = new Fisica(this, acel, aFrenado, masaCuerpo); }  //Carga un nuevo módulo de fisica.        
         public void SetPropiedades(bool velMan, bool despReal, bool rotReal)    //La velocidad vuelve a 0 cuando no ocurre un evento continuo.
         {       //Se usa el desplazamiento y la rotacion del modulo de fisica. Por defecto viene todo false.
             velocidadManual = velMan;
             desplazamientoReal = despReal;
             rotacionReal = rotReal;
         }
-        public void setCentro(Vector3 centro) { vectorDireccion.centrar(centro.X, centro.Y, centro.Z); } //Acomoda el centro de giro del objeto.
-        public void setPosicion(Vector3 pos)//No manipular a menos que sea necesario. Se pierde coherencia con la posicion que lleva el objeto renderizable.
-        {
-            posicion.setActual(pos);
-        }   
-        public void setEjes(EjeCoordenadas nuevoEje) { vectorDireccion = nuevoEje; }
+        public void setColision(IColision bb) { this.colision = bb; }
+        #endregion
 
-        //----------------------------------------------------------------------------------------------------MOVIMIENTOS-----
-        internal void acelerar() { traslacion = 1; }
-
-        internal void frenar()
+        #region Atributos Basicos - Mesh
+        bool AlphaBlendEnable
         {
-            if (fisica != null && velocidadManual) fisica.frenado = true;
-            else traslacion = 0;
+            get { return ((IRenderObject)objeto).AlphaBlendEnable; }
+            set { ((IRenderObject)objeto).AlphaBlendEnable = value; }
         }
+        public Matrix Transform
+        {
+            get { return ((ITransformObject)objeto).Transform; }
+            set { ((ITransformObject)objeto).Transform = value; }
+        }
+        public bool AutoTransformEnable
+        {
+            get { return ((ITransformObject)objeto).AutoTransformEnable; }
+            set { ((ITransformObject)objeto).AutoTransformEnable = value; }
+        }
+        public void activar() { ((TgcMesh)objeto).Enabled = true; }
+        public void desactivar() { ((TgcMesh)objeto).Enabled = false; }
+        public void escalarSinBB(Vector3 escalado)  //Escala la mesh con el vector asociado.
+        {
+            Matrix matriz = Matrix.Scaling(escalado);
+            Transform *= matriz;
+        }
+        #endregion
+
+        #region Atributos Avanzados - Dibujable
+        internal void setPosicion(Vector3 pos) { posicion.setActual(pos); }   //Fuerza la posicion del dibujable con la posicion indicada. Deberia ser la del mesh asociado.
+        public Vector3 getPosicion() { return posicion.getActual(); }   //Devuelve la posicion actual del Dibujable.
+        public Vector3 getTrayectoriaInercial() { return posicion.direccionDesplazamiento(); }   //Direccion en la que se desplaza un objeto. (Diferencia entre posAnterior y posActual)
+        public Vector3 getDireccion() { return vectorDireccion.direccion(); }   //Direccion en la que apunta el frente del objeto. (Direccion del eje Z del Dibujable)
+        public Vector3 getDireccionAnterior() { return vectorDireccion.direccionAnterior(); } //Direccion anterior a la que apuntaba el frente del objeto
+        public Vector3 getDireccion_Y() { return vectorDireccion.direccion_Y(); }   //Direccion del eje Y del Dibujable
+        public Vector3 getDireccion_X() { return vectorDireccion.direccion_X(); }   //Direccion del eje X del Dibujable
+        public float getAceleracion() { if (fisica != null) return fisica.aceleracion; else return 0; }
+        public float getAcelFrenado() { if (fisica != null) return fisica.acelFrenado; else return 0; }     //El objeto debe poder frenar mas rapido de lo que acelera.
+        public IColision getColision() { return this.colision; }    //Devuelve el objeto asignado para las colisiones.
+        public Vector3 indicarGravedad(Vector3 pos, float mass)     //Devuelve la fuerza gravitacional que ejerce este cuerpo respecto del que viene por parmetro.
+        {
+            if (fisica != null) return this.fisica.indicarGravedad(pos, mass);
+            else return new Vector3(0, 0, 0);
+        }
+        internal float velocidadActual()    //Devuelve la velocidad asignada al Dibujable.
+        {
+            if (fisica != null && desplazamientoReal) return fisica.velocidadInstantanea;
+            else return velocidad;
+        }
+        public void setEjes(EjeCoordenadas nuevoEje) { vectorDireccion = nuevoEje; }    //Asigna un nuevo grupo de ejes de direccion. Por si se quiere copiar los ejes de otro Dibujable.
+        public EjeCoordenadas getEjes()     //Devuelve una copia del estado de los ejes del Dibujable.
+        {
+            EjeCoordenadas nuevoEje = new EjeCoordenadas();
+            nuevoEje.vectorX = vectorDireccion.vectorX;
+            nuevoEje.vectorY = vectorDireccion.vectorY;
+            nuevoEje.vectorZ = vectorDireccion.vectorZ;
+            nuevoEje.centrar(vectorDireccion.getCentro());
+            nuevoEje.lRotor = new List<Vector3>(vectorDireccion.lRotor);
+            nuevoEje.mRotor = vectorDireccion.mRotor;
+            return nuevoEje;
+        }
+        #endregion
+
+        #region Rotacion
+        public void rotarPorTiempo(float time, List<Dibujable> dibujables)   //Movimiento de rotacion base de un dibujable.
+        {
+            if (fisica != null && rotacionReal) fisica.rotar(time, dibujables);
+            else
+            {
+                float angulo = velocidadRadial * time;
+                Matrix rotation;
+                Vector3 rotacionActual = new Vector3();
+                if (inclinacion != 0) //Rotar en X
+                {
+                    rotation = vectorDireccion.calculoRotarX_desde(posicion.getActual(), angulo * inclinacion, ref rotacionActual);// paso un vector por referencia para luego poder aplicarsselo a la obb
+                    Transform *= rotation;
+                    if (colision != null) this.getColision().rotar(rotacionActual);
+
+
+                }
+                if (giro != 0) //Rotar en Y
+                {
+                    rotation = vectorDireccion.calculoRotarY_desde(posicion.getActual(), angulo * giro, ref rotacionActual);
+                    Transform *= rotation;
+                    if (colision != null) this.getColision().rotar(rotacionActual);
+                }
+                if (rotacion != 0) //Rotar en Z
+                {
+                    rotation = vectorDireccion.calculoRotarZ_desde(posicion.getActual(), angulo * rotacion * 2, ref rotacionActual);
+                    Transform *= rotation;
+                    if (colision != null) this.getColision().rotar(rotacionActual);
+                }
+            }
+            if (velocidadManual)
+            {
+                inclinacion = 0;
+                rotacion = 0;
+                giro = 0;
+            }
+        }
+        public void rotarPorVectorDeAngulos(Vector3 rotacion)
+        {
+            Matrix rotation;
+            Vector3 rotacionActual = new Vector3();
+            rotation = vectorDireccion.calculoRotarManualmente(posicion.getActual(), rotacion, ref rotacionActual);
+            Transform *= rotation;
+            if (colision != null) this.getColision().rotar(rotacionActual);
+        }
+        #endregion
+
+        #region Traslacion
         public void desplazarsePorTiempo(float time, List<Dibujable> dibujables)   //Movimiento de traslacion base de un dibujable.
         {
             Vector3 director;
@@ -231,67 +258,10 @@ namespace AlumnoEjemplos.TheGRID
             move = Matrix.Translation(director);
             desplazarUnaDistancia(director);
             if (velocidadManual) traslacion = 0;
-            if (colision != null) colision.transladar(director);
+            //if (colision != null) colision.transladar(director);
             ultimaTraslacion = director;
         }
-        public void rotarPorTiempo(float time, List<Dibujable> dibujables)   //Movimiento de rotacion base de un dibujable.
-        {
-            if (fisica != null && rotacionReal) fisica.rotar(time, dibujables);
-            else
-            {
-                float angulo = velocidadRadial * time;
-                Matrix rotation;
-                Vector3 rotacionActual = new Vector3() ;
-                if (inclinacion != 0) //Rotar en X
-                {
-                    rotation = vectorDireccion.calculoRotarX_desde(posicion.getActual(), angulo * inclinacion, ref rotacionActual);// paso un vector por referencia para luego poder aplicarsselo a la obb
-                    Transform *= rotation;
-                    if (colision != null) this.getColision().rotar(rotacionActual);
-                   
-
-                }
-                if (giro != 0) //Rotar en Y
-                {
-                    rotation = vectorDireccion.calculoRotarY_desde(posicion.getActual(), angulo * giro, ref rotacionActual);
-                    Transform *= rotation;
-                    if (colision != null) this.getColision().rotar(rotacionActual);
-                }
-                if (rotacion != 0) //Rotar en Z
-                {
-                    rotation = vectorDireccion.calculoRotarZ_desde(posicion.getActual(), angulo * rotacion * 2, ref rotacionActual);
-                    Transform *= rotation;
-                    if (colision!=null)this.getColision().rotar(rotacionActual);
-                }
-            }
-            if (velocidadManual)
-            {
-                inclinacion = 0;
-                rotacion = 0;
-                giro = 0;
-            }
-        }
-        //----------------------------------------------------------------------------------------------------TRANSFORMACIONES-----
-        public void escalar(Vector3 escalado)
-        {
-            Matrix matriz = Matrix.Scaling(escalado);
-            Transform *= matriz;
-        }
-
-        public void escalar(float x, float y, float z)
-        {
-            Matrix matriz = Matrix.Scaling(x, y, z);
-            Transform *= matriz;
-        }
-
-        public void trasladar(Vector3 traslado)
-        {
-            Matrix matriz = Matrix.Translation(traslado);
-            Transform *= matriz;
-            Vector4 normal4 = Vector3.Transform(getPosicion(), matriz);
-            setPosicion(new Vector3(normal4.X, normal4.Y, normal4.Z));
-        }
-
-        public void ubicarEnUnaPosicion(Vector3 posicion)   //Ubica el objeto en esa posicion.
+        public void ubicarEnUnaPosicion(Vector3 posicion)   //Ubica la mesh y la BB a la posicion indicada, a partir de la posicion actual del Dibujable.
         {
             Vector3 movimiento = Vector3.Subtract(posicion, getPosicion());
             Matrix matriz = Matrix.Translation(movimiento);
@@ -299,7 +269,7 @@ namespace AlumnoEjemplos.TheGRID
             setPosicion(posicion);
             if (colision != null) this.getColision().transladar(movimiento);
         }
-        public void desplazarUnaDistancia(Vector3 VDesplazamiento)
+        public void desplazarUnaDistancia(Vector3 VDesplazamiento)  //Desplaza la mesh y la BB en la direccion indicada, la distancia contenida en el modulo de dicho vector.
         {
             Matrix desplazamiento = Matrix.Translation(VDesplazamiento);
             Vector4 vector4 = Vector3.Transform(posicion.getActual(), desplazamiento);
@@ -307,76 +277,39 @@ namespace AlumnoEjemplos.TheGRID
             Transform *= desplazamiento;
             if (colision != null) this.getColision().transladar(VDesplazamiento);
         }
-        public void rotarPorVectorDeAngulos(Vector3 rotacion)
+        public void impulsate(Vector3 vector, float velocidad) { }  //Genera un impulso por un instante de tiempo, para desplazar el cuerpo una pequeña distancia, asignandole una nueva velocidad.
+        #endregion
+
+        #region Updating
+        public void render(float elapsedTime)
         {
-            Matrix rotation;
-            Vector3 rotacionActual = new Vector3() ;
-            rotation = vectorDireccion.calculoRotarManualmente(posicion.getActual(), rotacion, ref rotacionActual);
-            Transform *= rotation;
-            if (colision != null) this.getColision().rotar(rotacionActual);
+            //((IRenderObject)objeto).render();
+            if (colision != null) colision.render();
         }
-
-                
-        //----------------------------------------------------------------------------------------------------CONSULTAS-----
-        public Vector3 getCentro()
+        public void dispose()
         {
-            Vector3 temp = getPosicion();
-            temp.Add(vectorDireccion.getCentro());
-            return temp;
+            try
+            {
+                ((IRenderObject)objeto).dispose();
+            }
+            catch { }
+            //fisica.dispose();
+            //colisiones.dispose();            
         }
-        public Vector3 getPosicion() { return posicion.getActual(); }
+        internal void acelerar() { traslacion = 1; }    //Hace que el cuerpo active la fuerza para avanzar en la direccion en la que apunta dicho cuerpo.
 
-        public Vector3 getTrayectoria() { return posicion.direccionDesplazamiento(); }   //Direccion en la que se desplaza un objeto.
-        public Vector3 getDireccion() { return vectorDireccion.direccion(); }   //Direccion en la que apunta el frente del objeto.
-        public Vector3 getDireccion_Y() { return vectorDireccion.direccion_Y(); }
-        public Vector3 getDireccion_X() { return vectorDireccion.direccion_X(); }
-        public Vector3 getDireccionAnterior() { return vectorDireccion.direccionAnterior(); } //Direccion anterior a la que apuntaba el frente del objeto
-       
-        public Vector3 indicarGravedad(Vector3 pos, float mass){
-            if (fisica != null) return this.fisica.indicarGravedad(pos, mass);
-            else return new Vector3(0, 0, 0);
-        }
-
-        public float getAceleracion() { if (fisica != null) return fisica.aceleracion; else return 0; }
-        public float getAcelFrenado() { if (fisica != null) return fisica.acelFrenado; else return 0; }
-        public void renderBoundingBox() { colision.render();}
-        public IColision getColision() { return this.colision; }
-        public void setColision(IColision bb) { this.colision = bb; }
-
-        internal float velocidadActual()
+        internal void frenar()
         {
-            if (fisica != null && desplazamientoReal) return fisica.velocidadInstantanea;
-            else return velocidad;
+            if (fisica != null && velocidadManual) fisica.frenado = true;
+            else traslacion = 0;
         }
-        public EjeCoordenadas getEjes() 
-        {
-            EjeCoordenadas nuevoEje = new EjeCoordenadas();
-            nuevoEje.vectorX = vectorDireccion.vectorX;
-            nuevoEje.vectorY = vectorDireccion.vectorY;
-            nuevoEje.vectorZ = vectorDireccion.vectorZ;
-            nuevoEje.centrar(vectorDireccion.getCentro());
-            nuevoEje.lRotor = new List<Vector3>(vectorDireccion.lRotor);
-            nuevoEje.mRotor = vectorDireccion.mRotor;
-            return nuevoEje; 
-        }
+        #endregion
 
+        #region Colisiones
         public virtual void teChoque(Dibujable colisionador, float moduloVelocidad)
         {
             //Explosion.exiteChoqueEntre(colisionador, this);
         }
-
-        public virtual void exploto()
-        {
-
-        }
-
-        internal void morite()
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public void activar() { ((TgcMesh)objeto).Enabled = true; }
-        public void desactivar() { ((TgcMesh)objeto).Enabled = false; }
+        #endregion
     }
 }

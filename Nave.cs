@@ -12,7 +12,7 @@ namespace AlumnoEjemplos.TheGRID
 {
     public class Nave : Dibujable
     {
-        public Nave(float x, float y, float z) : base(x,y,z) 
+        public Nave() : base() 
         {
             TgcMesh meshNave = Factory.cargarMesh("Nave\\naveTrooper-TgcScene.xml");
             setObject(meshNave, 100, 25, new Vector3(0, 180, 0), new Vector3(0.5f, 0.5f, 0.5f));

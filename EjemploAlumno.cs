@@ -128,7 +128,7 @@ namespace AlumnoEjemplos.TheGRID
             //shader.motionBlurActivado = true; //Descomentar para activar el motion---Ahora mismo esta en Escenario
 
             //Crear la nave
-            nave = new Nave(0, 0, 0);
+            nave = new Nave();
 
             skySphere = new SkySphere();
 
@@ -247,7 +247,7 @@ namespace AlumnoEjemplos.TheGRID
             scheme.refrescar(elapsedTime);
 
             //Cargar valores de la flecha
-            Vector3 navePos = nave.getCentro();
+            Vector3 navePos = nave.getPosicion();
             Vector3 naveDir = Vector3.Subtract(new Vector3(0, 0, 10000), nave.getDireccion());
             naveDir.Normalize();
             naveDir.Multiply(75);

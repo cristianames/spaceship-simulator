@@ -30,7 +30,7 @@ namespace AlumnoEjemplos.TheGRID
         {
             principal = ppal;
             asteroidManager = new ManagerAsteroide(180); //Siempre debe ser mucho mayor que la cantidad de asteroides que queremos tener, pero no tanto sino colapsa
-            limite = new TgcBoundingCylinder(principal.getCentro(), 10000, 100000);
+            limite = new TgcBoundingCylinder(principal.getPosicion(), 10000, 100000);
             crearEstrellas();   
         }
 
@@ -41,6 +41,7 @@ namespace AlumnoEjemplos.TheGRID
 
         private void crearEstrellas()
         {
+            #region Stars
             //Cargamos la lista de estrellas
             estrellas = new List<Dibujable>();
 
@@ -81,7 +82,7 @@ namespace AlumnoEjemplos.TheGRID
                 TgcMesh meshTemporal = star.toMesh("Estrellita");
                 //Estrella como dibujable
                 Dibujable estrella;
-                estrella = new Dibujable(0, 0, 0);
+                estrella = new Dibujable();
                 meshTemporal.AutoTransformEnable = false;
                 estrella.setObject(meshTemporal, 0, 200, new Vector3(0, 0, 0), new Vector3(1F, 1F, 1F));
                 List<int> opcionesRotacion = new List<int>();
@@ -112,6 +113,7 @@ namespace AlumnoEjemplos.TheGRID
                 EjemploAlumno.workspace().meshCollection.Add((TgcMesh)estrella.objeto);
                 estrellas.Add(estrella);
             }
+            #endregion
         }
 
 
@@ -124,7 +126,7 @@ namespace AlumnoEjemplos.TheGRID
         public void loadChapter1()
         {
             disposeOld();
-            asteroidManager.fabricarCinturonAsteroides(principal.getCentro(), 10, 100);
+            asteroidManager.fabricarCinturonAsteroides(principal.getPosicion(), 10, 100);
             escenarioActual = TipoModo.THE_OPENING;
         }
         //-------------------------------------------------------------------------------------------CHAPTER-2
@@ -202,8 +204,9 @@ namespace AlumnoEjemplos.TheGRID
 
             //Chequeo colision entre asteroides 
             asteroidManager.colisionEntreAsteroides(0); //hay que pasarle el 0 como parametro para que empieze a preguntar desde el asteoride 0, es una funcion recursiva
-            
-            if(TgcCollisionUtils.testPointCylinder(principal.getCentro(),limite)){
+
+            if (TgcCollisionUtils.testPointCylinder(principal.getPosicion(), limite))
+            {
                 fuera_limite = true;
                 //Aca activaria el bombardeo de asteroides que te destrozarian la carroceria
             }
