@@ -48,10 +48,11 @@ namespace AlumnoEjemplos.TheGRID
             //Creamos.....EL SOL
             TgcMesh mesh_Sol = Factory.cargarMesh(@"Sol\sol-TgcScene.xml");
             sol = new Dibujable();
-            sol.setObject(mesh_Sol, 0, 200, new Vector3(0, 0, 0), new Vector3(1F, 1F, 1F));
+            sol.setObject(mesh_Sol, 0, 200, new Vector3(1F, 1F, 1F));
             sol.giro = -1;
             sol.ubicarEnUnaPosicion(new Vector3(0,0,9000));
             sol.activar();
+            
             EjemploAlumno.workspace().meshCollection.Add((TgcMesh)sol.objeto);
             estrellas.Add(sol);
 
@@ -84,7 +85,7 @@ namespace AlumnoEjemplos.TheGRID
                 Dibujable estrella;
                 estrella = new Dibujable();
                 meshTemporal.AutoTransformEnable = false;
-                estrella.setObject(meshTemporal, 0, 200, new Vector3(0, 0, 0), new Vector3(1F, 1F, 1F));
+                estrella.setObject(meshTemporal, 0, 200, new Vector3(1F, 1F, 1F));
                 List<int> opcionesRotacion = new List<int>();
                 opcionesRotacion.Add(1);
                 opcionesRotacion.Add(-1);
@@ -158,7 +159,7 @@ namespace AlumnoEjemplos.TheGRID
         //-------------------------------------------------------------------------------------------
         internal void dispararLaser()
         {
-            laserManager.fabricar(principal.getEjes(), principal.getPosicion());
+            laserManager.cargarDisparo(principal.getEjes(), principal.getPosicion());
         }
         internal void refrescar(float elapsedTime)                                                  //RENDER DEL ESCENARIO
         {            

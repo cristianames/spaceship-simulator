@@ -12,6 +12,7 @@ using AlumnoEjemplos.TheGRID.Helpers;
 
 namespace AlumnoEjemplos.TheGRID
 {
+    #region Manager Base
     public abstract class ManagerDibujable
     {
         protected List<Dibujable> controlados;
@@ -28,7 +29,7 @@ namespace AlumnoEjemplos.TheGRID
 
         internal void addNew(Dibujable nuevo)
         {
-            if (inactivos.Count == limiteControlados) controlados.RemoveAt(0);
+            if (inactivos.Count == limiteControlados) controlados.RemoveAt(0);      //¿¿NO DEBERIA SER EL COUNT EN CONTROLADOS TMB??
             controlados.Add(nuevo);
         }
 
@@ -53,55 +54,68 @@ namespace AlumnoEjemplos.TheGRID
             List<Dibujable> lista = new List<Dibujable>(0);
             objeto.rotarPorTiempo(time, lista);
         }
-
-        public List<Dibujable> lista() { return controlados;}
-
-        public void eliminarElemento(Dibujable aEliminar)
+        public void eliminarInactivo(Dibujable aEliminar)
         {
             controlados.Remove(aEliminar);
             aEliminar.dispose();
         }
 
-        public void destruirLista()
+        public void destruirListas()
         {
             foreach (var item in controlados) item.dispose();
             foreach (var item in inactivos) item.dispose();
         }
 
-        public void activar()
+        public Dibujable activar()
         {
             Dibujable objeto = inactivos[0];
             inactivos.RemoveAt(0);
             controlados.Add(objeto);
             objeto.activar();
+            return objeto;
         }
 
-        public void desactivar(Dibujable objeto)
+        public virtual void desactivar(Dibujable objeto)
         {
-            objeto.traslacion = 1;
-            objeto.rotacion = Factory.elementoRandom<int>(opciones);
             controlados.Remove(objeto);
             inactivos.Add(objeto);
             objeto.desactivar();
         }
     }
+    #endregion
 
+    #region Manager Laser
     public class ManagerLaser : ManagerDibujable
     {
-        public ManagerLaser(int limite) : base(limite) { }
-        
-        public void fabricar(EjeCoordenadas ejes, Vector3 posicionNave)
+        public ManagerLaser(int limite) : base(limite) 
         {
-            addNew(Factory.crearLaser(ejes,posicionNave));
+            for (int i = 0; i < limiteControlados; i++) inactivos.Add(Factory.crearLaserRojo());
+        }        
+        public void cargarDisparo(EjeCoordenadas ejes, Vector3 posicionNave)
+        {
+            if (inactivos.Count == 0)
+            {
+                Dibujable dead = controlados[0];
+                desactivar(dead);
+            }
+            Dibujable laser = activar();
+            Factory.reubicarLaserAPosicion(laser, ejes, posicionNave);
         }
-
+        public override void desactivar(Dibujable objeto)
+        {
+            controlados.Remove(objeto);            
+            inactivos.Add(Factory.resetearLaser(objeto));
+            objeto.desactivar();
+        }
         public void chocoAsteroide()
         {
             foreach (Dibujable laser in controlados)
                 EjemploAlumno.workspace().Escenario.asteroidManager.chocoLaser(laser);
         }
     }
+    #endregion
 
+    #region Manager Asteroide
     public class ManagerAsteroide : ManagerDibujable
     {
         private List<Dibujable> buffer = new List<Dibujable>();
@@ -300,6 +314,9 @@ namespace AlumnoEjemplos.TheGRID
             return controlados;
         }
     }
+    #endregion
+
+    #region Formato
     public class Formato
     {
         public TamanioAsteroide tamanio;
@@ -335,4 +352,5 @@ namespace AlumnoEjemplos.TheGRID
              //* */
         }
     }
+    #endregion
 }

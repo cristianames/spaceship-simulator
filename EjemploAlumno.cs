@@ -298,8 +298,8 @@ namespace AlumnoEjemplos.TheGRID
 
         public override void close()
         {
-            scheme.asteroidManager.destruirLista();
-            scheme.laserManager.destruirLista();
+            scheme.asteroidManager.destruirListas();
+            scheme.laserManager.destruirListas();
             scheme.dispose();
             nave.dispose();
             arrow.dispose();

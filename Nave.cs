@@ -7,6 +7,7 @@ using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 using AlumnoEjemplos.TheGRID.Explosiones;
 using AlumnoEjemplos.TheGRID.Colisiones;
+using Microsoft.DirectX.Direct3D;
 
 namespace AlumnoEjemplos.TheGRID
 {
@@ -15,7 +16,8 @@ namespace AlumnoEjemplos.TheGRID
         public Nave() : base() 
         {
             TgcMesh meshNave = Factory.cargarMesh("Nave\\naveTrooper-TgcScene.xml");
-            setObject(meshNave, 100, 25, new Vector3(0, 180, 0), new Vector3(0.5f, 0.5f, 0.5f));
+            meshNave.Transform *= Matrix.RotationY(Geometry.DegreeToRadian(180));
+            setObject(meshNave, 100, 25, new Vector3(0.5f, 0.5f, 0.5f));
             setFisica(50, 100, 100);
             SetPropiedades(true, false, false);
             explosion = new ExplosionNave(this, 100, 200);

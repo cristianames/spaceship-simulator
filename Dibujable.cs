@@ -86,8 +86,9 @@ namespace AlumnoEjemplos.TheGRID
         internal bool velocidadManual { set; get; }   //Indica si hay que mantener apretado para moverte o no.
         internal bool desplazamientoReal { set; get; }    //Se usa o no el modulo de Fisica para el desplazamiento.
         internal bool rotacionReal { set; get; }  //Se usa o no el modulo de Fisica para la rotacion.
-        public Object objeto { set; get; }
+        internal Vector3 escala;
         internal Vector3 ultimaTraslacion;
+        internal TgcMesh objeto { set; get; }
         private EjeCoordenadas vectorDireccion;
         internal Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
         protected IColision colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
@@ -111,17 +112,14 @@ namespace AlumnoEjemplos.TheGRID
         #endregion
 
         #region Setter Modular
-        public void setObject(Object cosa, float vLineal, float vRadial, Vector3 rotacion, Vector3 escalado)
+        public void setObject(TgcMesh cosa, float vLineal, float vRadial, Vector3 escalado)
         {  //Le agregas ademas un vector para la matriz de rotacion y otro para la de escalado. Para acomodar el objeto de forma inicial.
             objeto = cosa;
             AutoTransformEnable = false;
             velocidad = vLineal;
             velocidadRadial = vRadial;
-            rotacion.X = Geometry.DegreeToRadian(rotacion.X);
-            rotacion.Y = Geometry.DegreeToRadian(rotacion.Y);
-            rotacion.Z = Geometry.DegreeToRadian(rotacion.Z);
+            escala = escalado;
             Matrix matriz = Matrix.Scaling(escalado);
-            matriz *= Matrix.RotationYawPitchRoll(rotacion.Y, rotacion.X, rotacion.Z);
             Transform *= matriz;
         }
         public void setFisica(float acel, float aFrenado, float masaCuerpo) { fisica = new Fisica(this, acel, aFrenado, masaCuerpo); }  //Carga un nuevo módulo de fisica.        
@@ -170,6 +168,7 @@ namespace AlumnoEjemplos.TheGRID
         public float getAceleracion() { if (fisica != null) return fisica.aceleracion; else return 0; }
         public float getAcelFrenado() { if (fisica != null) return fisica.acelFrenado; else return 0; }     //El objeto debe poder frenar mas rapido de lo que acelera.
         public IColision getColision() { return this.colision; }    //Devuelve el objeto asignado para las colisiones.
+        public bool fisicaPresente() { if (fisica != null) return true; else return false; }
         public Vector3 indicarGravedad(Vector3 pos, float mass)     //Devuelve la fuerza gravitacional que ejerce este cuerpo respecto del que viene por parmetro.
         {
             if (fisica != null) return this.fisica.indicarGravedad(pos, mass);

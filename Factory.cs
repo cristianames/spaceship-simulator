@@ -19,7 +19,7 @@ namespace AlumnoEjemplos.TheGRID
     {
         static Device d3dDevice = GuiController.Instance.D3dDevice;
         static string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
-
+        #region Random
         public static int numeroRandom()
         {
             int resto;
@@ -50,25 +50,26 @@ namespace AlumnoEjemplos.TheGRID
             victima.Z = numeroRandom()+1;
             return victima;
         }
-            
+        #endregion
 
-
-        public static TgcMesh cargarMesh(string path){
+        #region Carga y Descarga
+        public static TgcMesh cargarMesh(string path)
+        {
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene scene = loader.loadSceneFromFile(EjemploAlumno.TG_Folder + path);
             return scene.Meshes[0];
         }
 
-        public static void trasladar(Dibujable asteroide, Vector3 vector)
+        public static void resetearDefault(ref Dibujable victima)   //Vuelve a cargar el dibujable, dejandolo sin Fisica ni Colision. Ademas queda desactivado.
         {
-            Matrix traslacion = Matrix.Translation(vector);
-            asteroide.Transform *= traslacion;
-            asteroide.getColision().transladar(vector);
+            Dibujable auxiliar = victima;
+            victima = new Dibujable();
+            auxiliar.objeto.Transform = Matrix.Identity;
+            victima.setObject(auxiliar.objeto, auxiliar.velocidad, auxiliar.velocidadRadial, auxiliar.escala);
         }
+        #endregion
 
-        // public static FormatoAsteroide elegirAsteroidePor(TamanioAsteroide tamanio)
-        // movido a la clase Asteroide
-
+        #region Asteroide
         public static Asteroide crearAsteroide(TamanioAsteroide tamanio, Vector3 posicion, ManagerAsteroide manager)
         {
             FormatoAsteroide formato = Asteroide.elegirAsteroidePor(tamanio);
@@ -88,14 +89,13 @@ namespace AlumnoEjemplos.TheGRID
 
             //Cargamos las cosas en el dibujable
             Asteroide asteroide = new Asteroide();
-            asteroide.setObject(mesh_asteroide, 2, 4, rotacion, escalado);
+            asteroide.setObject(mesh_asteroide, 2, 4, escalado);
             asteroide.AutoTransformEnable = false;
             asteroide.setColision(new ColisionAsteroide());
             asteroide.getColision().setBoundingBox(bounding_asteroide);
             asteroide.traslacion = 0;
             asteroide.rotacion = 0;
-            trasladar(asteroide, posicion);
-            asteroide.setPosicion(posicion);
+            asteroide.ubicarEnUnaPosicion(posicion);
             asteroide.setEjes(ejes);
 
             asteroide.setFisica(0, 0, formato.getMasa());
@@ -123,37 +123,54 @@ namespace AlumnoEjemplos.TheGRID
             changeDiffuseMaps(new TgcTexture[] { TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesDir + "Transformations\\SistemaSolar\\SunTexture.jpg") });
 
         }*/
+        #endregion
 
-        public static Dibujable crearLaser(EjeCoordenadas ejes, Vector3 posicionNave)
-         {
+        #region Laser
+        public static Dibujable crearLaserRojo()   //Carga la Mesh con los valores default + la OBB.
+        {
             //Creemos la mesh
             TgcMesh mesh_laser = cargarMesh("Laser\\Laser_Box-TgcScene.xml");
             //Cargamos las cosas en el dibujable
             Dibujable laser = new Dibujable();
-            laser.setObject(mesh_laser, 5000, 100, new Vector3(0, 0, 0), new Vector3(0.09F, 0.09F, 0.13F));
+            laser.setObject(mesh_laser, 5000, 100, new Vector3(0.09F, 0.09F, 0.13F));
+            laser.desactivar();
+            asignarOBB_Laser(laser, new Vector3(0.1F, 0.1F, 0.15F));
+            EjemploAlumno.addMesh(mesh_laser);
+            return laser;
+        }
+        public static Dibujable resetearLaser(Dibujable laser)   //Resetea el dibujable y le agrega ademas la OBB.
+        {
+            resetearDefault(ref laser);
+            asignarOBB_Laser(laser, new Vector3(0.1F, 0.1F, 0.15F));
+            return laser;
+        }
+        private static void asignarOBB_Laser(Dibujable laser, Vector3 escalado)  //Asigna una nueva OBB al dibujable en cuestion.
+        {
+            TgcBoundingBox bb = laser.objeto.BoundingBox;
+            bb.scaleTranslate(laser.getPosicion(), escalado);
+            TgcObb obb = TgcObb.computeFromAABB(bb);
+            laser.setColision(new ColisionLaser());
+            laser.getColision().setBoundingBox(obb);
+            laser.getColision().transladar(laser.getPosicion());
+        }
+        private static void rotarOBB(List<Vector3> rotaciones, IColision colisionOBB)
+        {
+            TgcObb obb = (TgcObb)colisionOBB.getBoundingBox();
+            foreach (var vRotor in rotaciones) { obb.rotate(vRotor); } //Le aplicamos TODAS las rotaciones que hasta ahora lleva la nave.            
+        }
+        public static void reubicarLaserAPosicion(Dibujable laser, EjeCoordenadas ejes, Vector3 posicionNave)
+        {
             //Ubicamos el laser en el cañon
             laser.setEjes(ejes);
             laser.Transform *= ejes.mRotor;
             laser.ubicarEnUnaPosicion(posicionNave);
-            laser.setPosicion(((TgcMesh)laser.objeto).Position);
             //Carga sentido de traslacion y rotacion
-            List<int> valores = new List<int>(2);
-            valores.Add(1);
-            valores.Add(-1);
-            laser.rotacion = 0;//numeroRandom<int>(valores);
-            laser.traslacion = 1;            
-            //Le seteamos la Collision box.
-            TgcBoundingBox bb = ((TgcMesh)laser.objeto).BoundingBox;
-            bb.scaleTranslate(laser.getPosicion(), new Vector3(0.1F, 0.1F, 0.15F));
-            TgcObb obb = TgcObb.computeFromAABB(bb);
-            foreach (var vRotor in ejes.lRotor) { obb.rotate(vRotor); } //Le aplicamos TODAS las rotaciones que hasta ahora lleva la nave.            
-            laser.setColision(new ColisionLaser());
-            laser.getColision().setBoundingBox(obb);
-            laser.getColision().transladar(posicionNave);
-            EjemploAlumno.addMesh(mesh_laser);
-            return laser;
+            laser.rotacion = 0;
+            laser.traslacion = 1;
+            rotarOBB(laser.getEjes().lRotor, laser.getColision());
         }
+        #endregion
+
+
     }
-    
-    // Formato del asteroide movido a Asteroide.cs
 }
