@@ -119,6 +119,10 @@ namespace AlumnoEjemplos.TheGRID
             velocidad = vLineal;
             velocidadRadial = vRadial;
             escala = escalado;
+            traslacion = 0;
+            inclinacion = 0;
+            rotacion = 0;
+            giro = 0;
             Matrix matriz = Matrix.Scaling(escalado);
             Transform *= matriz;
         }

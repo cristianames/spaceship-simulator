@@ -118,8 +118,7 @@ namespace AlumnoEjemplos.TheGRID
     #region Manager Asteroide
     public class ManagerAsteroide : ManagerDibujable
     {
-        private List<Dibujable> buffer = new List<Dibujable>();
-        
+
         public ManagerAsteroide(int limite) : base(limite) 
         {
             for(int i=0;i< limite;i++)
@@ -182,7 +181,7 @@ namespace AlumnoEjemplos.TheGRID
         {
             if(inactivos.Count > 0)
             {      
-                Asteroide asteroide = (Asteroide)inactivos[0];
+                Dibujable asteroide = inactivos[0];
                 inactivos.RemoveAt(0);
 
                 //Darle el formato al asteroide
@@ -197,9 +196,11 @@ namespace AlumnoEjemplos.TheGRID
             }
         }
 
-        public void fabricar(int cuantos, TamanioAsteroide tam)
+        public override void desactivar(Dibujable objeto)
         {
-            for (int i = 0; i < cuantos; i++ ) addNew(Factory.crearAsteroide(tam, new Vector3(10*i, 20*i, 100),this));
+            controlados.Remove(objeto);
+            inactivos.Add(Factory.resetearAsteroide(objeto));
+            objeto.desactivar();
         }
 
         public void fabricarMiniAsteroides(int cuantos, TamanioAsteroide tam, Vector3 pos)
@@ -212,10 +213,10 @@ namespace AlumnoEjemplos.TheGRID
 
         public void fabricarCinturonAsteroides(Vector3 pos_base, int raizCantidadAsteroides, int distanciaEntreAsteroides)
         {
-            /*foreach (var asteroide in controlados)  //No se realmente si conviene desactivar los que ya estaban activos.
+            foreach (var asteroide in controlados)  //No se realmente si conviene desactivar los que ya estaban activos.
             {
                 desactivar(asteroide);
-            }*/
+            }
             int distancia = raizCantidadAsteroides * distanciaEntreAsteroides; //150 de separacion entre cada asteroides lo usual
             float pos_x;
             float pos_y = pos_base.Y;
@@ -323,15 +324,15 @@ namespace AlumnoEjemplos.TheGRID
         public Vector3 posicion;
         List<int> opciones = new List<int>() { -1, 1, 0 };
 
-        public void actualizarAsteroide(Asteroide asteroide)
+        public void actualizarAsteroide(Dibujable asteroide)
         {
             FormatoAsteroide formatoAUsar = Asteroide.elegirAsteroidePor(tamanio);
 
             asteroide.escalarSinBB(formatoAUsar.getVolumen());
             asteroide.setFisica(0, 0, formatoAUsar.getMasa());
             asteroide.velocidad = formatoAUsar.getVelocidad();
-            asteroide.tamanioAnterior = formatoAUsar.tamanioAnterior();
-            asteroide.Vida = formatoAUsar.vidaInicial();
+            ((Asteroide)asteroide).tamanioAnterior = formatoAUsar.tamanioAnterior();
+            ((Asteroide)asteroide).Vida = formatoAUsar.vidaInicial();
 
             asteroide.traslacion = 1;
             asteroide.rotacion = Factory.elementoRandom<int>(opciones);

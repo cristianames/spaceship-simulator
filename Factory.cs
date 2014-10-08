@@ -112,17 +112,18 @@ namespace AlumnoEjemplos.TheGRID
             return asteroide;
         }
 
-        /* public Asteroide(Vector3 tamanio)
+        public static Dibujable resetearAsteroide(Dibujable asteroide)   //Resetea el dibujable y le agrega ademas la OBB.
         {
-            transform.Scale(tamanio);
-            Device d3dDevice = GuiController.Instance.D3dDevice;
-            //Carpeta de archivos Media del alumno
-            string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;   
-
-            TgcSceneLoader loader = new TgcSceneLoader();
-            changeDiffuseMaps(new TgcTexture[] { TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesDir + "Transformations\\SistemaSolar\\SunTexture.jpg") });
-
-        }*/
+            TgcBoundingSphere bb = (TgcBoundingSphere) asteroide.getColision().getBoundingBox();
+            resetearDefault(ref asteroide);
+            asignarBB_Asteroide(asteroide, bb);
+            return asteroide;
+        }
+        private static void asignarBB_Asteroide(Dibujable asteroide, TgcBoundingSphere bb)
+        {
+            asteroide.setColision(new ColisionAsteroide());
+            asteroide.getColision().setBoundingBox(bb);
+        }
         #endregion
 
         #region Laser
