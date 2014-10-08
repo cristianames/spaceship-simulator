@@ -41,8 +41,7 @@ namespace AlumnoEjemplos.TheGRID
         internal Escenario Escenario { get { return scheme; } }
         static EjemploAlumno singleton;
         Nave nave;
-        float velocidadBlur;
-        bool velocidadBlurBool = false;
+        public float velocidadBlur = 0;
         bool velocidadCrucero = false;
         float tiempoBlur;
         private Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
@@ -55,7 +54,7 @@ namespace AlumnoEjemplos.TheGRID
         public List<TgcMesh> meshCollection = new List<TgcMesh>();
 
         //Modificador de la camara del proyecto
-        CambioCamara camara;
+        public CambioCamara camara;
         TgcArrow arrow;
         private TgcFrustum currentFrustrum;
         public TgcFrustum CurrentFrustrum { get { return currentFrustrum; } }
@@ -197,7 +196,7 @@ namespace AlumnoEjemplos.TheGRID
             if (input.keyDown(Key.A)) { nave.giro = -1; }
             if (input.keyDown(Key.D)) { nave.giro = 1; }
             if (input.keyDown(Key.W)) { nave.acelerar(); }
-            if (input.keyDown(Key.S)) { if (!velocidadBlurBool)nave.frenar(); }
+            if (input.keyDown(Key.S)) { if (!shader.motionBlurActivado)nave.frenar(); }
             if (input.keyPressed(Key.S)) { objetoPrincipal.fisica.desactivarCrucero(); velocidadCrucero = false; }
 
 
@@ -218,12 +217,12 @@ namespace AlumnoEjemplos.TheGRID
             }
             if (input.keyPressed(Key.LeftShift)) 
             {
-                if (velocidadBlurBool) velocidadBlurBool = false;
+                if (shader.motionBlurActivado) shader.motionBlurActivado = false;
                 else 
                 {
                     if (objetoPrincipal.velocidadActual() == 200) 
                     {
-                        velocidadBlurBool = true;
+                        shader.motionBlurActivado = true;
                         tiempoBlur = 0;
                         //velocidadBlur = objetoPrincipal.velocidadActual();
                     }
@@ -292,7 +291,7 @@ namespace AlumnoEjemplos.TheGRID
             //opcionElegida = (string)GuiController.Instance.Modifiers["Rotacion Avanzada"];
             //if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.rotacionReal = true; else objetoPrincipal.rotacionReal = false;   De momento lo saco.
             //Refrescar User Vars
-            if (velocidadBlurBool)
+            if (shader.motionBlurActivado)
             {
                 tiempoBlur += elapsedTime;
                 velocidadBlur = (float)Math.Pow(7D, tiempoBlur);

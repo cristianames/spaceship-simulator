@@ -116,13 +116,14 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
                 device.BeginScene();
                 renderScene(meshes, "DefaultTechnique");
-                renderScene(nave, "DefaultTechnique");
+                if (!EjemploAlumno.workspace().camara.soyFPS())
+                    renderScene(nave, "DefaultTechnique");
                 device.EndScene();
                 GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
                 return;
             }
-
-            effect.SetValue("PixelBlurConst", 0.1f); //Despues veo como hacerlo mas global
+            float pixel_blur_variable = 0.000001f * EjemploAlumno.workspace().velocidadBlur;
+            effect.SetValue("PixelBlurConst", pixel_blur_variable); //Despues veo como hacerlo mas global
 
             // guardo el Render target anterior y seteo la textura como render target
             Surface pOldRT = device.GetRenderTarget(0);
@@ -140,7 +141,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
             renderScene(meshes, "VelocityMap");
-            renderScene(nave, "VelocityMap");
+            if (!EjemploAlumno.workspace().camara.soyFPS())
+                renderScene(nave, "VelocityMap");
             device.EndScene();
             pSurf.Dispose();
 
@@ -151,7 +153,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
             renderScene(meshes, "DefaultTechnique");
-            renderScene(nave, "DefaultTechnique");
+            if (!EjemploAlumno.workspace().camara.soyFPS())
+                renderScene(nave, "DefaultTechnique");
             device.EndScene();
             pSurf.Dispose();
 

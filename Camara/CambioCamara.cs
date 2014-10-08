@@ -9,7 +9,7 @@ using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.TheGRID.Camara
 {
-    class CambioCamara
+    public class CambioCamara
     {
         enum TipoModo {FPS, TPS, Exterior};
         private TipoModo modo = TipoModo.TPS; 
