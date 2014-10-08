@@ -13,6 +13,8 @@ namespace AlumnoEjemplos.TheGRID
         private Dibujable duenio;
         internal float aceleracion { set; get; }
         public float velocidadInstantanea;
+        public float velocidadMaxima;
+        public float velocidadCrucero;
         private float masa;
         public float Masa { get { return masa; } }
         private Vector3 ultimaDireccionCalculada = new Vector3(0,0,0);
@@ -21,7 +23,7 @@ namespace AlumnoEjemplos.TheGRID
         internal float acelFrenado { set; get; }
         //-------------------
 
-        public Fisica(Dibujable owner, float acel, float aFrenado, float masaCuerpo)    //La aceleracion de frenado recomiendo poner un valor mayor que acel.
+        public Fisica(Dibujable owner, float acel, float aFrenado, float velMax, float masaCuerpo)    //La aceleracion de frenado recomiendo poner un valor mayor que acel.
         {
             duenio = owner;
             aceleracion = acel;
@@ -29,6 +31,8 @@ namespace AlumnoEjemplos.TheGRID
             velocidadInstantanea = 0;
             frenado = false;
             acelFrenado = aFrenado;
+            velocidadMaxima = velMax;
+            velocidadCrucero = velMax;
         }
         private float calcularDistanciaDesplazada(float vel, float acel, float tiempo)
         {
@@ -82,7 +86,7 @@ namespace AlumnoEjemplos.TheGRID
                 float acelGlobal = Vector3.Length(auxiliar1);
                 float temp = velocidadInstantanea + acelGlobal * time;
                 //if (velocidadInstantanea < 0) velocidadInstantanea = 0;
-                if (temp > 200) velocidadInstantanea = 200;
+                if (temp > velocidadCrucero) velocidadInstantanea = velocidadCrucero;
                 else velocidadInstantanea = temp;
             }
             else
@@ -101,10 +105,13 @@ namespace AlumnoEjemplos.TheGRID
                     if (velocidadInstantanea < 0) velocidadInstantanea = 0;
                 }
             frenado = false;
+            velocidadCrucero = velocidadMaxima;
             }
             ultimaDireccionCalculada = devolucion;
             return devolucion;
         }
+        public void activarCrucero() { velocidadCrucero = velocidadInstantanea; }
+        public void desactivarCrucero() { velocidadCrucero = velocidadMaxima; }
         public void impulsar(Vector3 direccionDeImpulso, float velocidadDeImpulso, float elapsedTimed)
         {
             direccionDeImpulso.Normalize();

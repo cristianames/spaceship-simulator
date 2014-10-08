@@ -87,12 +87,29 @@ namespace AlumnoEjemplos.TheGRID
     #region Manager Laser
     public class ManagerLaser : ManagerDibujable
     {
+        bool alternado;
         public ManagerLaser(int limite) : base(limite) 
         {
             for (int i = 0; i < limiteControlados; i++) inactivos.Add(Factory.crearLaserRojo());
         }        
         public void cargarDisparo(EjeCoordenadas ejes, Vector3 posicionNave)
         {
+            Vector3 lateral = ejes.vectorX;
+            Vector3 atras = ejes.vectorZ;
+            lateral.Multiply(5);
+            atras.Multiply(-20);
+            if (alternado)      //Ubicamos de forma alternada los lasers.
+            {
+                posicionNave += lateral;
+                alternado = false;
+            }
+            else
+            {
+                lateral.Multiply(-1);
+                posicionNave += lateral;
+                alternado = true;
+            }
+            posicionNave += atras;
             if (inactivos.Count == 0)
             {
                 Dibujable dead = controlados[0];
@@ -329,7 +346,7 @@ namespace AlumnoEjemplos.TheGRID
             FormatoAsteroide formatoAUsar = Asteroide.elegirAsteroidePor(tamanio);
 
             asteroide.escalarSinBB(formatoAUsar.getVolumen());
-            asteroide.setFisica(0, 0, formatoAUsar.getMasa());
+            asteroide.setFisica(0, 0, 10, formatoAUsar.getMasa());
             asteroide.velocidad = formatoAUsar.getVelocidad();
             ((Asteroide)asteroide).tamanioAnterior = formatoAUsar.tamanioAnterior();
             ((Asteroide)asteroide).Vida = formatoAUsar.vidaInicial();

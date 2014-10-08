@@ -126,7 +126,7 @@ namespace AlumnoEjemplos.TheGRID
             Matrix matriz = Matrix.Scaling(escalado);
             Transform *= matriz;
         }
-        public void setFisica(float acel, float aFrenado, float masaCuerpo) { fisica = new Fisica(this, acel, aFrenado, masaCuerpo); }  //Carga un nuevo módulo de fisica.        
+        public void setFisica(float acel, float aFrenado, float velMax, float masaCuerpo) { fisica = new Fisica(this, acel, aFrenado, velMax, masaCuerpo); }  //Carga un nuevo módulo de fisica.        
         public void SetPropiedades(bool velMan, bool despReal, bool rotReal)    //La velocidad vuelve a 0 cuando no ocurre un evento continuo.
         {       //Se usa el desplazamiento y la rotacion del modulo de fisica. Por defecto viene todo false.
             velocidadManual = velMan;

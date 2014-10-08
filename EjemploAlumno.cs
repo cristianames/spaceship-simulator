@@ -33,7 +33,7 @@ namespace AlumnoEjemplos.TheGRID
         /// Completar nombre del grupo en formato Grupo NN
         public override string getName(){ return "Grupo TheGRID"; }
         /// Completar con la descripción del TP
-        public override string getDescription(){return "Viaje Interplanetario - Manejo: \nArriba/Abajo - Pitch                       \nIzq/Der - Roll                                  \nA/D - Yaw                 \nW - Acelerar                  \nS - Estabilizar                             \nEspacio - Disparo Principal";}
+        public override string getDescription() { return "Flechas: Rotaciones              WASD: Desplazamiento              LeftShift: Efecto Blur                     LeftCtrl: Modo Crucero                  Espacio - Disparo Principal"; }
         #endregion
 
         #region ATRIBUTOS
@@ -43,12 +43,13 @@ namespace AlumnoEjemplos.TheGRID
         Nave nave;
         float velocidadBlur;
         bool velocidadBlurBool = false;
+        bool velocidadCrucero = false;
         float tiempoBlur;
         private Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
         public Dibujable ObjetoPrincipal { get { return objetoPrincipal; } }
         List<Dibujable> listaDibujable = new List<Dibujable>();
         float timeLaser = 0; //Inicializacion.
-        const float betweenTime = 0.3f;    //Tiempo de espera entre cada disparo de laser.
+        const float betweenTime = 0.15f;    //Tiempo de espera entre cada disparo de laser.
 
         //lista de meshes para implementar el motion blur
         public List<TgcMesh> meshCollection = new List<TgcMesh>();
@@ -169,10 +170,10 @@ namespace AlumnoEjemplos.TheGRID
             GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 3);
             string[] opciones1 = new string[] { "Tercera Persona", "Camara FPS", "Libre" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
-            string[] opciones2 = new string[] { "Desactivado", "Activado" };
-            GuiController.Instance.Modifiers.addInterval("Velocidad Manual", opciones2, 1);
+            string[] opciones2 = new string[] { "Activado", "Desactivado" };
+            GuiController.Instance.Modifiers.addInterval("Velocidad Manual", opciones2, 0);
             string[] opciones3 = new string[] { "Activado", "Desactivado" };
-            GuiController.Instance.Modifiers.addInterval("Desplaz. Avanzado", opciones3, 1);
+            GuiController.Instance.Modifiers.addInterval("Desplaz. Avanzado", opciones3, 0);
             //string[] opciones4 = new string[] { "Activado", "Desactivado" };
             //GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);  De momento lo saco.
             string opcionElegida = (string)GuiController.Instance.Modifiers["Escenario Actual"];
@@ -197,10 +198,24 @@ namespace AlumnoEjemplos.TheGRID
             if (input.keyDown(Key.D)) { nave.giro = 1; }
             if (input.keyDown(Key.W)) { nave.acelerar(); }
             if (input.keyDown(Key.S)) { if (!velocidadBlurBool)nave.frenar(); }
+            if (input.keyPressed(Key.S)) { objetoPrincipal.fisica.desactivarCrucero(); velocidadCrucero = false; }
 
 
             if (input.keyDown(Key.Z)) { nave.rotarPorVectorDeAngulos(new Vector3(0, 0, 15)); }
 
+            if (input.keyPressed(Key.LeftControl)) 
+            {
+                if (velocidadCrucero)
+                {
+                    objetoPrincipal.fisica.desactivarCrucero();
+                    velocidadCrucero = false;
+                }
+                else
+                {
+                    objetoPrincipal.fisica.activarCrucero();
+                    velocidadCrucero = true;
+                }
+            }
             if (input.keyPressed(Key.LeftShift)) 
             {
                 if (velocidadBlurBool) velocidadBlurBool = false;

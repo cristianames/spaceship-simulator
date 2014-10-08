@@ -98,7 +98,7 @@ namespace AlumnoEjemplos.TheGRID
             asteroide.ubicarEnUnaPosicion(posicion);
             asteroide.setEjes(ejes);
 
-            asteroide.setFisica(0, 0, formato.getMasa());
+            asteroide.setFisica(0, 0, 10, formato.getMasa());
             
 
             asteroide.velocidad = formato.getVelocidad();

@@ -17,8 +17,8 @@ namespace AlumnoEjemplos.TheGRID
         {
             TgcMesh meshNave = Factory.cargarMesh("Nave\\naveTrooper-TgcScene.xml");
             meshNave.Transform *= Matrix.RotationY(Geometry.DegreeToRadian(180));
-            setObject(meshNave, 100, 25, new Vector3(0.5f, 0.5f, 0.5f));
-            setFisica(50, 100, 100);
+            setObject(meshNave, 100, 50, new Vector3(0.5f, 0.5f, 0.5f));
+            setFisica(50, 100, 200, 10000);
             SetPropiedades(true, false, false);
             explosion = new ExplosionNave(this, 100, 200);
 
