@@ -67,6 +67,18 @@ namespace AlumnoEjemplos.TheGRID
             auxiliar.objeto.Transform = Matrix.Identity;
             victima.setObject(auxiliar.objeto, auxiliar.velocidad, auxiliar.velocidadRadial, auxiliar.escala);
         }
+        public static void resetearDefault_Asteroide(ref Asteroide victima)   //Vuelve a cargar el dibujable, dejandolo sin Fisica ni Colision. Ademas queda desactivado.
+        {
+            Asteroide auxiliar = victima;
+            victima = new Asteroide();
+            auxiliar.objeto.Transform = Matrix.Identity;
+            victima.setObject(auxiliar.objeto, auxiliar.velocidad, auxiliar.velocidadRadial, auxiliar.escala);
+            victima.traslacion = 0;
+            victima.inclinacion = 0;
+            victima.rotacion = 0;
+            victima.giro = 0;
+            victima.manager = auxiliar.manager;
+        }
         #endregion
 
         #region Asteroide
@@ -112,10 +124,10 @@ namespace AlumnoEjemplos.TheGRID
             return asteroide;
         }
 
-        public static Dibujable resetearAsteroide(Dibujable asteroide)   //Resetea el dibujable y le agrega ademas la OBB.
+        public static Dibujable resetearAsteroide(Asteroide asteroide)   //Resetea el dibujable y le agrega ademas la OBB.
         {
             TgcBoundingSphere bb = (TgcBoundingSphere) asteroide.getColision().getBoundingBox();
-            resetearDefault(ref asteroide);
+            resetearDefault_Asteroide(ref asteroide);
             asignarBB_Asteroide(asteroide, bb);
             return asteroide;
         }

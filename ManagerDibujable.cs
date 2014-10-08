@@ -216,7 +216,7 @@ namespace AlumnoEjemplos.TheGRID
         public override void desactivar(Dibujable objeto)
         {
             controlados.Remove(objeto);
-            inactivos.Add(Factory.resetearAsteroide(objeto));
+            inactivos.Add(Factory.resetearAsteroide((Asteroide) objeto));
             objeto.desactivar();
         }
 
