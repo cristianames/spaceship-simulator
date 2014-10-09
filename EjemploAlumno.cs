@@ -33,7 +33,7 @@ namespace AlumnoEjemplos.TheGRID
         /// Completar nombre del grupo en formato Grupo NN
         public override string getName(){ return "Grupo TheGRID"; }
         /// Completar con la descripción del TP
-        public override string getDescription() { return "Flechas: Rotaciones              WASD: Desplazamiento              LeftShift: Efecto Blur                     LeftCtrl: Modo Crucero                  Espacio - Disparo Principal"; }
+        public override string getDescription() { return "Welcome to TheGRID                                                                            FLECHAS: Rotaciones              WASD: Desplazamiento              LeftShift: Efecto Blur                     LeftCtrl: Modo Crucero                  Espacio - Disparo Principal"; }
         #endregion
 
         #region ATRIBUTOS
@@ -43,7 +43,7 @@ namespace AlumnoEjemplos.TheGRID
         Nave nave;
         public float velocidadBlur = 0;
         bool velocidadCrucero = false;
-        float tiempoBlur;
+        public float tiempoBlur=0.3f;
         private Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
         public Dibujable ObjetoPrincipal { get { return objetoPrincipal; } }
         List<Dibujable> listaDibujable = new List<Dibujable>();
@@ -110,22 +110,24 @@ namespace AlumnoEjemplos.TheGRID
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
             GuiController.Instance.CustomRenderEnabled = true;
-            //d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
-            //Crear manager Lasers
-            //laserManager = new ManagerLaser(5);
-            //Crear 5 asteroides
-            //asteroidManager = new ManagerAsteroide(1000);
-            //asteroidManager.creaUno(TamanioAsteroide.MUYGRANDE);
-            //asteroidManager.fabricar(5, TamanioAsteroide.MEDIANO);
-            //asteroidManager.fabricarCinturonAsteroides(new Vector3(-500,0,2000),10,50);
-
             #endregion
+
+            //Informacion sobre los movimientos en la parte inferior de la pantalla.
+            TgcViewer.Utils.Logger logger = GuiController.Instance.Logger;
+            logger.clear();
+            //logger.log("Welcome to TheGRID", Color.DarkCyan);
+            logger.log("Le damos la bienvenida a este simulador. A continuacion le indicaremos los controles que puede utilizar:");
+            logger.log("Paso 1: Para rotar sobre los ejes Z y X utilice las FLECHAS de direccion. Para rotar sobre el eje Y utilice las teclas A y D.");
+            logger.log("Paso 2: Para avanzar presione la W pero cuidado con el movimiento inercial. Seguramente se va a dar cuenta de lo que hablo. Para frenar puede presionar la tecla S. Esto estabiliza la nave sin importar que fuerzas tiren de ella.");
+            logger.log("Paso 3: Para avanzar con cuidado, acelere o frene hasta la velocidad deseada, pulse una vez LeftCtrl y luego acelere. Esto activa el modo crucero. Para desactivarlo basta con frenar un poco o volver a pulsar LeftCtrl.");
+            logger.log("Paso 4: Para activar el Motion Blur debe ir a la maxima velocidad y luego pulsar una vez LeftShift. La desactivacion es de la misma forma. Por ultimo pruebe disparar presionando SpaceBar. -- Disfrute el ejemplo.");
+
 
             currentFrustrum = new TgcFrustum();
             crearSkyBox();
 
+
             shader = new ShaderTheGrid();
-            //shader.motionBlurActivado = true; //Descomentar para activar el motion---Ahora mismo esta en Escenario
 
             //Crear la nave
             nave = new Nave();
@@ -217,16 +219,20 @@ namespace AlumnoEjemplos.TheGRID
             }
             if (input.keyPressed(Key.LeftShift)) 
             {
-                if (shader.motionBlurActivado) shader.motionBlurActivado = false;
-                else 
+                if (shader.motionBlurActivado)
                 {
-                    if (objetoPrincipal.velocidadActual() == 200) 
+                    shader.motionBlurActivado = false;
+                    tiempoBlur = 0.3f;
+                    velocidadBlur = 0;
+                }
+                else
+                {
+                    if (objetoPrincipal.velocidadActual() == objetoPrincipal.fisica.velocidadMaxima)
                     {
                         shader.motionBlurActivado = true;
-                        tiempoBlur = 0;
                         //velocidadBlur = objetoPrincipal.velocidadActual();
                     }
-                    
+
                 }
             }
 
@@ -294,7 +300,7 @@ namespace AlumnoEjemplos.TheGRID
             if (shader.motionBlurActivado)
             {
                 tiempoBlur += elapsedTime;
-                velocidadBlur = (float)Math.Pow(7D, tiempoBlur);
+                velocidadBlur = (float)Math.Pow(100D, tiempoBlur);
                 if (velocidadBlur > 299800) velocidadBlur = 299800;
                 GuiController.Instance.UserVars.setValue("Vel-Actual:", velocidadBlur + objetoPrincipal.velocidadActual());
             }

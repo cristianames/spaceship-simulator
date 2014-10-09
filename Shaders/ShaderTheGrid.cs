@@ -122,7 +122,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
                 return;
             }
-            float pixel_blur_variable = 0.000001f * EjemploAlumno.workspace().velocidadBlur;
+            float velActual = EjemploAlumno.workspace().velocidadBlur;
+            float pixel_blur_variable = 0.3f * ((velActual - 200) / (300000 - 200));    //Calcula el porcentual de aplicacion sobre el blur.
             effect.SetValue("PixelBlurConst", pixel_blur_variable); //Despues veo como hacerlo mas global
 
             // guardo el Render target anterior y seteo la textura como render target

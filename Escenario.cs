@@ -136,6 +136,7 @@ namespace AlumnoEjemplos.TheGRID
             disposeOld();
             escenarioActual = TipoModo.IMPULSE_DRIVE;
             EjemploAlumno.workspace().Shader.motionBlurActivado = true;
+            EjemploAlumno.workspace().tiempoBlur = 5F;// velocidadBlur = 299800;
         }
         //-------------------------------------------------------------------------------------------CHAPTER-3
         public void loadChapter3() 
