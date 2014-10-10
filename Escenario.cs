@@ -169,29 +169,6 @@ namespace AlumnoEjemplos.TheGRID
             sol.rotarPorTiempo(elapsedTime, new List<Dibujable>());             
             foreach (Dibujable estrella in estrellas) estrella.desplazarUnaDistancia(principal.ultimaTraslacion);
 
-            //Chequeo de colision
-            //Chequeo si la nave choco con algun asteroide
-
-            //Eze: Codigo repetido, esto ya se realiza en asteroidManager.chocoNave(nave);
-
-            /*bool naveColision = false;
-            foreach (Dibujable asteroide in asteroidManager.lista())
-            {
-
-                if (nave.getColision().colisiono(((TgcBoundingSphere)asteroide.getColision().getBoundingBox())))
-                {
-                    ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(Color.Red);
-                    ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Red);
-                    naveColision = true;
-                }
-                else
-                {                  
-                    ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Yellow);
-                }            
-            }
-            if (!naveColision) ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(Color.Yellow);
-            */
-
             //no chequeo si los asteroides chocaron con la nave
 
             //Chequeo si la nave choco con algun asteroide

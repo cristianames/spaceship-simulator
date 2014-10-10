@@ -17,7 +17,7 @@ using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.TheGRID.Shaders
 {
-    class ShaderTheGrid
+    class SuperRender
     {
         private string ShaderDirectory;
         private Effect effect;
@@ -29,7 +29,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         private Texture g_pVel1, g_pVel2;   // velocidad
         private Matrix antMatView;
 
-        public ShaderTheGrid()
+        public SuperRender()
         {
             Device d3dDevice = GuiController.Instance.D3dDevice;
 
@@ -104,7 +104,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             mesh.render();
         }
 
-        public void shadear(TgcMesh nave ,List<TgcMesh> meshes, float elapsedTime)
+        public void render(TgcMesh nave ,List<TgcMesh> meshes, float elapsedTime)
         {
             time += elapsedTime;
             Device device = GuiController.Instance.D3dDevice;
@@ -122,6 +122,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
                 return;
             }
+
             float velActual = EjemploAlumno.workspace().velocidadBlur;
             float pixel_blur_variable = 0.3f * ((velActual - 200) / (300000 - 200));    //Calcula el porcentual de aplicacion sobre el blur.
             effect.SetValue("PixelBlurConst", pixel_blur_variable); //Despues veo como hacerlo mas global

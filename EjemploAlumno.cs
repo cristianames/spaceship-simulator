@@ -64,8 +64,8 @@ namespace AlumnoEjemplos.TheGRID
         //TgcSkyBox skyBox;
         //ManagerLaser laserManager;
         //private ManagerAsteroide asteroidManager;
-        ShaderTheGrid shader;
-        internal ShaderTheGrid Shader { get { return shader; } }
+        SuperRender superRender;
+        internal SuperRender Shader { get { return superRender; } }
         #endregion
 
         #region METODOS AUXILIARES
@@ -127,7 +127,7 @@ namespace AlumnoEjemplos.TheGRID
             crearSkyBox();
 
 
-            shader = new ShaderTheGrid();
+            superRender = new SuperRender();
 
             //Crear la nave
             nave = new Nave();
@@ -185,9 +185,8 @@ namespace AlumnoEjemplos.TheGRID
 
         public override void render(float elapsedTime)
         {
-            #region -----UPDATE-----
+            #region -----KEYS-----
             TgcD3dInput input = GuiController.Instance.D3dInput;
-            GuiController.Instance.FpsCounterEnable = true;
 
             //Flechas
             if (input.keyDown(Key.Left)) { nave.rotacion = 1; }
@@ -198,12 +197,9 @@ namespace AlumnoEjemplos.TheGRID
             if (input.keyDown(Key.A)) { nave.giro = -1; }
             if (input.keyDown(Key.D)) { nave.giro = 1; }
             if (input.keyDown(Key.W)) { nave.acelerar(); }
-            if (input.keyDown(Key.S)) { if (!shader.motionBlurActivado)nave.frenar(); }
+            if (input.keyDown(Key.S)) { if (!superRender.motionBlurActivado)nave.frenar(); }
             if (input.keyPressed(Key.S)) { objetoPrincipal.fisica.desactivarCrucero(); velocidadCrucero = false; }
-
-
             if (input.keyDown(Key.Z)) { nave.rotarPorVectorDeAngulos(new Vector3(0, 0, 15)); }
-
             if (input.keyPressed(Key.LeftControl)) 
             {
                 if (velocidadCrucero)
@@ -219,9 +215,9 @@ namespace AlumnoEjemplos.TheGRID
             }
             if (input.keyPressed(Key.LeftShift)) 
             {
-                if (shader.motionBlurActivado)
+                if (superRender.motionBlurActivado)
                 {
-                    shader.motionBlurActivado = false;
+                    superRender.motionBlurActivado = false;
                     tiempoBlur = 0.3f;
                     velocidadBlur = 0;
                 }
@@ -229,24 +225,13 @@ namespace AlumnoEjemplos.TheGRID
                 {
                     if (objetoPrincipal.velocidadActual() == objetoPrincipal.fisica.velocidadMaxima)
                     {
-                        shader.motionBlurActivado = true;
+                        superRender.motionBlurActivado = true;
                         //velocidadBlur = objetoPrincipal.velocidadActual();
                     }
 
                 }
             }
-
-            //Otros
-            //if (input.keyDown(Key.LeftShift)) { nave.acelerar(1); }
-            //if (input.keyDown(Key.F1)) { camara.modoFPS(); }
-            //if (input.keyDown(Key.F2)) { camara.modoExterior(); }
-            //if (input.keyDown(Key.F3)) { camara.modoTPS(); }
-
             if (input.keyDown(Key.P)) { scheme.asteroidManager.explotaAlPrimero(); }
-
-            camara.cambiarPosicionCamara();
-            currentFrustrum.updateMesh(GuiController.Instance.CurrentCamera.getPosition(),GuiController.Instance.CurrentCamera.getLookAt());
-            
             if (input.keyDown(Key.Space))
             {
                 timeLaser += elapsedTime;
@@ -258,14 +243,16 @@ namespace AlumnoEjemplos.TheGRID
                 }
             }
             #endregion
-            
 
+            #region -----Update------
+            nave.rotarPorTiempo(elapsedTime, listaDibujable);
+            nave.desplazarsePorTiempo(elapsedTime, new List<Dibujable>(scheme.cuerpos()));
 
-            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
-            //d3dDevice.Clear(ClearFlags.Target, Color.FromArgb(22, 22, 22), 1.0f, 0);
-            //GuiController.Instance.FpsCounterEnable = true;
             scheme.refrescar(elapsedTime);
 
+            camara.cambiarPosicionCamara();
+            currentFrustrum.updateMesh(GuiController.Instance.CurrentCamera.getPosition(),GuiController.Instance.CurrentCamera.getLookAt());
+            
             //Cargar valores de la flecha
             Vector3 navePos = nave.getPosicion();
             Vector3 naveDir = Vector3.Subtract(new Vector3(0, 0, 10000), nave.getDireccion());
@@ -276,15 +263,13 @@ namespace AlumnoEjemplos.TheGRID
             arrow.Thickness = 0.5f;
             arrow.HeadSize = new Vector2(2,2);
             arrow.updateValues();
-            arrow.render();
-            skySphere.render();
+            //arrow.render();
+            //skySphere.render();
             //suelo.render();
+            #endregion
 
-            nave.rotarPorTiempo(elapsedTime,listaDibujable);
-            nave.desplazarsePorTiempo(elapsedTime,new List<Dibujable>(scheme.cuerpos()));
-            if(!camara.soyFPS())
-                nave.render(elapsedTime);
-            shader.shadear((TgcMesh)nave.objeto, meshCollection, elapsedTime);
+            superRender.render((TgcMesh)nave.objeto, meshCollection, elapsedTime); //Redirige todo lo que renderiza dentro del "shader"
+
             #region Refrescar panel lateral
             string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
             camara.chequearCambio(opcionElegida);
@@ -297,7 +282,7 @@ namespace AlumnoEjemplos.TheGRID
             //opcionElegida = (string)GuiController.Instance.Modifiers["Rotacion Avanzada"];
             //if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.rotacionReal = true; else objetoPrincipal.rotacionReal = false;   De momento lo saco.
             //Refrescar User Vars
-            if (shader.motionBlurActivado)
+            if (superRender.motionBlurActivado)
             {
                 tiempoBlur += elapsedTime;
                 velocidadBlur = (float)Math.Pow(100D, tiempoBlur);

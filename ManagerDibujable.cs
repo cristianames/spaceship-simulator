@@ -160,10 +160,11 @@ namespace AlumnoEjemplos.TheGRID
                 rotar(item, time);
                 ((TgcBoundingSphere)item.getColision().getBoundingBox()).setCenter(item.getPosicion());
                 //Chequea si esta dentro del frustrum
-                TgcCollisionUtils.FrustumResult resultado = 
+                /*TgcCollisionUtils.FrustumResult resultado = 
                     TgcCollisionUtils.classifyFrustumSphere(frustrum, (TgcBoundingSphere)item.getColision().getBoundingBox());
                 if (resultado != TgcCollisionUtils.FrustumResult.OUTSIDE) 
-                    item.render(time);
+                    item.render(time);*/
+                //No borrar, lo dejo por aca para despues usarlo en el Shader(09/10/14)
             }
 
             //reciclajeAsteroidesFueraDelSky();
@@ -361,13 +362,6 @@ namespace AlumnoEjemplos.TheGRID
             bounding.setValues(bounding.Center, radioMalla3DsMax * formatoAUsar.getVolumen().X);
 
             asteroide.ubicarEnUnaPosicion(posicion);
-            /*    
-            asteroide.Transform *= Matrix.Translation(posicion);
-            asteroide.Transform *= Matrix.Identity;
-
-            asteroide.getColision().transladar(posicion);
-            asteroide.setPosicion(posicion);
-             //* */
         }
     }
     #endregion
