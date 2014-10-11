@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.DirectX;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
+using AlumnoEjemplos.TheGRID.Colisiones;
 
 namespace AlumnoEjemplos.TheGRID
 {
@@ -12,6 +13,7 @@ namespace AlumnoEjemplos.TheGRID
     {
         public TgcMesh horizonteVision;
         public TgcBoundingSphere bordeSky;
+        public Dibujable dibujable_skySphere;
 
         public SkySphere()
         {
@@ -22,12 +24,13 @@ namespace AlumnoEjemplos.TheGRID
             horizonteVision.Enabled = false;
             bordeSky = new TgcBoundingSphere(new Vector3(0, 0, 0), 500);
             EjemploAlumno.addRenderizable(horizonteVision);
+
         }
 
         internal void render(){
             actualizaPos(EjemploAlumno.workspace().ObjetoPrincipal.getPosicion());
-            horizonteVision.render();
-            bordeSky.render();
+            //horizonteVision.render();
+            //bordeSky.render();
         }
         public void dispose(){ dispose(); }
 

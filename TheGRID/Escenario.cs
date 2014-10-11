@@ -48,7 +48,7 @@ namespace AlumnoEjemplos.TheGRID
             //Creamos.....EL SOL
             TgcMesh mesh_Sol = Factory.cargarMesh(@"Sol\sol-TgcScene.xml");
             sol = new Dibujable();
-            sol.setObject(mesh_Sol, 0, 200, new Vector3(1F, 1F, 1F));
+            sol.setObject(mesh_Sol, 0, 200, new Vector3(2F, 2F, 2F));
             sol.giro = -1;
             sol.ubicarEnUnaPosicion(new Vector3(0,0,9000));
             sol.activar();
@@ -56,6 +56,7 @@ namespace AlumnoEjemplos.TheGRID
             EjemploAlumno.workspace().dibujableCollection.Add(sol);
             estrellas.Add(sol);
 
+            /*
             //Cargamos la lista de texturas
             texturasEstrellas = new List<TgcTexture>();
             texturasEstrellas.Add(TgcTexture.createTexture(GuiController.Instance.D3dDevice, EjemploAlumno.TG_Folder + @"Estrella\Textures\Azul.jpg"));
@@ -114,6 +115,7 @@ namespace AlumnoEjemplos.TheGRID
                 EjemploAlumno.workspace().dibujableCollection.Add(estrella);
                 estrellas.Add(estrella);
             }
+             * */
             #endregion
         }
 
