@@ -39,7 +39,6 @@ namespace AlumnoEjemplos.TheGRID
             {
                 trasladar(item, time);
                 rotar(item, time);
-                item.render(time);
             }
         }
 

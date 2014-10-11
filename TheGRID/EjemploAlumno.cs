@@ -51,7 +51,7 @@ namespace AlumnoEjemplos.TheGRID
         const float betweenTime = 0.15f;    //Tiempo de espera entre cada disparo de laser.
 
         //lista de meshes para implementar el motion blur
-        public List<TgcMesh> meshCollection = new List<TgcMesh>();
+        public List<Dibujable> dibujableCollection = new List<Dibujable>();
 
         //Modificador de la camara del proyecto
         public CambioCamara camara;
@@ -70,8 +70,8 @@ namespace AlumnoEjemplos.TheGRID
 
         #region METODOS AUXILIARES
         public static EjemploAlumno workspace() { return singleton; }
-        public static void addMesh(TgcMesh unMesh){
-            singleton.meshCollection.Add(unMesh);
+        public static void addMesh(Dibujable unDibujable){
+            singleton.dibujableCollection.Add(unDibujable);
         }
         public TgcFrustum getCurrentFrustrum() { return currentFrustrum; }
         private void crearSkyBox()
@@ -273,7 +273,7 @@ namespace AlumnoEjemplos.TheGRID
             //suelo.render();
             #endregion
 
-            superRender.render((TgcMesh)nave.objeto, meshCollection, elapsedTime); //Redirige todo lo que renderiza dentro del "shader"
+            superRender.render(nave, dibujableCollection); //Redirige todo lo que renderiza dentro del "shader"
 
             #region Refrescar panel lateral
             string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];

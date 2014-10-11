@@ -21,7 +21,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
     {
         private string ShaderDirectory;
         private Effect effect;
-        private float time = 0;
         public bool motionBlurActivado = false;
         private VertexBuffer g_pVBV3D;
         private Surface g_pDepthStencil;     // Depth-stencil buffer 
@@ -88,25 +87,24 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             antMatView = d3dDevice.Transform.View;
         }
 
-        public void renderScene(List<TgcMesh> meshes, String technique)
+        public void renderScene(List<Dibujable> dibujables, String technique)
         {
-            foreach(TgcMesh mesh in meshes)
+            foreach (Dibujable dibujable in dibujables)
             {
-                mesh.Effect = effect;
-                mesh.Technique = technique;
-                mesh.render();
+                ((TgcMesh)dibujable.objeto).Effect = effect;
+                ((TgcMesh)dibujable.objeto).Technique = technique;
+                dibujable.render();
             }
         }
-        public void renderScene(TgcMesh mesh, String technique)
+        public void renderScene(Dibujable dibujable, String technique)
         {
-            mesh.Effect = effect;
-            mesh.Technique = technique;
-            mesh.render();
+            ((TgcMesh)dibujable.objeto).Effect = effect;
+            ((TgcMesh)dibujable.objeto).Technique = technique;
+            dibujable.render();
         }
 
-        public void render(TgcMesh nave ,List<TgcMesh> meshes, float elapsedTime)
+        public void render(Dibujable nave, List<Dibujable> meshes)
         {
-            time += elapsedTime;
             Device device = GuiController.Instance.D3dDevice;
 
             if (!motionBlurActivado)
