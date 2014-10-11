@@ -284,9 +284,9 @@ namespace AlumnoEjemplos.TheGRID
         #endregion
 
         #region Updating
-        public void render(float elapsedTime)
+        public void render()
         {
-            ((IRenderObject)objeto).render();
+            ((TgcMesh)objeto).render();
             if (colision != null) colision.render();
         }
         public void dispose()

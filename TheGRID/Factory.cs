@@ -118,8 +118,8 @@ namespace AlumnoEjemplos.TheGRID
             asteroide.Vida = formato.vidaInicial();
             asteroide.manager = manager;
             asteroide.SetPropiedades(false, true, false);
-           
-            EjemploAlumno.addMesh(mesh_asteroide);
+
+            EjemploAlumno.addMesh(asteroide);
             
             return asteroide;
         }
@@ -148,7 +148,7 @@ namespace AlumnoEjemplos.TheGRID
             laser.setObject(mesh_laser, 2000, 100, new Vector3(0.09F, 0.09F, 0.13F));
             laser.desactivar();
             asignarOBB_Laser(laser, new Vector3(0.1F, 0.1F, 0.15F));
-            EjemploAlumno.addMesh(mesh_laser);
+            EjemploAlumno.addMesh(laser);
             return laser;
         }
         public static Dibujable resetearLaser(Dibujable laser)   //Resetea el dibujable y le agrega ademas la OBB.

@@ -53,7 +53,7 @@ namespace AlumnoEjemplos.TheGRID
             sol.ubicarEnUnaPosicion(new Vector3(0,0,9000));
             sol.activar();
             
-            EjemploAlumno.workspace().meshCollection.Add((TgcMesh)sol.objeto);
+            EjemploAlumno.workspace().dibujableCollection.Add(sol);
             estrellas.Add(sol);
 
             //Cargamos la lista de texturas
@@ -111,7 +111,7 @@ namespace AlumnoEjemplos.TheGRID
                 //Llevamos a la estrella a su posicion final
                 estrella.ubicarEnUnaPosicion(posicionFinal);
                 //Añadimos la estrella a las listas
-                EjemploAlumno.workspace().meshCollection.Add((TgcMesh)estrella.objeto);
+                EjemploAlumno.workspace().dibujableCollection.Add(estrella);
                 estrellas.Add(estrella);
             }
             #endregion
