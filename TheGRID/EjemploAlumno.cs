@@ -52,7 +52,7 @@ namespace AlumnoEjemplos.TheGRID
 
         //lista de meshes para implementar el motion blur
         public List<Dibujable> dibujableCollection = new List<Dibujable>();
-
+        public List<IRenderObject> objectosNoMeshesCollection = new List<IRenderObject>();
         //Modificador de la camara del proyecto
         public CambioCamara camara;
         TgcArrow arrow;
@@ -72,6 +72,10 @@ namespace AlumnoEjemplos.TheGRID
         public static EjemploAlumno workspace() { return singleton; }
         public static void addMesh(Dibujable unDibujable){
             singleton.dibujableCollection.Add(unDibujable);
+        }
+        public static void addRenderizable(IRenderObject unObjeto)
+        {
+            singleton.objectosNoMeshesCollection.Add(unObjeto);
         }
         public TgcFrustum getCurrentFrustrum() { return currentFrustrum; }
         private void crearSkyBox()
@@ -146,6 +150,7 @@ namespace AlumnoEjemplos.TheGRID
             arrow = new TgcArrow();
             arrow.BodyColor = Color.FromArgb(230, Color.Cyan);
             arrow.HeadColor = Color.FromArgb(230, Color.Yellow);
+            this.objectosNoMeshesCollection.Add(arrow);
 
             #region PANEL DERECHO
 
@@ -263,12 +268,13 @@ namespace AlumnoEjemplos.TheGRID
             arrow.Thickness = 0.5f;
             arrow.HeadSize = new Vector2(2,2);
             arrow.updateValues();
+            
             //arrow.render();
             //skySphere.render();
             //suelo.render();
             #endregion
 
-            superRender.render(nave, dibujableCollection); //Redirige todo lo que renderiza dentro del "shader"
+            superRender.render(nave, dibujableCollection, objectosNoMeshesCollection); //Redirige todo lo que renderiza dentro del "shader"
 
             #region Refrescar panel lateral
             string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];

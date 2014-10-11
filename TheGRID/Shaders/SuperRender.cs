@@ -102,27 +102,32 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             ((TgcMesh)dibujable.objeto).Technique = technique;
             dibujable.render();
         }
+        public void renderScene(List<IRenderObject> elementosRenderizables) 
+        {
+            foreach (IRenderObject elemento in elementosRenderizables)
+            {
+                elemento.render();
+            }
+        }
 
-        public void render(Dibujable nave, List<Dibujable> meshes)
+        private void defaultRender(Dibujable nave, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables)
         {
             Device device = GuiController.Instance.D3dDevice;
+            effect.Technique = "DefaultTechnique";
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+            device.BeginScene();
+            renderScene(meshes, "DefaultTechnique");
+            renderScene(elementosRenderizables);
+            if (!EjemploAlumno.workspace().camara.soyFPS())
+                renderScene(nave, "DefaultTechnique");
+            device.EndScene();
+        }
 
-            if (!motionBlurActivado)
-            {
-                // dibujar sin motion blur
-                effect.Technique = "DefaultTechnique";
-                device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
-                device.BeginScene();
-                renderScene(meshes, "DefaultTechnique");
-                if (!EjemploAlumno.workspace().camara.soyFPS())
-                    renderScene(nave, "DefaultTechnique");
-                device.EndScene();
-                GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
-                return;
-            }
-
+        private void motionBlur(Dibujable nave, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables)
+        {
+            Device device = GuiController.Instance.D3dDevice;
             float velActual = EjemploAlumno.workspace().velocidadBlur;
-            float pixel_blur_variable = 0.3f * ((velActual - 200) / (300000 - 200));    //Calcula el porcentual de aplicacion sobre el blur.
+            float pixel_blur_variable = 0.2f * ((velActual - 200) / (300000 - 200));    //Calcula el porcentual de aplicacion sobre el blur.
             effect.SetValue("PixelBlurConst", pixel_blur_variable); //Despues veo como hacerlo mas global
 
             // guardo el Render target anterior y seteo la textura como render target
@@ -153,6 +158,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
             renderScene(meshes, "DefaultTechnique");
+            renderScene(elementosRenderizables);
             if (!EjemploAlumno.workspace().camara.soyFPS())
                 renderScene(nave, "DefaultTechnique");
             device.EndScene();
@@ -181,6 +187,19 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             Texture aux = g_pVel2;
             g_pVel2 = g_pVel1;
             g_pVel1 = aux;
+        }
+
+        public void render(Dibujable nave, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables)
+        {
+            if (!motionBlurActivado)
+            {
+                // dibujar sin motion blur
+                defaultRender(nave, meshes, elementosRenderizables);
+                GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
+                return;
+            }
+            motionBlur(nave, meshes, elementosRenderizables);
+            GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
         }
 
         public void close()

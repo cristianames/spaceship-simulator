@@ -21,9 +21,7 @@ namespace AlumnoEjemplos.TheGRID
             horizonteVision.Scale = new Vector3(86, 86, 86);
             horizonteVision.Enabled = false;
             bordeSky = new TgcBoundingSphere(new Vector3(0, 0, 0), 500);
-            Dibujable dibujable_skySphere = new Dibujable();
-            dibujable_skySphere.setObject(horizonteVision, 0, 0, new Vector3(1,1,1));
-            EjemploAlumno.addMesh(dibujable_skySphere);
+            EjemploAlumno.addRenderizable(horizonteVision);
         }
 
         internal void render(){
