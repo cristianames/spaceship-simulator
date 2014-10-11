@@ -91,17 +91,30 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         {
             foreach (Dibujable dibujable in dibujables)
             {
-                ((TgcMesh)dibujable.objeto).Effect = effect;
-                ((TgcMesh)dibujable.objeto).Technique = technique;
-                dibujable.render();
+                renderScene(dibujable, technique);
             }
         }
         public void renderScene(Dibujable dibujable, String technique)
         {
             ((TgcMesh)dibujable.objeto).Effect = effect;
             ((TgcMesh)dibujable.objeto).Technique = technique;
+            if (dibujable.soyAsteroide())
+            {
+               if(!fueraFrustrum(dibujable))
+                   dibujable.render();
+               return;
+            }
             dibujable.render();
         }
+        public bool fueraFrustrum(Dibujable dibujable)
+        {
+            //Chequea si esta dentro del frustrum
+            TgcFrustum frustrum = EjemploAlumno.workspace().getCurrentFrustrum();
+            if (TgcCollisionUtils.classifyFrustumSphere(frustrum, (TgcBoundingSphere)dibujable.getColision().getBoundingBox()) != TgcCollisionUtils.FrustumResult.OUTSIDE)
+                return false;
+            return true;
+        }
+
         public void renderScene(List<IRenderObject> elementosRenderizables) 
         {
             foreach (IRenderObject elemento in elementosRenderizables)

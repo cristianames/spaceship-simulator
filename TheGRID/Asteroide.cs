@@ -17,6 +17,8 @@ namespace AlumnoEjemplos.TheGRID
         private float vida; 
         public float Vida { set { vida = value; } }
 
+        public override bool soyAsteroide() { return true; }
+
         public override void teChoque(Dibujable colisionador, float moduloVelocidad)
         {
             //Verificacion de mierda por culpa del diseño de mieeeeeerda
