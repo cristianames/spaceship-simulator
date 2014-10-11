@@ -123,8 +123,7 @@ namespace AlumnoEjemplos.TheGRID
             logger.log("Paso 4: Para activar el Motion Blur debe ir a la maxima velocidad y luego pulsar una vez LeftShift. La desactivacion es de la misma forma. Por ultimo pruebe disparar presionando SpaceBar. -- Disfrute el ejemplo.");
 
 
-            currentFrustrum = new TgcFrustum();
-            crearSkyBox();
+            currentFrustrum = new TgcFrustum();           
 
 
             superRender = new SuperRender();
@@ -142,10 +141,12 @@ namespace AlumnoEjemplos.TheGRID
             objetoPrincipal = nave;
             camara = new CambioCamara(nave);
             
+            /*
             //Flecha direccion objetivo
             arrow = new TgcArrow();
             arrow.BodyColor = Color.FromArgb(230, Color.Cyan);
             arrow.HeadColor = Color.FromArgb(230, Color.Yellow);
+            */
 
             #region PANEL DERECHO
 
@@ -253,6 +254,7 @@ namespace AlumnoEjemplos.TheGRID
             camara.cambiarPosicionCamara();
             currentFrustrum.updateMesh(GuiController.Instance.CurrentCamera.getPosition(),GuiController.Instance.CurrentCamera.getLookAt());
             
+            /*
             //Cargar valores de la flecha
             Vector3 navePos = nave.getPosicion();
             Vector3 naveDir = Vector3.Subtract(new Vector3(0, 0, 10000), nave.getDireccion());
@@ -263,6 +265,9 @@ namespace AlumnoEjemplos.TheGRID
             arrow.Thickness = 0.5f;
             arrow.HeadSize = new Vector2(2,2);
             arrow.updateValues();
+            */
+            
+            skySphere.render();     //Solo actualiza pos. Tiene deshabiltiado los render propiamente dicho.
             //arrow.render();
             //skySphere.render();
             //suelo.render();

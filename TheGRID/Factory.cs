@@ -23,6 +23,7 @@ namespace AlumnoEjemplos.TheGRID
         public static int numeroRandom()
         {
             int resto;
+            long restoL;
             Random random = new Random();
             random = new Random(random.Next());
             Math.DivRem(random.Next(), DateTime.Now.Millisecond + 1, out resto);
@@ -30,6 +31,10 @@ namespace AlumnoEjemplos.TheGRID
             Math.DivRem(random.Next(), DateTime.Now.Second + 1, out resto);
             random = new Random(resto);
             Math.DivRem(random.Next(), DateTime.Now.Hour + 1, out resto);
+            random = new Random(resto);
+            Math.DivRem(DateTime.Now.Ticks, DateTime.Now.Millisecond + 2, out restoL);
+            Math.DivRem(restoL, 65536, out restoL);
+            resto = (int)restoL;
             random = new Random(resto);
             return random.Next();
         }
