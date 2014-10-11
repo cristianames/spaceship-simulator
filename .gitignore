@@ -1,0 +1,6 @@
+*.dll
+*.pdb
+Clonaciones/
+obj/
+*.exe
+*.pdb

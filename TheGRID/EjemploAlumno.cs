@@ -98,7 +98,7 @@ namespace AlumnoEjemplos.TheGRID
             skyBox.updateValues();
              */
         }
-        private static string tg_Folder = GuiController.Instance.AlumnoEjemplosDir + "\\TheGrid\\ArchivosMedia\\";
+        private static string tg_Folder = GuiController.Instance.AlumnoEjemplosMediaDir + "\\TheGrid\\";
         public static string TG_Folder { get { return tg_Folder; } }
         #endregion
 
