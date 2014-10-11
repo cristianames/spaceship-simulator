@@ -288,7 +288,12 @@ namespace AlumnoEjemplos.TheGRID
         public void render()
         {
             ((IRenderObject)objeto).render();
-            if (colision != null) colision.render();
+            if (colision != null)
+            {
+                string opcionElegida = (string)GuiController.Instance.Modifiers["Ver BoundingBox"];
+                if (String.Compare(opcionElegida, "Activado") == 0)
+                    colision.render();
+            }
         }
         public void dispose()
         {
