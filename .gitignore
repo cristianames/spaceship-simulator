@@ -4,3 +4,5 @@ Clonaciones/
 obj/
 *.exe
 *.pdb
+Prueba/
+*.ini

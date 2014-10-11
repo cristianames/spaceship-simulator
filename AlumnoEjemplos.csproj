@@ -87,7 +87,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Clonaciones\Testing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TheGRID\Asteroide.cs" />
     <Compile Include="TheGRID\Camara\CambioCamara.cs" />
