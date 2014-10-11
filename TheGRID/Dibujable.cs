@@ -195,6 +195,7 @@ namespace AlumnoEjemplos.TheGRID
             nuevoEje.mRotor = vectorDireccion.mRotor;
             return nuevoEje;
         }
+        public virtual bool soyAsteroide() { return false; }
         #endregion
 
         #region Rotacion

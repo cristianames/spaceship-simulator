@@ -152,18 +152,11 @@ namespace AlumnoEjemplos.TheGRID
 
         public override void operar(float time)
         {
-            TgcFrustum frustrum = EjemploAlumno.workspace().getCurrentFrustrum();
             foreach (var item in controlados)
             {
                 trasladar(item, time);
                 rotar(item, time);
                 ((TgcBoundingSphere)item.getColision().getBoundingBox()).setCenter(item.getPosicion());
-                //Chequea si esta dentro del frustrum
-                /*TgcCollisionUtils.FrustumResult resultado = 
-                    TgcCollisionUtils.classifyFrustumSphere(frustrum, (TgcBoundingSphere)item.getColision().getBoundingBox());
-                if (resultado != TgcCollisionUtils.FrustumResult.OUTSIDE) 
-                    item.render(time);*/
-                //No borrar, lo dejo por aca para despues usarlo en el Shader(09/10/14)
             }
 
             //reciclajeAsteroidesFueraDelSky();
