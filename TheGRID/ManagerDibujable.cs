@@ -137,9 +137,10 @@ namespace AlumnoEjemplos.TheGRID
 
         public ManagerAsteroide(int limite) : base(limite) 
         {
+            Factory fabrica = new Factory();
             for(int i=0;i< limite;i++)
             {
-                Asteroide asteroide = Factory.crearAsteroide(TamanioAsteroide.CHICO, new Vector3(0, 0, 0), this);
+                Asteroide asteroide = fabrica.crearAsteroide(TamanioAsteroide.CHICO, new Vector3(0, 0, 0), this);
                 asteroide.desactivar();
                 inactivos.Add(asteroide);
             }

@@ -22,7 +22,7 @@ namespace AlumnoEjemplos.TheGRID
         enum TipoModo { THE_OPENING, IMPULSE_DRIVE, WELCOME_HOME, VACUUM };
         private TipoModo escenarioActual = TipoModo.VACUUM;
         //Objetos
-        Dibujable sol;
+        public Dibujable sol;
         private List<Dibujable> estrellas;
         private List<TgcTexture> texturasEstrellas;
 

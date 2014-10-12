@@ -104,6 +104,7 @@
     <Compile Include="TheGRID\Factory.cs" />
     <Compile Include="TheGRID\Fisica\Fisica.cs" />
     <Compile Include="TheGRID\Helpers\Dupla.cs" />
+    <Compile Include="TheGRID\Helpers\TgcMeshBumpMapping.cs" />
     <Compile Include="TheGRID\ManagerDibujable.cs" />
     <Compile Include="TheGRID\Nave.cs" />
     <Compile Include="TheGRID\Shaders\SuperRender.cs" />
