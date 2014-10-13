@@ -93,14 +93,14 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             antMatView = d3dDevice.Transform.View;
         }
 
+        #region Renderizadores Con tecnica Seteable
         public void renderScene(List<Dibujable> dibujables, String technique)
         {
             foreach (Dibujable dibujable in dibujables)
             {
                 renderScene(dibujable, technique);
             }
-        }
-        
+        }       
         public void renderScene(Dibujable dibujable, String technique)
         {
             if (dibujable.soyAsteroide() && fueraFrustrum(dibujable)) return;
@@ -108,8 +108,17 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             ((TgcMesh)dibujable.objeto).Technique = technique;
             dibujable.render();
         }
+        public void renderScene(List<IRenderObject> elementosRenderizables)
+        {
+            foreach (IRenderObject elemento in elementosRenderizables)
+            {
+                elemento.render();
+            }
+        }
+        #endregion
 
-        private void renderNave_BumpEffect(Nave nave)
+        #region Renderizadores Con Bump Mapping
+        private void renderScene_BumpMapping(Nave nave)
         {
             lightPosition = EjemploAlumno.workspace().Escenario.sol.getPosicion();
             eyePosition = EjemploAlumno.workspace().camara.PosicionDeCamara;
@@ -136,6 +145,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 dibujable.render();
             }
         }
+        #endregion
 
         public bool fueraFrustrum(Dibujable dibujable)
         {
@@ -146,13 +156,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             return true;
         }
 
-        public void renderScene(List<IRenderObject> elementosRenderizables) 
-        {
-            foreach (IRenderObject elemento in elementosRenderizables)
-            {
-                elemento.render();
-            }
-        }
+        #region Efectos
 
         private void defaultRender(Nave nave, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables)
         {
@@ -165,7 +169,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             renderScene(elementosRenderizables);
             if (!EjemploAlumno.workspace().camara.soyFPS())
                 //renderScene(nave, "DefaultTechnique");
-                renderNave_BumpEffect(nave);
+                renderScene_BumpMapping(nave);
             device.EndScene();
         }
 
@@ -174,7 +178,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             Device device = GuiController.Instance.D3dDevice;
             float velActual = EjemploAlumno.workspace().velocidadBlur;
             float pixel_blur_variable = 0.2f * ((velActual - 200) / (300000 - 200));    //Calcula el porcentual de aplicacion sobre el blur.
-            effect.SetValue("PixelBlurConst", pixel_blur_variable); //Despues veo como hacerlo mas global
+            effect.SetValue("PixelBlurConst", pixel_blur_variable);
 
             // guardo el Render target anterior y seteo la textura como render target
             Surface pOldRT = device.GetRenderTarget(0);
@@ -203,10 +207,12 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.SetRenderTarget(0, pSurf);
             device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
-            renderScene(meshes, "DefaultTechnique");
+            //renderScene(meshes, "DefaultTechnique");
+            renderScene_BumpMapping(meshes);
             renderScene(elementosRenderizables);
             if (!EjemploAlumno.workspace().camara.soyFPS())
-                renderScene(nave, "DefaultTechnique");
+                //renderScene(nave, "DefaultTechnique");
+                renderScene_BumpMapping(nave);
             device.EndScene();
             pSurf.Dispose();
 
@@ -235,28 +241,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             g_pVel1 = aux;
         }
 
-        public void render(Nave nave, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables)
-        {
-            if (!motionBlurActivado)
-            {
-                // dibujar sin motion blur
-                defaultRender(nave, meshes, elementosRenderizables);
-                GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
-                return;
-            }
-            motionBlur(nave, meshes, elementosRenderizables);
-            GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
-        }
-
-        public void close()
-        {
-            g_pRenderTarget.Dispose();
-            g_pDepthStencil.Dispose();
-            g_pVBV3D.Dispose();
-            g_pVel1.Dispose();
-            g_pVel2.Dispose();
-        }
-
+        #region BumpEffect
         private void cargarBumpEffect()
         {
             bumpEffect_asteroides = TgcShaders.loadEffect(ShaderDirectory + "BumpMapping.fx");
@@ -299,5 +284,32 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             bumpEffect_nave.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(lightPosition));
             bumpEffect_nave.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(eyePosition));
         }
+        #endregion
+
+        #endregion
+
+        public void render(Nave nave, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables)
+        {
+            if (!motionBlurActivado)
+            {
+                // dibujar sin motion blur
+                defaultRender(nave, meshes, elementosRenderizables);
+                GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
+                return;
+            }
+            motionBlur(nave, meshes, elementosRenderizables);
+            GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
+        }
+
+        public void close()
+        {
+            g_pRenderTarget.Dispose();
+            g_pDepthStencil.Dispose();
+            g_pVBV3D.Dispose();
+            g_pVel1.Dispose();
+            g_pVel2.Dispose();
+        }
+
+        
     }
 }
