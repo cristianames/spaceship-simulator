@@ -142,8 +142,15 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                     ((TgcMesh)dibujable.objeto).Effect = bumpEffect_asteroides;
                     ((TgcMesh)dibujable.objeto).Technique = "BumpMappingTechnique";
                 }
+                else resetearRenderDefault(dibujable);
                 dibujable.render();
             }
+        }
+
+        private void resetearRenderDefault(Dibujable dibujable)
+        {
+            ((TgcMesh)dibujable.objeto).Effect = GuiController.Instance.Shaders.TgcMeshShader;
+            ((TgcMesh)dibujable.objeto).Technique = GuiController.Instance.Shaders.getTgcMeshTechnique(((TgcMesh)dibujable.objeto).RenderType);
         }
         #endregion
 
@@ -255,7 +262,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             bumpEffect_asteroides.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
             bumpEffect_asteroides.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
             bumpEffect_asteroides.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.White));
-            bumpEffect_asteroides.SetValue("materialSpecularColor", ColorValue.FromColor(Color.White));
+            bumpEffect_asteroides.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
             bumpEffect_asteroides.SetValue("materialSpecularExp", 9f);
 
             bumpEffect_nave = TgcShaders.loadEffect(ShaderDirectory + "BumpMapping.fx");
