@@ -14,6 +14,8 @@ namespace AlumnoEjemplos.TheGRID.Camara
         enum TipoModo {FPS, TPS, Exterior};
         private TipoModo modo = TipoModo.TPS; 
         private Dibujable objeto_foco;
+        private Vector3 posicionDeCamara;
+        public Vector3 PosicionDeCamara { get { return posicionDeCamara; } }
 
         public Boolean soyFPS(){ if(modo == TipoModo.FPS) return true; else return false;}
         public CambioCamara(Dibujable dibujable)
@@ -37,7 +39,7 @@ namespace AlumnoEjemplos.TheGRID.Camara
         }
         private void moverThird()
         {
-            Vector3 posicionDeCamara = objeto_foco.getPosicion();
+            posicionDeCamara = objeto_foco.getPosicion();
             Vector3 temp = objeto_foco.getDireccion();
             temp.Multiply(100);
             posicionDeCamara -= temp;
@@ -46,7 +48,7 @@ namespace AlumnoEjemplos.TheGRID.Camara
         }
         private void moverFirst()
         {
-            Vector3 posicionDeCamara = objeto_foco.getPosicion();
+            posicionDeCamara = objeto_foco.getPosicion();
             Vector3 temp = objeto_foco.getDireccion_Y();
             temp.Multiply(5);
             posicionDeCamara += temp;

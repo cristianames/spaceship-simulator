@@ -8,6 +8,7 @@ using TgcViewer.Utils.TgcSceneLoader;
 using AlumnoEjemplos.TheGRID.Explosiones;
 using AlumnoEjemplos.TheGRID.Colisiones;
 using Microsoft.DirectX.Direct3D;
+using AlumnoEjemplos.TheGRID.Helpers;
 
 namespace AlumnoEjemplos.TheGRID
 {
@@ -15,7 +16,10 @@ namespace AlumnoEjemplos.TheGRID
     {
         public Nave() : base() 
         {
-            TgcMesh meshNave = Factory.cargarMesh("Nave\\naveTrooper-TgcScene.xml");
+            TgcTexture normalMap = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Nave\\Textures\\Bump.jpg");
+            TgcTexture[] normalMapArray = new TgcTexture[] { normalMap };
+            TgcMesh meshNave_base =  Factory.cargarMesh("Nave\\naveTrooper-TgcScene.xml");
+            TgcMeshBumpMapping meshNave = TgcMeshBumpMapping.fromTgcMesh(meshNave_base, normalMapArray);
             meshNave.Transform *= Matrix.RotationY(Geometry.DegreeToRadian(180));
             setObject(meshNave, 100, 50, new Vector3(0.5f, 0.5f, 0.5f));
             setFisica(50, 100, 200, 10000);

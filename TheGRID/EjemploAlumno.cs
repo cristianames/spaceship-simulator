@@ -126,10 +126,7 @@ namespace AlumnoEjemplos.TheGRID
             logger.log("Paso 3: Para avanzar con cuidado, acelere o frene hasta la velocidad deseada, pulse una vez LeftCtrl y luego acelere. Esto activa el modo crucero. Para desactivarlo basta con frenar un poco o volver a pulsar LeftCtrl.");
             logger.log("Paso 4: Para activar el Motion Blur debe ir a la maxima velocidad y luego pulsar una vez LeftShift. La desactivacion es de la misma forma. Por ultimo pruebe disparar presionando SpaceBar. -- Disfrute el ejemplo.");
 
-
             currentFrustrum = new TgcFrustum();           
-
-
             superRender = new SuperRender();
 
             //Crear la nave

@@ -1,17 +1,17 @@
-﻿using System;
+﻿using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using TgcViewer.Example;
 using TgcViewer;
-using Microsoft.DirectX.Direct3D;
-using System.Drawing;
-using Microsoft.DirectX;
-using TgcViewer.Utils.Modifiers;
-using TgcViewer.Utils.Terrain;
-using TgcViewer.Utils.Shaders;
-using TgcViewer.Utils.Input;
+using TgcViewer.Example;
 using TgcViewer.Utils;
+using TgcViewer.Utils.Input;
+using TgcViewer.Utils.Modifiers;
+using TgcViewer.Utils.Shaders;
+using TgcViewer.Utils.Terrain;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 
@@ -21,23 +21,29 @@ namespace AlumnoEjemplos.TheGRID.Shaders
     {
         private string ShaderDirectory;
         private Effect effect;
+        private Effect bumpEffect_asteroides;
+        private Effect bumpEffect_nave;
         public bool motionBlurActivado = false;
         private VertexBuffer g_pVBV3D;
         private Surface g_pDepthStencil;     // Depth-stencil buffer 
         private Texture g_pRenderTarget;
         private Texture g_pVel1, g_pVel2;   // velocidad
         private Matrix antMatView;
+        
+        //Bump
+        private Vector3 lightPosition;
+        private Vector3 eyePosition;
 
         public SuperRender()
         {
             Device d3dDevice = GuiController.Instance.D3dDevice;
-
             ShaderDirectory = EjemploAlumno.TG_Folder + "Shaders\\";
 
             //Cargar Shader personalizado
             string compilationErrors;
             effect = Effect.FromFile(GuiController.Instance.D3dDevice, ShaderDirectory + "MotionBlur.fx",
                 null, null, ShaderFlags.PreferFlowControl, null, out compilationErrors);
+            cargarBumpEffect();
             if (effect == null)
             {
                 throw new Exception("Error al cargar shader. Errores: " + compilationErrors);
@@ -94,18 +100,43 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 renderScene(dibujable, technique);
             }
         }
+        
         public void renderScene(Dibujable dibujable, String technique)
         {
+            if (dibujable.soyAsteroide() && fueraFrustrum(dibujable)) return;
             ((TgcMesh)dibujable.objeto).Effect = effect;
             ((TgcMesh)dibujable.objeto).Technique = technique;
-            if (dibujable.soyAsteroide())
-            {
-               if(!fueraFrustrum(dibujable))
-                   dibujable.render();
-               return;
-            }
             dibujable.render();
         }
+
+        private void renderNave_BumpEffect(Nave nave)
+        {
+            lightPosition = EjemploAlumno.workspace().Escenario.sol.getPosicion();
+            eyePosition = EjemploAlumno.workspace().camara.PosicionDeCamara;
+            actualizarBumpEffect_Nave();
+            ((TgcMesh)nave.objeto).Effect = bumpEffect_nave;
+            ((TgcMesh)nave.objeto).Technique = "BumpMappingTechnique";
+            nave.render();
+        }
+
+        private void renderScene_BumpMapping(List<Dibujable> meshes)
+        {
+            lightPosition = EjemploAlumno.workspace().Escenario.sol.getPosicion();
+            lightPosition += new Vector3(0,0,-18000);
+            eyePosition = EjemploAlumno.workspace().camara.PosicionDeCamara;
+            actualizarBumpEffect_asteroides();
+            foreach (Dibujable dibujable in meshes)
+            {
+                if (dibujable.soyAsteroide())
+                {
+                    if (fueraFrustrum(dibujable)) continue;
+                    ((TgcMesh)dibujable.objeto).Effect = bumpEffect_asteroides;
+                    ((TgcMesh)dibujable.objeto).Technique = "BumpMappingTechnique";
+                }
+                dibujable.render();
+            }
+        }
+
         public bool fueraFrustrum(Dibujable dibujable)
         {
             //Chequea si esta dentro del frustrum
@@ -123,20 +154,22 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             }
         }
 
-        private void defaultRender(Dibujable nave, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables)
+        private void defaultRender(Nave nave, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables)
         {
             Device device = GuiController.Instance.D3dDevice;
             effect.Technique = "DefaultTechnique";
             device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
-            renderScene(meshes, "DefaultTechnique");
+            //renderScene(meshes, "DefaultTechnique");
+            renderScene_BumpMapping(meshes);
             renderScene(elementosRenderizables);
             if (!EjemploAlumno.workspace().camara.soyFPS())
-                renderScene(nave, "DefaultTechnique");
+                //renderScene(nave, "DefaultTechnique");
+                renderNave_BumpEffect(nave);
             device.EndScene();
         }
 
-        private void motionBlur(Dibujable nave, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables)
+        private void motionBlur(Nave nave, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables)
         {
             Device device = GuiController.Instance.D3dDevice;
             float velActual = EjemploAlumno.workspace().velocidadBlur;
@@ -202,7 +235,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             g_pVel1 = aux;
         }
 
-        public void render(Dibujable nave, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables)
+        public void render(Nave nave, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables)
         {
             if (!motionBlurActivado)
             {
@@ -222,6 +255,49 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             g_pVBV3D.Dispose();
             g_pVel1.Dispose();
             g_pVel2.Dispose();
+        }
+
+        private void cargarBumpEffect()
+        {
+            bumpEffect_asteroides = TgcShaders.loadEffect(ShaderDirectory + "BumpMapping.fx");
+            bumpEffect_asteroides.Technique = "BumpMappingTechnique";
+            bumpEffect_asteroides.SetValue("lightColor", ColorValue.FromColor(Color.Orange));
+            bumpEffect_asteroides.SetValue("lightIntensity", 6000f);
+            bumpEffect_asteroides.SetValue("lightAttenuation", 0.3f);
+            bumpEffect_asteroides.SetValue("bumpiness", 1f);
+
+            //Material
+            bumpEffect_asteroides.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
+            bumpEffect_asteroides.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
+            bumpEffect_asteroides.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.White));
+            bumpEffect_asteroides.SetValue("materialSpecularColor", ColorValue.FromColor(Color.White));
+            bumpEffect_asteroides.SetValue("materialSpecularExp", 9f);
+
+            bumpEffect_nave = TgcShaders.loadEffect(ShaderDirectory + "BumpMapping.fx");
+            bumpEffect_nave.Technique = "BumpMappingTechnique";
+            bumpEffect_nave.SetValue("lightColor", ColorValue.FromColor(Color.White));
+            bumpEffect_nave.SetValue("lightIntensity", 2000f);
+            bumpEffect_nave.SetValue("lightAttenuation", 0.3f);
+            bumpEffect_nave.SetValue("bumpiness", 1f);
+
+            //Material
+            bumpEffect_nave.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
+            bumpEffect_nave.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
+            bumpEffect_nave.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.White));
+            bumpEffect_nave.SetValue("materialSpecularColor", ColorValue.FromColor(Color.White));
+            bumpEffect_nave.SetValue("materialSpecularExp", 9f);
+        }
+
+        private void actualizarBumpEffect_asteroides()
+        {
+            bumpEffect_asteroides.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(lightPosition));
+            bumpEffect_asteroides.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(eyePosition));
+        }
+
+        private void actualizarBumpEffect_Nave()
+        {
+            bumpEffect_nave.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(lightPosition));
+            bumpEffect_nave.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(eyePosition));
         }
     }
 }
