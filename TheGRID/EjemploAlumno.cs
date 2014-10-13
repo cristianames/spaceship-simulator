@@ -60,10 +60,6 @@ namespace AlumnoEjemplos.TheGRID
         public TgcFrustum CurrentFrustrum { get { return currentFrustrum; } }
         private SkySphere skySphere;
         public SkySphere SkySphere { get { return skySphere; } }
-        //TgcBox suelo;
-        //TgcSkyBox skyBox;
-        //ManagerLaser laserManager;
-        //private ManagerAsteroide asteroidManager;
         SuperRender superRender;
         internal SuperRender Shader { get { return superRender; } }
         #endregion
@@ -78,30 +74,6 @@ namespace AlumnoEjemplos.TheGRID
             singleton.objectosNoMeshesCollection.Add(unObjeto);
         }
         public TgcFrustum getCurrentFrustrum() { return currentFrustrum; }
-        private void crearSkyBox()
-        {
-            /*
-            //Crear SkyBox 
-            //skyBox = new TgcSkyBox();
-            skyBox.Center = new Vector3(0, 0, 0);
-            skyBox.Size = new Vector3(15000, 15000, 15000);
-            //Crear suelo
-            TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, alumnoMediaFolder + "TheGrid\\SkyBox\\adelante.jpg");
-            suelo = TgcBox.fromSize(new Vector3(0, 0, 9500), new Vector3(1000, 1000, 0), pisoTexture);
-            //Configurar color
-            //skyBox.Color = Color.OrangeRed;
-            //Configurar las texturas para cada una de las 6 caras
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, alumnoMediaFolder + "TheGrid\\SkyBox\\arriba.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, alumnoMediaFolder + "TheGrid\\SkyBox\\abajo.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, alumnoMediaFolder + "TheGrid\\SkyBox\\izquierda.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, alumnoMediaFolder + "TheGrid\\SkyBox\\derecha.jpg");
-            //Hay veces es necesario invertir las texturas Front y Back si se pasa de un sistema RightHanded a uno LeftHanded
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, alumnoMediaFolder + "TheGrid\\SkyBox\\adelante.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, alumnoMediaFolder + "TheGrid\\SkyBox\\atras.jpg");
-            //Actualizar todos los valores para crear el SkyBox
-            skyBox.updateValues();
-             */
-        }
         private static string tg_Folder = GuiController.Instance.AlumnoEjemplosMediaDir + "\\TheGrid\\";
         public static string TG_Folder { get { return tg_Folder; } }
         #endregion
@@ -136,7 +108,6 @@ namespace AlumnoEjemplos.TheGRID
 
             //Creamos el escenario.
             scheme = new Escenario(nave);
-            //scheme.loadChapter2();
 
             //Cargamos la nave como objeto principal.
             objetoPrincipal = nave;
@@ -241,8 +212,7 @@ namespace AlumnoEjemplos.TheGRID
                 timeLaser += elapsedTime;
                 if (timeLaser > betweenTime)
                 {
-                    scheme.dispararLaser();
-                    //laserManager.fabricar(nave.getEjes(),nave.getPosicion());                  
+                    scheme.dispararLaser();                 
                     timeLaser = 0;
                 }
             }
@@ -270,9 +240,6 @@ namespace AlumnoEjemplos.TheGRID
             arrow.updateValues();
             
             skySphere.render();     //Solo actualiza pos. Tiene deshabiltiado los render propiamente dicho.
-            //arrow.render();
-            //skySphere.render();
-            //suelo.render();
             #endregion
 
             superRender.render(nave, dibujableCollection, objectosNoMeshesCollection); //Redirige todo lo que renderiza dentro del "shader"
@@ -288,6 +255,7 @@ namespace AlumnoEjemplos.TheGRID
             if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.desplazamientoReal = true; else objetoPrincipal.desplazamientoReal = false;
             //opcionElegida = (string)GuiController.Instance.Modifiers["Rotacion Avanzada"];
             //if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.rotacionReal = true; else objetoPrincipal.rotacionReal = false;   De momento lo saco.
+            
             //Refrescar User Vars
             if (superRender.motionBlurActivado)
             {
@@ -316,7 +284,6 @@ namespace AlumnoEjemplos.TheGRID
             nave.dispose();
             arrow.dispose();
             skySphere.dispose();
-            //suelo.dispose();
         }
     }
 }
