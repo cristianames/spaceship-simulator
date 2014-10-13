@@ -41,9 +41,9 @@ namespace AlumnoEjemplos.TheGRID.Camara
         {
             posicionDeCamara = objeto_foco.getPosicion();
             Vector3 temp = objeto_foco.getDireccion();
-            temp.Multiply(100);
+            temp.Multiply(150);
             posicionDeCamara -= temp;
-            posicionDeCamara += new Vector3(0, 20, 0);
+            posicionDeCamara += new Vector3(0, 40, 0);
             GuiController.Instance.setCamera(posicionDeCamara, objeto_foco.getPosicion() + temp);
         }
         private void moverFirst()
