@@ -93,6 +93,7 @@ namespace AlumnoEjemplos.TheGRID
         internal Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
         protected IColision colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
         internal Explosion explosion; // Acá va el manejo de un objeto cuando es chocado por otro.
+        public int valor = 0;
         #endregion
 
         #region Instanciador
@@ -300,6 +301,8 @@ namespace AlumnoEjemplos.TheGRID
             try
             {
                 ((IRenderObject)objeto).dispose();
+                if (colision != null)
+                    getColision().getBoundingBox().dispose();
             }
             catch { }
             //fisica.dispose();

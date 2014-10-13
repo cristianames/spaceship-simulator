@@ -123,7 +123,6 @@ namespace AlumnoEjemplos.TheGRID
         public void dispose()
         {
             sol.dispose();
-            dispose();
         }
         //-------------------------------------------------------------------------------------------CHAPTER-1
         public void loadChapter1()

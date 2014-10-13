@@ -25,12 +25,16 @@ namespace AlumnoEjemplos.TheGRID
             dibujable_skySphere.setObject(horizonteVision, 0, 0, new Vector3(1, 1, 1));
             dibujable_skySphere.setColision(new ColisionAsteroide());
             dibujable_skySphere.getColision().setBoundingBox(bordeSky);
+            dibujable_skySphere.valor = 1;
             EjemploAlumno.addMesh(dibujable_skySphere);
         }
 
         internal void render(){
             dibujable_skySphere.ubicarEnUnaPosicion(EjemploAlumno.workspace().ObjetoPrincipal.getPosicion());
         }
-        public void dispose(){ dispose(); } 
+        public void dispose()
+        {
+            dibujable_skySphere.dispose();
+        } 
     }
 }

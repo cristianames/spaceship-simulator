@@ -138,6 +138,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             {
                 if (dibujable.soyAsteroide())
                 {
+                    //GuiController.Instance.Logger.log(dibujable.valor.ToString());
                     if (fueraFrustrum(dibujable)) continue;
                     ((TgcMesh)dibujable.objeto).Effect = bumpEffect_asteroides;
                     ((TgcMesh)dibujable.objeto).Technique = "BumpMappingTechnique";

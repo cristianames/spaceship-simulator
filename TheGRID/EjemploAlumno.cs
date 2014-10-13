@@ -177,7 +177,7 @@ namespace AlumnoEjemplos.TheGRID
             GuiController.Instance.Modifiers.addInterval("Velocidad Manual", opciones2, 0);
             string[] opciones3 = new string[] { "Activado", "Desactivado" };
             GuiController.Instance.Modifiers.addInterval("Desplaz. Avanzado", opciones3, 0);
-            string[] opciones5 = new string[] { "Desactivado", "Activado" };
+            string[] opciones5 = new string[] { "Activado", "Desactivado" };
             GuiController.Instance.Modifiers.addInterval("Ver BoundingBox", opciones5, 0);
             //string[] opciones4 = new string[] { "Activado", "Desactivado" };
             //GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);  De momento lo saco.

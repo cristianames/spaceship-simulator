@@ -61,8 +61,8 @@ namespace AlumnoEjemplos.TheGRID
 
         public void destruirListas()
         {
-            foreach (var item in controlados) item.dispose();
-            foreach (var item in inactivos) item.dispose();
+            foreach (var item in controlados) { item.dispose(); }
+            foreach (var item in inactivos) { item.dispose(); }
         }
 
         public Dibujable activar()
