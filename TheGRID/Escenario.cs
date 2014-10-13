@@ -29,8 +29,8 @@ namespace AlumnoEjemplos.TheGRID
         public Escenario(Dibujable ppal) 
         {
             principal = ppal;
-            asteroidManager = new ManagerAsteroide(180); //Siempre debe ser mucho mayor que la cantidad de asteroides que queremos tener, pero no tanto sino colapsa
-            limite = new TgcBoundingCylinder(principal.getPosicion(), 10000, 100000);
+            asteroidManager = new ManagerAsteroide(2000); //Siempre debe ser mucho mayor que la cantidad de asteroides que queremos tener, pero no tanto sino colapsa
+            limite = new TgcBoundingCylinder(principal.getPosicion(), 1500, 15000);
             crearEstrellas();   
         }
 
@@ -128,7 +128,7 @@ namespace AlumnoEjemplos.TheGRID
         public void loadChapter1()
         {
             disposeOld();
-            asteroidManager.fabricarMapaAsteroides(principal.getPosicion(), 10, 100);
+            asteroidManager.fabricarMapaAsteroides(principal.getPosicion(), 250, 1000);
             escenarioActual = TipoModo.THE_OPENING;
         }
         //-------------------------------------------------------------------------------------------CHAPTER-2

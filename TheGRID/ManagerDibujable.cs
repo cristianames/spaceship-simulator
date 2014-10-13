@@ -221,70 +221,27 @@ namespace AlumnoEjemplos.TheGRID
             format.posicion = pos;
             for(int i=0; i<cuantos;i++)  activarAsteroide(format); 
         }
-        /*public bool dentroLimiteMapaAsteroides(Vector3 posicionRelativa, Vector3 pos_base)
-        {
-            float max_x = 1000 + pos_base.X;
-            float max_y = 1000 + pos_base.Y;
-            float max_z = 1000 + pos_base.Z;
 
-            float pos_x;
-            float pos_y;
-            float pos_z;
-
-            if(posicionRelativa.X > 0)
-            {
-                pos_x = max_x - posicionRelativa  
-            }
-
-            if (pos_x < 0 || pos_y < 0 || pos_z < 0)
-                return false;
-
-            return true;
-        }*/
-
-        public void fabricarMapaAsteroides(Vector3 pos_base, int raizCantidadAsteroides, int distanciaEntreAsteroides)
+        public void fabricarMapaAsteroides(Vector3 pos_base, int cantidadAsteroides, int radioAdmisible)
         {
             foreach (var asteroide in controlados)  //No se realmente si conviene desactivar los que ya estaban activos. //Si, si conviene, no se quien sos, pero voy a encontrarte y voy a matarte. - Tomas(11/10)
             {
                 desactivar(asteroide);
             }
-            /*List<float> valores = new List<float>() { -4, -3, -2, -1, 1, 2, 3, 4 };
+            float max_x =  radioAdmisible + pos_base.X;
+            float max_y =  radioAdmisible + pos_base.Y;
+            float max_z =  radioAdmisible + pos_base.Z;
+            float min_x = -radioAdmisible + pos_base.X;
+            float min_y = -radioAdmisible + pos_base.Y;
+            float min_z = -radioAdmisible + pos_base.Z;
             Formato setearFormato = new Formato();
-            Vector3 posicionRelativa;
-            for (int i = 0; i < raizCantidadAsteroides; i++)
+            Random random = new Random();
+            for (int i = 0; i < cantidadAsteroides; i++)
             {
-
-                posicionRelativa = new Vector3(Factory.elementoRandom(valores), Factory.elementoRandom(valores), Factory.elementoRandom(valores));
-                while(!dentroLimiteMapaAsteroides(posicionRelativa, pos_base))
-                    posicionRelativa = new Vector3(Factory.elementoRandom(valores), Factory.elementoRandom(valores), Factory.elementoRandom(valores));
                 setearFormato.tamanio = TamanioAsteroide.MUYGRANDE;
-                setearFormato.posicion = posicionRelativa;
+                setearFormato.posicion = new Vector3(random.Next((int)min_x, (int)max_x), random.Next((int)min_y, (int)max_y), random.Next((int)min_z, (int)max_z));
                 //Pasaje de asteroides con formato
                 activarAsteroide(setearFormato);
-            }*/
-
-
-            int distancia = raizCantidadAsteroides * distanciaEntreAsteroides; //150 de separacion entre cada asteroides lo usual
-            float pos_x;
-            float pos_y = pos_base.Y;
-            float pos_z = pos_base.Z - (distancia / 2);
-            Formato formatoAsteroide = new Formato();
-
-            for (int i = 0; i < raizCantidadAsteroides; i++)
-            {
-                pos_x = pos_base.X - distancia;
-                for (int j = 0; j < raizCantidadAsteroides; j++)
-                {
-                    pos_x += distanciaEntreAsteroides * j;
-                    //Setear Formato
-                    formatoAsteroide.tamanio = TamanioAsteroide.MUYGRANDE;
-                    formatoAsteroide.posicion = new Vector3(pos_x, pos_y, pos_z);
-
-                    //Pasaje de asteroides con formato
-                    activarAsteroide(formatoAsteroide);
-                    //addNew(Factory.crearAsteroide(TamanioAsteroide.MUYGRANDE, new Vector3(pos_x, pos_y, pos_z),this));
-                }
-                pos_z += distanciaEntreAsteroides * i;
             }
         }
 
