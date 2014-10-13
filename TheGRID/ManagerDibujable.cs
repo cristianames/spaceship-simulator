@@ -160,7 +160,7 @@ namespace AlumnoEjemplos.TheGRID
                 ((TgcBoundingSphere)item.getColision().getBoundingBox()).setCenter(item.getPosicion());
             }
 
-            //reciclajeAsteroidesFueraDelSky();
+            reciclajeAsteroidesFueraDelSky();
         }
 
         private void reciclajeAsteroidesFueraDelSky()
@@ -200,8 +200,8 @@ namespace AlumnoEjemplos.TheGRID
                 controlados.Add(asteroide);
                 
                 List<float> valores = new List<float>() { -4, -3, -2, -1, 1, 2, 3, 4 };
-                Vector3 direccionImpulso = Factory.VectorRandom(-500, 500); // new Vector3(Factory.elementoRandom(valores), Factory.elementoRandom(valores), Factory.elementoRandom(valores));
-                float velocidadImpulso = new Random().Next(1, 3);
+                Vector3 direccionImpulso = Factory.VectorRandom(-200, 200);
+                float velocidadImpulso = new Random().Next(1, 75);
                 asteroide.fisica.impulsar(direccionImpulso, velocidadImpulso, 0.01f);                
                 asteroide.activar();                                   
             }
@@ -225,7 +225,7 @@ namespace AlumnoEjemplos.TheGRID
         public void fabricarMapaAsteroides(Vector3 pos_base, int cantidadAsteroides, int radioAdmisible)
         {
             foreach (var asteroide in controlados)  //No se realmente si conviene desactivar los que ya estaban activos. //Si, si conviene, no se quien sos, pero voy a encontrarte y voy a matarte. - Tomas(11/10)
-            {
+            {                                       //Weon, me dijeron que vos no podes matar ni a una mosca!!  - Dante(?)(13/10) 
                 desactivar(asteroide);
             }
             float max_x =  radioAdmisible + pos_base.X;
@@ -326,14 +326,14 @@ namespace AlumnoEjemplos.TheGRID
     {
         public TamanioAsteroide tamanio;
         public Vector3 posicion;
-        List<int> opciones = new List<int>() { -1, 1, 0 };
+        List<int> opciones = new List<int>() { -1, 1 };
 
         public void actualizarAsteroide(Dibujable asteroide)
         {
             FormatoAsteroide formatoAUsar = Asteroide.elegirAsteroidePor(tamanio);
 
             asteroide.escalarSinBB(formatoAUsar.getVolumen());
-            asteroide.setFisica(0, 0, 10, formatoAUsar.getMasa());
+            asteroide.setFisica(0, 0, 250, formatoAUsar.getMasa());
             asteroide.velocidad = formatoAUsar.getVelocidad();
             ((Asteroide)asteroide).tamanioAnterior = formatoAUsar.tamanioAnterior();
             ((Asteroide)asteroide).Vida = formatoAUsar.vidaInicial();

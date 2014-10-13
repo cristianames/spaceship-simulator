@@ -31,7 +31,20 @@ namespace AlumnoEjemplos.TheGRID
             principal = ppal;
             asteroidManager = new ManagerAsteroide(2000); //Siempre debe ser mucho mayor que la cantidad de asteroides que queremos tener, pero no tanto sino colapsa
             limite = new TgcBoundingCylinder(principal.getPosicion(), 1500, 15000);
-            crearEstrellas();   
+
+            //Cargamos la lista de estrellas
+            estrellas = new List<Dibujable>();
+            //Creamos.....EL SOL
+            TgcMesh mesh_Sol = Factory.cargarMesh(@"Sol\sol-TgcScene.xml");
+            sol = new Dibujable();
+            sol.setObject(mesh_Sol, 0, 200, new Vector3(2F, 2F, 2F));
+            sol.giro = -1;
+            sol.ubicarEnUnaPosicion(new Vector3(0, 0, 9000));
+            sol.activar();
+            EjemploAlumno.workspace().dibujableCollection.Add(sol);
+            estrellas.Add(sol);
+
+            //crearEstrellas();   
         }
 
         public List<Dibujable> cuerpos()
@@ -41,22 +54,6 @@ namespace AlumnoEjemplos.TheGRID
 
         private void crearEstrellas()
         {
-            #region Stars
-            //Cargamos la lista de estrellas
-            estrellas = new List<Dibujable>();
-
-            //Creamos.....EL SOL
-            TgcMesh mesh_Sol = Factory.cargarMesh(@"Sol\sol-TgcScene.xml");
-            sol = new Dibujable();
-            sol.setObject(mesh_Sol, 0, 200, new Vector3(2F, 2F, 2F));
-            sol.giro = -1;
-            sol.ubicarEnUnaPosicion(new Vector3(0,0,9000));
-            sol.activar();
-            
-            EjemploAlumno.workspace().dibujableCollection.Add(sol);
-            estrellas.Add(sol);
-
-            /*
             //Cargamos la lista de texturas
             texturasEstrellas = new List<TgcTexture>();
             texturasEstrellas.Add(TgcTexture.createTexture(GuiController.Instance.D3dDevice, EjemploAlumno.TG_Folder + @"Estrella\Textures\Azul.jpg"));
@@ -115,8 +112,6 @@ namespace AlumnoEjemplos.TheGRID
                 EjemploAlumno.workspace().dibujableCollection.Add(estrella);
                 estrellas.Add(estrella);
             }
-             * */
-            #endregion
         }
 
 

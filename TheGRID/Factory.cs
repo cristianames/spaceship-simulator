@@ -32,11 +32,11 @@ namespace AlumnoEjemplos.TheGRID
         }
         
         #region Random
-        public static int numeroRandom()
+        public static int numeroRandom(int seed)
         {
             int resto;
             long restoL;
-            Random random = new Random();
+            Random random = new Random(seed);
             random = new Random(random.Next());
             Math.DivRem(random.Next(), DateTime.Now.Millisecond + 1, out resto);
             random = new Random(resto);
@@ -50,6 +50,7 @@ namespace AlumnoEjemplos.TheGRID
             random = new Random(resto);
             return random.Next();
         }
+        public static int numeroRandom() { return numeroRandom((int)DateTime.Now.Ticks/72012); }
         public static T elementoRandom<T>(List<T> valores)
         {
             int resto, length;
@@ -59,12 +60,14 @@ namespace AlumnoEjemplos.TheGRID
         }
         public static Vector3 VectorRandom(int valorMinimo, int valorMaximo){
             Vector3 victima = new Vector3();
-            //Thread.Sleep(5);
-            victima.X = numeroRandom()+1;
-            //Thread.Sleep(5);
-            victima.Y = numeroRandom()+1;
-            //Thread.Sleep(5);
-            victima.Z = numeroRandom()+1;
+            int resto;
+            List<int> correccion = new List<int>() { 1, -1 , 0};
+            Math.DivRem(numeroRandom(numeroRandom()), 532, out resto);
+            victima.X = resto * elementoRandom<int>(correccion);
+            Math.DivRem(numeroRandom(numeroRandom()), 7025, out resto);
+            victima.Y = resto * elementoRandom<int>(correccion);
+            Math.DivRem(numeroRandom(numeroRandom()), 32850, out resto);
+            victima.Z = resto * elementoRandom<int>(correccion);
             return victima;
         }
         #endregion
