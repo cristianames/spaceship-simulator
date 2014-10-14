@@ -123,7 +123,7 @@ namespace AlumnoEjemplos.TheGRID
         public void loadChapter1()
         {
             disposeOld();
-            asteroidManager.fabricarMapaAsteroides(principal.getPosicion(), 250, 1000);
+            asteroidManager.fabricarMapaAsteroides(principal.getPosicion(), 500, 7000);
             escenarioActual = TipoModo.THE_OPENING;
         }
         //-------------------------------------------------------------------------------------------CHAPTER-2

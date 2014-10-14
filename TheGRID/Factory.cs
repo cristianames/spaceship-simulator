@@ -93,10 +93,6 @@ namespace AlumnoEjemplos.TheGRID
             victima = new Asteroide();
             auxiliar.objeto.Transform = Matrix.Identity;
             victima.setObject(auxiliar.objeto, auxiliar.velocidad, auxiliar.velocidadRadial, auxiliar.escala);
-            victima.traslacion = 0;
-            victima.inclinacion = 0;
-            victima.rotacion = 0;
-            victima.giro = 0;
             victima.manager = auxiliar.manager;
         }
         #endregion
@@ -110,9 +106,6 @@ namespace AlumnoEjemplos.TheGRID
             Vector3 escalado = formato.getVolumen();
             Vector3 rotacion = new Vector3(elementoRandom(valores), elementoRandom(valores), elementoRandom(valores));
             EjeCoordenadas ejes = new EjeCoordenadas();
-            //ejes.vectorX = ejeX;
-            //ejes.vectorY = ejeY;
-            //ejes.vectorZ = ejeZ;
 
             //Creamos su bounding Sphere
             mesh_asteroide.AutoUpdateBoundingBox = false;
@@ -171,8 +164,10 @@ namespace AlumnoEjemplos.TheGRID
         }
         public static Dibujable resetearLaser(Dibujable laser)   //Resetea el dibujable y le agrega ademas la OBB.
         {
+            EjemploAlumno.workspace().dibujableCollection.Remove(laser);
             resetearDefault(ref laser);
             asignarOBB_Laser(laser, new Vector3(0.1F, 0.1F, 0.15F));
+            EjemploAlumno.workspace().dibujableCollection.Add(laser);
             return laser;
         }
         private static void asignarOBB_Laser(Dibujable laser, Vector3 escalado)  //Asigna una nueva OBB al dibujable en cuestion.

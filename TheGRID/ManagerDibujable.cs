@@ -139,8 +139,8 @@ namespace AlumnoEjemplos.TheGRID
         {
             Factory fabrica = new Factory();
             for(int i=0;i< limite;i++)
-            {
-                Asteroide asteroide = fabrica.crearAsteroide(TamanioAsteroide.CHICO, new Vector3(0, 0, 0), this);
+            {                                                                                                       
+/*TAMAÑO*/      Asteroide asteroide = fabrica.crearAsteroide(TamanioAsteroide.MEDIANO, new Vector3(0, 0, 0), this);
                 asteroide.desactivar();
                 inactivos.Add(asteroide);
             }
@@ -157,7 +157,7 @@ namespace AlumnoEjemplos.TheGRID
             {
                 trasladar(item, time);
                 rotar(item, time);
-                ((TgcBoundingSphere)item.getColision().getBoundingBox()).setCenter(item.getPosicion());
+                //((TgcBoundingSphere)item.getColision().getBoundingBox()).setCenter(item.getPosicion());
             }
 
             reciclajeAsteroidesFueraDelSky();
@@ -236,9 +236,10 @@ namespace AlumnoEjemplos.TheGRID
             float min_z = -radioAdmisible + pos_base.Z;
             Formato setearFormato = new Formato();
             Random random = new Random();
+            List<TamanioAsteroide> opciones = new List<TamanioAsteroide>(){TamanioAsteroide.CHICO, TamanioAsteroide.MEDIANO, TamanioAsteroide.GRANDE, TamanioAsteroide.MUYGRANDE};
             for (int i = 0; i < cantidadAsteroides; i++)
-            {
-                setearFormato.tamanio = TamanioAsteroide.MUYGRANDE;
+            {                                                                                                          
+/*TAMAÑO*/      setearFormato.tamanio = TamanioAsteroide.MEDIANO; //Factory.elementoRandom<TamanioAsteroide>(opciones);
                 setearFormato.posicion = new Vector3(random.Next((int)min_x, (int)max_x), random.Next((int)min_y, (int)max_y), random.Next((int)min_z, (int)max_z));
                 //Pasaje de asteroides con formato
                 activarAsteroide(setearFormato);
@@ -343,10 +344,9 @@ namespace AlumnoEjemplos.TheGRID
             asteroide.giro = Factory.elementoRandom<int>(opciones);
             asteroide.inclinacion = Factory.elementoRandom<int>(opciones);
 
-            float radioMalla3DsMax = 7.633f;
+            //float radioMalla3DsMax = 7.633f;
             TgcBoundingSphere bounding = (TgcBoundingSphere) asteroide.getColision().getBoundingBox();
-            bounding.setValues(bounding.Center, radioMalla3DsMax * formatoAUsar.getVolumen().X);
-
+/*TAMAÑO*/  bounding.setValues(bounding.Center, 12 * formatoAUsar.getVolumen().X * formatoAUsar.getVolumen().X);
             asteroide.ubicarEnUnaPosicion(posicion);
         }
     }

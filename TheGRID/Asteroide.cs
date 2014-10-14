@@ -21,8 +21,8 @@ namespace AlumnoEjemplos.TheGRID
 
         public override void teChoque(Dibujable colisionador, float moduloVelocidad)
         {
-            //Verificacion de mierda por culpa del diseño de mieeeeeerda
-            float masa = 50;
+            //Verificacion de mierda por culpa del diseño de mieeeeeerda  --  Que onda gato!
+            float masa = 0.01f;
             if (colisionador.fisica != null) masa = colisionador.fisica.Masa;
             
             daniate(masa, moduloVelocidad);
@@ -44,7 +44,7 @@ namespace AlumnoEjemplos.TheGRID
         private void daniate(float masa, float moduloVelocidad)
         {
             //Flaseada para bajar la vida
-            vida -= 2*masa + 5*moduloVelocidad;
+            vida -= 5 * masa * moduloVelocidad;
         }
 
         private void fraccionate()
@@ -82,8 +82,8 @@ namespace AlumnoEjemplos.TheGRID
 
     public class AsteroideMuyGrande : FormatoAsteroide
     {
-        private float masa = 1000;
-        private float longitud = 8;
+        private float masa = 20000;
+        private float longitud = 28;
         public float getMasa() { return masa; }
         public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
         public float getVelocidad() { return 8; }
@@ -93,8 +93,8 @@ namespace AlumnoEjemplos.TheGRID
 
     public class AsteroideGrande : FormatoAsteroide
     {
-        private float masa = 800;
-        private float longitud = 6;
+        private float masa = 8000;
+        private float longitud = 15;
         public float getMasa() { return masa; }
         public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
         public float getVelocidad() { return 13; }
@@ -104,8 +104,8 @@ namespace AlumnoEjemplos.TheGRID
 
     public class AsteroideMediano : FormatoAsteroide
     {
-        private float masa = 500;
-        private float longitud = 3;
+        private float masa = 5000;
+        private float longitud = 8;
         public float getMasa() { return masa; }
         public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
         public float getVelocidad() { return 18; }
@@ -115,8 +115,8 @@ namespace AlumnoEjemplos.TheGRID
 
     public class AsteroideChico : FormatoAsteroide
     {
-        private float masa = 200;
-        private float longitud = 0.7f;
+        private float masa = 1000;
+        private float longitud = 1;
         public float getMasa() { return masa; }
         public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
         public float getVelocidad() { return 24; }
