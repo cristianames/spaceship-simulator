@@ -41,6 +41,7 @@ namespace AlumnoEjemplos.TheGRID
         internal Escenario Escenario { get { return scheme; } }
         static EjemploAlumno singleton;
         Nave nave;
+        public Dibujable sol;
         public bool boundingBoxes;
         public float velocidadBlur = 0;
         bool velocidadCrucero = false;
@@ -240,7 +241,7 @@ namespace AlumnoEjemplos.TheGRID
             skySphere.render();     //Solo actualiza pos. Tiene deshabiltiado los render propiamente dicho.
             #endregion
 
-            superRender.render(nave, dibujableCollection, objectosNoMeshesCollection); //Redirige todo lo que renderiza dentro del "shader"
+            superRender.render(nave, sol, dibujableCollection, objectosNoMeshesCollection); //Redirige todo lo que renderiza dentro del "shader"
 
             #region Refrescar panel lateral
             string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
