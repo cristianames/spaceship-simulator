@@ -304,9 +304,7 @@ namespace AlumnoEjemplos.TheGRID
                 if (colision != null)
                     getColision().getBoundingBox().dispose();
             }
-            catch { }
-            //fisica.dispose();
-            //colisiones.dispose();            
+            catch { }           
         }
         internal void acelerar() { traslacion = 1; }    //Hace que el cuerpo active la fuerza para avanzar en la direccion en la que apunta dicho cuerpo.
 

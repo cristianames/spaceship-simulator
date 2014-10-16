@@ -62,6 +62,7 @@ namespace AlumnoEjemplos.TheGRID
         public SkySphere SkySphere { get { return skySphere; } }
         SuperRender superRender;
         internal SuperRender Shader { get { return superRender; } }
+        public Musique music = new Musique();
         #endregion
 
         #region METODOS AUXILIARES
@@ -119,6 +120,9 @@ namespace AlumnoEjemplos.TheGRID
             arrow.BodyColor = Color.FromArgb(230, Color.Cyan);
             arrow.HeadColor = Color.FromArgb(230, Color.Yellow);
             this.objectosNoMeshesCollection.Add(arrow);
+
+            //Cargamos el audio
+            music.playBackgound();
 
             #region PANEL DERECHO
 
@@ -284,6 +288,7 @@ namespace AlumnoEjemplos.TheGRID
             nave.dispose();
             arrow.dispose();
             skySphere.dispose();
+            GuiController.Instance.Mp3Player.closeFile();
         }
     }
 }

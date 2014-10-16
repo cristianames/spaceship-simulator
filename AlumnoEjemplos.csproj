@@ -106,6 +106,7 @@
     <Compile Include="TheGRID\Helpers\Dupla.cs" />
     <Compile Include="TheGRID\Helpers\TgcMeshBumpMapping.cs" />
     <Compile Include="TheGRID\ManagerDibujable.cs" />
+    <Compile Include="TheGRID\Musique.cs" />
     <Compile Include="TheGRID\Nave.cs" />
     <Compile Include="TheGRID\Shaders\SuperRender.cs" />
     <Compile Include="TheGRID\SkySphere.cs" />
