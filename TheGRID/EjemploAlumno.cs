@@ -286,7 +286,7 @@ namespace AlumnoEjemplos.TheGRID
             nave.dispose();
             arrow.dispose();
             skySphere.dispose();
-            GuiController.Instance.Mp3Player.closeFile();
+            music.liberarRecursos();
         }
     }
 }
