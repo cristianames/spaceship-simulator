@@ -96,7 +96,7 @@ namespace AlumnoEjemplos.TheGRID
         public int valor = 0;
         #endregion
 
-        #region Instanciador
+        #region Constructor
         public Dibujable()
         {
             posicion.setActual(0, 0, 0);
@@ -153,8 +153,11 @@ namespace AlumnoEjemplos.TheGRID
             get { return ((ITransformObject)objeto).AutoTransformEnable; }
             set { ((ITransformObject)objeto).AutoTransformEnable = value; }
         }
-        public void activar() { ((TgcMesh)objeto).Enabled = true; }
-        public void desactivar() { ((TgcMesh)objeto).Enabled = false; }
+        public void activar() { objeto.Enabled = true; }
+        public void desactivar() 
+        { 
+            objeto.Enabled = false; 
+        }
         public void escalarSinBB(Vector3 escalado)  //Escala la mesh con el vector asociado.
         {
             Matrix matriz = Matrix.Scaling(escalado);
@@ -288,11 +291,10 @@ namespace AlumnoEjemplos.TheGRID
         #region Updating
         public void render()
         {
-            ((IRenderObject)objeto).render();
+            objeto.render();
             if (colision != null)
             {
-                string opcionElegida = (string)GuiController.Instance.Modifiers["Ver BoundingBox"];
-                if (String.Compare(opcionElegida, "Activado") == 0)
+                if (EjemploAlumno.workspace().boundingBoxes && objeto.Enabled)
                     colision.render();
             }
         }

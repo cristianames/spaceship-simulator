@@ -41,6 +41,8 @@ namespace AlumnoEjemplos.TheGRID
         internal Escenario Escenario { get { return scheme; } }
         static EjemploAlumno singleton;
         Nave nave;
+        public Dibujable sol;
+        public bool boundingBoxes;
         public float velocidadBlur = 0;
         bool velocidadCrucero = false;
         public float tiempoBlur=0.3f;
@@ -148,12 +150,9 @@ namespace AlumnoEjemplos.TheGRID
             GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 3);
             string[] opciones1 = new string[] { "Tercera Persona", "Camara FPS", "Libre" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
-            string[] opciones2 = new string[] { "Activado", "Desactivado" };
-            GuiController.Instance.Modifiers.addInterval("Velocidad Manual", opciones2, 0);
-            string[] opciones3 = new string[] { "Activado", "Desactivado" };
-            GuiController.Instance.Modifiers.addInterval("Desplaz. Avanzado", opciones3, 0);
-            string[] opciones5 = new string[] { "Desactivado", "Activado" };
-            GuiController.Instance.Modifiers.addInterval("Ver BoundingBox", opciones5, 0);
+            GuiController.Instance.Modifiers.addBoolean("Velocidad Manual", "Activado", true);
+            GuiController.Instance.Modifiers.addBoolean("Desplaz. Avanzado", "Activado", true);
+            GuiController.Instance.Modifiers.addBoolean("Ver BoundingBox", "Activado", false);
             //string[] opciones4 = new string[] { "Activado", "Desactivado" };
             //GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);  De momento lo saco.
             string opcionElegida = (string)GuiController.Instance.Modifiers["Escenario Actual"];
@@ -246,17 +245,16 @@ namespace AlumnoEjemplos.TheGRID
             skySphere.render();     //Solo actualiza pos. Tiene deshabiltiado los render propiamente dicho.
             #endregion
 
-            superRender.render(nave, dibujableCollection, objectosNoMeshesCollection); //Redirige todo lo que renderiza dentro del "shader"
+            superRender.render(nave, sol, dibujableCollection, objectosNoMeshesCollection); //Redirige todo lo que renderiza dentro del "shader"
 
             #region Refrescar panel lateral
             string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
             camara.chequearCambio(opcionElegida);
             opcionElegida = (string)GuiController.Instance.Modifiers["Escenario Actual"];
             scheme.chequearCambio(opcionElegida);
-            opcionElegida = (string)GuiController.Instance.Modifiers["Velocidad Manual"];
-            if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.velocidadManual = true; else objetoPrincipal.velocidadManual = false;
-            opcionElegida = (string)GuiController.Instance.Modifiers["Desplaz. Avanzado"];
-            if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.desplazamientoReal = true; else objetoPrincipal.desplazamientoReal = false;
+            objetoPrincipal.velocidadManual = (bool)GuiController.Instance.Modifiers["Velocidad Manual"];
+            objetoPrincipal.desplazamientoReal = (bool)GuiController.Instance.Modifiers["Desplaz. Avanzado"];
+            boundingBoxes = (bool)GuiController.Instance.Modifiers["Ver BoundingBox"];
             //opcionElegida = (string)GuiController.Instance.Modifiers["Rotacion Avanzada"];
             //if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.rotacionReal = true; else objetoPrincipal.rotacionReal = false;   De momento lo saco.
             
