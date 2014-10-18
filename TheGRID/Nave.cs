@@ -20,9 +20,13 @@ namespace AlumnoEjemplos.TheGRID
             TgcTexture[] normalMapArray = new TgcTexture[] { normalMap };
             TgcMesh meshNave_base =  Factory.cargarMesh("Nave\\naveTrooper-TgcScene.xml");
             TgcMeshBumpMapping meshNave = TgcMeshBumpMapping.fromTgcMesh(meshNave_base, normalMapArray);
+            acelNormal = 50;
+            acelBlur = 500;
+            velMaxNormal = 200;
+            velMaxBlur = 3000;
             meshNave.Transform *= Matrix.RotationY(Geometry.DegreeToRadian(180));
             setObject(meshNave, 100, 50, new Vector3(0.5f, 0.5f, 0.5f));
-            setFisica(50, 100, 200, 10000);
+            setFisica(acelNormal, 100, velMaxNormal, 10000);
             SetPropiedades(true, false, false);
             explosion = new ExplosionNave(this, 100, 200);
 

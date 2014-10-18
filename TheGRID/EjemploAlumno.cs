@@ -198,17 +198,25 @@ namespace AlumnoEjemplos.TheGRID
                     superRender.motionBlurActivado = false;
                     tiempoBlur = 0.3f;
                     velocidadBlur = 0;
+                    objetoPrincipal.fisica.velocidadMaxima = objetoPrincipal.velMaxNormal;
+                    objetoPrincipal.fisica.aceleracion = objetoPrincipal.acelNormal;
+                    
+                    
                 }
                 else
                 {
                     if (objetoPrincipal.velocidadActual() == objetoPrincipal.fisica.velocidadMaxima)
                     {
                         superRender.motionBlurActivado = true;
-                        //velocidadBlur = objetoPrincipal.velocidadActual();
+                        objetoPrincipal.fisica.velocidadMaxima = objetoPrincipal.velMaxBlur;
+                        objetoPrincipal.fisica.aceleracion = objetoPrincipal.acelBlur;
+                        objetoPrincipal.fisica.desactivarCrucero(); velocidadCrucero = false; 
                     }
 
                 }
             }
+            if (superRender.motionBlurActivado) nave.acelerar();//Si el Blur esta activado la nave solamente acelera
+            else if (objetoPrincipal.velocidadActual() > objetoPrincipal.fisica.velocidadMaxima) objetoPrincipal.fisica.velocidadInstantanea = objetoPrincipal.velMaxNormal;//Esto esta para cuando el blur se desactiva, desacelrar rapidamente la nave
             if (input.keyDown(Key.P)) { scheme.asteroidManager.explotaAlPrimero(); }
             if (input.keyDown(Key.Space))
             {
@@ -264,7 +272,9 @@ namespace AlumnoEjemplos.TheGRID
                 tiempoBlur += elapsedTime;
                 velocidadBlur = (float)Math.Pow(100D, tiempoBlur);
                 if (velocidadBlur > 299800) velocidadBlur = 299800;
-                GuiController.Instance.UserVars.setValue("Vel-Actual:", velocidadBlur + objetoPrincipal.velocidadActual());
+               // objetoPrincipal.velocidad = objetoPrincipal.fisica.velocidadMaxima;
+                //GuiController.Instance.UserVars.setValue("Vel-Actual:", velocidadBlur + objetoPrincipal.velocidadActual());
+                GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual()); 
             }
             else GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual());            
             GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);

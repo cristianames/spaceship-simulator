@@ -94,6 +94,10 @@ namespace AlumnoEjemplos.TheGRID
         protected IColision colision; // Acá va la detecciones de colisiones según cada objeto lo necesite.
         internal Explosion explosion; // Acá va el manejo de un objeto cuando es chocado por otro.
         public int valor = 0;
+        public float acelNormal;//Estos atributos se setean en las clases hijas con los valores correspondientes
+        public float acelBlur;
+        public float velMaxNormal;
+        public float velMaxBlur;
         #endregion
 
         #region Constructor
