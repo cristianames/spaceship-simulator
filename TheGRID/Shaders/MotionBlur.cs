@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using TgcViewer;
+using TgcViewer.Utils;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 
@@ -13,7 +14,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 {
     class MotionBlur : IShader
     {
-        private string ShaderDirectory = EjemploAlumno.TG_Folder + "Shaders\\";
+        private string ShaderDirectory = EjemploAlumno.TG_Folder + "Shaders\\MotionBlur.fx";
         private SuperRender mainShader;
         private Effect effect;
         private VertexBuffer g_pVBV3D;
@@ -29,7 +30,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
             //Cargar Shader del motionBlur
             string compilationErrors;
-            effect = Effect.FromFile(GuiController.Instance.D3dDevice, ShaderDirectory + "MotionBlur.fx",
+            effect = Effect.FromFile(GuiController.Instance.D3dDevice, ShaderDirectory,
                 null, null, ShaderFlags.PreferFlowControl, null, out compilationErrors);
             if (effect == null)
             {
@@ -98,14 +99,14 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             effect.EndPass();
             effect.End();
             device.EndScene();
-
+            GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
             return null;
         }
 
         public Texture renderEffect(EstructuraRender parametros)
         {
             //La simplicidad radica en que si la textura de velocidad esta en blanco, no hace el efecto :P
-            if(!mainShader.motionBlurActivado)
+            if(mainShader.motionBlurActivado)
             {
                 dibujarVelocidad(parametros);
             }
@@ -164,7 +165,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
         public void renderScene(Dibujable dibujable, string technique)
         {
-            if (dibujable.soyAsteroide() && fueraFrustrum(dibujable)) return;
+            if (dibujable.soyAsteroide() && mainShader.fueraFrustrum(dibujable)) return;
             ((TgcMesh)dibujable.objeto).Effect = effect;
             ((TgcMesh)dibujable.objeto).Technique = technique;
             dibujable.render();
@@ -189,15 +190,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         #endregion
 
         #region Metodos Auxiliares
-
-        public bool fueraFrustrum(Dibujable dibujable)
-        {
-            //Chequea si esta dentro del frustrum
-            TgcFrustum frustrum = EjemploAlumno.workspace().getCurrentFrustrum();
-            if (TgcCollisionUtils.classifyFrustumSphere(frustrum, (TgcBoundingSphere)dibujable.getColision().getBoundingBox()) != TgcCollisionUtils.FrustumResult.OUTSIDE)
-                return false;
-            return true;
-        }
 
         public SuperRender.tipo tipoShader()
         {

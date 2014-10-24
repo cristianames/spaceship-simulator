@@ -24,7 +24,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         void renderScene(List<Dibujable> dibujables, String technique); //Para renderizar asteroides y lasers
         void renderScene(List<IRenderObject> elementosRenderizables); //Para renderizar los objetos NO meshes
 
-        bool fueraFrustrum(Dibujable dibujable); //El tester de si un dibujable esta dentro del frustrum
         SuperRender.tipo tipoShader();
         void close(); //Liberamos los Recursos
     }
