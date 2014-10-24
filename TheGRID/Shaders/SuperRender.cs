@@ -17,8 +17,27 @@ using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.TheGRID.Shaders
 {
+
+    #region Estructura de Prueba
+    public class EstructuraRender
+    {
+        public Nave nave;
+        public Dibujable sol;
+        public List<Dibujable> meshes;
+        public List<IRenderObject> elementosRenderizables; 
+    }
+#endregion
+
     class SuperRender
     {
+        //Prueba
+        private MotionBlur motionShader;
+        private HDRL hdrlShader = new HDRL();
+        private DynamicLights adeShader = new DynamicLights();
+        private BumpMapping bumpShader = new BumpMapping();
+        public enum tipo { MOTION, HDRL, DYNAMIC, BUMP };
+        //Prueba
+
         private string ShaderDirectory;
         private Effect effect;
         private Effect bumpEffect_asteroides;
@@ -37,6 +56,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
         public SuperRender()
         {
+            motionShader = new MotionBlur(this);
             Device d3dDevice = GuiController.Instance.D3dDevice;
             ShaderDirectory = EjemploAlumno.TG_Folder + "Shaders\\";
 
@@ -196,7 +216,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.EndScene();
         }
 
-        private void motionBlur(Nave nave, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables)
+        private void motionBlur(Nave nave, Dibujable sol, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables)
         {
             Device device = GuiController.Instance.D3dDevice;
             float velActual = EjemploAlumno.workspace().velocidadBlur;
@@ -219,6 +239,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
             renderScene(meshes, "VelocityMap");
+            renderScene(sol, "VelocityMap");
             if (!EjemploAlumno.workspace().camara.soyFPS())
                 renderScene(nave, "VelocityMap");
             device.EndScene();
@@ -232,6 +253,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.BeginScene();
             //renderScene(meshes, "DefaultTechnique");
             renderScene_BumpMapping(meshes);
+            renderScene_BumpMapping(sol);
             renderScene(elementosRenderizables);
             if (!EjemploAlumno.workspace().camara.soyFPS())
                 //renderScene(nave, "DefaultTechnique");
@@ -340,7 +362,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
                 return;
             }
-            motionBlur(nave, meshes, elementosRenderizables);
+            motionBlur(nave, sol, meshes, elementosRenderizables);
             GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
         }
 
@@ -353,6 +375,25 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             g_pVel2.Dispose();
         }
 
-        
+        #region Prueba
+
+        public Texture renderAnterior(EstructuraRender parametros, SuperRender.tipo tipoEfecto)
+        {
+            switch(tipoEfecto)
+            {
+                case tipo.MOTION:
+                    break;
+                case tipo.HDRL:
+                    break;
+                case tipo.DYNAMIC:
+                    break;
+                case tipo.BUMP:
+                    break;
+            }
+
+            return null;
+        }
+
+        #endregion
     }
 }

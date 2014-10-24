@@ -212,11 +212,14 @@ namespace AlumnoEjemplos.TheGRID
             if (input.keyDown(Key.P)) { scheme.asteroidManager.explotaAlPrimero(); }
             if (input.keyDown(Key.Space))
             {
-                timeLaser += elapsedTime;
-                if (timeLaser > betweenTime)
+                if (!superRender.motionBlurActivado)
                 {
-                    scheme.dispararLaser();                 
-                    timeLaser = 0;
+                    timeLaser += elapsedTime;
+                    if (timeLaser > betweenTime)
+                    {
+                        scheme.dispararLaser();
+                        timeLaser = 0;
+                    }
                 }
             }
             #endregion
