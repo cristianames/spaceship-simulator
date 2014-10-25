@@ -21,6 +21,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         private Surface g_pDepthStencil;     // Depth-stencil buffer 
         private Texture g_pRenderTarget;    //Textura
         private Texture g_pVel1, g_pVel2;   // velocidad
+        private Texture g_blank;            // Testura sin nada
         private Matrix antMatView;
 
         public MotionBlur(SuperRender main)
@@ -57,6 +58,9 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             g_pVel2 = new Texture(d3dDevice, d3dDevice.PresentationParameters.BackBufferWidth
                     , d3dDevice.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget,
                         Format.A16B16G16R16F, Pool.Default);
+            g_blank = new Texture(d3dDevice, d3dDevice.PresentationParameters.BackBufferWidth
+                    , d3dDevice.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget,
+                        Format.A16B16G16R16F, Pool.Default); 
             // Resolucion de pantalla
             effect.SetValue("screen_dx", d3dDevice.PresentationParameters.BackBufferWidth);
             effect.SetValue("screen_dy", d3dDevice.PresentationParameters.BackBufferHeight);
@@ -90,8 +94,17 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.VertexFormat = CustomVertex.PositionTextured.Format;
             device.SetStreamSource(0, g_pVBV3D, 0);
             effect.SetValue("g_RenderTarget", g_pRenderTarget);
-            effect.SetValue("texVelocityMap", g_pVel1);
-            effect.SetValue("texVelocityMapAnt", g_pVel2);
+            if (mainShader.motionBlurActivado)
+            {
+                effect.SetValue("texVelocityMap", g_pVel1);
+                effect.SetValue("texVelocityMapAnt", g_pVel2);
+            }
+            else 
+            {
+                effect.SetValue("texVelocityMap", g_blank);
+                effect.SetValue("texVelocityMapAnt", g_blank);
+
+            }
             device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             effect.Begin(FX.None);
             effect.BeginPass(0);
