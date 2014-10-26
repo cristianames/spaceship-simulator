@@ -37,9 +37,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
     {
         private MotionBlur motionShader;
         private HDRL hdrlShader;
-        private DynamicLights adeShader;
         private BumpMapping bumpShader;
-        public enum tipo { MOTION, HDRL, DYNAMIC, BUMP };
+        public enum tipo { MOTION, HDRL, BUMP };
 
         public bool motionBlurActivado = false;
 
@@ -48,7 +47,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         {
             motionShader = new MotionBlur(this);
             hdrlShader = new HDRL(this);
-            adeShader = new DynamicLights(this);
             bumpShader = new BumpMapping(this);                
         }
 
@@ -69,9 +67,9 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         public void close()
         {
             motionShader.close();
-            hdrlShader.close();
-            adeShader.close();
-            bumpShader.close();
+            //hdrlShader.close();
+            //adeShader.close();
+            //bumpShader.close();
         }
 
         public Texture renderAnterior(EstructuraRender parametros, SuperRender.tipo tipoEfecto)
@@ -84,9 +82,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                     //texturaRetorno = hdrlShader.renderEffect(parametros);
                     break;
                 case tipo.HDRL:
-                    texturaRetorno = adeShader.renderEffect(parametros);
-                    break;
-                case tipo.DYNAMIC:
                     texturaRetorno = bumpShader.renderEffect(parametros);
                     break;
                 case tipo.BUMP:

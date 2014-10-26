@@ -80,7 +80,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
         public void renderScene(Nave nave, string technique)
         {
-            lightPosition = EjemploAlumno.workspace().Escenario.sol.getPosicion();
+            lightPosition = -EjemploAlumno.workspace().Escenario.sol.getPosicion();
             eyePosition = EjemploAlumno.workspace().camara.PosicionDeCamara;
             actualizarBumpEffect_Nave();
             ((TgcMesh)nave.objeto).Effect = bumpEffect_nave;
