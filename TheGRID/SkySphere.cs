@@ -20,7 +20,7 @@ namespace AlumnoEjemplos.TheGRID
             horizonteVision = Factory.cargarMesh("SkyBox\\skysphere-TgcScene.xml");
             horizonteVision.Position = new Vector3(0, 0, 0);
             horizonteVision.Enabled = true;
-            bordeSky = new TgcBoundingSphere(new Vector3(0, 0, 0), 10000);
+            bordeSky = new TgcBoundingSphere(new Vector3(0, 0, 0), 11000);
             dibujable_skySphere = new Dibujable();
             dibujable_skySphere.setObject(horizonteVision, 0, 0, new Vector3(1, 1, 1));
             dibujable_skySphere.setColision(new ColisionAsteroide());

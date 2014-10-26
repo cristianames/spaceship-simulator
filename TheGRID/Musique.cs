@@ -9,9 +9,22 @@ namespace AlumnoEjemplos.TheGRID
 {
     public class Musique
     {
-        enum TipoModo { CASTOR, DEREZZED, M4PART2, TRONENDING, TSOF, TALI, SPECTRE, SOLARSAILER, NEWWORLDS, METHEME, NONE };
+        enum TipoModo { CASTOR, DEREZZED, M4PART2, TRONENDING, TSOF, TALI, SPECTRE, SOLARSAILER, NEWWORLDS, METHEME, NONE, COMPLETE };
         private TipoModo escenarioActual = TipoModo.NONE;
-        List<TgcMp3Player> listaMainMusic = new List<TgcMp3Player>(10);
+        private List<string> listaTemas = new List<string>() 
+        {   "Music\\Main\\Castor.mp3", 
+            "Music\\Main\\Derezzed.mp3",
+            "Music\\Main\\M4Part2.mp3",
+            "Music\\Main\\METheme.mp3",
+            "Music\\Main\\NewWorlds.mp3",
+            "Music\\Main\\SolarSailer.mp3",
+            "Music\\Main\\Spectre.mp3",
+            "Music\\Main\\Tali.mp3",
+            "Music\\Main\\TheSonofFlynn.mp3",
+            "Music\\Main\\TronEnding.mp3"
+        };
+        private int pistaActual;
+        private List<int> listaPistas;
 
         TgcMp3Player playerMP3 = GuiController.Instance.Mp3Player;
         TgcStaticSound lazer = new TgcStaticSound();
@@ -20,8 +33,6 @@ namespace AlumnoEjemplos.TheGRID
         TgcStaticSound asteroideImpacto = new TgcStaticSound();
         public Musique()
         {
-            //playerMP3.closeFile();
-            //playerMP3.FileName = EjemploAlumno.TG_Folder + "Music\\Main\\main.mp3";
             lazer.loadSound(EjemploAlumno.TG_Folder + "Music\\laser_shot.wav");
             asteroideColision.loadSound(EjemploAlumno.TG_Folder + "Music\\Asteroide\\colision_1.wav");
             asteroideFragmentacion.loadSound(EjemploAlumno.TG_Folder + "Music\\Asteroide\\fragmentacion_1.wav");
@@ -29,9 +40,9 @@ namespace AlumnoEjemplos.TheGRID
         }
 
 
-        public void playBackgound()
+        public void playBackgound(bool loop)
         {
-            playerMP3.play(true);
+            playerMP3.play(loop);
         }
         public void playLazer()
         {
@@ -66,97 +77,106 @@ namespace AlumnoEjemplos.TheGRID
             asteroideFragmentacion.dispose();
         }
 
+        internal void refrescar()
+        {
+            listaPistas = new List<int>();
+            for (int i = 0; i < listaTemas.Count; i++)
+            {
+                if (i != pistaActual) listaPistas.Add(i);
+            }
+            nuevaPista(Factory.elementoRandom<int>(listaPistas),false);
+
+        }
+        internal void nuevaPista(int pista, bool loop)
+        {
+            playerMP3.closeFile();
+            playerMP3.FileName = EjemploAlumno.TG_Folder + listaTemas[pista];
+            playBackgound(loop);
+            pistaActual = pista;
+        }
+
         internal void chequearCambio(string opcionElegida)
         {
             switch (opcionElegida)
             {
+                case "Lista Completa":
+                    if (playerMP3.getStatus() == TgcMp3Player.States.Stopped) refrescar();
+                    if (escenarioActual != TipoModo.COMPLETE) escenarioActual = TipoModo.COMPLETE;
+                    break;
+                case "Sin Musica":
+                    if (escenarioActual != TipoModo.NONE)
+                    {
+                        playerMP3.stop();
+                        escenarioActual = TipoModo.NONE;
+                    }
+                    break;
                 case "Castor":
                     if (escenarioActual != TipoModo.CASTOR)
                     {
-                        playerMP3.closeFile();
-                        playerMP3.FileName = EjemploAlumno.TG_Folder + "Music\\Main\\Castor.mp3";
-                        playBackgound();
+                        nuevaPista(0,true);
                         escenarioActual = TipoModo.CASTOR;
                     }
                     break;
                 case "Derezzed":
                     if (escenarioActual != TipoModo.DEREZZED)
                     {
-                        playerMP3.closeFile();
-                        playerMP3.FileName = EjemploAlumno.TG_Folder + "Music\\Main\\Derezzed.mp3";
-                        playBackgound();
+                        nuevaPista(1, true);
                         escenarioActual = TipoModo.DEREZZED;
                     }
                     break;
                 case "M4 Part 2":
                     if (escenarioActual != TipoModo.M4PART2)
                     {
-                        playerMP3.closeFile();
-                        playerMP3.FileName = EjemploAlumno.TG_Folder + "Music\\Main\\M4Part2.mp3";
-                        playBackgound();
+                        nuevaPista(2, true);
                         escenarioActual = TipoModo.M4PART2;
                     }
                     break;
                 case "ME Theme":
                     if (escenarioActual != TipoModo.METHEME)
                     {
-                        playerMP3.closeFile();
-                        playerMP3.FileName = EjemploAlumno.TG_Folder + "Music\\Main\\METheme.mp3";
-                        playBackgound();
+                        nuevaPista(3, true);
                         escenarioActual = TipoModo.METHEME;
                     }
                     break;
                 case "New Worlds":
                     if (escenarioActual != TipoModo.NEWWORLDS)
                     {
-                        playerMP3.closeFile();
-                        playerMP3.FileName = EjemploAlumno.TG_Folder + "Music\\Main\\NewWorlds.mp3";
-                        playBackgound();
+                        nuevaPista(4, true);
                         escenarioActual = TipoModo.NEWWORLDS;
                     }
                     break;
                 case "Solar Sailer":
                     if (escenarioActual != TipoModo.SOLARSAILER)
                     {
-                        playerMP3.closeFile();
-                        playerMP3.FileName = EjemploAlumno.TG_Folder + "Music\\Main\\SolarSailer.mp3";
-                        playBackgound();
+                        nuevaPista(5, true);
                         escenarioActual = TipoModo.SOLARSAILER;
                     }
                     break;
                 case "Spectre":
                     if (escenarioActual != TipoModo.SPECTRE)
                     {
-                        playerMP3.closeFile();
-                        playerMP3.FileName = EjemploAlumno.TG_Folder + "Music\\Main\\Spectre.mp3";
-                        playBackgound();
+                        nuevaPista(6, true);
                         escenarioActual = TipoModo.SPECTRE;
                     }
                     break;
                 case "Tali":
                     if (escenarioActual != TipoModo.TALI)
                     {
-                        playerMP3.closeFile();
-                        playerMP3.FileName = EjemploAlumno.TG_Folder + "Music\\Main\\Tali.mp3";
-                        playBackgound();
+                        nuevaPista(7, true);
                         escenarioActual = TipoModo.TALI;
                     }
                     break;
                 case "The Son of Flynn":
                     if (escenarioActual != TipoModo.TSOF)
                     {
-                        playerMP3.closeFile();
-                        playerMP3.FileName = EjemploAlumno.TG_Folder + "Music\\Main\\TheSonofFlynn.mp3";
-                        playBackgound();
+                        nuevaPista(8, true);
                         escenarioActual = TipoModo.TSOF;
                     }
                     break;
                 case "Tron Ending":
                     if (escenarioActual != TipoModo.TRONENDING)
                     {
-                        playerMP3.closeFile();
-                        playerMP3.FileName = EjemploAlumno.TG_Folder + "Music\\Main\\TronEnding.mp3";
-                        playBackgound();
+                        nuevaPista(9, true);
                         escenarioActual = TipoModo.TRONENDING;
                     }
                     break;

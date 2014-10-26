@@ -160,7 +160,8 @@ namespace AlumnoEjemplos.TheGRID
             EjemploAlumno.workspace().music.playLazer();
         }
         internal void refrescar(float elapsedTime)                                                  //RENDER DEL ESCENARIO
-        {            
+        {
+            if (escenarioActual == TipoModo.THE_OPENING) asteroidManager.reinsertarSiEsNecesario();
             laserManager.operar(elapsedTime);
             asteroidManager.operar(elapsedTime);
             sol.rotarPorTiempo(elapsedTime, new List<Dibujable>());             
@@ -180,6 +181,8 @@ namespace AlumnoEjemplos.TheGRID
 
             //Chequeo colision entre asteroides 
             asteroidManager.colisionEntreAsteroides(0); //hay que pasarle el 0 como parametro para que empieze a preguntar desde el asteoride 0, es una funcion recursiva
+
+            
 
             if (TgcCollisionUtils.testPointCylinder(principal.getPosicion(), limite))
             {

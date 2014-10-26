@@ -160,7 +160,10 @@ namespace AlumnoEjemplos.TheGRID
                 //((TgcBoundingSphere)item.getColision().getBoundingBox()).setCenter(item.getPosicion());
             }
 
-            reciclajeAsteroidesFueraDelSky();
+            reciclajeAsteroidesFueraDelSky();            
+        }
+
+        public void reinsertarSiEsNecesario(){
             if (controlados.Count < cantidadEnMapa) reinsertar(cantidadEnMapa - controlados.Count);
         }
 
@@ -224,7 +227,7 @@ namespace AlumnoEjemplos.TheGRID
                 controlados.Add(asteroide);
                 
                 Vector3 direccionImpulso = Factory.VectorRandom(-200, 200);
-                float velocidadImpulso = new Random().Next(5, 250);     //IMPORTANTE: Sin importar la velocidad cargada en el formato, aca le indicamos una nueva velocidad.
+                float velocidadImpulso = new Random().Next(150, 750);     //IMPORTANTE: Sin importar la velocidad cargada en el formato, aca le indicamos una nueva velocidad.
                 asteroide.fisica.impulsar(direccionImpulso, velocidadImpulso, 0.01f);                
                 asteroide.activar();                                   
             }
@@ -346,7 +349,7 @@ namespace AlumnoEjemplos.TheGRID
                         {
                             controlados[pos].impulsate(Vector3.Multiply(controlados[pos].ultimaTraslacion, -1), modulos.fst, 0.5f);
                             controlados[i].impulsate(Vector3.Multiply(controlados[i].ultimaTraslacion, -1), modulos.snd, 0.5f);
-                            if (flagReintento > 1000) { desactivar(controlados[i]); break; }    //Como reacomoda a lo pavote, puede vivir fallando.
+                            if (flagReintento > 1000) { desactivar(controlados[i]); break; } //controlados[i].teChoque(controlados[pos], 10000); break; }   //Como reacomoda a lo pavote, puede vivir fallando.
                             flagReintento++;
                         }
                         if (flagReintento == 0) EjemploAlumno.workspace().music.playAsteroideColision();

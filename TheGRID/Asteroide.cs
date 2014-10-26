@@ -26,13 +26,13 @@ namespace AlumnoEjemplos.TheGRID
             if (colisionador.fisica != null) masa = colisionador.fisica.Masa;
             
             daniate(masa, moduloVelocidad);
-            if (vida <= 0) sinVida();
+            if (vida <= 0) sinVida(colisionador);
         }
 
-        private void sinVida()
+        private void sinVida(Dibujable colisionador)
         {
             //float volumen = FastMath.PI * 2 * FastMath.Pow2(((TgcBoundingSphere)getColision().getBoundingBox()).Radius);
-            if (limite < fisica.Masa) fraccionate();
+            if (limite < fisica.Masa) { fraccionate(); if (!colisionador.soyAsteroide())EjemploAlumno.workspace().music.playAsteroideFragmentacion(); }
             else
             {
                 // Explosion.explosionAsteroide(this);
@@ -53,7 +53,7 @@ namespace AlumnoEjemplos.TheGRID
             manager.desactivar(this);
             if (tamanioAnterior != TamanioAsteroide.NULO) 
                     manager.fabricarMiniAsteroides(3, tamanioAnterior, getPosicion(),((TgcBoundingSphere)colision.getBoundingBox()).Radius);
-            EjemploAlumno.workspace().music.playAsteroideFragmentacion();
+            
         }
 
         public static FormatoAsteroide elegirAsteroidePor(TamanioAsteroide tamanio)

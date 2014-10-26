@@ -146,13 +146,13 @@ namespace AlumnoEjemplos.TheGRID
             //GuiController.Instance.Modifiers.addFloat("Aceleracion", 0f,500f, objetoPrincipal.getAceleracion());  De momento lo saco.
             //GuiController.Instance.Modifiers.addFloat("Frenado", 0f, 1000f, objetoPrincipal.getAcelFrenado());    De momento lo saco.
             //Crear un modifier para un ComboBox con opciones
-            List<int> pistaDeAudio = new List<int>(){0,1,2,3,4,5,6,7,8,9};
+            //List<int> pistaDeAudio = new List<int>(){0,1,2,3,4,5,6,7,8,9};
             string[] opciones0 = new string[] { "THE OPENING", "IMPULSE DRIVE", "WELCOME HOME", "VACUUM" };
             GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 3);
             string[] opciones1 = new string[] { "Tercera Persona", "Camara FPS", "Libre" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
-            string[] opciones2 = new string[] { "Castor", "Derezzed", "M4 Part 2", "ME Theme", "New Worlds", "Solar Sailer", "Spectre", "Tali", "The Son of Flynn", "Tron Ending" };
-            GuiController.Instance.Modifiers.addInterval("Musica de fondo", opciones2, Factory.elementoRandom<int>(pistaDeAudio));
+            string[] opciones2 = new string[] { "Lista Completa", "Castor", "Derezzed", "M4 Part 2", "ME Theme", "New Worlds", "Solar Sailer", "Spectre", "Tali", "The Son of Flynn", "Tron Ending", "Sin Musica" };
+            GuiController.Instance.Modifiers.addInterval("Musica de fondo", opciones2, 0);
             //GuiController.Instance.Modifiers.addBoolean("Velocidad Manual", "Activado", true);
             GuiController.Instance.Modifiers.addBoolean("Desplaz. Avanzado", "Activado", true);
             GuiController.Instance.Modifiers.addBoolean("Ver BoundingBox", "Activado", false);
@@ -162,7 +162,7 @@ namespace AlumnoEjemplos.TheGRID
             scheme.chequearCambio(opcionElegida);
             opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
             music.chequearCambio(opcionElegida);
-
+            music.refrescar();
             #endregion
         }   
 
@@ -170,6 +170,8 @@ namespace AlumnoEjemplos.TheGRID
         {
             #region -----KEYS-----
             TgcD3dInput input = GuiController.Instance.D3dInput;
+
+            if (input.keyPressed(Key.I)) { music.refrescar(); }
 
             //Flechas
             if (input.keyDown(Key.Left)) { nave.rotacion = 1; }

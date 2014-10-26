@@ -140,7 +140,7 @@ namespace AlumnoEjemplos.TheGRID
             asteroide.tamanioAnterior = formato.tamanioAnterior();
             asteroide.Vida = formato.vidaInicial();
             asteroide.manager = manager;
-            asteroide.SetPropiedades(false, true, false);
+            asteroide.SetPropiedades(true, true, false);
 
             EjemploAlumno.addMesh(asteroide);
             return asteroide;
