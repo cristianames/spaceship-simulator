@@ -22,12 +22,15 @@ namespace AlumnoEjemplos.TheGRID
         static string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
         static int opcionVectorRender = 0;
 
-        TgcMesh mesh_asteroide_base;
+        List<TgcMesh> meshes_asteroide_base;
         TgcTexture[] normalMapAsteroidArray;
 
         public Factory()
         {
-            mesh_asteroide_base = cargarMesh("asteroid\\asteroid1-TgcScene.xml");
+            meshes_asteroide_base = new List<TgcMesh>();
+            meshes_asteroide_base.Add(cargarMesh("asteroid\\asteroid1-TgcScene.xml"));
+            meshes_asteroide_base.Add(cargarMesh("asteroid\\asteroid_b-TgcScene.xml"));
+            meshes_asteroide_base.Add(cargarMesh("asteroid\\asteroid_c-TgcScene.xml"));
             TgcTexture normalMapAsteroid = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "asteroid\\Textures\\3215_Bump.jpg");
             normalMapAsteroidArray = new TgcTexture[] { normalMapAsteroid };
         }
@@ -111,8 +114,10 @@ namespace AlumnoEjemplos.TheGRID
         #region Asteroide
         public Asteroide crearAsteroide(TamanioAsteroide tamanio, Vector3 posicion, ManagerAsteroide manager)
         {
+            TgcMeshBumpMapping mesh_asteroide = TgcMeshBumpMapping
+                .fromTgcMesh(elementoRandom(meshes_asteroide_base), normalMapAsteroidArray);
+
             FormatoAsteroide formato = Asteroide.elegirAsteroidePor(tamanio);
-            TgcMeshBumpMapping mesh_asteroide = TgcMeshBumpMapping.fromTgcMesh(mesh_asteroide_base, normalMapAsteroidArray);
             List<float> valores = new List<float>() { -4, -3, -2, -1, 1, 2, 3, 4 };
             Vector3 escalado = formato.getVolumen();
             Vector3 rotacion = new Vector3(elementoRandom(valores), elementoRandom(valores), elementoRandom(valores));
