@@ -134,7 +134,7 @@ namespace AlumnoEjemplos.TheGRID
     #region Manager Asteroide
     public class ManagerAsteroide : ManagerDibujable
     {
-
+        int cantidadEnMapa = 0;
         public ManagerAsteroide(int limite) : base(limite) 
         {
             Factory fabrica = new Factory();
@@ -160,7 +160,8 @@ namespace AlumnoEjemplos.TheGRID
                 //((TgcBoundingSphere)item.getColision().getBoundingBox()).setCenter(item.getPosicion());
             }
 
-            //reciclajeAsteroidesFueraDelSky();
+            reciclajeAsteroidesFueraDelSky();
+            if (controlados.Count < cantidadEnMapa) reinsertar(cantidadEnMapa - controlados.Count);
         }
 
         private void reciclajeAsteroidesFueraDelSky()
@@ -173,11 +174,34 @@ namespace AlumnoEjemplos.TheGRID
                 foreach (var asteroide in controlados)
                     if (!asteroide.getColision().colisiono(skysphere.bordeSky))
                     {
-                        desactivar(asteroide);
+                        //reinsertar(asteroide);
+                        desactivar(asteroide);    //Probaremos en vez de desactivar, reinsertar.
                         breakForzoso = true;
                         break;
                     }
             }
+        }
+
+        private void reinsertar(int cantidadAReinsertar)
+        {
+            List<TamanioAsteroide> opciones = new List<TamanioAsteroide>() { TamanioAsteroide.CHICO, TamanioAsteroide.MEDIANO, TamanioAsteroide.GRANDE, TamanioAsteroide.MUYGRANDE };
+            Random random = new Random();
+            Formato setearFormato = new Formato();
+            Vector3 posicion = EjemploAlumno.workspace().ObjetoPrincipal.getPosicion();
+            Vector3 ejeZ = EjemploAlumno.workspace().ObjetoPrincipal.getDireccion();
+            Vector3 ejeX = EjemploAlumno.workspace().ObjetoPrincipal.getDireccion_X();
+            Vector3 ejeY = EjemploAlumno.workspace().ObjetoPrincipal.getDireccion_Y();
+            //desactivar(asteroide);
+            for (int i = 0; i < cantidadAReinsertar; i++)
+            {                
+                setearFormato.tamanio = Factory.elementoRandom<TamanioAsteroide>(opciones);
+                //Seteamos posicion de reinsercion
+                setearFormato.posicion = Vector3.Add(Vector3.Add(Vector3.Add(posicion, Vector3.Multiply(ejeZ, 9500)), Vector3.Multiply(ejeX, random.Next(-3000, 3000))), Vector3.Multiply(ejeY, random.Next(-3000, 3000)));
+                //Pasaje de asteroides con formato
+                activarAsteroide(setearFormato);
+            }
+            
+
         }
 
         public void desactivarTodos()
@@ -188,7 +212,7 @@ namespace AlumnoEjemplos.TheGRID
             }
         }
 
-        public void activarAsteroide(Formato formato)                                                       //TODOasdasdasdasdasdasdasd
+        public void activarAsteroide(Formato formato)     
         {
             if(inactivos.Count > 0)
             {      
@@ -199,9 +223,8 @@ namespace AlumnoEjemplos.TheGRID
                 formato.actualizarAsteroide(asteroide);
                 controlados.Add(asteroide);
                 
-                List<float> valores = new List<float>() { -4, -3, -2, -1, 1, 2, 3, 4 };
                 Vector3 direccionImpulso = Factory.VectorRandom(-200, 200);
-                float velocidadImpulso = new Random().Next(1, 75);
+                float velocidadImpulso = new Random().Next(5, 250);     //IMPORTANTE: Sin importar la velocidad cargada en el formato, aca le indicamos una nueva velocidad.
                 asteroide.fisica.impulsar(direccionImpulso, velocidadImpulso, 0.01f);                
                 asteroide.activar();                                   
             }
@@ -246,12 +269,12 @@ namespace AlumnoEjemplos.TheGRID
             List<TamanioAsteroide> opciones = new List<TamanioAsteroide>(){TamanioAsteroide.CHICO, TamanioAsteroide.MEDIANO, TamanioAsteroide.GRANDE, TamanioAsteroide.MUYGRANDE};
             for (int i = 0; i < cantidadAsteroides; i++)
             {
-                /*TAMAÑO*/
                 setearFormato.tamanio = Factory.elementoRandom<TamanioAsteroide>(opciones);
                 setearFormato.posicion = new Vector3(random.Next((int)min_x, (int)max_x), random.Next((int)min_y, (int)max_y), random.Next((int)min_z, (int)max_z));
                 //Pasaje de asteroides con formato
                 activarAsteroide(setearFormato);
             }
+            cantidadEnMapa = cantidadAsteroides;
         }
 
         public void chocoNave(Dibujable nave)
@@ -361,7 +384,7 @@ namespace AlumnoEjemplos.TheGRID
             FormatoAsteroide formatoAUsar = Asteroide.elegirAsteroidePor(tamanio);
 
             asteroide.escalarSinBB(formatoAUsar.getVolumen());
-            asteroide.setFisica(0, 0, 250, formatoAUsar.getMasa());
+            asteroide.setFisica(0, 0, 500, formatoAUsar.getMasa());     //IMPORTANTE: Aca se setea la velocidad maxima que puede alcanzar un asteroide.
             asteroide.velocidad = formatoAUsar.getVelocidad();
             ((Asteroide)asteroide).tamanioAnterior = formatoAUsar.tamanioAnterior();
             ((Asteroide)asteroide).Vida = formatoAUsar.vidaInicial();
