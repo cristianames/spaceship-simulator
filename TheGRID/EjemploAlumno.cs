@@ -124,7 +124,7 @@ namespace AlumnoEjemplos.TheGRID
             this.objectosNoMeshesCollection.Add(arrow);
 
             //Cargamos el audio
-            music.playBackgound();
+            //music.playBackgound();
 
             #region PANEL DERECHO
 
@@ -146,17 +146,22 @@ namespace AlumnoEjemplos.TheGRID
             //GuiController.Instance.Modifiers.addFloat("Aceleracion", 0f,500f, objetoPrincipal.getAceleracion());  De momento lo saco.
             //GuiController.Instance.Modifiers.addFloat("Frenado", 0f, 1000f, objetoPrincipal.getAcelFrenado());    De momento lo saco.
             //Crear un modifier para un ComboBox con opciones
+            List<int> pistaDeAudio = new List<int>(){0,1,2,3,4,5,6,7,8,9};
             string[] opciones0 = new string[] { "THE OPENING", "IMPULSE DRIVE", "WELCOME HOME", "VACUUM" };
             GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 3);
             string[] opciones1 = new string[] { "Tercera Persona", "Camara FPS", "Libre" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
-            GuiController.Instance.Modifiers.addBoolean("Velocidad Manual", "Activado", true);
+            string[] opciones2 = new string[] { "Castor", "Derezzed", "M4 Part 2", "ME Theme", "New Worlds", "Solar Sailer", "Spectre", "Tali", "The Son of Flynn", "Tron Ending" };
+            GuiController.Instance.Modifiers.addInterval("Musica de fondo", opciones2, Factory.elementoRandom<int>(pistaDeAudio));
+            //GuiController.Instance.Modifiers.addBoolean("Velocidad Manual", "Activado", true);
             GuiController.Instance.Modifiers.addBoolean("Desplaz. Avanzado", "Activado", true);
             GuiController.Instance.Modifiers.addBoolean("Ver BoundingBox", "Activado", false);
             //string[] opciones4 = new string[] { "Activado", "Desactivado" };
             //GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);  De momento lo saco.
             string opcionElegida = (string)GuiController.Instance.Modifiers["Escenario Actual"];
             scheme.chequearCambio(opcionElegida);
+            opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
+            music.chequearCambio(opcionElegida);
 
             #endregion
         }   
@@ -263,7 +268,9 @@ namespace AlumnoEjemplos.TheGRID
             camara.chequearCambio(opcionElegida);
             opcionElegida = (string)GuiController.Instance.Modifiers["Escenario Actual"];
             scheme.chequearCambio(opcionElegida);
-            objetoPrincipal.velocidadManual = (bool)GuiController.Instance.Modifiers["Velocidad Manual"];
+            opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
+            music.chequearCambio(opcionElegida);
+            //objetoPrincipal.velocidadManual = (bool)GuiController.Instance.Modifiers["Velocidad Manual"];
             objetoPrincipal.desplazamientoReal = (bool)GuiController.Instance.Modifiers["Desplaz. Avanzado"];
             boundingBoxes = (bool)GuiController.Instance.Modifiers["Ver BoundingBox"];
             //opcionElegida = (string)GuiController.Instance.Modifiers["Rotacion Avanzada"];
@@ -274,7 +281,8 @@ namespace AlumnoEjemplos.TheGRID
             {
                 tiempoBlur += elapsedTime;
                 velocidadBlur = (float)Math.Pow(100D, tiempoBlur);
-                if (velocidadBlur > 299800) velocidadBlur = 299800;
+                float velocidad = 300000 - objetoPrincipal.fisica.velocidadMaxima;
+                if (velocidadBlur > velocidad) velocidadBlur = velocidad;
                // objetoPrincipal.velocidad = objetoPrincipal.fisica.velocidadMaxima;
                 //GuiController.Instance.UserVars.setValue("Vel-Actual:", velocidadBlur + objetoPrincipal.velocidadActual());
                 GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual()); 
