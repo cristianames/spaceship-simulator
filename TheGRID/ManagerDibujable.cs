@@ -291,7 +291,15 @@ namespace AlumnoEjemplos.TheGRID
                     color = Color.Red;
                     ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(color);
                     naveColision = true;
-                    nave.teChoque(asteroide, asteroide.velocidadActual());
+                    //--------
+                    int flagReintento = 0;
+                    Dupla<Vector3> velocidades = Fisica.CalcularChoqueElastico(nave, asteroide);
+                    Dupla <float> modulos = new Dupla<float>(asteroide.fisica.velocidadInstantanea * 0.9f, nave.fisica.velocidadInstantanea * 0.15f);
+                    asteroide.impulsate(velocidades.fst, modulos.fst, 0.01f);
+                    nave.impulsate(velocidades.snd, modulos.snd, 0.01f);
+                    if (flagReintento == 0) EjemploAlumno.workspace().music.playAsteroideColision();
+                    //--------
+                    //nave.teChoque(asteroide, asteroide.velocidadActual());
                     asteroide.teChoque(nave, nave.velocidadActual());
                     break;
                 }
@@ -342,7 +350,7 @@ namespace AlumnoEjemplos.TheGRID
                         ((TgcBoundingSphere)controlados[pos].getColision().getBoundingBox()).setRenderColor(Color.DarkGreen);
                         ((TgcBoundingSphere)controlados[i].getColision().getBoundingBox()).setRenderColor(Color.DarkGreen);
                         velocidades = Fisica.CalcularChoqueElastico(controlados[i], controlados[pos]);
-                        modulos = new Dupla<float>(controlados[pos].velocidad * 12, controlados[i].velocidad * 6);
+                        modulos = new Dupla<float>(controlados[pos].fisica.velocidadInstantanea * 0.9f, controlados[i].fisica.velocidadInstantanea * 0.9f);
                         controlados[pos].impulsate(velocidades.fst, modulos.fst, 0.01f);
                         controlados[i].impulsate(velocidades.snd, modulos.snd, 0.01f);
                         while (!distanciaSegura((Asteroide)controlados[i], (Asteroide)controlados[pos]))

@@ -26,7 +26,7 @@ namespace AlumnoEjemplos.TheGRID
             velMaxBlur = 300000;
             meshNave.Transform *= Matrix.RotationY(Geometry.DegreeToRadian(180));
             setObject(meshNave, 100, 50, new Vector3(0.5f, 0.5f, 0.5f));
-            setFisica(acelNormal, 400, velMaxNormal, 10000);
+            setFisica(acelNormal, 400, velMaxNormal, 100000);
             SetPropiedades(true, false, false);
             explosion = new ExplosionNave(this, 100, 200);
 

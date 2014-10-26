@@ -241,7 +241,7 @@ namespace AlumnoEjemplos.TheGRID
 
             #region -----Update------
             nave.rotarPorTiempo(elapsedTime, listaDibujable);
-            nave.desplazarsePorTiempo(elapsedTime, new List<Dibujable>(scheme.cuerpos()));
+            nave.desplazarsePorTiempo(elapsedTime, new List<Dibujable>(scheme.CuerposGravitacionales));
 
             scheme.refrescar(elapsedTime);
 
