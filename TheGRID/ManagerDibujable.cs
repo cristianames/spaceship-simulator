@@ -353,6 +353,7 @@ namespace AlumnoEjemplos.TheGRID
                         modulos = new Dupla<float>(controlados[pos].fisica.velocidadInstantanea * 0.9f, controlados[i].fisica.velocidadInstantanea * 0.9f);
                         controlados[pos].impulsate(velocidades.fst, modulos.fst, 0.01f);
                         controlados[i].impulsate(velocidades.snd, modulos.snd, 0.01f);
+                        //Lo de abajo es necesario para que no se quede eternamente reacalculando en algunos casos, pero hace que los asteroides desaparezcan.
                         while (!distanciaSegura((Asteroide)controlados[i], (Asteroide)controlados[pos]))
                         {
                             controlados[pos].impulsate(Vector3.Multiply(controlados[pos].ultimaTraslacion, -1), modulos.fst, 0.5f);

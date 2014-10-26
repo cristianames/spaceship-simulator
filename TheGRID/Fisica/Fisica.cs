@@ -127,7 +127,7 @@ namespace AlumnoEjemplos.TheGRID
             distanciaCuad *= distanciaCuad;
             float gravity = mass * masa;
             gravity = gravity / distanciaCuad;
-            gravity *= (float) 0.0001; //Aca deberia ir el coeficiente de gravitacion universal.
+            gravity *= (float) 0.001; //Aca deberia ir el coeficiente de gravitacion universal.
             posicionSolicitante.Normalize();
             posicionSolicitante.Multiply(gravity);
             return posicionSolicitante;

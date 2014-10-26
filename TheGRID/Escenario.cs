@@ -9,6 +9,9 @@ using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer;
 using Microsoft.DirectX.Direct3D;
+using AlumnoEjemplos.TheGRID.Colisiones;
+using System.Drawing;
+using AlumnoEjemplos.TheGRID.Helpers;
 
 namespace AlumnoEjemplos.TheGRID
 {
@@ -48,11 +51,14 @@ namespace AlumnoEjemplos.TheGRID
             //Creamos.....THE PLANET
             TgcMesh mesh_Planet = Factory.cargarMesh(@"asteroid\theplanet-TgcScene.xml");
             planet = new Dibujable();
-            planet.setObject(mesh_Planet, 0, 200, new Vector3(2F, 2F, 2F));
+            planet.setObject(mesh_Planet, 0, 10, new Vector3(10F, 10F, 10F));
             planet.setFisica(0, 0, 0, 500000000);
             planet.giro = -1;
-            planet.ubicarEnUnaPosicion(new Vector3(0, 0, 9000));
+            planet.ubicarEnUnaPosicion(new Vector3(0, 0, 0));
             planet.desactivar();
+            TgcBoundingSphere bounding_asteroide = new TgcBoundingSphere(new Vector3(0, 0, 0), 15000);
+            planet.setColision(new ColisionAsteroide());
+            planet.getColision().setBoundingBox(bounding_asteroide);
             EjemploAlumno.workspace().dibujableCollection.Add(planet);
 
             //crearEstrellas();   
@@ -85,6 +91,13 @@ namespace AlumnoEjemplos.TheGRID
         {
             disposeOld();
             escenarioActual = TipoModo.WELCOME_HOME;
+            Dibujable ppal = EjemploAlumno.workspace().ObjetoPrincipal;
+            List<int> opciones = new List<int>() { -15000, 15000 };
+            Vector3 posicion = ppal.getPosicion();
+            posicion.Add(Vector3.Multiply(ppal.getDireccion(),13000));
+            posicion.Add(Vector3.Multiply(ppal.getDireccion_X(), Factory.elementoRandom<int>(opciones)));
+            posicion.Add(Vector3.Multiply(ppal.getDireccion_Y(), (new Random()).Next(-3000,3000)));
+            planet.ubicarEnUnaPosicion(posicion);
             planet.activar();
             cuerposGravitacionales = new List<Dibujable>() { planet };
         }
@@ -98,6 +111,7 @@ namespace AlumnoEjemplos.TheGRID
         private void disposeOld()
         {
             asteroidManager.desactivarTodos();
+            planet.desactivar();
             EjemploAlumno.workspace().Shader.motionBlurActivado = false;
             // Aca se deben borran todas las cosas para un reinicializado.
         }
@@ -128,6 +142,7 @@ namespace AlumnoEjemplos.TheGRID
                 case TipoModo.IMPULSE_DRIVE:
                     break;
                 case TipoModo.WELCOME_HOME:
+                    colisionNavePlaneta(EjemploAlumno.workspace().ObjetoPrincipal);
                     planet.rotarPorTiempo(elapsedTime, new List<Dibujable>());
                     break;
             }
@@ -136,6 +151,25 @@ namespace AlumnoEjemplos.TheGRID
                 fuera_limite = true;
                 //Aca activaria el bombardeo de asteroides que te destrozarian la carroceria
             }*/
+        }
+
+        private void colisionNavePlaneta(Dibujable nave)
+        {
+            Color color = Color.Yellow;
+            if (nave.getColision().colisiono(((TgcBoundingSphere)planet.getColision().getBoundingBox())))
+            {
+                color = Color.Red;
+                //--------
+                int flagReintento = 0;
+                Dupla<Vector3> velocidades = Fisica.CalcularChoqueElastico(nave, planet);
+                Dupla<float> modulos = new Dupla<float>(planet.fisica.velocidadInstantanea * 0.9f, nave.fisica.velocidadInstantanea * 0.15f);
+                planet.impulsate(velocidades.fst, modulos.fst, 0.01f);
+                nave.impulsate(velocidades.snd, modulos.snd, 0.01f);
+                if (flagReintento == 0) EjemploAlumno.workspace().music.playAsteroideColision();
+                //--------
+            }
+            //((TgcBoundingSphere)planet.getColision().getBoundingBox()).setRenderColor(color);
+            ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(color);
         }
         #endregion
 
