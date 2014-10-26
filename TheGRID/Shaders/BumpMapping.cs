@@ -137,9 +137,9 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             //ASTEROIDES
             bumpEffect_asteroides = TgcShaders.loadEffect(ShaderDirectory);
             bumpEffect_asteroides.Technique = "BumpMappingTechnique";
-            bumpEffect_asteroides.SetValue("lightColor", ColorValue.FromColor(Color.DarkCyan));
+            bumpEffect_asteroides.SetValue("lightColor", ColorValue.FromColor(Color.Cyan));
             bumpEffect_asteroides.SetValue("lightIntensity", 2000f);
-            bumpEffect_asteroides.SetValue("lightAttenuation", 0.6f);
+            bumpEffect_asteroides.SetValue("lightAttenuation", 0.3f);
             bumpEffect_asteroides.SetValue("bumpiness", 1f);
             //Material
             bumpEffect_asteroides.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));

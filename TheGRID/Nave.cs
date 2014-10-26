@@ -22,7 +22,7 @@ namespace AlumnoEjemplos.TheGRID
             TgcMeshBumpMapping meshNave = TgcMeshBumpMapping.fromTgcMesh(meshNave_base, normalMapArray);
             acelNormal = 50;
             acelBlur = 500;
-            velMaxNormal = 200;
+            velMaxNormal = 500;
             velMaxBlur = 3000;
             meshNave.Transform *= Matrix.RotationY(Geometry.DegreeToRadian(180));
             setObject(meshNave, 100, 50, new Vector3(0.5f, 0.5f, 0.5f));

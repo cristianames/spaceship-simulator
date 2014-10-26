@@ -17,8 +17,7 @@ namespace AlumnoEjemplos.TheGRID
         public float velocidadCrucero;
         private float masa;
         public float Masa { get { return masa; } }
-        private Vector3 ultimaDireccionCalculada = new Vector3(0,0,0);
-        public Vector3 UltimaDireccionCalculada { get { return ultimaDireccionCalculada; } }
+        public Vector3 ultimaDireccionCalculada = new Vector3(0,0,0);
         internal bool frenado;
         internal float acelFrenado { set; get; }
         //-------------------
@@ -141,13 +140,19 @@ namespace AlumnoEjemplos.TheGRID
             return resultante;
         }
 
-        internal static Dupla<Vector3> CalcularChoqueElastico(Dibujable dibujable_i, Dibujable dibujable_pos)
+        internal static Dupla<Vector3> CalcularChoqueElastico(Dibujable colisionado, Dibujable colisionador)
         {
-            Vector3 velocidad_i = dibujable_i.fisica.ultimaDireccionCalculada;
-            velocidad_i.Multiply(-1);
-            Vector3 velocidad_pos = dibujable_pos.fisica.ultimaDireccionCalculada;
-            velocidad_pos.Multiply(-1);
-            return new Dupla<Vector3>(velocidad_i, velocidad_pos);
+            float X;
+            float Z;
+            Vector3 velocidad_colisionado = colisionado.ultimaTraslacion;       //.fisica.ultimaDireccionCalculada;
+            X = velocidad_colisionado.X;
+            Z = velocidad_colisionado.Z;
+            Vector3 velocidad_colisionador = colisionador.ultimaTraslacion;     //.fisica.ultimaDireccionCalculada;
+            velocidad_colisionado.X = velocidad_colisionador.X;
+            velocidad_colisionado.Z = velocidad_colisionador.Z;
+            velocidad_colisionador.X = X;
+            velocidad_colisionador.Z = Z;
+            return new Dupla<Vector3>(velocidad_colisionador, velocidad_colisionado);
         }
     }
 }

@@ -87,7 +87,7 @@ namespace AlumnoEjemplos.TheGRID
         internal bool desplazamientoReal { set; get; }    //Se usa o no el modulo de Fisica para el desplazamiento.
         internal bool rotacionReal { set; get; }  //Se usa o no el modulo de Fisica para la rotacion.
         internal Vector3 escala;
-        internal Vector3 ultimaTraslacion;
+        internal Vector3 ultimaTraslacion { set; get; }
         internal TgcMesh objeto { set; get; }
         private EjeCoordenadas vectorDireccion;
         internal Fisica fisica; // Acá cargamos las consideraciones del movimiento especializado.
@@ -271,7 +271,6 @@ namespace AlumnoEjemplos.TheGRID
             desplazarUnaDistancia(director);
             if (velocidadManual) traslacion = 0;
             //if (colision != null) colision.transladar(director);
-            ultimaTraslacion = director;
         }
         public void ubicarEnUnaPosicion(Vector3 posicion)   //Ubica la mesh y la BB a la posicion indicada, a partir de la posicion actual del Dibujable.
         {
@@ -288,8 +287,12 @@ namespace AlumnoEjemplos.TheGRID
             posicion.setActual(vector4.X, vector4.Y, vector4.Z);
             Transform *= desplazamiento;
             if (colision != null) this.getColision().transladar(VDesplazamiento);
+            ultimaTraslacion = VDesplazamiento;
         }
-        public void impulsate(Vector3 vector, float velocidad) { }  //Genera un impulso por un instante de tiempo, para desplazar el cuerpo una pequeña distancia, asignandole una nueva velocidad.
+        public void impulsate(Vector3 vector, float velocidad, float tiempo)
+        {  //Genera un impulso por un instante de tiempo, para desplazar el cuerpo una pequeña distancia, asignandole una nueva velocidad.
+            fisica.impulsar(vector, velocidad, tiempo);
+        }
         #endregion
 
         #region Updating

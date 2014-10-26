@@ -20,6 +20,7 @@ namespace AlumnoEjemplos.TheGRID
     {
         static Device d3dDevice = GuiController.Instance.D3dDevice;
         static string alumnoMediaFolder = GuiController.Instance.AlumnoEjemplosMediaDir;
+        static int opcionVectorRender = 0;
 
         TgcMesh mesh_asteroide_base;
         TgcTexture[] normalMapAsteroidArray;
@@ -68,6 +69,16 @@ namespace AlumnoEjemplos.TheGRID
             victima.Y = resto * elementoRandom<int>(correccion);
             Math.DivRem(numeroRandom(numeroRandom()), 32850, out resto);
             victima.Z = resto * elementoRandom<int>(correccion);
+            if (victima.X == 0 && victima.Y == 0 && victima.Z == 0)
+            {
+                switch (opcionVectorRender)
+                {
+                    case 0: victima.X = 1; opcionVectorRender = 1; break;
+                    case 1: victima.Y = 1; opcionVectorRender = 2; break;
+                    case 2: victima.Z = 1; opcionVectorRender = 0; break;
+                }
+                    
+            }
             return victima;
         }
         #endregion
@@ -156,7 +167,7 @@ namespace AlumnoEjemplos.TheGRID
             TgcMesh mesh_laser = cargarMesh("Laser\\Laser_Box-TgcScene.xml");
             //Cargamos las cosas en el dibujable
             Dibujable laser = new Dibujable();
-            laser.setObject(mesh_laser, 2000, 100, new Vector3(0.09F, 0.09F, 0.13F));
+            laser.setObject(mesh_laser, 4000, 100, new Vector3(0.09F, 0.09F, 0.13F));
             laser.desactivar();
             asignarOBB_Laser(laser, new Vector3(0.1F, 0.1F, 0.15F));
             EjemploAlumno.addMesh(laser);

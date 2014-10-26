@@ -126,7 +126,7 @@ namespace AlumnoEjemplos.TheGRID
         public void chocoAsteroide()
         {
             foreach (Dibujable laser in controlados)
-                EjemploAlumno.workspace().Escenario.asteroidManager.chocoLaser(laser);
+                if(laser.objeto.Enabled) EjemploAlumno.workspace().Escenario.asteroidManager.chocoLaser(laser);
         }
     }
     #endregion
@@ -214,12 +214,19 @@ namespace AlumnoEjemplos.TheGRID
             objeto.desactivar();
         }
 
-        public void fabricarMiniAsteroides(int cuantos, TamanioAsteroide tam, Vector3 pos)
+        public void fabricarMiniAsteroides(int cuantos, TamanioAsteroide tam, Vector3 pos, float radio)
         {
             Formato format = new Formato();
             format.tamanio = tam;
-            format.posicion = pos;
-            for(int i=0; i<cuantos;i++)  activarAsteroide(format); 
+            Vector3 correccion;
+            for (int i = 0; i < cuantos; i++)
+            {
+                correccion = Factory.VectorRandom(-500, 500);
+                correccion.Normalize();
+                correccion.Multiply(radio / 2);
+                format.posicion = Vector3.Add(pos,correccion);
+                activarAsteroide(format);
+            }
         }
 
         public void fabricarMapaAsteroides(Vector3 pos_base, int cantidadAsteroides, int radioAdmisible)
@@ -278,6 +285,8 @@ namespace AlumnoEjemplos.TheGRID
                     ((TgcObb)laser.getColision().getBoundingBox()).setRenderColor(Color.Blue);
                     ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(Color.Blue);
                     asteroide.teChoque(laser,laser.velocidadActual());
+                    EjemploAlumno.workspace().music.playAsteroideImpacto();
+                    laser.desactivar();
                     break;
                 }
             }
@@ -299,20 +308,39 @@ namespace AlumnoEjemplos.TheGRID
                 {
                     //float velocidad;
                     Dupla<Vector3> velocidades;
+                    Dupla<float> modulos;
                     if (controlados[pos].getColision().colisiono(((TgcBoundingSphere)controlados[i].getColision().getBoundingBox()))) 
                     {
+                        bool flagReintento = false;
                         //controlados[pos].teChoque(controlados[i]);
                         ((TgcBoundingSphere)controlados[pos].getColision().getBoundingBox()).setRenderColor(Color.DarkGreen);
                         ((TgcBoundingSphere)controlados[i].getColision().getBoundingBox()).setRenderColor(Color.DarkGreen);
                         velocidades = Fisica.CalcularChoqueElastico(controlados[i], controlados[pos]);
                         //controlados[pos].teChoque(controlados[i], controlados[i].velocidad);
                         //controlados[i].teChoque(controlados[pos], velocidad);
-                        controlados[pos].impulsate(velocidades.fst, controlados[pos].velocidad*12);
-                        controlados[i].impulsate(velocidades.snd, controlados[i].velocidad*6);
+                        modulos = new Dupla<float>(controlados[pos].velocidad * 12, controlados[i].velocidad * 6);
+                        controlados[pos].impulsate(velocidades.fst, modulos.fst, 0.01f);
+                        controlados[i].impulsate(velocidades.snd, modulos.snd, 0.01f);
+                        while (!distanciaSegura((Asteroide)controlados[i], (Asteroide)controlados[pos]))
+                        {
+                            controlados[pos].impulsate(velocidades.fst, modulos.fst, 0.5f);
+                            controlados[i].impulsate(velocidades.snd, modulos.snd, 0.5f);
+                            flagReintento = true;
+                        }
+                        if (!flagReintento) EjemploAlumno.workspace().music.playAsteroideColision();
                     }
                 }
                 colisionEntreAsteroides(++pos);
             }
+        }
+
+        private bool distanciaSegura(Asteroide colisionado, Asteroide colisionador)
+        {
+            float suma_radios = ((TgcBoundingSphere)colisionado.getColision().getBoundingBox()).Radius;
+            suma_radios += ((TgcBoundingSphere)colisionador.getColision().getBoundingBox()).Radius;
+            float distancia = Vector3.Subtract(colisionado.getPosicion(), colisionador.getPosicion()).Length();
+            if (distancia > suma_radios) return true;
+            else return false;
         }
 
         internal List<Dibujable> Controlados()

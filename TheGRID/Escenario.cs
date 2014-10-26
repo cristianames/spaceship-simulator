@@ -14,7 +14,7 @@ namespace AlumnoEjemplos.TheGRID
 {
     class Escenario
     {
-        public ManagerLaser laserManager = new ManagerLaser(10);
+        public ManagerLaser laserManager = new ManagerLaser(100);
         public ManagerAsteroide asteroidManager; 
         public Dibujable principal;
         public TgcBoundingCylinder limite;
@@ -123,7 +123,7 @@ namespace AlumnoEjemplos.TheGRID
         public void loadChapter1()
         {
             disposeOld();
-            asteroidManager.fabricarMapaAsteroides(principal.getPosicion(), 300, 7000);
+            asteroidManager.fabricarMapaAsteroides(principal.getPosicion(), 250, 8000);
             escenarioActual = TipoModo.THE_OPENING;
         }
         //-------------------------------------------------------------------------------------------CHAPTER-2

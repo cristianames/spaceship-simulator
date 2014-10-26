@@ -11,10 +11,10 @@ namespace AlumnoEjemplos.TheGRID
     public class Asteroide : Dibujable
     {
         public Asteroide() : base() {}
-        private float limite = 300f;
+        private float limite = 300f;    //QUE MIERDA ES LIMITE??
         public TamanioAsteroide tamanioAnterior;
         public ManagerAsteroide manager;
-        private float vida; 
+        private float vida;
         public float Vida { set { vida = value; } }
 
         public override bool soyAsteroide() { return true; }
@@ -44,7 +44,7 @@ namespace AlumnoEjemplos.TheGRID
         private void daniate(float masa, float moduloVelocidad)
         {
             //Flaseada para bajar la vida
-            vida -= 5 * masa * moduloVelocidad;
+            vida -= (float) 5 * masa * moduloVelocidad;
         }
 
         private void fraccionate()
@@ -52,8 +52,8 @@ namespace AlumnoEjemplos.TheGRID
             //ManagerAsteroide manager = TheGrid.EjemploAlumno.workspace().Escenario.asteroidManager;
             manager.desactivar(this);
             if (tamanioAnterior != TamanioAsteroide.NULO) 
-                    manager.fabricarMiniAsteroides(3, tamanioAnterior, getPosicion());
-
+                    manager.fabricarMiniAsteroides(3, tamanioAnterior, getPosicion(),((TgcBoundingSphere)colision.getBoundingBox()).Radius);
+            EjemploAlumno.workspace().music.playAsteroideFragmentacion();
         }
 
         public static FormatoAsteroide elegirAsteroidePor(TamanioAsteroide tamanio)
@@ -115,7 +115,7 @@ namespace AlumnoEjemplos.TheGRID
 
     public class AsteroideChico : FormatoAsteroide
     {
-        private float masa = 1000;
+        private float masa = 200;
         private float longitud = 1;
         public float getMasa() { return masa; }
         public Vector3 getVolumen() { return new Vector3(longitud, longitud, longitud); }
