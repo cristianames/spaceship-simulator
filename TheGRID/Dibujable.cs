@@ -165,7 +165,8 @@ namespace AlumnoEjemplos.TheGRID
         public void escalarSinBB(Vector3 escalado)  //Escala la mesh con el vector asociado.
         {
             Matrix matriz = Matrix.Scaling(escalado);
-            Transform *= matriz;
+            Transform = matriz;
+            escala = escalado;
         }
         #endregion
 

@@ -140,7 +140,7 @@ namespace AlumnoEjemplos.TheGRID
             Factory fabrica = new Factory();
             for(int i=0;i< limite;i++)
             {                                                                                                       
-/*TAMAÑO*/      Asteroide asteroide = fabrica.crearAsteroide(TamanioAsteroide.MEDIANO, new Vector3(0, 0, 0), this);
+                 Asteroide asteroide = fabrica.crearAsteroide(TamanioAsteroide.CHICO, new Vector3(0, 0, 0), this);
                 asteroide.desactivar();
                 inactivos.Add(asteroide);
             }
@@ -160,7 +160,7 @@ namespace AlumnoEjemplos.TheGRID
                 //((TgcBoundingSphere)item.getColision().getBoundingBox()).setCenter(item.getPosicion());
             }
 
-            reciclajeAsteroidesFueraDelSky();
+            //reciclajeAsteroidesFueraDelSky();
         }
 
         private void reciclajeAsteroidesFueraDelSky()
@@ -188,7 +188,7 @@ namespace AlumnoEjemplos.TheGRID
             }
         }
 
-        public void activarAsteroide(Formato formato)
+        public void activarAsteroide(Formato formato)                                                       //TODOasdasdasdasdasdasdasd
         {
             if(inactivos.Count > 0)
             {      
@@ -245,8 +245,9 @@ namespace AlumnoEjemplos.TheGRID
             Random random = new Random();
             List<TamanioAsteroide> opciones = new List<TamanioAsteroide>(){TamanioAsteroide.CHICO, TamanioAsteroide.MEDIANO, TamanioAsteroide.GRANDE, TamanioAsteroide.MUYGRANDE};
             for (int i = 0; i < cantidadAsteroides; i++)
-            {                                                                                                          
-/*TAMAÑO*/      setearFormato.tamanio = TamanioAsteroide.MEDIANO; //Factory.elementoRandom<TamanioAsteroide>(opciones);
+            {
+                /*TAMAÑO*/
+                setearFormato.tamanio = Factory.elementoRandom<TamanioAsteroide>(opciones);
                 setearFormato.posicion = new Vector3(random.Next((int)min_x, (int)max_x), random.Next((int)min_y, (int)max_y), random.Next((int)min_z, (int)max_z));
                 //Pasaje de asteroides con formato
                 activarAsteroide(setearFormato);
@@ -311,26 +312,24 @@ namespace AlumnoEjemplos.TheGRID
                     Dupla<float> modulos;
                     if (controlados[pos].getColision().colisiono(((TgcBoundingSphere)controlados[i].getColision().getBoundingBox()))) 
                     {
-                        bool flagReintento = false;
-                        //controlados[pos].teChoque(controlados[i]);
+                        int flagReintento = 0;
                         ((TgcBoundingSphere)controlados[pos].getColision().getBoundingBox()).setRenderColor(Color.DarkGreen);
                         ((TgcBoundingSphere)controlados[i].getColision().getBoundingBox()).setRenderColor(Color.DarkGreen);
                         velocidades = Fisica.CalcularChoqueElastico(controlados[i], controlados[pos]);
-                        //controlados[pos].teChoque(controlados[i], controlados[i].velocidad);
-                        //controlados[i].teChoque(controlados[pos], velocidad);
                         modulos = new Dupla<float>(controlados[pos].velocidad * 12, controlados[i].velocidad * 6);
                         controlados[pos].impulsate(velocidades.fst, modulos.fst, 0.01f);
                         controlados[i].impulsate(velocidades.snd, modulos.snd, 0.01f);
                         while (!distanciaSegura((Asteroide)controlados[i], (Asteroide)controlados[pos]))
                         {
-                            controlados[pos].impulsate(velocidades.fst, modulos.fst, 0.5f);
-                            controlados[i].impulsate(velocidades.snd, modulos.snd, 0.5f);
-                            flagReintento = true;
+                            controlados[pos].impulsate(Vector3.Multiply(controlados[pos].ultimaTraslacion, -1), modulos.fst, 0.5f);
+                            controlados[i].impulsate(Vector3.Multiply(controlados[i].ultimaTraslacion, -1), modulos.snd, 0.5f);
+                            if (flagReintento > 1000) { desactivar(controlados[i]); break; }    //Como reacomoda a lo pavote, puede vivir fallando.
+                            flagReintento++;
                         }
-                        if (!flagReintento) EjemploAlumno.workspace().music.playAsteroideColision();
+                        if (flagReintento == 0) EjemploAlumno.workspace().music.playAsteroideColision();
                     }
                 }
-                colisionEntreAsteroides(++pos);
+                if (pos < controlados.Count)colisionEntreAsteroides(++pos);
             }
         }
 
@@ -372,9 +371,9 @@ namespace AlumnoEjemplos.TheGRID
             asteroide.giro = Factory.elementoRandom<int>(opciones);
             asteroide.inclinacion = Factory.elementoRandom<int>(opciones);
 
-            //float radioMalla3DsMax = 7.633f;
+            float radioMalla3DsMax = 10.633f;
             TgcBoundingSphere bounding = (TgcBoundingSphere) asteroide.getColision().getBoundingBox();
-/*TAMAÑO*/  bounding.setValues(bounding.Center, 12 * formatoAUsar.getVolumen().X * formatoAUsar.getVolumen().X);
+/*TAMAÑO*/  bounding.setValues(bounding.Center, radioMalla3DsMax * formatoAUsar.getVolumen().X);
             asteroide.ubicarEnUnaPosicion(posicion);
         }
     }
