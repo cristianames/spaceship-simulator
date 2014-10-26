@@ -112,6 +112,7 @@ namespace AlumnoEjemplos.TheGRID
         {
             asteroidManager.desactivarTodos();
             planet.desactivar();
+            cuerposGravitacionales = new List<Dibujable>();
             EjemploAlumno.workspace().Shader.motionBlurActivado = false;
             // Aca se deben borran todas las cosas para un reinicializado.
         }
@@ -161,10 +162,24 @@ namespace AlumnoEjemplos.TheGRID
                 color = Color.Red;
                 //--------
                 int flagReintento = 0;
-                Dupla<Vector3> velocidades = Fisica.CalcularChoqueElastico(nave, planet);
-                Dupla<float> modulos = new Dupla<float>(planet.fisica.velocidadInstantanea * 0.9f, nave.fisica.velocidadInstantanea * 0.15f);
-                planet.impulsate(velocidades.fst, modulos.fst, 0.01f);
-                nave.impulsate(velocidades.snd, modulos.snd, 0.01f);
+                //Dupla<Vector3> velocidades = Fisica.CalcularChoqueElastico(nave, planet);
+                Vector3 direccion = nave.getDireccion();
+                Vector3 distancias = Vector3.Subtract(nave.getPosicion(), planet.getPosicion());
+                //distancias.X *= distancias.X;
+                //distancias.Y *= distancias.Y;
+                //distancias.Z *= distancias.Z;
+                distancias.Normalize();
+                distancias.Multiply(1);
+                direccion.X *= distancias.X;
+                direccion.Y *= distancias.Y;
+                direccion.Z *= distancias.Z;
+                float velocidad = nave.fisica.velocidadInstantanea * 0.7f;// / 3f;
+                //velocidad = (velocidad * distancias.X)+(velocidad * distancias.Y)+(velocidad * distancias.Z);
+                float radioCuad = FastMath.Pow2(((TgcBoundingSphere)planet.getColision().getBoundingBox()).Radius) + 0;
+                while (Vector3.LengthSq(Vector3.Subtract(nave.getPosicion(), planet.getPosicion())) < radioCuad)
+                {
+                    nave.impulsate(direccion, velocidad, 0.01f);
+                }                
                 if (flagReintento == 0) EjemploAlumno.workspace().music.playAsteroideColision();
                 //--------
             }
