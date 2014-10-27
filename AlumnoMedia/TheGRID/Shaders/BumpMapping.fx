@@ -106,6 +106,11 @@ sampler FrontalTarget = sampler_state
 	MIPFILTER = LINEAR;
 };
 
+//Parametros de Spot
+float3 spotLightDir; //Direccion del cono de luz
+float spotLightAngleCos; //Angulo de apertura del cono de luz (en radianes)
+float spotLightExponent; //Exponente de atenuacion dentro del cono de luz
+
 
 /**************************************************************************************/
 /* BumpMappingTechnique */
@@ -239,7 +244,7 @@ float4 ps_general(PS_INPUT input) : COLOR0
 ///////////////////////////////Efecto Join//////////////////////////////////////////////////////////
 
 //Deben Sumar 100% Para que tenga sentido
-float Ksol = float(0.7);
+float Ksol = float(2);
 float Kder = float(0.1);
 float Kizq = float(0.1);
 float Kfront = float(0.1);
@@ -259,10 +264,132 @@ void ps_join(in float2 Texcoord: TEXCOORD0, out float4 Color : COLOR)
 	float4 der = tex2D(DerTarget, Texcoord);
 	float4 front = tex2D(FrontalTarget, Texcoord);
 	//mergeamos los textels
-	Color = (sol*Ksol)+(izq*Kizq)+(der*Kder)+(front*Kfront);
+	Color = sol + saturate((sol*Ksol) + (izq*Kizq) + (der*Kder) + (front*Kfront));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+/**************************************************************************************/
+/* VERTEX_COLOR */
+/**************************************************************************************/
+
+//Input del Vertex Shader
+struct VS_INPUT_VERTEX_COLOR
+{
+	float4 Position : POSITION0;
+	float3 Normal : NORMAL0;
+	float4 Color : COLOR;
+};
+
+//Output del Vertex Shader
+struct VS_OUTPUT_VERTEX_COLOR
+{
+	float4 Position : POSITION0;
+	float4 Color : COLOR;
+	float3 WorldPosition : TEXCOORD0;
+	float3 WorldNormal : TEXCOORD1;
+	float3 LightVec	: TEXCOORD2;
+	float3 HalfAngleVec	: TEXCOORD3;
+};
+
+
+//Vertex Shader
+VS_OUTPUT_VERTEX_COLOR vs_VertexColor(VS_INPUT_VERTEX_COLOR input)
+{
+	VS_OUTPUT_VERTEX_COLOR output;
+
+	//Proyectar posicion
+	output.Position = mul(input.Position, matWorldViewProj);
+
+	//Enviar color directamente
+	output.Color = input.Color;
+
+	//Posicion pasada a World-Space (necesaria para atenuación por distancia)
+	output.WorldPosition = mul(input.Position, matWorld);
+
+	/* Pasar normal a World-Space
+	Solo queremos rotarla, no trasladarla ni escalarla.
+	Por eso usamos matInverseTransposeWorld en vez de matWorld */
+	output.WorldNormal = mul(input.Normal, matInverseTransposeWorld).xyz;
+
+	//LightVec (L): vector que va desde el vertice hacia la luz. Usado en Diffuse y Specular
+	output.LightVec = lightPosition.xyz - output.WorldPosition;
+
+	//ViewVec (V): vector que va desde el vertice hacia la camara.
+	float3 viewVector = eyePosition.xyz - output.WorldPosition;
+
+		//HalfAngleVec (H): vector de reflexion simplificado de Phong-Blinn (H = |V + L|). Usado en Specular
+		output.HalfAngleVec = viewVector + output.LightVec;
+
+	return output;
+}
+
+//Input del Pixel Shader
+struct PS_INPUT_VERTEX_COLOR
+{
+	float4 Color : COLOR0;
+	float3 WorldPosition : TEXCOORD0;
+	float3 WorldNormal : TEXCOORD1;
+	float3 LightVec	: TEXCOORD2;
+	float3 HalfAngleVec	: TEXCOORD3;
+};
+
+//Pixel Shader
+float4 ps_VertexColor(PS_INPUT_VERTEX_COLOR input) : COLOR0
+{
+	float ld = 0;		// luz difusa
+	float le = 0;		// luz specular
+	//Normalizar vectores
+	float3 Nn = normalize(input.WorldNormal);
+	float3 Ln = normalize(input.LightVec);
+	float3 Hn = normalize(input.HalfAngleVec);
+
+	//Calcular atenuacion por distancia
+	float distAtten = length(lightPosition.xyz - input.WorldPosition) * lightAttenuation;
+
+	//Calcular atenuacion por Spot Light. Si esta fuera del angulo del cono tiene 0 intensidad.
+	float spotAtten = dot(-spotLightDir, Ln);
+	spotAtten = (spotAtten > spotLightAngleCos)
+		? pow(spotAtten, spotLightExponent)
+		: 0.0;
+
+	//Calcular intensidad de la luz segun la atenuacion por distancia y si esta adentro o fuera del cono de luz
+	float intensity = lightIntensity * spotAtten / distAtten;
+
+	//Componente Ambient
+	float3 ambientLight = intensity * lightColor * materialAmbientColor;
+
+		//Componente Diffuse: N dot L
+		float3 n_dot_l = dot(Nn, Ln);
+		float3 diffuseLight = intensity * lightColor * materialDiffuseColor.rgb * max(0.0, n_dot_l); //Controlamos que no de negativo
+
+		//Componente Specular: (N dot H)^exp
+		float3 n_dot_h = dot(Nn, Hn);
+		n_dot_h = pow(n_dot_h, fSpecularPower);
+		le += n_dot_h*k_ls;
+		float3 specularLight = n_dot_l <= 0.0
+		? float3(0.0, 0.0, 0.0)
+		: (intensity * lightColor * materialSpecularColor * pow(max(0.0, le), materialSpecularExp));
+
+
+	/* Color final: modular (Emissive + Ambient + Diffuse) por el color del mesh, y luego sumar Specular.
+	El color Alpha sale del diffuse material */
+	float4 finalColor = float4(saturate(materialEmissiveColor + ambientLight + diffuseLight) * input.Color + specularLight, materialDiffuseColor.a);
+
+
+		return finalColor;
+}
+
+/*
+* Technique VERTEX_COLOR
+*/
+technique VERTEX_COLOR
+{
+	pass Pass_0
+	{
+		VertexShader = compile vs_2_0 vs_VertexColor();
+		PixelShader = compile ps_2_0 ps_VertexColor();
+	}
+}
 
 /*
 * Technique de BumpMapping

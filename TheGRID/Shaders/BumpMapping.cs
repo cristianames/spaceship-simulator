@@ -16,6 +16,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
     //Estructura para manejar las luces
     struct LightValues
     {
+        public Vector3 direccion;
+        public float angulo;
         public Vector3 posicion_ParaSol;
         public Vector3 posicion_ParaAsteroide;
         public Vector3 posicion_ParaNave;
@@ -34,6 +36,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         #region Atributos
         private string ShaderDirectory = EjemploAlumno.TG_Folder + "Shaders\\BumpMapping.fx";
         private SuperRender mainShader;
+        TgcTexture normalMapAsteroid;
         private Surface g_pDepthStencil;     // Depth-stencil buffer 
         private Texture g_pRenderTarget;     //Textura Final
         private VertexBuffer g_pVBV3D;
@@ -62,6 +65,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         {
             mainShader = main;
             Device d3dDevice = GuiController.Instance.D3dDevice;
+            normalMapAsteroid = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "asteroid\\Textures\\3215_Bump.jpg");
             //Inicializo el depth stencil
             g_pDepthStencil = d3dDevice.CreateDepthStencilSurface(d3dDevice.PresentationParameters.BackBufferWidth,
                                                              d3dDevice.PresentationParameters.BackBufferHeight,
@@ -102,10 +106,16 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                         CustomVertex.PositionTextured.Format, Pool.Default);
             g_pVBV3D.SetData(vertices, 0, LockFlags.None);
             //Creamos las luces
-            light_sol = crearLuz(Color.White, 550f, 7000f, 5000f, 0.6f, 0.2f, 0.2f, 1f);
-            light_izq = crearLuz(Color.Green, 1f, 5000f, 10f, 1f, 1f, 1f, 1f);
-            light_der = crearLuz(Color.Green, 1f, 5000f, 10f, 1f, 1f, 1f, 1f);
-            light_front = crearLuz(Color.Yellow, 1f, 5000f, 10f, 1f, 1f, 1f, 1f);
+            light_sol = crearLuz(Color.White, 1000f, 2000f, 1000f, 0.6f, 0.2f, 0.2f, 1f);
+            light_izq = crearLuz(Color.Green, 1f, 1000f, 10f, 0.3f, 0.3f, 0.3f, 1f);
+            light_izq.direccion = new Vector3(0, -1, 0);
+            light_izq.angulo = -10f;
+            light_der = crearLuz(Color.Green, 1f, 1000f, 10f, 0.3f, 0.3f, 0.3f, 1f);
+            light_der.direccion = new Vector3(0, 1, 0);
+            light_der.angulo = -10f;
+            light_front = crearLuz(Color.Yellow, 1f, 1000f, 10f, 0.3f, 0.3f, 0.3f, 1f);
+            light_front.direccion = new Vector3(0, 0, 1);
+            light_front.angulo = -10f;
             //Cuadraditos que simulan luces
             lightMeshes = new TgcBox[3];
             //Color[] c = new Color[3] { Color.Red, Color.Green, Color.Green };
@@ -114,6 +124,26 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 lightMeshes[i] = TgcBox.fromSize(new Vector3(1f, 1f, 1f), Color.Blue);
                 EjemploAlumno.workspace().objectosNoMeshesCollection.Add(lightMeshes[i]);
             }
+            /*d3dDevice.SetRenderState(RenderStates.Lighting, true);
+            d3dDevice.SetRenderState(RenderStates.SpecularEnable, true);
+            d3dDevice.Lights[0].Type = LightType.Point;
+            d3dDevice.Lights[0].Diffuse = Color.FromArgb(255, 255, 255, 255);
+            d3dDevice.Lights[0].Specular = Color.FromArgb(255, 255, 255, 255);
+            d3dDevice.Lights[0].Attenuation0 = 0.0f;
+            d3dDevice.Lights[0].Range = 50000.0f;
+            d3dDevice.Lights[0].Enabled = true;
+            d3dDevice.Lights[1].Type = LightType.Point;
+            d3dDevice.Lights[1].Diffuse = Color.FromArgb(255, 255, 255, 255);
+            d3dDevice.Lights[1].Specular = Color.FromArgb(255, 255, 255, 255);
+            d3dDevice.Lights[1].Attenuation0 = 0.0f;
+            d3dDevice.Lights[1].Range = 50000.0f;
+            d3dDevice.Lights[1].Enabled = true;
+            d3dDevice.Lights[1].Type = LightType.Point;
+            d3dDevice.Lights[1].Diffuse = Color.FromArgb(255, 255, 255, 255);
+            d3dDevice.Lights[1].Specular = Color.FromArgb(255, 255, 255, 255);
+            d3dDevice.Lights[1].Attenuation0 = 0.0f;
+            d3dDevice.Lights[1].Range = 50000.0f;
+            d3dDevice.Lights[1].Enabled = true;*/
             cargarBumpEffect();
         }
 
@@ -155,11 +185,11 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.SetRenderTarget(0, pSurf);
             device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
             device.BeginScene();
-                renderScene(parametros.meshes, light_der, "BumpMappingTechnique");
-                renderScene(parametros.sol, light_der, "BumpMappingTechnique");
+            renderScene(parametros.meshes, light_der, "VERTEX_COLOR");
+                renderScene(parametros.sol, light_der, "VERTEX_COLOR");
                 renderScene(parametros.elementosRenderizables);
                 if (!EjemploAlumno.workspace().camara.soyFPS())
-                    renderScene(parametros.nave, light_der, "BumpMappingTechnique");
+                    renderScene(parametros.nave, light_der, "VERTEX_COLOR");
             device.EndScene();
             pSurf.Dispose();
             //3° Pasada, luz izquierda
@@ -168,11 +198,11 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.SetRenderTarget(0, pSurf);
             device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
             device.BeginScene();
-                renderScene(parametros.meshes, light_izq, "BumpMappingTechnique");
-                renderScene(parametros.sol, light_izq, "BumpMappingTechnique");
+            renderScene(parametros.meshes, light_izq, "VERTEX_COLOR");
+                renderScene(parametros.sol, light_izq, "VERTEX_COLOR");
                 renderScene(parametros.elementosRenderizables);
                 if (!EjemploAlumno.workspace().camara.soyFPS())
-                    renderScene(parametros.nave, light_izq, "BumpMappingTechnique");
+                    renderScene(parametros.nave, light_izq, "VERTEX_COLOR");
             device.EndScene();
             pSurf.Dispose();
             //4° Pasada, luz delantera
@@ -181,11 +211,11 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.SetRenderTarget(0, pSurf);
             device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
             device.BeginScene();
-                renderScene(parametros.meshes, light_front, "BumpMappingTechnique");
-                renderScene(parametros.sol, light_front, "BumpMappingTechnique");
+            renderScene(parametros.meshes, light_front, "VERTEX_COLOR");
+            renderScene(parametros.sol, light_front, "VERTEX_COLOR");
                 renderScene(parametros.elementosRenderizables);
                 if (!EjemploAlumno.workspace().camara.soyFPS())
-                    renderScene(parametros.nave, light_front, "BumpMappingTechnique");
+                    renderScene(parametros.nave, light_front, "VERTEX_COLOR");
             device.EndScene();
             pSurf.Dispose();
             device.DepthStencilSurface = pOldDS;
@@ -220,7 +250,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
         public void renderScene(Nave nave, LightValues light, string technique)
         {
-            actualizarEfect(bumpEffect_nave,light.posicion_ParaNave, light.color, light.intensidad_nave, light.atenuacion_nave, light.bumpiness);
+            actualizarEfect(bumpEffect_nave,light.posicion_ParaNave, light.direccion, light.angulo, light.color, light.intensidad_nave, light.atenuacion_nave, light.bumpiness);
             ((TgcMesh)nave.objeto).Effect = bumpEffect_nave;
             ((TgcMesh)nave.objeto).Technique = technique;
             nave.render();
@@ -235,7 +265,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
         public void renderScene(Dibujable sol, LightValues light, string technique)
         {
-            actualizarEfect(bumpEffect_sol, light.posicion_ParaSol, light.color, light.intensidad_sol, light.atenuacion_sol, light.bumpiness);
+            actualizarEfect(bumpEffect_sol, light.posicion_ParaSol, light.direccion, light.angulo, light.color, light.intensidad_sol, light.atenuacion_sol, light.bumpiness);
             ((TgcMesh)sol.objeto).Effect = bumpEffect_sol;
             ((TgcMesh)sol.objeto).Technique = technique;
             sol.render();
@@ -243,7 +273,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
         public void renderScene(List<Dibujable> meshes, LightValues light, string technique)
         {
-            actualizarEfect(bumpEffect_asteroides, light.posicion_ParaAsteroide, light.color, light.intensidad_asteroide, light.atenuacion_asteroide, light.bumpiness);
+            actualizarEfect(bumpEffect_asteroides, light.posicion_ParaAsteroide, light.direccion, light.angulo, light.color, light.intensidad_asteroide, light.atenuacion_asteroide, light.bumpiness);
             foreach (Dibujable dibujable in meshes)
             {
                 if (dibujable.soyAsteroide())
@@ -273,12 +303,12 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         {
             //ASTEROIDES
             bumpEffect_asteroides = TgcShaders.loadEffect(ShaderDirectory);
-            //Seteamos las coordenadas de la pantalla
+            bumpEffect_asteroides.SetValue("texNormalMap", (BaseTexture) normalMapAsteroid.D3dTexture);
             bumpEffect_asteroides.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
             bumpEffect_asteroides.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
             bumpEffect_asteroides.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.White));
             bumpEffect_asteroides.SetValue("materialSpecularColor", ColorValue.FromColor(Color.White));
-            bumpEffect_asteroides.SetValue("materialSpecularExp", 9f);
+            bumpEffect_asteroides.SetValue("materialSpecularExp", 7f);
 
             //NAVE
             bumpEffect_nave = TgcShaders.loadEffect(ShaderDirectory);
@@ -286,7 +316,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             bumpEffect_nave.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
             bumpEffect_nave.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.White));
             bumpEffect_nave.SetValue("materialSpecularColor", ColorValue.FromColor(Color.White));
-            bumpEffect_nave.SetValue("materialSpecularExp", 9f);
+            bumpEffect_nave.SetValue("materialSpecularExp", 7f);
 
             //SOL
             bumpEffect_sol = TgcShaders.loadEffect(ShaderDirectory);
@@ -294,7 +324,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             bumpEffect_sol.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
             bumpEffect_sol.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.White));
             bumpEffect_sol.SetValue("materialSpecularColor", ColorValue.FromColor(Color.White));
-            bumpEffect_sol.SetValue("materialSpecularExp", 9f);
+            bumpEffect_sol.SetValue("materialSpecularExp", 7f);
         }
         
         #region Luces
@@ -309,10 +339,13 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             light.atenuacion_asteroide = a_ast;
             light.atenuacion_nave = a_nave;
             light.bumpiness = bump;
+
+            light.angulo = 0;
+            light.direccion = new Vector3(0,0,0);
             return light;
         }
 
-        private void actualizarEfect(Effect effect,Vector3 pos, Color color, float intensidad, float atenuacion, float bump)
+        private void actualizarEfect(Effect effect,Vector3 pos, Vector3 dir, float angle, Color color, float intensidad, float atenuacion, float bump)
         {
             Device d3dDevice = GuiController.Instance.D3dDevice;
             effect.SetValue("screen_dx", d3dDevice.PresentationParameters.BackBufferWidth);
@@ -323,11 +356,17 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             effect.SetValue("bumpiness", bump);
             effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(pos));
             effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(eyePosition));
+            effect.SetValue("spotLightDir", TgcParserUtils.vector3ToFloat3Array(dir));
+            effect.SetValue("spotLightAngleCos", angle);
+            effect.SetValue("spotLightExponent", 7f);
         }
         private void actualizarLuces()
         {
+            
+            Device device = GuiController.Instance.D3dDevice;
+
             eyePosition = EjemploAlumno.workspace().camara.PosicionDeCamara;
-            Vector3 pos_sol = EjemploAlumno.workspace().sol.getPosicion();
+            Vector3 pos_sol = -EjemploAlumno.workspace().sol.getPosicion();
 
             light_sol.posicion_ParaNave = pos_sol;
             light_sol.posicion_ParaSol = pos_sol;// +new Vector3(500, 900, -900);
@@ -351,6 +390,21 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             lightMeshes[2].setPositionSize(light_der.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
             lightMeshes[1].setPositionSize(light_izq.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
             lightMeshes[0].setPositionSize(light_front.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
+
+            /*device.Lights[0].Position = light_der.posicion_ParaNave;
+            device.Lights[0].Diffuse = light_der.color;
+            device.Lights[0].Specular = light_der.color;
+            device.Lights[0].Update();
+            device.Lights[1].Position = light_izq.posicion_ParaNave;
+            device.Lights[1].Diffuse = light_izq.color;
+            device.Lights[1].Specular = light_izq.color;
+            device.Lights[1].Update();
+            device.Lights[2].Position = light_front.posicion_ParaNave;
+            device.Lights[2].Diffuse = light_front.color;
+            device.Lights[2].Specular = light_front.color;
+            device.Lights[2].Update();
+             * */
+
         }
 
         #endregion
