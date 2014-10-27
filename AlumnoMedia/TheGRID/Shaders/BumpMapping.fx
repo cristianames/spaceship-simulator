@@ -184,7 +184,7 @@ struct PS_INPUT
 
 float k_la = 0.3;							// luz ambiente global
 float k_ld = 0.9;							// luz difusa
-float k_ls = 0.4;							// luz specular
+float k_ls = 0.8;							// luz specular
 float fSpecularPower = 16.84;				// exponente de la luz specular
 
 //Pixel Shader

@@ -102,16 +102,17 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                         CustomVertex.PositionTextured.Format, Pool.Default);
             g_pVBV3D.SetData(vertices, 0, LockFlags.None);
             //Creamos las luces
-            light_sol = crearLuz(Color.White, 1000f, 7000f, 5000f, 0.1f, 0.2f, 0.2f, 1f);
-            light_izq = crearLuz(Color.Green, 1f, 1000f, 10f, 0.6f, 1f, 1f, 1f);
-            light_der = crearLuz(Color.Green, 1f, 1000f, 10f, 0.6f, 1f, 1f, 1f);
-            light_front = crearLuz(Color.Yellow, 1f, 1000f, 10f, 0.6f, 1f, 1f, 1f);
+            light_sol = crearLuz(Color.White, 550f, 7000f, 5000f, 0.6f, 0.2f, 0.2f, 1f);
+            light_izq = crearLuz(Color.Green, 1f, 5000f, 10f, 1f, 1f, 1f, 1f);
+            light_der = crearLuz(Color.Green, 1f, 5000f, 10f, 1f, 1f, 1f, 1f);
+            light_front = crearLuz(Color.Yellow, 1f, 5000f, 10f, 1f, 1f, 1f, 1f);
             //Cuadraditos que simulan luces
             lightMeshes = new TgcBox[3];
-            Color[] c = new Color[3] { Color.Red, Color.Green, Color.Green };
+            //Color[] c = new Color[3] { Color.Red, Color.Green, Color.Green };
             for (int i = 0; i < lightMeshes.Length; i++)
             {
-                lightMeshes[i] = TgcBox.fromSize(new Vector3(1f, 1f, 1f), c[i]);
+                lightMeshes[i] = TgcBox.fromSize(new Vector3(1f, 1f, 1f), Color.Blue);
+                EjemploAlumno.workspace().objectosNoMeshesCollection.Add(lightMeshes[i]);
             }
             cargarBumpEffect();
         }
@@ -223,13 +224,13 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             ((TgcMesh)nave.objeto).Effect = bumpEffect_nave;
             ((TgcMesh)nave.objeto).Technique = technique;
             nave.render();
-            //Renderizamos las luces de la nave
+            /*//Renderizamos las luces de la nave
             foreach(TgcBox cajita in lightMeshes)
             {
                 cajita.Effect = bumpEffect_nave;
                 cajita.Technique = technique;
                 cajita.render();
-            }
+            }*/
         }
 
         public void renderScene(Dibujable sol, LightValues light, string technique)
@@ -242,7 +243,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
         public void renderScene(List<Dibujable> meshes, LightValues light, string technique)
         {
-            actualizarEfect(bumpEffect_asteroides, light.posicion_ParaAsteroide, light.color, 100f, light.atenuacion_asteroide, light.bumpiness);
+            actualizarEfect(bumpEffect_asteroides, light.posicion_ParaAsteroide, light.color, light.intensidad_asteroide, light.atenuacion_asteroide, light.bumpiness);
             foreach (Dibujable dibujable in meshes)
             {
                 if (dibujable.soyAsteroide())
@@ -276,7 +277,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             bumpEffect_asteroides.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
             bumpEffect_asteroides.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
             bumpEffect_asteroides.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.White));
-            bumpEffect_asteroides.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
+            bumpEffect_asteroides.SetValue("materialSpecularColor", ColorValue.FromColor(Color.White));
             bumpEffect_asteroides.SetValue("materialSpecularExp", 9f);
 
             //NAVE
@@ -327,33 +328,29 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         {
             eyePosition = EjemploAlumno.workspace().camara.PosicionDeCamara;
             Vector3 pos_sol = EjemploAlumno.workspace().sol.getPosicion();
-            Vector3 pos_nave = EjemploAlumno.workspace().nave.getPosicion();
 
             light_sol.posicion_ParaNave = pos_sol;
-            light_sol.posicion_ParaSol = pos_sol + new Vector3(500, 900, -900);
+            light_sol.posicion_ParaSol = pos_sol;// +new Vector3(500, 900, -900);
             light_sol.posicion_ParaAsteroide = pos_sol + new Vector3(0, 0, -18000);
 
             light_izq.color = (Color)GuiController.Instance.Modifiers["lightColor"];
-            light_izq.posicion_ParaNave = pos_nave;
-            light_izq.posicion_ParaNave += new Vector3(-10, 0, 0);
+            light_izq.posicion_ParaNave = EjemploAlumno.workspace().nave.puntoLuzIzq();
             light_izq.posicion_ParaAsteroide = light_izq.posicion_ParaNave;
             light_izq.posicion_ParaSol = light_izq.posicion_ParaNave;
 
             light_der.color = (Color)GuiController.Instance.Modifiers["lightColor"];
-            light_der.posicion_ParaNave = pos_nave;
-            light_der.posicion_ParaNave += new Vector3(10, 0, 0);
+            light_der.posicion_ParaNave = EjemploAlumno.workspace().nave.puntoLuzDer();
             light_der.posicion_ParaAsteroide = light_der.posicion_ParaNave;
             light_der.posicion_ParaSol = light_der.posicion_ParaNave;
 
             light_front.color = (Color)GuiController.Instance.Modifiers["lightColor"];
-            light_front.posicion_ParaNave = pos_nave;
-            light_front.posicion_ParaNave += new Vector3(0, 0, 50);
+            light_front.posicion_ParaNave = EjemploAlumno.workspace().nave.puntoLuzCent();
             light_front.posicion_ParaAsteroide = light_der.posicion_ParaNave;
             light_front.posicion_ParaSol = light_der.posicion_ParaNave;
 
-            lightMeshes[0].setPositionSize(light_der.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
+            lightMeshes[2].setPositionSize(light_der.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
             lightMeshes[1].setPositionSize(light_izq.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
-            lightMeshes[2].setPositionSize(light_front.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
+            lightMeshes[0].setPositionSize(light_front.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
         }
 
         #endregion
