@@ -13,8 +13,8 @@ namespace AlumnoEjemplos.TheGRID
         public Vector3 vectorY;
         public Vector3 vectorZ;
         public Vector3 vectorK;
-        public Matrix mRotor;
-        public List<Vector3> lRotor { get; set; }
+        public Matrix mRotor { get; set; }          //Matriz de todas las rotaciones hasta el momento, sin las traslaciones del cuerpo al (0,0,0).
+        public List<Vector3> lRotor { get; set; }       //Lista de todas las rotaciones que se fueron haciendo. (Las BB no usan matriz de rotacion sino que un vector... Solo por eso.)
 
         private Vector3 centroObjeto;
 
