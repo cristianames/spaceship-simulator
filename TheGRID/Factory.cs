@@ -178,6 +178,18 @@ namespace AlumnoEjemplos.TheGRID
             EjemploAlumno.addMesh(laser);
             return laser;
         }
+        public static Dibujable crearLaserAzul()   //Carga la Mesh con los valores default + la OBB.
+        {
+            //Creemos la mesh
+            TgcMesh mesh_laser = cargarMesh("Laser\\Laser_Box-TgcScene.xml");
+            //Cargamos las cosas en el dibujable
+            Dibujable laser = new Dibujable();
+            laser.setObject(mesh_laser, 6000, 100, new Vector3(0.09F, 0.09F, 0.13F));
+            laser.desactivar();
+            asignarOBB_Laser(laser, new Vector3(0.1F, 0.1F, 0.15F));
+            EjemploAlumno.addMesh(laser);
+            return laser;
+        }
         public static Dibujable resetearLaser(Dibujable laser)   //Resetea el dibujable y le agrega ademas la OBB.
         {
             EjemploAlumno.workspace().dibujableCollection.Remove(laser);
