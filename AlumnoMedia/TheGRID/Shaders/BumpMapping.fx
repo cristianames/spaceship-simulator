@@ -1,7 +1,7 @@
 /*
 * Shader utilizado para efecto de BumpMapping sobre un TgcMesh.
 * Solo soporta TgcMesh con RenderType del tipo DIFFUSE_MAP
-* Tiene una sola technique: BumpMappingTechnique
+* Tiene una Technique de BumpMappingTechnique y una de PostProcesado
 */
 
 
@@ -39,6 +39,9 @@ sampler2D normalMap = sampler_state
 	MIPFILTER = LINEAR;
 };
 
+float screen_dx;					// tamaño de la pantalla en pixels
+float screen_dy;
+
 //Material del mesh
 float3 materialEmissiveColor; //Color RGB
 float3 materialAmbientColor; //Color RGB
@@ -61,6 +64,47 @@ const float3 BUMP_SMOOTH = { 0.5f, 0.5f, 1.0f };
 //Factor de reflexion
 float reflection;
 
+//Texturas de Post Procesado de luces
+texture luzSolarTarget;
+sampler SolTarget = sampler_state
+{
+	Texture = <luzSolarTarget>;
+	ADDRESSU = CLAMP;
+	ADDRESSV = CLAMP;
+	MINFILTER = LINEAR;
+	MAGFILTER = LINEAR;
+	MIPFILTER = LINEAR;
+};
+texture luzIzqTarget;
+sampler IzqTarget = sampler_state
+{
+	Texture = <luzIzqTarget>;
+	ADDRESSU = CLAMP;
+	ADDRESSV = CLAMP;
+	MINFILTER = LINEAR;
+	MAGFILTER = LINEAR;
+	MIPFILTER = LINEAR;
+};
+texture luzDerTarget;
+sampler DerTarget = sampler_state
+{
+	Texture = <luzDerTarget>;
+	ADDRESSU = CLAMP;
+	ADDRESSV = CLAMP;
+	MINFILTER = LINEAR;
+	MAGFILTER = LINEAR;
+	MIPFILTER = LINEAR;
+};
+texture luzFrontalTarget;
+sampler FrontalTarget = sampler_state
+{
+	Texture = <luzFrontalTarget>;
+	ADDRESSU = CLAMP;
+	ADDRESSV = CLAMP;
+	MINFILTER = LINEAR;
+	MAGFILTER = LINEAR;
+	MIPFILTER = LINEAR;
+};
 
 
 /**************************************************************************************/
@@ -136,25 +180,32 @@ struct PS_INPUT
 	float3 LightVec	: TEXCOORD5;
 	float3 HalfAngleVec	: TEXCOORD6;
 };
-
 	
+
+float k_la = 0.3;							// luz ambiente global
+float k_ld = 0.9;							// luz difusa
+float k_ls = 0.4;							// luz specular
+float fSpecularPower = 16.84;				// exponente de la luz specular
 
 //Pixel Shader
 float4 ps_general(PS_INPUT input) : COLOR0
 {      
+	float ld = 0;		// luz difusa
+	float le = 0;		// luz specular
+
 	//Normalizar vectores
-	float3 Nn = normalize(input.WorldNormal);
-	float3 Ln = normalize(input.LightVec);
-	float3 Hn = normalize(input.HalfAngleVec);
+	float3 N = normalize(input.WorldNormal);
+	float3 Pos = normalize(input.WorldPosition);
+
 	float3 Tn = normalize(input.WorldTangent);
-    float3 Bn = normalize(input.WorldBinormal);
-	
+	float3 Bn = normalize(input.WorldBinormal);
+
 	//Calcular intensidad de luz, con atenuacion por distancia
 	float distAtten = length(lightPosition.xyz - input.WorldPosition) * lightAttenuation;
-	float intensity = lightIntensity / distAtten; //Dividimos intensidad sobre distancia (lo hacemos lineal pero tambien podria ser i/d^2)
-	
+	float intensity = lightIntensity / distAtten;
+
 	//Obtener texel de la textura
-	float4 texelColor = tex2D(diffuseMap, input.Texcoord);
+	float4 fvBaseColor = tex2D(diffuseMap, input.Texcoord);
 	
 	//Obtener normal de normalMap y ajustar rango de [0, 1] a [-1, 1]
 	float3 bumpNormal = tex2D(normalMap, input.Texcoord).rgb;
@@ -164,29 +215,54 @@ float4 ps_general(PS_INPUT input) : COLOR0
 	bumpNormal = lerp(BUMP_SMOOTH, bumpNormal, bumpiness);
 	
 	//Pasar de Tangent-Space a World-Space
-	bumpNormal = Nn + bumpNormal.x * Tn + bumpNormal.y * Bn;
+	bumpNormal = N + bumpNormal.x * Tn + bumpNormal.y * Bn;
 	bumpNormal = normalize(bumpNormal);
-	
-	//Componente Ambient
-	float3 ambientLight = intensity * lightColor * materialAmbientColor;
-	
-	//Componente Diffuse: N dot L, usando normal de NormalMap
-	float3 n_dot_l = dot(bumpNormal, Ln);
-	float3 diffuseLight = intensity * lightColor * materialDiffuseColor.rgb * max(0.0, n_dot_l); //Controlamos que no de negativo
-	
-	//Componente Specular: (N dot H)^exp, usando normal de NormalMap
-	float3 n_dot_h = dot(bumpNormal, Hn);
-	float3 specularLight = n_dot_l <= 0.0
-			? float3(0.0, 0.0, 0.0)
-			: (intensity * lightColor * materialSpecularColor * pow(max( 0.0, n_dot_h), materialSpecularExp));
-	
-	/* Color final: modular (Emissive + Ambient + Diffuse) por el color de la textura, y luego sumar Specular.
-	   El color Alpha sale del diffuse material */
-	float4 finalColor = float4((materialEmissiveColor + ambientLight + diffuseLight) * texelColor + specularLight, materialDiffuseColor.a);
-	
-	
+
+	//Obtenemos los valores de las constantes de luz
+	float3 LD = normalize(lightPosition - float3(Pos.x, Pos.y, Pos.z));
+		ld += saturate(dot(bumpNormal, LD))*k_ld;
+	float3 D = normalize(float3(Pos.x, Pos.y, Pos.z) - lightPosition);
+		float ks = saturate(dot(reflect(LD, bumpNormal), D));
+	ks = pow(ks, fSpecularPower);
+	le += ks*k_ls;
+
+	//Calculamos los componentes de las luces
+	float3 ambientLight = intensity * lightColor * materialAmbientColor * k_la;
+	float3 diffuseLight = intensity * lightColor * materialDiffuseColor.rgb * max(0.0, ld); //Controlamos que no de negativo
+	float3 specularLight = (intensity * lightColor * materialSpecularColor * pow(max(0.0, le), materialSpecularExp));
+
+	float4 finalColor = float4((materialEmissiveColor + ambientLight + diffuseLight) * fvBaseColor + specularLight, materialDiffuseColor.a);
+
 	return finalColor;
 }
+
+///////////////////////////////Efecto Join//////////////////////////////////////////////////////////
+
+//Deben Sumar 100% Para que tenga sentido
+float Ksol = float(0.7);
+float Kder = float(0.1);
+float Kizq = float(0.1);
+float Kfront = float(0.1);
+
+void vs_join(float4 vPos : POSITION, float2 vTex : TEXCOORD0, out float4 oPos : POSITION, out float2 oScreenPos : TEXCOORD0)
+{
+	oPos = vPos;
+	oScreenPos = vTex;
+	oPos.w = 1;
+}
+
+//Pixel Shader
+void ps_join(in float2 Texcoord: TEXCOORD0, out float4 Color : COLOR)
+{	//Obtener los textels
+	float4 sol = tex2D(SolTarget, Texcoord);
+	float4 izq = tex2D(IzqTarget, Texcoord);
+	float4 der = tex2D(DerTarget, Texcoord);
+	float4 front = tex2D(FrontalTarget, Texcoord);
+	//mergeamos los textels
+	Color = (sol*Ksol)+(izq*Kizq)+(der*Kder)+(front*Kfront);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*
 * Technique de BumpMapping
@@ -199,4 +275,16 @@ technique BumpMappingTechnique
 	  PixelShader = compile ps_2_0 ps_general();
    }
 
+}
+/*
+* Technique de PosProcesado
+*/
+
+technique JoinBumpsTechnique
+{
+	pass Pass_0
+	{
+		VertexShader = compile vs_2_0 vs_join();
+		PixelShader = compile ps_2_0 ps_join();
+	}
 }

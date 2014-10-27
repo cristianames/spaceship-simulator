@@ -40,7 +40,7 @@ namespace AlumnoEjemplos.TheGRID
         Escenario scheme;
         internal Escenario Escenario { get { return scheme; } }
         static EjemploAlumno singleton;
-        Nave nave;
+        public Nave nave;
         public Dibujable sol;
         public bool boundingBoxes;
         public float velocidadBlur = 0;
@@ -121,7 +121,7 @@ namespace AlumnoEjemplos.TheGRID
             arrow = new TgcArrow();
             arrow.BodyColor = Color.FromArgb(230, Color.Cyan);
             arrow.HeadColor = Color.FromArgb(230, Color.Yellow);
-            this.objectosNoMeshesCollection.Add(arrow);
+            //this.objectosNoMeshesCollection.Add(arrow);
 
             //Cargamos el audio
             //music.playBackgound();
@@ -156,6 +156,7 @@ namespace AlumnoEjemplos.TheGRID
             //GuiController.Instance.Modifiers.addBoolean("Velocidad Manual", "Activado", true);
             GuiController.Instance.Modifiers.addBoolean("Desplaz. Avanzado", "Activado", true);
             GuiController.Instance.Modifiers.addBoolean("Ver BoundingBox", "Activado", false);
+            GuiController.Instance.Modifiers.addColor("lightColor", Color.White);
             //string[] opciones4 = new string[] { "Activado", "Desactivado" };
             //GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);  De momento lo saco.
             string opcionElegida = (string)GuiController.Instance.Modifiers["Escenario Actual"];
@@ -254,11 +255,11 @@ namespace AlumnoEjemplos.TheGRID
             Vector3 naveDir = Vector3.Subtract(new Vector3(0, 0, 10000), nave.getDireccion());
             naveDir.Normalize();
             naveDir.Multiply(75);
-            arrow.PStart = navePos;
-            arrow.PEnd = navePos + naveDir;
-            arrow.Thickness = 0.5f;
-            arrow.HeadSize = new Vector2(2,2);
-            arrow.updateValues();
+            //arrow.PStart = navePos;
+            //arrow.PEnd = navePos + naveDir;
+            //arrow.Thickness = 0.5f;
+            //arrow.HeadSize = new Vector2(2,2);
+            //arrow.updateValues();
             
             skySphere.render();     //Solo actualiza pos. Tiene deshabiltiado los render propiamente dicho.
             #endregion
