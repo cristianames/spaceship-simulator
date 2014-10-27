@@ -50,8 +50,14 @@ namespace AlumnoEjemplos.TheGRID
 
             //Creamos.....THE PLANET
             TgcMesh mesh_Planet = Factory.cargarMesh(@"asteroid\theplanet-TgcScene.xml");
+            TgcTexture normalMapPlanet = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "asteroid\\Textures\\marsbump1k.jpg");
+            TgcTexture[] normalPlanetArray = new TgcTexture[] { normalMapPlanet };
+
+            TgcMeshBumpMapping bump_planet = TgcMeshBumpMapping
+                .fromTgcMesh(mesh_Planet, normalPlanetArray);
+
             planet = new Dibujable();
-            planet.setObject(mesh_Planet, 0, 10, new Vector3(10F, 10F, 10F));
+            planet.setObject(bump_planet, 0, 10, new Vector3(10F, 10F, 10F));
             planet.setFisica(0, 0, 0, 500000000);
             planet.giro = -1;
             planet.ubicarEnUnaPosicion(new Vector3(0, 0, 0));

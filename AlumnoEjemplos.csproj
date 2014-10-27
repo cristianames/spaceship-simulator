@@ -109,7 +109,6 @@
     <Compile Include="TheGRID\Musique.cs" />
     <Compile Include="TheGRID\Nave.cs" />
     <Compile Include="TheGRID\Shaders\BumpMapping.cs" />
-    <Compile Include="TheGRID\Shaders\DynamicLights.cs" />
     <Compile Include="TheGRID\Shaders\HDRL.cs" />
     <Compile Include="TheGRID\Shaders\IShader.cs" />
     <Compile Include="TheGRID\Shaders\MotionBlur.cs" />
