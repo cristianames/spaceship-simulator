@@ -156,7 +156,7 @@ namespace AlumnoEjemplos.TheGRID
             //GuiController.Instance.Modifiers.addBoolean("Velocidad Manual", "Activado", true);
             GuiController.Instance.Modifiers.addBoolean("Desplaz. Avanzado", "Activado", true);
             GuiController.Instance.Modifiers.addBoolean("Ver BoundingBox", "Activado", false);
-            GuiController.Instance.Modifiers.addColor("lightColor", Color.White);
+            GuiController.Instance.Modifiers.addColor("lightColor", Color.Blue);
             //string[] opciones4 = new string[] { "Activado", "Desactivado" };
             //GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);  De momento lo saco.
             string opcionElegida = (string)GuiController.Instance.Modifiers["Escenario Actual"];

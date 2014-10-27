@@ -106,16 +106,16 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                         CustomVertex.PositionTextured.Format, Pool.Default);
             g_pVBV3D.SetData(vertices, 0, LockFlags.None);
             //Creamos las luces
-            light_sol = crearLuz(Color.White, 1000f, 2000f, 1000f, 0.6f, 0.2f, 0.2f, 1f);
-            light_izq = crearLuz(Color.Green, 1f, 1000f, 10f, 0.3f, 0.3f, 0.3f, 1f);
+            light_sol = crearLuz(Color.White, 25000f, 4000f, 1500f, 0.6f, 0.2f, 0.2f, 1f);
+            light_izq = crearLuz(Color.Green, 5f, 1000f, 1f, 0.3f, 0.3f, 0.3f, 1f);
             light_izq.direccion = new Vector3(0, -1, 0);
-            light_izq.angulo = -10f;
-            light_der = crearLuz(Color.Green, 1f, 1000f, 10f, 0.3f, 0.3f, 0.3f, 1f);
+            light_izq.angulo = -5f;
+            light_der = crearLuz(Color.Green, 5f, 1000f, 1f, 0.3f, 0.3f, 0.3f, 1f);
             light_der.direccion = new Vector3(0, 1, 0);
-            light_der.angulo = -10f;
-            light_front = crearLuz(Color.Yellow, 1f, 1000f, 10f, 0.3f, 0.3f, 0.3f, 1f);
+            light_der.angulo = -5f;
+            light_front = crearLuz(Color.Yellow, 5f, 1000f, 1f, 0.3f, 0.3f, 0.3f, 1f);
             light_front.direccion = new Vector3(0, 0, 1);
-            light_front.angulo = -10f;
+            light_front.angulo = -5f;
             //Cuadraditos que simulan luces
             lightMeshes = new TgcBox[3];
             //Color[] c = new Color[3] { Color.Red, Color.Green, Color.Green };
@@ -169,7 +169,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.DepthStencilSurface = g_pDepthStencil;
             pSurf = g_BumpSol.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
-            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Gray, 1.0f, 0);
             device.BeginScene();
                 renderScene(parametros.meshes, light_sol, "BumpMappingTechnique");
                 renderScene(parametros.sol, light_sol, "BumpMappingTechnique");
@@ -183,7 +183,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.DepthStencilSurface = g_pDepthStencil;
             pSurf = g_BumpDer.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
-            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
             device.BeginScene();
             renderScene(parametros.meshes, light_der, "VERTEX_COLOR");
                 renderScene(parametros.sol, light_der, "VERTEX_COLOR");
@@ -196,7 +195,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.DepthStencilSurface = g_pDepthStencil;
             pSurf = g_BumpIzq.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
-            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
             device.BeginScene();
             renderScene(parametros.meshes, light_izq, "VERTEX_COLOR");
                 renderScene(parametros.sol, light_izq, "VERTEX_COLOR");
@@ -209,7 +207,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.DepthStencilSurface = g_pDepthStencil;
             pSurf = g_BumpFront.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
-            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
             device.BeginScene();
             renderScene(parametros.meshes, light_front, "VERTEX_COLOR");
             renderScene(parametros.sol, light_front, "VERTEX_COLOR");
@@ -222,7 +219,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             //5° Pasada, join de luces
             pSurf = g_pRenderTarget.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
-            //device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
                 bumpEffect_asteroides.Technique = "JoinBumpsTechnique";
                 device.VertexFormat = CustomVertex.PositionTextured.Format;
@@ -386,25 +383,11 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             light_front.posicion_ParaNave = EjemploAlumno.workspace().nave.puntoLuzCent();
             light_front.posicion_ParaAsteroide = light_der.posicion_ParaNave;
             light_front.posicion_ParaSol = light_der.posicion_ParaNave;
+            light_front.direccion = Vector3.Normalize(EjemploAlumno.workspace().nave.getDireccion());
 
             lightMeshes[2].setPositionSize(light_der.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
             lightMeshes[1].setPositionSize(light_izq.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
             lightMeshes[0].setPositionSize(light_front.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
-
-            /*device.Lights[0].Position = light_der.posicion_ParaNave;
-            device.Lights[0].Diffuse = light_der.color;
-            device.Lights[0].Specular = light_der.color;
-            device.Lights[0].Update();
-            device.Lights[1].Position = light_izq.posicion_ParaNave;
-            device.Lights[1].Diffuse = light_izq.color;
-            device.Lights[1].Specular = light_izq.color;
-            device.Lights[1].Update();
-            device.Lights[2].Position = light_front.posicion_ParaNave;
-            device.Lights[2].Diffuse = light_front.color;
-            device.Lights[2].Specular = light_front.color;
-            device.Lights[2].Update();
-             * */
-
         }
 
         #endregion
