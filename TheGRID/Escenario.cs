@@ -55,7 +55,6 @@ namespace AlumnoEjemplos.TheGRID
 
             TgcMeshBumpMapping bump_planet = TgcMeshBumpMapping
                 .fromTgcMesh(mesh_Planet, normalPlanetArray);
-
             planet = new Dibujable();
             planet.setObject(bump_planet, 0, 10, new Vector3(10F, 10F, 10F));
             planet.setFisica(0, 0, 0, 500000000);
@@ -65,8 +64,8 @@ namespace AlumnoEjemplos.TheGRID
             TgcBoundingSphere bounding_asteroide = new TgcBoundingSphere(new Vector3(0, 0, 0), 15000);
             planet.setColision(new ColisionAsteroide());
             planet.getColision().setBoundingBox(bounding_asteroide);
-            EjemploAlumno.workspace().dibujableCollection.Add(planet);
-
+            EjemploAlumno.workspace().objectosNoMeshesCollection.Add(planet.objeto);
+            //EjemploAlumno.workspace().dibujableCollection.Add(planet);
             //crearEstrellas();   
         }
         public void dispose()
