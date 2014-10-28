@@ -107,13 +107,13 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             g_pVBV3D.SetData(vertices, 0, LockFlags.None);
             //Creamos las luces
             light_sol = crearLuz(Color.Transparent, 25000f, 2000f, 1500f, 0.6f, 0.2f, 0.2f, 1f);
-            light_izq = crearLuz(Color.Green, 5f, 1000f, 1f, 0.6f, 0.5f, 0.2f, 1f);
-            light_izq.direccion = new Vector3(0, 1, 0);
+            light_izq = crearLuz(Color.Green, 5f, 1000f, 1f, 0.3f, 0.5f, 0.3f, 1f);
+            light_izq.direccion = new Vector3(0, -1, 0);
             light_izq.angulo = 0.95f;
-            light_der = crearLuz(Color.Red, 5f, 1000f, 1f, 0.6f, 0.5f, 0.2f, 1f);
+            light_der = crearLuz(Color.Red, 5f, 1000f, 1f, 0.3f, 0.5f, 0.3f, 1f);
             light_der.direccion = new Vector3(0, 1, 0);
             light_der.angulo = 0.97f;
-            light_front = crearLuz(Color.LightYellow, 5f, 1000f, 1f, 0.6f, 0.5f, 0.2f, 1f);
+            light_front = crearLuz(Color.LightYellow, 5f, 1000f, 1f, 0.3f, 0.5f, 0.3f, 1f);
             light_front.direccion = new Vector3(0, 1, 0);
             light_front.angulo = 0.97f;
             //Cuadraditos que simulan luces
