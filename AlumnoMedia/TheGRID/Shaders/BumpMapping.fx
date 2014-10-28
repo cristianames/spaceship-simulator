@@ -243,11 +243,12 @@ float4 ps_general(PS_INPUT input) : COLOR0
 
 ///////////////////////////////Efecto Join//////////////////////////////////////////////////////////
 
-//Deben Sumar 100% Para que tenga sentido
+
 float Ksol = float(2);
-float Kder = float(0.1);
-float Kizq = float(0.1);
-float Kfront = float(0.1);
+float Kalfa = float(10);
+float Kder = float(0.8);
+float Kizq = float(0.8);
+float Kfront = float(0.8);
 
 void vs_join(float4 vPos : POSITION, float2 vTex : TEXCOORD0, out float4 oPos : POSITION, out float2 oScreenPos : TEXCOORD0)
 {
@@ -260,11 +261,17 @@ void vs_join(float4 vPos : POSITION, float2 vTex : TEXCOORD0, out float4 oPos : 
 void ps_join(in float2 Texcoord: TEXCOORD0, out float4 Color : COLOR)
 {	//Obtener los textels
 	float4 sol = tex2D(SolTarget, Texcoord);
-	float4 izq = tex2D(IzqTarget, Texcoord);
-	float4 der = tex2D(DerTarget, Texcoord);
-	float4 front = tex2D(FrontalTarget, Texcoord);
-	//mergeamos los textels
-	Color = sol + saturate((sol*Ksol) + (izq*Kizq) + (der*Kder) + (front*Kfront));
+		float4 izq = tex2D(IzqTarget, Texcoord);
+		float4 der = tex2D(DerTarget, Texcoord);
+		float4 front = tex2D(FrontalTarget, Texcoord);
+		//mergeamos los textels
+		//Color = sol + saturate((sol*Ksol) + (izq*Kizq) + (der*Kder) + (front*Kfront));
+		float4 sol_rel = sol*Ksol;
+		float4 izq_rel = float4(izq.rgb, izq.a*Kalfa) * Kizq;
+		float4 der_rel = float4(der.rgb, der.a*Kalfa) * Kder;
+		float4 front_rel = float4(front.rgb, front.a*Kalfa) * Kfront;
+
+	Color = sol + saturate(sol_rel + izq_rel + der_rel + front_rel);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
