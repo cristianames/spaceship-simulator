@@ -364,6 +364,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
             eyePosition = EjemploAlumno.workspace().camara.PosicionDeCamara;
             Vector3 pos_sol = -EjemploAlumno.workspace().sol.getPosicion();
+            Vector3 dir_nave = EjemploAlumno.workspace().nave.getDireccion();
 
             light_sol.posicion_ParaNave = pos_sol;
             light_sol.posicion_ParaSol = pos_sol;// +new Vector3(500, 900, -900);
@@ -373,17 +374,19 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             light_izq.posicion_ParaNave = EjemploAlumno.workspace().nave.puntoLuzIzq();
             light_izq.posicion_ParaAsteroide = light_izq.posicion_ParaNave;
             light_izq.posicion_ParaSol = light_izq.posicion_ParaNave;
+            light_izq.direccion = Vector3.Normalize(light_izq.posicion_ParaNave - dir_nave);
 
             light_der.color = (Color)GuiController.Instance.Modifiers["lightColor"];
             light_der.posicion_ParaNave = EjemploAlumno.workspace().nave.puntoLuzDer();
             light_der.posicion_ParaAsteroide = light_der.posicion_ParaNave;
             light_der.posicion_ParaSol = light_der.posicion_ParaNave;
+            light_der.direccion = Vector3.Normalize(dir_nave - light_der.posicion_ParaNave);
 
             light_front.color = (Color)GuiController.Instance.Modifiers["lightColor"];
             light_front.posicion_ParaNave = EjemploAlumno.workspace().nave.puntoLuzCent();
             light_front.posicion_ParaAsteroide = light_der.posicion_ParaNave;
             light_front.posicion_ParaSol = light_der.posicion_ParaNave;
-            light_front.direccion = Vector3.Normalize(EjemploAlumno.workspace().nave.getDireccion());
+            light_front.direccion = Vector3.Normalize(dir_nave);
 
             lightMeshes[2].setPositionSize(light_der.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
             lightMeshes[1].setPositionSize(light_izq.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
