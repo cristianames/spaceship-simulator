@@ -51,7 +51,7 @@ namespace AlumnoEjemplos.TheGRID
         List<Dibujable> listaDibujable = new List<Dibujable>();
         float timeLaser = 0; //Inicializacion.
         const float betweenTime = 0.15f;    //Tiempo de espera entre cada disparo de laser.
-
+        public float tiempoPupila;
         //lista de meshes para implementar el motion blur
         public List<Dibujable> dibujableCollection = new List<Dibujable>();
         public List<IRenderObject> objectosNoMeshesCollection = new List<IRenderObject>();
@@ -241,6 +241,8 @@ namespace AlumnoEjemplos.TheGRID
             #endregion
 
             #region -----Update------
+            tiempoPupila = elapsedTime; //Para el HDRL
+
             nave.rotarPorTiempo(elapsedTime, listaDibujable);
             nave.desplazarsePorTiempo(elapsedTime, new List<Dibujable>(scheme.CuerposGravitacionales));
 

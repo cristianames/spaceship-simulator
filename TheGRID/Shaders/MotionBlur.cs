@@ -113,6 +113,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 renderDefault(parametros);
             return null;
         }
+        
         public Texture renderDefault(EstructuraRender parametros)
         {
             Device device = GuiController.Instance.D3dDevice;
@@ -225,6 +226,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
         public void close()
         {
+            effect.Dispose();
             g_pDepthStencil.Dispose();
             g_pVBV3D.Dispose();
             g_pVel1.Dispose();

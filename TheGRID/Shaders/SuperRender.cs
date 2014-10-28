@@ -68,7 +68,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         public void close()
         {
             motionShader.close();
-            //hdrlShader.close();
+            hdrlShader.close();
             bumpShader.close();
         }
 
