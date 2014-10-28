@@ -245,7 +245,7 @@ float4 ps_general(PS_INPUT input) : COLOR0
 
 
 float Ksol = float(2);
-float Kalfa = float(10);
+float Kalfa = float(5);
 float Kder = float(0.8);
 float Kizq = float(0.8);
 float Kfront = float(0.8);

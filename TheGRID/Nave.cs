@@ -76,6 +76,13 @@ namespace AlumnoEjemplos.TheGRID
             return Vector3.Add(Vector3.Add(Vector3.Add(getPosicion(), Vector3.Multiply(getDireccion_X(), 0)),
                 Vector3.Multiply(getDireccion_Y(), -1)), Vector3.Multiply(getDireccion(), 48));      //Siendo X=0, Y=10, Z=25
         }
-        //Ya estan los puntos de las luces. Para obtener la direccion de la luz usar el metodo getDireccion();
+        public Vector3 dirLuzIzq()
+        {
+            return Vector3.Add(puntoLuzIzq(), Vector3.Multiply(getDireccion(), 18)) - getPosicion();
+        }
+        public Vector3 dirLuzDer()
+        {
+            return Vector3.Add(puntoLuzDer(), Vector3.Multiply(getDireccion(), 18)) - getPosicion();
+        }        //Ya estan los puntos de las luces. Para obtener la direccion de la luz usar el metodo getDireccion();
     }
 }

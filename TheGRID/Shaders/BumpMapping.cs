@@ -107,13 +107,13 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             g_pVBV3D.SetData(vertices, 0, LockFlags.None);
             //Creamos las luces
             light_sol = crearLuz(Color.Transparent, 25000f, 2000f, 1500f, 0.6f, 0.2f, 0.2f, 1f);
-            light_izq = crearLuz(Color.Green, 5f, 1000f, 1f, 0.3f, 0.5f, 0.3f, 1f);
+            light_izq = crearLuz(Color.Green, 5f, 1000f, 1f, 0.3f, 10f, 0.3f, 1f);
             light_izq.direccion = new Vector3(0, -1, 0);
             light_izq.angulo = 0.95f;
-            light_der = crearLuz(Color.Red, 5f, 1000f, 1f, 0.3f, 0.5f, 0.3f, 1f);
+            light_der = crearLuz(Color.Red, 5f, 1000f, 1f, 0.3f, 10f, 0.3f, 1f);
             light_der.direccion = new Vector3(0, 1, 0);
             light_der.angulo = 0.97f;
-            light_front = crearLuz(Color.LightYellow, 5f, 1000f, 1f, 0.3f, 0.5f, 0.3f, 1f);
+            light_front = crearLuz(Color.LightYellow, 5f, 1000f, 1f, 0.3f, 10f, 0.3f, 1f);
             light_front.direccion = new Vector3(0, 1, 0);
             light_front.angulo = 0.97f;
             //Cuadraditos que simulan luces
@@ -364,6 +364,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
             eyePosition = EjemploAlumno.workspace().camara.PosicionDeCamara;
             Vector3 pos_sol = -EjemploAlumno.workspace().sol.getPosicion();
+            Vector3 pos_nave = EjemploAlumno.workspace().nave.getPosicion();
             Vector3 dir_nave = EjemploAlumno.workspace().nave.getDireccion();
 
             light_sol.posicion_ParaNave = pos_sol;
@@ -374,13 +375,13 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             light_izq.posicion_ParaNave = EjemploAlumno.workspace().nave.puntoLuzIzq();
             light_izq.posicion_ParaAsteroide = light_izq.posicion_ParaNave;
             light_izq.posicion_ParaSol = light_izq.posicion_ParaNave;
-            light_izq.direccion = Vector3.Normalize(light_izq.posicion_ParaNave - dir_nave);
+            light_izq.direccion = Vector3.Normalize(EjemploAlumno.workspace().nave.dirLuzIzq());
 
             light_der.color = (Color)GuiController.Instance.Modifiers["lightColor"];
             light_der.posicion_ParaNave = EjemploAlumno.workspace().nave.puntoLuzDer();
             light_der.posicion_ParaAsteroide = light_der.posicion_ParaNave;
             light_der.posicion_ParaSol = light_der.posicion_ParaNave;
-            light_der.direccion = Vector3.Normalize(dir_nave - light_der.posicion_ParaNave);
+            light_der.direccion = Vector3.Normalize(EjemploAlumno.workspace().nave.dirLuzDer());
 
             light_front.color = (Color)GuiController.Instance.Modifiers["lightColor"];
             light_front.posicion_ParaNave = EjemploAlumno.workspace().nave.puntoLuzCent();
