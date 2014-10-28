@@ -46,7 +46,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         public SuperRender()
         {
             motionShader = new MotionBlur(this);
-            hdrlShader = new HDRL(this);
+            //hdrlShader = new HDRL(this);
             bumpShader = new BumpMapping(this);                
         }
 
@@ -68,7 +68,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         public void close()
         {
             motionShader.close();
-            hdrlShader.close();
+            //hdrlShader.close();
             bumpShader.close();
         }
 
