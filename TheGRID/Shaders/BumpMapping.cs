@@ -106,7 +106,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                         CustomVertex.PositionTextured.Format, Pool.Default);
             g_pVBV3D.SetData(vertices, 0, LockFlags.None);
             //Creamos las luces
-            light_sol = crearLuz(Color.Transparent, 25000f, 4000f, 1500f, 0.6f, 0.2f, 0.2f, 1f);
+            light_sol = crearLuz(Color.Transparent, 2550f, 2000f, 1500f, 0.6f, 0.2f, 0.2f, 1f);
             light_izq = crearLuz(Color.Green, 5f, 1000f, 1f, 0.3f, 10f, 0.3f, 1f);
             light_izq.direccion = new Vector3(0, -1, 0);
             light_izq.angulo = 0.95f;
@@ -149,7 +149,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.DepthStencilSurface = g_pDepthStencil;
             pSurf = g_BumpSol.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
-            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Gray, 1.0f, 0);
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
                 renderScene(parametros.meshes, light_sol, "BumpMappingTechnique");
                 renderScene(parametros.sol, light_sol, "BumpMappingTechnique");
@@ -342,13 +342,13 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             Device device = GuiController.Instance.D3dDevice;
 
             eyePosition = EjemploAlumno.workspace().camara.PosicionDeCamara;
-            Vector3 pos_sol = -EjemploAlumno.workspace().sol.getPosicion();
+            Vector3 pos_sol = EjemploAlumno.workspace().Escenario.sol.getPosicion();
             Vector3 pos_nave = EjemploAlumno.workspace().nave.getPosicion();
             Vector3 dir_nave = EjemploAlumno.workspace().nave.getDireccion();
 
             light_sol.posicion_ParaNave = pos_sol;
-            light_sol.posicion_ParaSol = pos_sol;// +new Vector3(500, 900, -900);
-            light_sol.posicion_ParaAsteroide = pos_sol + new Vector3(0, 0, -18000);
+            light_sol.posicion_ParaSol = pos_sol + new Vector3(500, 900, -900);
+            light_sol.posicion_ParaAsteroide = pos_sol + new Vector3(0, 0, 18000);
 
             light_izq.color = (Color)GuiController.Instance.Modifiers["lightColor"];
             light_izq.posicion_ParaNave = EjemploAlumno.workspace().nave.puntoLuzIzq();

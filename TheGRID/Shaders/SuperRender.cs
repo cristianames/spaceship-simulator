@@ -62,14 +62,14 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         public void render(Nave nave, Dibujable sol, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables)
         {
             motionShader.renderEffect(new EstructuraRender(nave, sol, meshes, elementosRenderizables));
+            GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
         }
 
         public void close()
         {
             motionShader.close();
             //hdrlShader.close();
-            //adeShader.close();
-            //bumpShader.close();
+            bumpShader.close();
         }
 
         public Texture renderAnterior(EstructuraRender parametros, SuperRender.tipo tipoEfecto)

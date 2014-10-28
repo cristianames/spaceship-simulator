@@ -213,7 +213,7 @@ namespace AlumnoEjemplos.TheGRID
                 }
                 else
                 {
-                    if (objetoPrincipal.velocidadActual() == objetoPrincipal.fisica.velocidadMaxima)
+                    if (objetoPrincipal.velocidadActual() >= objetoPrincipal.fisica.velocidadMaxima)
                     {
                         superRender.motionBlurActivado = true;
                         objetoPrincipal.fisica.velocidadMaxima = objetoPrincipal.velMaxBlur;
@@ -249,12 +249,11 @@ namespace AlumnoEjemplos.TheGRID
             camara.cambiarPosicionCamara();
             currentFrustrum.updateMesh(GuiController.Instance.CurrentCamera.getPosition(),GuiController.Instance.CurrentCamera.getLookAt());
             
-            
             //Cargar valores de la flecha
-            Vector3 navePos = nave.getPosicion();
-            Vector3 naveDir = Vector3.Subtract(new Vector3(0, 0, 10000), nave.getDireccion());
-            naveDir.Normalize();
-            naveDir.Multiply(75);
+            //Vector3 navePos = nave.getPosicion();
+            //Vector3 naveDir = Vector3.Subtract(new Vector3(0, 0, 10000), nave.getDireccion());
+            //naveDir.Normalize();
+            //naveDir.Multiply(75);
             //arrow.PStart = navePos;
             //arrow.PEnd = navePos + naveDir;
             //arrow.Thickness = 0.5f;
@@ -280,17 +279,7 @@ namespace AlumnoEjemplos.TheGRID
             //if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.rotacionReal = true; else objetoPrincipal.rotacionReal = false;   De momento lo saco.
             
             //Refrescar User Vars
-            if (superRender.motionBlurActivado)
-            {
-                tiempoBlur += elapsedTime;
-                velocidadBlur = (float)Math.Pow(100D, tiempoBlur);
-                float velocidad = 300000 - objetoPrincipal.fisica.velocidadMaxima;
-                if (velocidadBlur > velocidad) velocidadBlur = velocidad;
-               // objetoPrincipal.velocidad = objetoPrincipal.fisica.velocidadMaxima;
-                //GuiController.Instance.UserVars.setValue("Vel-Actual:", velocidadBlur + objetoPrincipal.velocidadActual());
-                GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual()); 
-            }
-            else GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual());            
+            GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual());            
             GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);
             GuiController.Instance.UserVars.setValue("Posicion Y:", objetoPrincipal.getPosicion().Y);
             GuiController.Instance.UserVars.setValue("Posicion Z:", objetoPrincipal.getPosicion().Z);

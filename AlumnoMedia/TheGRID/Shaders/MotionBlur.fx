@@ -72,6 +72,16 @@ sampler2D velocityMapAnt = sampler_state
     AddressV = Clamp;
 };
 
+texture texOnly;
+sampler2D only = sampler_state
+{
+	Texture = (texOnly);
+	MinFilter = POINT;
+	MagFilter = POINT;
+	AddressU = Clamp;
+	AddressV = Clamp;
+};
+
 //Output del Vertex Shader
 struct VS_OUTPUT 
 {
@@ -237,12 +247,29 @@ float4 ps_draw_grid( in float2 Tex : TEXCOORD0, float2 vPos: VPOS) : COLOR0
 
 technique DrawGrid
 {
-   pass Pass_0
-   {
-	  VertexShader = compile vs_3_0 vs_copy();
-	  PixelShader = compile ps_3_0 ps_draw_grid();
-   }
+	pass Pass_0
+	{
+		VertexShader = compile vs_3_0 vs_copy();
+		PixelShader = compile ps_3_0 ps_draw_grid();
+	}
 
+}
+
+float4 ps_onlytex(float3 Texcoord: TEXCOORD0) : COLOR0
+{
+	float4 currentTex = tex2D(only, Texcoord);
+	if (currentTex.a<0.1)
+		discard;
+	return currentTex;
+}
+
+technique OnlyTexture
+{
+	pass Pass_0
+	{
+		VertexShader = compile vs_3_0 vs_copy();
+		PixelShader = compile ps_3_0 ps_onlytex();
+	}
 }
 
 

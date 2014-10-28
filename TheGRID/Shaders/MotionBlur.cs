@@ -21,7 +21,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         private Surface g_pDepthStencil;     // Depth-stencil buffer 
         private Texture g_pRenderTarget;    //Textura
         private Texture g_pVel1, g_pVel2;   // velocidad
-        private Texture g_blank;            // Testura sin nada
         private Matrix antMatView;
 
         public MotionBlur(SuperRender main)
@@ -58,9 +57,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             g_pVel2 = new Texture(d3dDevice, d3dDevice.PresentationParameters.BackBufferWidth
                     , d3dDevice.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget,
                         Format.A16B16G16R16F, Pool.Default);
-            g_blank = new Texture(d3dDevice, d3dDevice.PresentationParameters.BackBufferWidth
-                    , d3dDevice.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget,
-                        Format.A16B16G16R16F, Pool.Default); 
             // Resolucion de pantalla
             effect.SetValue("screen_dx", d3dDevice.PresentationParameters.BackBufferWidth);
             effect.SetValue("screen_dy", d3dDevice.PresentationParameters.BackBufferHeight);
@@ -81,7 +77,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             antMatView = d3dDevice.Transform.View;
         }
 
-        public Texture renderDefault(EstructuraRender parametros)
+        public Texture renderPostProccess(EstructuraRender parametros)
         {
             Device device = GuiController.Instance.D3dDevice;
             
@@ -94,44 +90,59 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.VertexFormat = CustomVertex.PositionTextured.Format;
             device.SetStreamSource(0, g_pVBV3D, 0);
             effect.SetValue("g_RenderTarget", g_pRenderTarget);
-            if (mainShader.motionBlurActivado)
-            {
-                effect.SetValue("texVelocityMap", g_pVel1);
-                effect.SetValue("texVelocityMapAnt", g_pVel2);
-            }
-            else 
-            {
-                effect.SetValue("texVelocityMap", g_blank);
-                effect.SetValue("texVelocityMapAnt", g_blank);
-
-            }
+            effect.SetValue("texVelocityMap", g_pVel1);
+            effect.SetValue("texVelocityMapAnt", g_pVel2);
             device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             effect.Begin(FX.None);
-            effect.BeginPass(0);
-            device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
-            effect.EndPass();
+                effect.BeginPass(0);
+                    device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+                effect.EndPass();
             effect.End();
             device.EndScene();
-            GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
             return null;
         }
 
         public Texture renderEffect(EstructuraRender parametros)
         {
-            //La simplicidad radica en que si la textura de velocidad esta en blanco, no hace el efecto :P
-            if(mainShader.motionBlurActivado)
+            if (mainShader.motionBlurActivado || (EjemploAlumno.workspace().Escenario.escenarioActual == Escenario.TipoModo.IMPULSE_DRIVE))
             {
                 dibujarVelocidad(parametros);
+                renderPostProccess(parametros);
             }
-            renderDefault(parametros);
+            else
+                renderDefault(parametros);
+            return null;
+        }
+        public Texture renderDefault(EstructuraRender parametros)
+        {
+            Device device = GuiController.Instance.D3dDevice;
+
+            //Pedimos que nos renderizen la pantalla default
+            g_pRenderTarget = mainShader.renderAnterior(parametros, tipoShader());
+
+            //Hacemos el post Procesado
+            device.BeginScene();
+                effect.Technique = "OnlyTexture";
+                device.VertexFormat = CustomVertex.PositionTextured.Format;
+                device.SetStreamSource(0, g_pVBV3D, 0);
+                effect.SetValue("texOnly", g_pRenderTarget);
+                device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+                effect.Begin(FX.None);
+                    effect.BeginPass(0);
+                        device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+                    effect.EndPass();
+                effect.End();
+            device.EndScene();
             return null;
         }
 
         private void dibujarVelocidad(EstructuraRender parametros)
         {
             Device device = GuiController.Instance.D3dDevice;
-            float velActual = EjemploAlumno.workspace().velocidadBlur;
-            float pixel_blur_variable = 0.2f * ((velActual - 200) / (300000 - 200));    //Calcula el porcentual de aplicacion sobre el blur.
+            float pixel_blur_variable;
+
+            pixel_blur_variable = 0.2f * (EjemploAlumno.workspace().nave.velocidadActual() / 300000); 
+            //Calcula el porcentual de aplicacion sobre el blur.
             effect.SetValue("PixelBlurConst", pixel_blur_variable);
 
             // guardo el Render target anterior y seteo la textura como render target
@@ -152,6 +163,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             renderScene(parametros.meshes, "VelocityMap");
             if (!EjemploAlumno.workspace().camara.soyFPS())
                 renderScene(parametros.nave, "VelocityMap");
+            renderScene(parametros.elementosRenderizables);
             device.EndScene();
             pSurf.Dispose();
 
@@ -161,7 +173,9 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
             // actualizo los valores para el proximo frame
             antMatView = device.Transform.View;
-            Texture aux = g_pVel2;
+            Texture aux = g_pVel1;
+            if (mainShader.motionBlurActivado)
+                aux = g_pVel2;
             g_pVel2 = g_pVel1;
             g_pVel1 = aux;
 

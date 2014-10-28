@@ -23,8 +23,8 @@ namespace AlumnoEjemplos.TheGRID
         public Dibujable principal;
         public TgcBoundingCylinder limite;
         //private Boolean fuera_limite = false;
-        enum TipoModo { THE_OPENING, IMPULSE_DRIVE, WELCOME_HOME, VACUUM };
-        private TipoModo escenarioActual = TipoModo.VACUUM;
+        public enum TipoModo { THE_OPENING, IMPULSE_DRIVE, WELCOME_HOME, VACUUM };
+        public TipoModo escenarioActual = TipoModo.VACUUM;
         //Objetos
         public Dibujable sol;
         public Dibujable planet;
