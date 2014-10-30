@@ -334,7 +334,7 @@ float4 PSToneMapping( in float2 Tex : TEXCOORD0 , in float2 vpos : VPOS) : COLOR
 	float4 ColorBase = tex2D(RenderTarget, Tex);
 	float4 ColorBrillante = glow && tone_mapping ? tex2D(GlowMap, Tex+float2((float)16/screen_dx,(float)16/screen_dy)) : 0;
 
-
+	/*
 	// Tone mapping
 	if(tone_mapping==1)
 	{
@@ -363,7 +363,7 @@ float4 PSToneMapping( in float2 Tex : TEXCOORD0 , in float2 vpos : VPOS) : COLOR
 		ColorBase.rgb *= MIDDLE_GRAY / (Yk+ 0.001f);
 		ColorBase.rgb *= (1.0f + ColorBase/LUM_WHITE);
 		ColorBase.rgb /= (1.0f + ColorBase);
-	}
+	}*/
 
 	// combino con glow 
 	float4 rta = float4(ColorBase.rgb + 2.6*ColorBrillante.rgb, 1);

@@ -12,19 +12,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 {
     class HDRL : IShader
     {
-        #region ToneMapping
-        public enum ToneMapping : int
-        {
-            Nada = 0,
-            Reinhard = 1,
-            Modified_Reinhard = 2,
-            Logaritmico = 3,
-            MiddleGray = 4
-        };
-        #endregion
-
         #region Atributes
-        private string ShaderDirectory = EjemploAlumno.TG_Folder + "Shaders\\";
+        private string ShaderDirectory = EjemploAlumno.TG_Folder + "Shaders\\GaussianBlur.fx";
         private SuperRender mainShader;
         Effect effect;
         Surface g_pDepthStencil;     // Depth-stencil buffer 
@@ -38,7 +27,9 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         int cant_pasadas = 5;
 
         float pupila_time = 0;
+        float adaptacion_pupila = 2;
         float MAX_PUPILA_TIME = 3;
+        bool glow = true;
         #endregion
 
         public HDRL(SuperRender main)
@@ -47,8 +38,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             Device d3dDevice = GuiController.Instance.D3dDevice;
 
             string compilationErrors;
-            effect = Effect.FromFile(GuiController.Instance.D3dDevice,
-                GuiController.Instance.ExamplesDir + "Shaders\\WorkshopShaders\\Shaders\\GaussianBlur.fx",
+            effect = Effect.FromFile(GuiController.Instance.D3dDevice, ShaderDirectory,
                 null, null, ShaderFlags.PreferFlowControl, null, out compilationErrors);
             if (effect == null)
             {
@@ -112,12 +102,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                     4, d3dDevice, Usage.Dynamic | Usage.WriteOnly,
                         CustomVertex.PositionTextured.Format, Pool.Default);
             g_pVBV3D.SetData(vertices, 0, LockFlags.None);
-
-            GuiController.Instance.Modifiers.addBoolean("activar_glow", "Activar Glow", true);
-            GuiController.Instance.Modifiers.addBoolean("pantalla_completa", "Pant.completa", true);
-            GuiController.Instance.Modifiers.addEnum("tm_izq", typeof(ToneMapping), ToneMapping.MiddleGray);
-            GuiController.Instance.Modifiers.addEnum("tm_der", typeof(ToneMapping), ToneMapping.Nada);
-            GuiController.Instance.Modifiers.addInterval("adaptacion_pupila", new object[] { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f }, 2);
         }
 
         public Texture renderDefault(EstructuraRender parametros)
@@ -149,13 +133,12 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             //Obtenemos el render anterior
             g_pRenderTarget = mainShader.renderAnterior(parametros, tipoShader());
 
-            MAX_PUPILA_TIME = (float)GuiController.Instance.Modifiers["adaptacion_pupila"];
-            bool glow = (bool)GuiController.Instance.Modifiers["activar_glow"];
+            MAX_PUPILA_TIME = adaptacion_pupila;
             effect.SetValue("glow", glow);
             if (glow)
             {
                 #region GlowMap
-                effect.SetValue("KLum", 1.0f);
+                effect.SetValue("KLum", 1.3f);
                 effect.Technique = "DefaultTechnique";
                 pSurf = g_pGlowMap.GetSurfaceLevel(0);
                 device.SetRenderTarget(0, pSurf);
@@ -257,7 +240,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.EndScene();
             device.DepthStencilSurface = pOldDS;
             string fname2 = string.Format("Pass{0:D}.bmp", NUM_REDUCE_TX);
-            //SurfaceLoader.Save(fname2, ImageFileFormat.Bmp, pSurf);
 
             // Reduce
             for (int i = NUM_REDUCE_TX - 1; i > 0; i--)
@@ -288,9 +270,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             #endregion
 
             #region ToneMapping Effect
-            effect.SetValue("tone_mapping_izq", (int)GuiController.Instance.Modifiers["tm_izq"]);
-            effect.SetValue("tone_mapping_der", (int)GuiController.Instance.Modifiers["tm_der"]);
-            effect.SetValue("pantalla_completa", (bool)GuiController.Instance.Modifiers["pantalla_completa"]);
+            effect.SetValue("pantalla_completa", true);
             effect.SetValue("screen_dx", device.PresentationParameters.BackBufferWidth);
             effect.SetValue("screen_dy", device.PresentationParameters.BackBufferHeight);
             pSurf = g_pRenderFinal.GetSurfaceLevel(0);

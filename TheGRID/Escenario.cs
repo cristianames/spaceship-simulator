@@ -65,7 +65,6 @@ namespace AlumnoEjemplos.TheGRID
             planet.setColision(new ColisionAsteroide());
             planet.getColision().setBoundingBox(bounding_asteroide);
             EjemploAlumno.workspace().objectosNoMeshesCollection.Add(planet.objeto);
-            //EjemploAlumno.workspace().dibujableCollection.Add(planet);
             //crearEstrellas();   
         }
         public void dispose()

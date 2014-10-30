@@ -118,9 +118,9 @@ namespace AlumnoEjemplos.TheGRID
             
             
             //Flecha direccion objetivo
-            arrow = new TgcArrow();
-            arrow.BodyColor = Color.FromArgb(230, Color.Cyan);
-            arrow.HeadColor = Color.FromArgb(230, Color.Yellow);
+            //arrow = new TgcArrow();
+            //arrow.BodyColor = Color.FromArgb(230, Color.Cyan);
+            //arrow.HeadColor = Color.FromArgb(230, Color.Yellow);
             //this.objectosNoMeshesCollection.Add(arrow);
 
             //Cargamos el audio
@@ -156,7 +156,7 @@ namespace AlumnoEjemplos.TheGRID
             //GuiController.Instance.Modifiers.addBoolean("Velocidad Manual", "Activado", true);
             GuiController.Instance.Modifiers.addBoolean("Desplaz. Avanzado", "Activado", true);
             GuiController.Instance.Modifiers.addBoolean("Ver BoundingBox", "Activado", false);
-            GuiController.Instance.Modifiers.addColor("lightColor", Color.Blue);
+            GuiController.Instance.Modifiers.addColor("lightColor", Color.FromArgb(142,145,240));
             //string[] opciones4 = new string[] { "Activado", "Desactivado" };
             //GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);  De momento lo saco.
             string opcionElegida = (string)GuiController.Instance.Modifiers["Escenario Actual"];

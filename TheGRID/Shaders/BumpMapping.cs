@@ -106,14 +106,14 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                         CustomVertex.PositionTextured.Format, Pool.Default);
             g_pVBV3D.SetData(vertices, 0, LockFlags.None);
             //Creamos las luces
-            light_sol = crearLuz(Color.Transparent, 2550f, 2000f, 1500f, 0.6f, 0.2f, 0.2f, 1f);
-            light_izq = crearLuz(Color.Green, 5f, 1000f, 1f, 0.3f, 10f, 0.3f, 1f);
+            light_sol = crearLuz(Color.Transparent, 2550f, 1000f, 1500f, 0.6f, 0.2f, 0.2f, 1f);
+            light_izq = crearLuz(Color.Green, 5f, 1200f, 1f, 0.3f, 10f, 0.3f, 1f);
             light_izq.direccion = new Vector3(0, -1, 0);
-            light_izq.angulo = 0.95f;
-            light_der = crearLuz(Color.Red, 5f, 1000f, 1f, 0.3f, 10f, 0.3f, 1f);
+            light_izq.angulo = 0.984f;
+            light_der = crearLuz(Color.Red, 5f, 1200f, 1f, 0.3f, 10f, 0.3f, 1f);
             light_der.direccion = new Vector3(0, 1, 0);
-            light_der.angulo = 0.97f;
-            light_front = crearLuz(Color.LightYellow, 5f, 1000f, 1f, 0.3f, 10f, 0.3f, 1f);
+            light_der.angulo = 0.984f;
+            light_front = crearLuz(Color.LightYellow, 5f, 1200f, 1f, 0.3f, 10f, 0.3f, 1f);
             light_front.direccion = new Vector3(0, 1, 0);
             light_front.angulo = 0.97f;
             //Cuadraditos que simulan luces
@@ -336,6 +336,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             effect.SetValue("spotLightAngleCos", angle);
             effect.SetValue("spotLightExponent", 7f);
         }
+
         private void actualizarLuces()
         {
             

@@ -46,7 +46,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         public SuperRender()
         {
             motionShader = new MotionBlur(this);
-            //hdrlShader = new HDRL(this);
+            hdrlShader = new HDRL(this);
             bumpShader = new BumpMapping(this);                
         }
 
@@ -68,7 +68,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         public void close()
         {
             motionShader.close();
-            //hdrlShader.close();
+            hdrlShader.close();
             bumpShader.close();
         }
 
@@ -78,8 +78,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             switch(tipoEfecto)
             {
                 case tipo.MOTION:
-                    texturaRetorno = bumpShader.renderEffect(parametros);
-                    //texturaRetorno = hdrlShader.renderEffect(parametros);
+                    //texturaRetorno = bumpShader.renderEffect(parametros);
+                    texturaRetorno = hdrlShader.renderEffect(parametros);
                     break;
                 case tipo.HDRL:
                     texturaRetorno = bumpShader.renderEffect(parametros);
