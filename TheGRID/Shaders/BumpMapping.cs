@@ -59,6 +59,9 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
         TgcBox[] lightMeshes;
 
+        public bool parpadeoIzq = false;
+        public bool parpadeoDer = false;
+
         #endregion
 
         public BumpMapping(SuperRender main)
@@ -106,15 +109,12 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                         CustomVertex.PositionTextured.Format, Pool.Default);
             g_pVBV3D.SetData(vertices, 0, LockFlags.None);
             //Creamos las luces
-            light_sol = crearLuz(Color.Transparent, 2550f, 1000f, 1500f, 0.6f, 0.2f, 0.2f, 1f);
-            light_izq = crearLuz(Color.Green, 5f, 1200f, 1f, 0.3f, 10f, 0.3f, 1f);
-            light_izq.direccion = new Vector3(0, -1, 0);
-            light_izq.angulo = 0.984f;
-            light_der = crearLuz(Color.Red, 5f, 1200f, 1f, 0.3f, 10f, 0.3f, 1f);
-            light_der.direccion = new Vector3(0, 1, 0);
-            light_der.angulo = 0.984f;
+            light_sol = crearLuz(Color.LightBlue, 2550f, 550f, 1500f, 0.6f, 0.2f, 0.2f, 1f);
+            light_izq = crearLuz(Color.Green, 5f, 50f, 1f, 0.3f, 0.2f, 1f, 1f);
+            //light_izq.angulo = 0.984f;
+            light_der = crearLuz(Color.Red, 5f, 1000f, 1f, 0.3f, 0.2f, 0.3f, 1f);
+            //light_der.angulo = 0.984f;
             light_front = crearLuz(Color.LightYellow, 5f, 1200f, 1f, 0.3f, 10f, 0.3f, 1f);
-            light_front.direccion = new Vector3(0, 1, 0);
             light_front.angulo = 0.97f;
             //Cuadraditos que simulan luces
             lightMeshes = new TgcBox[3];
@@ -135,7 +135,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         public Texture renderEffect(EstructuraRender parametros)
         {
             actualizarLuces();
-
+            parpadeoIzq = EjemploAlumno.workspace().parpadeoIzq;
+            parpadeoDer = EjemploAlumno.workspace().parpadeoDer;
             Device device = GuiController.Instance.D3dDevice;
 
             // guardo el Render target anterior y seteo la textura como render target
@@ -163,24 +164,32 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.DepthStencilSurface = g_pDepthStencil;
             pSurf = g_BumpDer.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
-            renderScene(parametros.meshes, light_der, "VERTEX_COLOR");
-                renderScene(parametros.sol, light_der, "VERTEX_COLOR");
-                //renderScene(parametros.elementosRenderizables);
-                if (!EjemploAlumno.workspace().camara.soyFPS())
-                    renderScene(parametros.nave, light_der, "VERTEX_COLOR");
+                if (parpadeoDer)
+                {
+                    renderScene(parametros.meshes, light_der, "BumpMappingTechnique");
+                    renderScene(parametros.sol, light_der, "BumpMappingTechnique");
+                    //renderScene(parametros.elementosRenderizables);
+                    if (!EjemploAlumno.workspace().camara.soyFPS())
+                        renderScene(parametros.nave, light_der, "BumpMappingTechnique");
+                }
             device.EndScene();
             pSurf.Dispose();
             //3° Pasada, luz izquierda
             device.DepthStencilSurface = g_pDepthStencil;
             pSurf = g_BumpIzq.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
-            renderScene(parametros.meshes, light_izq, "VERTEX_COLOR");
-                renderScene(parametros.sol, light_izq, "VERTEX_COLOR");
-                //renderScene(parametros.elementosRenderizables);
-                if (!EjemploAlumno.workspace().camara.soyFPS())
-                    renderScene(parametros.nave, light_izq, "VERTEX_COLOR");
+                if (parpadeoIzq)
+                {
+                    renderScene(parametros.meshes, light_izq, "BumpMappingTechnique");
+                    renderScene(parametros.sol, light_izq, "BumpMappingTechnique");
+                    //renderScene(parametros.elementosRenderizables);
+                    if (!EjemploAlumno.workspace().camara.soyFPS())
+                        renderScene(parametros.nave, light_izq, "BumpMappingTechnique");
+                }
             device.EndScene();
             pSurf.Dispose();
             //4° Pasada, luz delantera
@@ -188,8 +197,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             pSurf = g_BumpFront.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
             device.BeginScene();
-            renderScene(parametros.meshes, light_front, "VERTEX_COLOR");
-            renderScene(parametros.sol, light_front, "VERTEX_COLOR");
+                renderScene(parametros.meshes, light_front, "VERTEX_COLOR");
+                renderScene(parametros.sol, light_front, "VERTEX_COLOR");
                 //renderScene(parametros.elementosRenderizables);
                 if (!EjemploAlumno.workspace().camara.soyFPS())
                     renderScene(parametros.nave, light_front, "VERTEX_COLOR");

@@ -65,6 +65,11 @@ namespace AlumnoEjemplos.TheGRID
         SuperRender superRender;
         internal SuperRender Shader { get { return superRender; } }
         public Musique music = new Musique();
+        //Variables para el parpadeo
+        float tiempo_acum = 0;
+        float periodo_parpadeo = 1.5f;
+        public bool parpadeoIzq = true;
+        public bool parpadeoDer = false;
         #endregion
 
         #region METODOS AUXILIARES
@@ -243,6 +248,22 @@ namespace AlumnoEjemplos.TheGRID
             #region -----Update------
             tiempoPupila = elapsedTime; //Para el HDRL
 
+            //Parpadeo de las luces
+            tiempo_acum += elapsedTime;
+            if(tiempo_acum >= periodo_parpadeo)
+            {
+                if(parpadeoIzq)
+                {
+                    parpadeoIzq = false;
+                    parpadeoDer = true;
+                }
+                else
+                {
+                    parpadeoIzq = true;
+                    parpadeoDer = false;
+                }
+                tiempo_acum = 0;
+            }
             nave.rotarPorTiempo(elapsedTime, listaDibujable);
             nave.desplazarsePorTiempo(elapsedTime, new List<Dibujable>(scheme.CuerposGravitacionales));
 
