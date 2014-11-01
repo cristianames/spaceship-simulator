@@ -57,8 +57,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         private Effect bumpEffect_nave;
         private Effect bumpEffect_sol;
 
-        TgcBox[] lightMeshes;
-
         public bool parpadeoIzq = false;
         public bool parpadeoDer = false;
 
@@ -109,19 +107,19 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                         CustomVertex.PositionTextured.Format, Pool.Default);
             g_pVBV3D.SetData(vertices, 0, LockFlags.None);
             //Creamos las luces
-            light_sol = crearLuz(Color.LightBlue, 2550f, 550f, 1500f, 0.6f, 0.2f, 0.2f, 1f);
-            light_izq = crearLuz(Color.Green, 5f, 50f, 1f, 0.3f, 0.2f, 1f, 1f);
-            //light_izq.angulo = 0.984f;
-            light_der = crearLuz(Color.Red, 5f, 1000f, 1f, 0.3f, 0.2f, 0.3f, 1f);
-            //light_der.angulo = 0.984f;
+            light_sol = crearLuz(Color.LightBlue, 2550f, 350f, 1500f, 0.6f, 0.2f, 0.2f, 1f);
+            light_izq = crearLuz(Color.Blue, 5f, 5000f, 100f, 0.3f, 40f, 10f, 1f);
+            light_izq.angulo = 0.4f;
+            light_der = crearLuz(Color.Blue, 5f, 5000f, 100f, 0.3f, 40f, 10f, 1f);
+            light_der.angulo = 0.4f;
             light_front = crearLuz(Color.LightYellow, 5f, 1200f, 1f, 0.3f, 10f, 0.3f, 1f);
             light_front.angulo = 0.97f;
             //Cuadraditos que simulan luces
-            lightMeshes = new TgcBox[3];
-            //Color[] c = new Color[3] { Color.Red, Color.Green, Color.Green };
-            for (int i = 0; i < lightMeshes.Length; i++)
+            mainShader.lightMeshes = new TgcBox[3];
+            Color[] c = new Color[3] { Color.Blue, Color.Red, Color.Red };
+            for (int i = 0; i < mainShader.lightMeshes.Length; i++)
             {
-                lightMeshes[i] = TgcBox.fromSize(new Vector3(1f, 1f, 1f), Color.Blue);
+                mainShader.lightMeshes[i] = TgcBox.fromSize(new Vector3(1f, 1f, 1f), c[i]);
                 //EjemploAlumno.workspace().objectosNoMeshesCollection.Add(lightMeshes[i]);
             }
             cargarBumpEffect();
@@ -168,8 +166,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.BeginScene();
                 if (parpadeoDer)
                 {
-                    renderScene(parametros.meshes, light_der, "BumpMappingTechnique");
-                    renderScene(parametros.sol, light_der, "BumpMappingTechnique");
+                    renderScene(parametros.meshes, light_der, "VERTEX_COLOR");
+                    renderScene(parametros.sol, light_der, "VERTEX_COLOR");
                     //renderScene(parametros.elementosRenderizables);
                     if (!EjemploAlumno.workspace().camara.soyFPS())
                         renderScene(parametros.nave, light_der, "BumpMappingTechnique");
@@ -184,8 +182,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.BeginScene();
                 if (parpadeoIzq)
                 {
-                    renderScene(parametros.meshes, light_izq, "BumpMappingTechnique");
-                    renderScene(parametros.sol, light_izq, "BumpMappingTechnique");
+                    renderScene(parametros.meshes, light_izq, "VERTEX_COLOR");
+                    renderScene(parametros.sol, light_izq, "VERTEX_COLOR");
                     //renderScene(parametros.elementosRenderizables);
                     if (!EjemploAlumno.workspace().camara.soyFPS())
                         renderScene(parametros.nave, light_izq, "BumpMappingTechnique");
@@ -242,7 +240,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             ((TgcMesh)nave.objeto).Technique = technique;
             nave.render();
             //Renderizamos las luces de la nave
-            foreach(TgcBox cajita in lightMeshes)
+            foreach (TgcBox cajita in mainShader.lightMeshes)
             {
                 cajita.render();
             }
@@ -356,9 +354,9 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             Vector3 pos_nave = EjemploAlumno.workspace().nave.getPosicion();
             Vector3 dir_nave = EjemploAlumno.workspace().nave.getDireccion();
 
-            light_sol.posicion_ParaNave = pos_sol;
+            light_sol.posicion_ParaNave = pos_nave - (pos_sol - pos_nave);
             light_sol.posicion_ParaSol = pos_sol + new Vector3(500, 900, -900);
-            light_sol.posicion_ParaAsteroide = pos_sol + new Vector3(0, 0, 18000);
+            light_sol.posicion_ParaAsteroide = light_sol.posicion_ParaNave;
 
             //light_izq.color = (Color)GuiController.Instance.Modifiers["lightColor"];
             light_izq.posicion_ParaNave = EjemploAlumno.workspace().nave.puntoLuzIzq();
@@ -378,9 +376,9 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             light_front.posicion_ParaSol = light_der.posicion_ParaNave;
             light_front.direccion = Vector3.Normalize(dir_nave);
 
-            lightMeshes[2].setPositionSize(light_der.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
-            lightMeshes[1].setPositionSize(light_izq.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
-            lightMeshes[0].setPositionSize(light_front.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
+            mainShader.lightMeshes[2].setPositionSize(light_der.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
+            mainShader.lightMeshes[1].setPositionSize(light_izq.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
+            mainShader.lightMeshes[0].setPositionSize(light_front.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
         }
 
         #endregion

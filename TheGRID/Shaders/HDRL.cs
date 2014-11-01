@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using TgcViewer;
+using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.TheGRID.Shaders
@@ -149,6 +150,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                         if (!EjemploAlumno.workspace().camara.soyFPS())
                             renderScene(parametros.nave, "DibujarObjetosOscuros");
                     renderScene(parametros.elementosRenderizables);
+                    renderLuces(mainShader.lightMeshes, "DefaultTechnique");
                 device.EndScene();
                 pSurf.Dispose();
 
@@ -344,7 +346,22 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 elemento.render();
             }
         }
+        public void renderLuces(TgcBox[] lightMeshes, string technique)
+        {
+                if(EjemploAlumno.workspace().camara.soyFPS())
+                {
+                    lightMeshes[0].Effect = effect;
+                    lightMeshes[0].Technique = technique;
+                    lightMeshes[0].render();
+                }
+                lightMeshes[1].Effect = effect;
+                lightMeshes[1].Technique = technique;
+                lightMeshes[1].render();
+                lightMeshes[2].Effect = effect;
+                lightMeshes[2].Technique = technique;
+                lightMeshes[2].render();
 
+        }
         #endregion
 
         public SuperRender.tipo tipoShader()

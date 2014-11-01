@@ -42,6 +42,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
         public bool motionBlurActivado = false;
 
+        public TgcBox[] lightMeshes;
+
 
         public SuperRender()
         {
@@ -63,6 +65,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         {
             motionShader.renderEffect(new EstructuraRender(nave, sol, meshes, elementosRenderizables));
             GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
+            GuiController.Instance.AxisLines.render();
         }
 
         public void close()
