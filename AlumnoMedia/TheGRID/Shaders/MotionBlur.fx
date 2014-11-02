@@ -107,18 +107,6 @@ VS_OUTPUT vs_main( VS_INPUT Input )
    // Transformo la normal y la normalizo
    Output.Norm = normalize(mul(Input.Normal,matWorld));
 
-   /*
-   // Computo la velocidad del vertice
-	// posicion actual
-	float4 vPosActual = Output.Position;
-	// posicion anterior
-	float4 vPosAnterior = mul( Input.Position,matWorld * matViewAnt * matProj);
-	vPosActual /= vPosActual.w;
-	vPosAnterior /= vPosAnterior.w;
-	float2 velocity = vPosActual - vPosAnterior;    
-    // lo propago
-    Output.Vel = velocity;*/
-
    // posicion actual
 	Output.vPosActual = Output.Position;
 	// posicion anterior

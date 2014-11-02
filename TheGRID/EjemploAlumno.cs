@@ -161,7 +161,7 @@ namespace AlumnoEjemplos.TheGRID
             //GuiController.Instance.Modifiers.addBoolean("Velocidad Manual", "Activado", true);
             GuiController.Instance.Modifiers.addBoolean("Desplaz. Avanzado", "Activado", true);
             GuiController.Instance.Modifiers.addBoolean("Ver BoundingBox", "Activado", false);
-            GuiController.Instance.Modifiers.addColor("lightColor", Color.FromArgb(142,145,240));
+            GuiController.Instance.Modifiers.addBoolean("glow", "Activado", true);
             //string[] opciones4 = new string[] { "Activado", "Desactivado" };
             //GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);  De momento lo saco.
             string opcionElegida = (string)GuiController.Instance.Modifiers["Escenario Actual"];
@@ -320,7 +320,7 @@ namespace AlumnoEjemplos.TheGRID
             scheme.laserManager.destruirListas();
             scheme.dispose();
             nave.dispose();
-            arrow.dispose();
+            //arrow.dispose();
             skySphere.dispose();
             music.liberarRecursos();
         }

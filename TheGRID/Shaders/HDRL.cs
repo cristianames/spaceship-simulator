@@ -37,7 +37,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         {
             mainShader = main;
             Device d3dDevice = GuiController.Instance.D3dDevice;
-
             string compilationErrors;
             effect = Effect.FromFile(GuiController.Instance.D3dDevice, ShaderDirectory,
                 null, null, ShaderFlags.PreferFlowControl, null, out compilationErrors);
@@ -113,6 +112,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         public Texture renderEffect(EstructuraRender parametros)
         {
             float elapsedTime = EjemploAlumno.workspace().tiempoPupila;
+            glow = (bool)GuiController.Instance.Modifiers["glow"];
 
             Device device = GuiController.Instance.D3dDevice;
             Control panel3d = GuiController.Instance.Panel3d;
