@@ -149,7 +149,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                     renderScene(parametros.sol, "DefaultTechnique");
                         if (!EjemploAlumno.workspace().camara.soyFPS())
                             renderScene(parametros.nave, "DibujarObjetosOscuros");
-                    renderScene(parametros.elementosRenderizables);
+                    //renderScene(parametros.elementosRenderizables);
                     renderLuces(mainShader.lightMeshes, "DefaultTechnique");
                 device.EndScene();
                 pSurf.Dispose();
