@@ -350,13 +350,13 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             Device device = GuiController.Instance.D3dDevice;
 
             eyePosition = EjemploAlumno.workspace().camara.PosicionDeCamara;
-            Vector3 pos_sol = EjemploAlumno.workspace().Escenario.sol.getPosicion();
             Vector3 pos_nave = EjemploAlumno.workspace().nave.getPosicion();
+            Vector3 pos_sol = new Vector3(0, 0, 9000) + pos_nave;
             Vector3 dir_nave = EjemploAlumno.workspace().nave.getDireccion();
 
             light_sol.posicion_ParaNave = pos_nave - (pos_sol - pos_nave);
             light_sol.posicion_ParaSol = pos_sol + new Vector3(500, 900, -900);
-            light_sol.posicion_ParaAsteroide = light_sol.posicion_ParaNave;
+            light_sol.posicion_ParaAsteroide = pos_sol;
 
             //light_izq.color = (Color)GuiController.Instance.Modifiers["lightColor"];
             light_izq.posicion_ParaNave = EjemploAlumno.workspace().nave.puntoLuzIzq();

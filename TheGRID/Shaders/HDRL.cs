@@ -150,7 +150,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                         if (!EjemploAlumno.workspace().camara.soyFPS())
                             renderScene(parametros.nave, "DibujarObjetosOscuros");
                     //renderScene(parametros.elementosRenderizables);
-                    renderLuces(mainShader.lightMeshes, "DefaultTechnique");
+                        renderLuces(mainShader.lightMeshes, "DefaultTechnique", "DibujarObjetosOscuros");
                 device.EndScene();
                 pSurf.Dispose();
 
@@ -346,19 +346,26 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 elemento.render();
             }
         }
-        public void renderLuces(TgcBox[] lightMeshes, string technique)
+        public void renderLuces(TgcBox[] lightMeshes, string technique, string Notech)
         {
-                if(EjemploAlumno.workspace().camara.soyFPS())
+                if(!EjemploAlumno.workspace().camara.soyFPS())
                 {
                     lightMeshes[0].Effect = effect;
                     lightMeshes[0].Technique = technique;
                     lightMeshes[0].render();
                 }
                 lightMeshes[1].Effect = effect;
-                lightMeshes[1].Technique = technique;
+                if (EjemploAlumno.workspace().parpadeoIzq)
+                    lightMeshes[1].Technique = technique;
+                else
+                    lightMeshes[1].Technique = Notech;
                 lightMeshes[1].render();
                 lightMeshes[2].Effect = effect;
-                lightMeshes[2].Technique = technique;
+                if(EjemploAlumno.workspace().parpadeoDer)
+                    lightMeshes[2].Technique = technique;
+                else
+                    lightMeshes[2].Technique = Notech;
+
                 lightMeshes[2].render();
 
         }

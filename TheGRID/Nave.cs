@@ -63,18 +63,18 @@ namespace AlumnoEjemplos.TheGRID
             return Vector3.Add(Vector3.Add(Vector3.Add(posNave, desp_X), desp_Y), desp_Z);
              */
             //Ahora la version mas optimizada y menos descriptiva.
-            return Vector3.Add(Vector3.Add(Vector3.Add(getPosicion(), Vector3.Multiply(getDireccion_X(), -8)),
-                Vector3.Multiply(getDireccion_Y(), 0)), Vector3.Multiply(getDireccion(), 6));      //Siendo X=-9, Y=0, Z=15
+            return Vector3.Add(Vector3.Add(Vector3.Add(getPosicion(), Vector3.Multiply(getDireccion_X(), -9.7f)),
+                Vector3.Multiply(getDireccion_Y(), 0)), Vector3.Multiply(getDireccion(), 6));
         }
         public Vector3 puntoLuzDer()
         {
-            return Vector3.Add(Vector3.Add(Vector3.Add(getPosicion(), Vector3.Multiply(getDireccion_X(), 8)),
-                Vector3.Multiply(getDireccion_Y(), 0)), Vector3.Multiply(getDireccion(), 6));      //Siendo X=9, Y=2, Z=15
+            return Vector3.Add(Vector3.Add(Vector3.Add(getPosicion(), Vector3.Multiply(getDireccion_X(), 9.7f)),
+                Vector3.Multiply(getDireccion_Y(), 0)), Vector3.Multiply(getDireccion(), 6));
         }
         public Vector3 puntoLuzCent()
         {
             return Vector3.Add(Vector3.Add(Vector3.Add(getPosicion(), Vector3.Multiply(getDireccion_X(), 0)),
-                Vector3.Multiply(getDireccion_Y(), -1)), Vector3.Multiply(getDireccion(), 48));      //Siendo X=0, Y=10, Z=25
+                Vector3.Multiply(getDireccion_Y(), -1)), Vector3.Multiply(getDireccion(), 48));
         }
         public Vector3 dirLuzIzq()
         {
