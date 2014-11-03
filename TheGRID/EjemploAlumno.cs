@@ -65,6 +65,8 @@ namespace AlumnoEjemplos.TheGRID
         SuperRender superRender;
         internal SuperRender Shader { get { return superRender; } }
         public Musique music = new Musique();
+        //Lazer Azul
+        float pressed_time_lazer = 0;
         //Variables para el parpadeo
         float tiempo_acum = 0;
         float periodo_parpadeo = 1.5f;
@@ -212,9 +214,7 @@ namespace AlumnoEjemplos.TheGRID
                     tiempoBlur = 0.3f;
                     velocidadBlur = 0;
                     objetoPrincipal.fisica.velocidadMaxima = objetoPrincipal.velMaxNormal;
-                    objetoPrincipal.fisica.aceleracion = objetoPrincipal.acelNormal;
-                    
-                    
+                    objetoPrincipal.fisica.aceleracion = objetoPrincipal.acelNormal;                   
                 }
                 else
                 {
@@ -231,9 +231,9 @@ namespace AlumnoEjemplos.TheGRID
             if (superRender.motionBlurActivado) nave.acelerar();//Si el Blur esta activado la nave solamente acelera
             else if (objetoPrincipal.velocidadActual() > objetoPrincipal.fisica.velocidadMaxima) objetoPrincipal.fisica.velocidadInstantanea = objetoPrincipal.velMaxNormal;//Esto esta para cuando el blur se desactiva, desacelrar rapidamente la nave
             if (input.keyDown(Key.P)) { scheme.asteroidManager.explotaAlPrimero(); }
-            if (input.keyDown(Key.Space))
+            if (!superRender.motionBlurActivado)
             {
-                if (!superRender.motionBlurActivado)
+                if (input.keyDown(Key.Space))
                 {
                     timeLaser += elapsedTime;
                     if (timeLaser > betweenTime)
@@ -242,7 +242,20 @@ namespace AlumnoEjemplos.TheGRID
                         timeLaser = 0;
                     }
                 }
+                if (input.keyDown(Key.RightShift))
+                {
+                    pressed_time_lazer += elapsedTime;
+                    music.playLazerCarga();
+                }
+                else
+                    if (input.keyUp(Key.RightShift))
+                    {
+                        scheme.dispararLaserAzul(pressed_time_lazer);
+                        pressed_time_lazer = 0;
+                        music.playLazer2();
+                    }
             }
+
             #endregion
 
             #region -----Update------

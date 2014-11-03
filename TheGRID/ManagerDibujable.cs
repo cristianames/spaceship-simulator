@@ -87,9 +87,15 @@ namespace AlumnoEjemplos.TheGRID
     public class ManagerLaser : ManagerDibujable
     {
         bool alternado;
+        protected List<Dibujable> controlados_azul;
+        protected List<Dibujable> inactivos_azul;
+
         public ManagerLaser(int limite) : base(limite) 
         {
+            controlados_azul = new List<Dibujable>(limite);
+            inactivos_azul = new List<Dibujable>(limite);
             for (int i = 0; i < limiteControlados; i++) inactivos.Add(Factory.crearLaserRojo());
+            for (int i = 0; i < limiteControlados; i++) inactivos_azul.Add(Factory.crearLaserAzul());
         }        
         public void cargarDisparo(EjeCoordenadas ejes, Vector3 posicionNave)
         {
@@ -117,16 +123,62 @@ namespace AlumnoEjemplos.TheGRID
             Dibujable laser = activar();
             Factory.reubicarLaserAPosicion(laser, ejes, posicionNave);
         }
+
+        public void cargarSuperDisparo(EjeCoordenadas ejes, Vector3 posicionNave, float tiempo)
+        {
+            Vector3 atras = ejes.vectorZ;
+            atras.Multiply(-20);
+            posicionNave += atras;
+            if (inactivos.Count == 0)
+            {
+                Dibujable dead = controlados[0];
+                desactivar_azul(dead);
+            }
+            Dibujable laser = activar_azul();
+            if (tiempo > 5)
+                tiempo = 5;
+            laser.velocidad = 6000 + 100 * tiempo; 
+            Factory.escalarLaser(laser, new Vector3(0.3f*tiempo, 0.3f*tiempo, 1));
+            Factory.reubicarLaserAPosicion(laser, ejes, posicionNave);
+        }
+
         public override void desactivar(Dibujable objeto)
         {
             controlados.Remove(objeto);            
             inactivos.Add(Factory.resetearLaser(objeto));
             objeto.desactivar();
         }
+
+        public void desactivar_azul(Dibujable objeto)
+        {
+            controlados_azul.Remove(objeto);
+            inactivos_azul.Add(Factory.resetearLaser(objeto));
+            objeto.desactivar();
+        }
+        public Dibujable activar_azul()
+        {
+            Dibujable objeto = inactivos_azul[0];
+            inactivos_azul.RemoveAt(0);
+            controlados_azul.Add(objeto);
+            objeto.activar();
+            return objeto;
+        }
+        public override void operar(float time)
+        {
+            base.operar(time);
+            foreach (var item in controlados_azul)
+            {
+                trasladar(item, time);
+                rotar(item, time);
+            }
+        }
+
         public void chocoAsteroide()
         {
             foreach (Dibujable laser in controlados)
                 if(laser.objeto.Enabled) EjemploAlumno.workspace().Escenario.asteroidManager.chocoLaser(laser);
+            foreach (Dibujable laser in controlados_azul)
+                if (laser.objeto.Enabled) EjemploAlumno.workspace().Escenario.asteroidManager.chocoLaser(laser);
         }
     }
     #endregion

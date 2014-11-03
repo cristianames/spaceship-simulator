@@ -129,6 +129,13 @@ namespace AlumnoEjemplos.TheGRID
             laserManager.cargarDisparo(principal.getEjes(), principal.getPosicion());
             EjemploAlumno.workspace().music.playLazer();
         }
+        internal void dispararLaserAzul(float tiempo)
+        {
+            if (escenarioActual != TipoModo.THE_OPENING) return;
+            if (tiempo == 0) return;
+            laserManager.cargarSuperDisparo(principal.getEjes(), principal.getPosicion(), tiempo);
+        }
+
         internal void refrescar(float elapsedTime)                                                  //RENDER DEL ESCENARIO
         {
 
