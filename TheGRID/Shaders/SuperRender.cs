@@ -22,14 +22,16 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         public Nave nave;
         public Dibujable sol;
         public List<Dibujable> meshes;
-        public List<IRenderObject> elementosRenderizables; 
+        public List<IRenderObject> elementosRenderizables;
+        public List<TgcMesh> objetosBrillantes;
 
-        public EstructuraRender(Nave n, Dibujable s, List<Dibujable> m, List<IRenderObject> r)
+        public EstructuraRender(Nave n, Dibujable s, List<Dibujable> m, List<IRenderObject> r, List<TgcMesh> e)
         {
             nave = n;
             sol = s;
             meshes = m;
             elementosRenderizables = r;
+            objetosBrillantes = e;
         }
     }
 
@@ -61,9 +63,9 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             return true;
         }
 
-        public void render(Nave nave, Dibujable sol, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables)
+        public void render(Nave nave, Dibujable sol, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables, List<TgcMesh> objetosBrillantes)
         {
-            motionShader.renderEffect(new EstructuraRender(nave, sol, meshes, elementosRenderizables));
+            motionShader.renderEffect(new EstructuraRender(nave, sol, meshes, elementosRenderizables, objetosBrillantes));
             GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
             GuiController.Instance.AxisLines.render();
         }

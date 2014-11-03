@@ -153,6 +153,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 renderScene(parametros.meshes, light_sol, "BumpMappingTechnique");
                 renderScene(parametros.sol, light_sol, "BumpMappingTechnique");
                     renderScene(parametros.elementosRenderizables);
+                    renderScene(new List<IRenderObject>(parametros.objetosBrillantes));
                     if (!EjemploAlumno.workspace().camara.soyFPS())
                         renderScene(parametros.nave, light_sol, "BumpMappingTechnique");
             device.EndScene();

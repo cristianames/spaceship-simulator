@@ -147,6 +147,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 device.BeginScene();
                     renderScene(parametros.meshes, "DibujarObjetosOscuros");
                     renderScene(parametros.sol, "DefaultTechnique");
+                    renderScene(parametros.objetosBrillantes, "DefaultTechnique");
                         if (!EjemploAlumno.workspace().camara.soyFPS())
                             renderScene(parametros.nave, "DibujarObjetosOscuros");
                     //renderScene(parametros.elementosRenderizables);
@@ -348,11 +349,19 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 renderScene(dibujable, technique);
             }
         }
-
         public void renderScene(List<IRenderObject> elementosRenderizables)
         {
             foreach (IRenderObject elemento in elementosRenderizables)
             {
+                elemento.render();
+            }
+        }
+        public void renderScene(List<TgcMesh> elementosRenderizables, string technique)
+        {
+            foreach (TgcMesh elemento in elementosRenderizables)
+            {
+                elemento.Effect = effect;
+                elemento.Technique = technique;
                 elemento.render();
             }
         }

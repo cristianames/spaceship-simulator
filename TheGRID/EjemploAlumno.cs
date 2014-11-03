@@ -59,6 +59,7 @@ namespace AlumnoEjemplos.TheGRID
         //lista de meshes para implementar el motion blur
         public List<Dibujable> dibujableCollection = new List<Dibujable>();
         public List<IRenderObject> objectosNoMeshesCollection = new List<IRenderObject>();
+        public List<TgcMesh> objetosBrillantes = new List<TgcMesh>();
         //Modificador de la camara del proyecto
         public CambioCamara camara;
         TgcArrow arrow;
@@ -86,6 +87,10 @@ namespace AlumnoEjemplos.TheGRID
         public static void addRenderizable(IRenderObject unObjeto)
         {
             singleton.objectosNoMeshesCollection.Add(unObjeto);
+        }
+        public static void addMesh(TgcMesh unObjeto)
+        {
+            singleton.objetosBrillantes.Add(unObjeto);
         }
         public TgcFrustum getCurrentFrustrum() { return currentFrustrum; }
         private static string tg_Folder = GuiController.Instance.AlumnoEjemplosMediaDir + "\\TheGrid\\";
@@ -144,7 +149,7 @@ namespace AlumnoEjemplos.TheGRID
                 TgcMesh prueba2;
                 prueba2 = prueba.toMesh("asd");
                 estrellas.Add(prueba2);
-                objectosNoMeshesCollection.Add(prueba2);
+                objetosBrillantes.Add(prueba2);
             }
            
 
@@ -353,7 +358,7 @@ namespace AlumnoEjemplos.TheGRID
             
            
             estrellaControl.insertarEstrellas(estrellas,estrellasNo,nave.getPosicion(),nave.getDireccion(),elapsedTime);
-            superRender.render(nave, sol, dibujableCollection, objectosNoMeshesCollection); //Redirige todo lo que renderiza dentro del "shader"
+            superRender.render(nave, sol, dibujableCollection, objectosNoMeshesCollection, objetosBrillantes); //Redirige todo lo que renderiza dentro del "shader"
             //d3dDevice.VertexFormat = CustomVertex.PositionColoredTextured.Format;
            // d3dDevice.DrawUserPrimitives(PrimitiveType.TriangleList, 1, data);
 
