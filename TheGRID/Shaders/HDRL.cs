@@ -325,9 +325,19 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
         public void renderScene(Dibujable dibujable, string technique)
         {
-            if (dibujable.soyAsteroide() && mainShader.fueraFrustrum(dibujable)) return;
-            ((TgcMesh)dibujable.objeto).Effect = effect;
-            ((TgcMesh)dibujable.objeto).Technique = technique;
+            if (dibujable.soyAsteroide())
+            {
+                if (mainShader.fueraFrustrum(dibujable)) return;
+                ((TgcMesh)dibujable.objeto).Effect = effect;
+                ((TgcMesh)dibujable.objeto).Technique = technique;
+            }
+            else
+            {
+                ((TgcMesh)dibujable.objeto).Effect = effect;
+                ((TgcMesh)dibujable.objeto).Technique = "DefaultTechnique";
+            }
+
+
             dibujable.render();
         }
 

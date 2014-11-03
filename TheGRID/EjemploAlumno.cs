@@ -33,7 +33,7 @@ namespace AlumnoEjemplos.TheGRID
         /// Completar nombre del grupo en formato Grupo NN
         public override string getName(){ return "Grupo TheGRID"; }
         /// Completar con la descripción del TP
-        public override string getDescription() { return "Welcome to TheGRID                                                                            FLECHAS: Rotaciones              WASD: Desplazamiento              LeftShift: Efecto Blur                     LeftCtrl: Modo Crucero                  Espacio - Disparo Principal"; }
+        public override string getDescription() { return "Welcome to TheGRID"+Environment.NewLine+"FLECHAS: Rotaciones"+Environment.NewLine+"WASD: Desplazamiento"+Environment.NewLine+"LeftShift: Efecto Blur"+Environment.NewLine+"LeftCtrl: Modo Crucero"+Environment.NewLine+"Espacio: Disparo Principal"+Environment.NewLine+"RightShift: Disparo Secundario"; }
         #endregion
 
         #region ATRIBUTOS
@@ -154,8 +154,8 @@ namespace AlumnoEjemplos.TheGRID
             //GuiController.Instance.Modifiers.addFloat("Frenado", 0f, 1000f, objetoPrincipal.getAcelFrenado());    De momento lo saco.
             //Crear un modifier para un ComboBox con opciones
             //List<int> pistaDeAudio = new List<int>(){0,1,2,3,4,5,6,7,8,9};
-            string[] opciones0 = new string[] { "THE OPENING", "IMPULSE DRIVE", "WELCOME HOME", "VACUUM" };
-            GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 3);
+            string[] opciones0 = new string[] { "THE OPENING","WELCOME HOME", "VACUUM" };
+            GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 2);
             string[] opciones1 = new string[] { "Tercera Persona", "Camara FPS", "Libre" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
             string[] opciones2 = new string[] { "Lista Completa", "Castor", "Derezzed", "M4 Part 2", "ME Theme", "New Worlds", "Solar Sailer", "Spectre", "Tali", "The Son of Flynn", "Tron Ending", "Sin Musica" };
@@ -231,7 +231,7 @@ namespace AlumnoEjemplos.TheGRID
             if (superRender.motionBlurActivado) nave.acelerar();//Si el Blur esta activado la nave solamente acelera
             else if (objetoPrincipal.velocidadActual() > objetoPrincipal.fisica.velocidadMaxima) objetoPrincipal.fisica.velocidadInstantanea = objetoPrincipal.velMaxNormal;//Esto esta para cuando el blur se desactiva, desacelrar rapidamente la nave
             if (input.keyDown(Key.P)) { scheme.asteroidManager.explotaAlPrimero(); }
-            if (!superRender.motionBlurActivado)
+            if (scheme.escenarioActual == Escenario.TipoModo.THE_OPENING)
             {
                 if (input.keyDown(Key.Space))
                 {
@@ -284,7 +284,13 @@ namespace AlumnoEjemplos.TheGRID
 
             camara.cambiarPosicionCamara();
             currentFrustrum.updateMesh(GuiController.Instance.CurrentCamera.getPosition(),GuiController.Instance.CurrentCamera.getLookAt());
-            
+
+            //Si estamos en una vel de warp considerable, le damos sonido
+            if (nave.velocidadActual() > 3000f)
+                music.playWarp();
+            else
+                music.stopWarp();
+
             //Cargar valores de la flecha
             //Vector3 navePos = nave.getPosicion();
             //Vector3 naveDir = Vector3.Subtract(new Vector3(0, 0, 10000), nave.getDireccion());

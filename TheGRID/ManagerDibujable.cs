@@ -127,7 +127,7 @@ namespace AlumnoEjemplos.TheGRID
         public void cargarSuperDisparo(EjeCoordenadas ejes, Vector3 posicionNave, float tiempo)
         {
             Vector3 atras = ejes.vectorZ;
-            atras.Multiply(-20);
+            atras.Multiply(20);
             posicionNave += atras;
             if (inactivos.Count == 0)
             {
@@ -138,7 +138,7 @@ namespace AlumnoEjemplos.TheGRID
             if (tiempo > 5)
                 tiempo = 5;
             laser.velocidad = 6000 + 100 * tiempo; 
-            Factory.escalarLaser(laser, new Vector3(0.3f*tiempo, 0.3f*tiempo, 1));
+            Factory.escalarLaser(laser, new Vector3(0.3f*tiempo, 0.3f*tiempo, 0.7f));
             Factory.reubicarLaserAPosicion(laser, ejes, posicionNave);
         }
 

@@ -33,6 +33,8 @@ namespace AlumnoEjemplos.TheGRID
         TgcStaticSound asteroideColision = new TgcStaticSound();
         TgcStaticSound asteroideFragmentacion = new TgcStaticSound();
         TgcStaticSound asteroideImpacto = new TgcStaticSound();
+        TgcStaticSound warp_time = new TgcStaticSound();
+
         public Musique()
         {
             lazer.loadSound(EjemploAlumno.TG_Folder + "Music\\laser_shot.wav");
@@ -41,6 +43,7 @@ namespace AlumnoEjemplos.TheGRID
             asteroideColision.loadSound(EjemploAlumno.TG_Folder + "Music\\Asteroide\\colision_1.wav");
             asteroideFragmentacion.loadSound(EjemploAlumno.TG_Folder + "Music\\Asteroide\\fragmentacion_1.wav");
             asteroideImpacto.loadSound(EjemploAlumno.TG_Folder + "Music\\Asteroide\\impacto_1.wav");
+            warp_time.loadSound(EjemploAlumno.TG_Folder + "Music\\warp.wav");
         }
 
 
@@ -66,6 +69,16 @@ namespace AlumnoEjemplos.TheGRID
             lazer2_disparo.SoundBuffer.SetCurrentPosition(0);
             lazer2_disparo.play();
         }
+
+        public void playWarp()
+        {
+            warp_time.play(true);
+        }
+        public void stopWarp()
+        {
+            warp_time.SoundBuffer.Stop();
+            warp_time.SoundBuffer.SetCurrentPosition(0);
+        }
         public void playAsteroideColision()
         {
             asteroideColision.SoundBuffer.Stop();
@@ -89,8 +102,12 @@ namespace AlumnoEjemplos.TheGRID
         {
             playerMP3.closeFile();
             lazer.dispose();
+            lazer2_carga.dispose();
+            lazer2_disparo.dispose();
             asteroideColision.dispose();
             asteroideFragmentacion.dispose();
+            asteroideImpacto.dispose();
+            warp_time.dispose();
         }
 
         internal void refrescar()
