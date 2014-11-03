@@ -98,6 +98,7 @@
     <Compile Include="TheGRID\Dibujable.cs" />
     <Compile Include="TheGRID\EjemploAlumno.cs" />
     <Compile Include="TheGRID\Escenario.cs" />
+    <Compile Include="TheGRID\Estrella.cs" />
     <Compile Include="TheGRID\Explosiones\Explosion.cs" />
     <Compile Include="TheGRID\Explosiones\ExplosionAsteroide.cs" />
     <Compile Include="TheGRID\Explosiones\ExplosionNave.cs" />

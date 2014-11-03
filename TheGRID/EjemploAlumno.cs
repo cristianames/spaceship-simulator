@@ -15,6 +15,7 @@ using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Input;
 using TgcViewer.Utils.Terrain;
+using TgcViewer.Example;
 
 using AlumnoEjemplos.TheGRID;
 using AlumnoEjemplos.TheGRID.Colisiones;
@@ -42,6 +43,9 @@ namespace AlumnoEjemplos.TheGRID
         static EjemploAlumno singleton;
         public Nave nave;
         public Dibujable sol;
+        public Estrella estrellaControl;
+        public List<TgcMesh> estrellas;
+        public List<TgcMesh> estrellasNo;
         public bool boundingBoxes;
         public float velocidadBlur = 0;
         bool velocidadCrucero = false;
@@ -116,7 +120,48 @@ namespace AlumnoEjemplos.TheGRID
             objetoPrincipal = nave;
             camara = new CambioCamara(nave);
             
-            
+            //Carga estrellas
+            //estrella = new Estrella(new Vector3(0, 0, 100), d3dDevice);
+            estrellas =new List<TgcMesh>();
+            estrellasNo = new List<TgcMesh>();
+            estrellaControl = new Estrella();
+            estrellaControl.recur = false;
+
+            for (int i = 0; i < 500; i++)
+            {
+                TgcTriangle prueba = new TgcTriangle();
+                prueba.A = new Vector3(-20, 0, 20);
+                prueba.B = new Vector3(20, 0, 20);
+                prueba.C = new Vector3(0, 20, 20);
+                prueba.Color = Color.White;
+                TgcMesh prueba2;
+                prueba2 = prueba.toMesh("asd");
+                estrellas.Add(prueba2);
+                objectosNoMeshesCollection.Add(prueba2);
+            }
+           
+
+
+            /*
+            for (int i = 0; i < 500; i++)
+            {
+                TgcBox cajaloca = new TgcBox();
+                cajaloca.Color = Color.Red;
+                cajaloca = TgcBox.fromSize(new Vector3(10, 10, 10), TgcTexture.createTexture(GuiController.Instance.ExamplesMediaDir + "\\Texturas\\pasto.jpg"));
+                //cajaloca.Scale = new Vector3(15, 15, 15);
+                cajaloca.Position = new Vector3(i, i, 20);
+                estrellas.Add(cajaloca);
+                objectosNoMeshesCollection.Add(cajaloca);
+            }*/
+         //   TgcTriangle rar = new TgcTriangle();
+          //  rar.Color = Color.Red;
+            //rar.Scale = new Vector3(15, 15, 15);
+           // rar.A = new Vector3(0, 0, 20);
+           // rar.B = new Vector3(10, 0, 20);
+            //rar.C = new Vector3(0, 10, 20);
+          //  objectosNoMeshesCollection.Add(rar);
+           // objectosNoMeshesCollection.Add(estrella);
+
             //Flecha direccion objetivo
             //arrow = new TgcArrow();
             //arrow.BodyColor = Color.FromArgb(230, Color.Cyan);
@@ -264,8 +309,13 @@ namespace AlumnoEjemplos.TheGRID
             
             skySphere.render();     //Solo actualiza pos. Tiene deshabiltiado los render propiamente dicho.
             #endregion
-
+           
+            
+           
+            estrellaControl.insertarEstrellas(estrellas,estrellasNo,nave.getPosicion(),nave.getDireccion(),elapsedTime);
             superRender.render(nave, sol, dibujableCollection, objectosNoMeshesCollection); //Redirige todo lo que renderiza dentro del "shader"
+            //d3dDevice.VertexFormat = CustomVertex.PositionColoredTextured.Format;
+           // d3dDevice.DrawUserPrimitives(PrimitiveType.TriangleList, 1, data);
 
             #region Refrescar panel lateral
             string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
