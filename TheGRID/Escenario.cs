@@ -125,10 +125,15 @@ namespace AlumnoEjemplos.TheGRID
         #region Update segun escenario
         internal void dispararLaser()
         {
-            if (escenarioActual != TipoModo.THE_OPENING) return;
             laserManager.cargarDisparo(principal.getEjes(), principal.getPosicion());
             EjemploAlumno.workspace().music.playLazer();
         }
+        internal void dispararLaserAzul(float tiempo)
+        {
+            if (tiempo == 0) return;
+            laserManager.cargarSuperDisparo(principal.getEjes(), principal.getPosicion(), tiempo);
+        }
+
         internal void refrescar(float elapsedTime)                                                  //RENDER DEL ESCENARIO
         {
 
@@ -143,8 +148,6 @@ namespace AlumnoEjemplos.TheGRID
                     asteroidManager.chocoNave(principal);
                     laserManager.chocoAsteroide();
                     asteroidManager.colisionEntreAsteroides(0);
-                    break;
-                case TipoModo.IMPULSE_DRIVE:
                     break;
                 case TipoModo.WELCOME_HOME:
                     colisionNavePlaneta(EjemploAlumno.workspace().ObjetoPrincipal);

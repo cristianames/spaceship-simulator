@@ -57,7 +57,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         private Effect bumpEffect_nave;
         private Effect bumpEffect_sol;
 
-        TgcBox[] lightMeshes;
+        public bool parpadeoIzq = false;
+        public bool parpadeoDer = false;
 
         #endregion
 
@@ -106,22 +107,19 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                         CustomVertex.PositionTextured.Format, Pool.Default);
             g_pVBV3D.SetData(vertices, 0, LockFlags.None);
             //Creamos las luces
-            light_sol = crearLuz(Color.Transparent, 2550f, 1000f, 1500f, 0.6f, 0.2f, 0.2f, 1f);
-            light_izq = crearLuz(Color.Green, 5f, 1200f, 1f, 0.3f, 10f, 0.3f, 1f);
-            light_izq.direccion = new Vector3(0, -1, 0);
-            light_izq.angulo = 0.984f;
-            light_der = crearLuz(Color.Red, 5f, 1200f, 1f, 0.3f, 10f, 0.3f, 1f);
-            light_der.direccion = new Vector3(0, 1, 0);
-            light_der.angulo = 0.984f;
+            light_sol = crearLuz(Color.LightBlue, 2550f, 350f, 1500f, 0.6f, 0.2f, 0.2f, 1f);
+            light_izq = crearLuz(Color.Blue, 5f, 5000f, 100f, 0.3f, 40f, 10f, 1f);
+            light_izq.angulo = 0.4f;
+            light_der = crearLuz(Color.Blue, 5f, 5000f, 100f, 0.3f, 40f, 10f, 1f);
+            light_der.angulo = 0.4f;
             light_front = crearLuz(Color.LightYellow, 5f, 1200f, 1f, 0.3f, 10f, 0.3f, 1f);
-            light_front.direccion = new Vector3(0, 1, 0);
             light_front.angulo = 0.97f;
             //Cuadraditos que simulan luces
-            lightMeshes = new TgcBox[3];
-            //Color[] c = new Color[3] { Color.Red, Color.Green, Color.Green };
-            for (int i = 0; i < lightMeshes.Length; i++)
+            mainShader.lightMeshes = new TgcBox[3];
+            Color[] c = new Color[3] { Color.Blue, Color.Red, Color.Red };
+            for (int i = 0; i < mainShader.lightMeshes.Length; i++)
             {
-                lightMeshes[i] = TgcBox.fromSize(new Vector3(1f, 1f, 1f), Color.Blue);
+                mainShader.lightMeshes[i] = TgcBox.fromSize(new Vector3(1f, 1f, 1f), c[i]);
                 //EjemploAlumno.workspace().objectosNoMeshesCollection.Add(lightMeshes[i]);
             }
             cargarBumpEffect();
@@ -135,7 +133,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         public Texture renderEffect(EstructuraRender parametros)
         {
             actualizarLuces();
-
+            parpadeoIzq = EjemploAlumno.workspace().parpadeoIzq;
+            parpadeoDer = EjemploAlumno.workspace().parpadeoDer;
             Device device = GuiController.Instance.D3dDevice;
 
             // guardo el Render target anterior y seteo la textura como render target
@@ -153,7 +152,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.BeginScene();
                 renderScene(parametros.meshes, light_sol, "BumpMappingTechnique");
                 renderScene(parametros.sol, light_sol, "BumpMappingTechnique");
-                    //renderScene(parametros.elementosRenderizables);
+                    renderScene(parametros.elementosRenderizables);
                     if (!EjemploAlumno.workspace().camara.soyFPS())
                         renderScene(parametros.nave, light_sol, "BumpMappingTechnique");
             device.EndScene();
@@ -163,24 +162,32 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.DepthStencilSurface = g_pDepthStencil;
             pSurf = g_BumpDer.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
-            renderScene(parametros.meshes, light_der, "VERTEX_COLOR");
-                renderScene(parametros.sol, light_der, "VERTEX_COLOR");
-                //renderScene(parametros.elementosRenderizables);
-                if (!EjemploAlumno.workspace().camara.soyFPS())
-                    renderScene(parametros.nave, light_der, "VERTEX_COLOR");
+                if (parpadeoDer)
+                {
+                    renderScene(parametros.meshes, light_der, "VERTEX_COLOR");
+                    renderScene(parametros.sol, light_der, "VERTEX_COLOR");
+                    //renderScene(parametros.elementosRenderizables);
+                    if (!EjemploAlumno.workspace().camara.soyFPS())
+                        renderScene(parametros.nave, light_der, "BumpMappingTechnique");
+                }
             device.EndScene();
             pSurf.Dispose();
             //3° Pasada, luz izquierda
             device.DepthStencilSurface = g_pDepthStencil;
             pSurf = g_BumpIzq.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
-            renderScene(parametros.meshes, light_izq, "VERTEX_COLOR");
-                renderScene(parametros.sol, light_izq, "VERTEX_COLOR");
-                //renderScene(parametros.elementosRenderizables);
-                if (!EjemploAlumno.workspace().camara.soyFPS())
-                    renderScene(parametros.nave, light_izq, "VERTEX_COLOR");
+                if (parpadeoIzq)
+                {
+                    renderScene(parametros.meshes, light_izq, "VERTEX_COLOR");
+                    renderScene(parametros.sol, light_izq, "VERTEX_COLOR");
+                    //renderScene(parametros.elementosRenderizables);
+                    if (!EjemploAlumno.workspace().camara.soyFPS())
+                        renderScene(parametros.nave, light_izq, "BumpMappingTechnique");
+                }
             device.EndScene();
             pSurf.Dispose();
             //4° Pasada, luz delantera
@@ -188,8 +195,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             pSurf = g_BumpFront.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
             device.BeginScene();
-            renderScene(parametros.meshes, light_front, "VERTEX_COLOR");
-            renderScene(parametros.sol, light_front, "VERTEX_COLOR");
+                renderScene(parametros.meshes, light_front, "VERTEX_COLOR");
+                renderScene(parametros.sol, light_front, "VERTEX_COLOR");
                 //renderScene(parametros.elementosRenderizables);
                 if (!EjemploAlumno.workspace().camara.soyFPS())
                     renderScene(parametros.nave, light_front, "VERTEX_COLOR");
@@ -233,7 +240,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             ((TgcMesh)nave.objeto).Technique = technique;
             nave.render();
             //Renderizamos las luces de la nave
-            foreach(TgcBox cajita in lightMeshes)
+            foreach (TgcBox cajita in mainShader.lightMeshes)
             {
                 cajita.render();
             }
@@ -343,13 +350,13 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             Device device = GuiController.Instance.D3dDevice;
 
             eyePosition = EjemploAlumno.workspace().camara.PosicionDeCamara;
-            Vector3 pos_sol = EjemploAlumno.workspace().Escenario.sol.getPosicion();
             Vector3 pos_nave = EjemploAlumno.workspace().nave.getPosicion();
+            Vector3 pos_sol = new Vector3(0, 0, 9000) + pos_nave;
             Vector3 dir_nave = EjemploAlumno.workspace().nave.getDireccion();
 
-            light_sol.posicion_ParaNave = pos_sol;
+            light_sol.posicion_ParaNave = pos_nave - (pos_sol - pos_nave);
             light_sol.posicion_ParaSol = pos_sol + new Vector3(500, 900, -900);
-            light_sol.posicion_ParaAsteroide = pos_sol + new Vector3(0, 0, 18000);
+            light_sol.posicion_ParaAsteroide = pos_sol;
 
             //light_izq.color = (Color)GuiController.Instance.Modifiers["lightColor"];
             light_izq.posicion_ParaNave = EjemploAlumno.workspace().nave.puntoLuzIzq();
@@ -369,9 +376,9 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             light_front.posicion_ParaSol = light_der.posicion_ParaNave;
             light_front.direccion = Vector3.Normalize(dir_nave);
 
-            lightMeshes[2].setPositionSize(light_der.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
-            lightMeshes[1].setPositionSize(light_izq.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
-            lightMeshes[0].setPositionSize(light_front.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
+            mainShader.lightMeshes[2].setPositionSize(light_der.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
+            mainShader.lightMeshes[1].setPositionSize(light_izq.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
+            mainShader.lightMeshes[0].setPositionSize(light_front.posicion_ParaNave, new Vector3(0.1f, 0.1f, 0.1f));
         }
 
         #endregion

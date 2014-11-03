@@ -234,7 +234,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         }
 
         #endregion
-
-        
+      
     }
 }

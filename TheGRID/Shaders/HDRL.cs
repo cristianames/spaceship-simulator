@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using TgcViewer;
+using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.TheGRID.Shaders
@@ -36,7 +37,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         {
             mainShader = main;
             Device d3dDevice = GuiController.Instance.D3dDevice;
-
             string compilationErrors;
             effect = Effect.FromFile(GuiController.Instance.D3dDevice, ShaderDirectory,
                 null, null, ShaderFlags.PreferFlowControl, null, out compilationErrors);
@@ -112,6 +112,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         public Texture renderEffect(EstructuraRender parametros)
         {
             float elapsedTime = EjemploAlumno.workspace().tiempoPupila;
+            glow = (bool)GuiController.Instance.Modifiers["glow"];
 
             Device device = GuiController.Instance.D3dDevice;
             Control panel3d = GuiController.Instance.Panel3d;
@@ -148,7 +149,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                     renderScene(parametros.sol, "DefaultTechnique");
                         if (!EjemploAlumno.workspace().camara.soyFPS())
                             renderScene(parametros.nave, "DibujarObjetosOscuros");
-                    renderScene(parametros.elementosRenderizables);
+                    //renderScene(parametros.elementosRenderizables);
+                        renderLuces(mainShader.lightMeshes, "DefaultTechnique", "DibujarObjetosOscuros");
                 device.EndScene();
                 pSurf.Dispose();
 
@@ -323,9 +325,19 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
         public void renderScene(Dibujable dibujable, string technique)
         {
-            if (dibujable.soyAsteroide() && mainShader.fueraFrustrum(dibujable)) return;
-            ((TgcMesh)dibujable.objeto).Effect = effect;
-            ((TgcMesh)dibujable.objeto).Technique = technique;
+            if (dibujable.soyAsteroide())
+            {
+                if (mainShader.fueraFrustrum(dibujable)) return;
+                ((TgcMesh)dibujable.objeto).Effect = effect;
+                ((TgcMesh)dibujable.objeto).Technique = technique;
+            }
+            else
+            {
+                ((TgcMesh)dibujable.objeto).Effect = effect;
+                ((TgcMesh)dibujable.objeto).Technique = "DefaultTechnique";
+            }
+
+
             dibujable.render();
         }
 
@@ -344,7 +356,29 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 elemento.render();
             }
         }
+        public void renderLuces(TgcBox[] lightMeshes, string technique, string Notech)
+        {
+                if(!EjemploAlumno.workspace().camara.soyFPS())
+                {
+                    lightMeshes[0].Effect = effect;
+                    lightMeshes[0].Technique = technique;
+                    lightMeshes[0].render();
+                }
+                lightMeshes[1].Effect = effect;
+                if (EjemploAlumno.workspace().parpadeoIzq)
+                    lightMeshes[1].Technique = technique;
+                else
+                    lightMeshes[1].Technique = Notech;
+                lightMeshes[1].render();
+                lightMeshes[2].Effect = effect;
+                if(EjemploAlumno.workspace().parpadeoDer)
+                    lightMeshes[2].Technique = technique;
+                else
+                    lightMeshes[2].Technique = Notech;
 
+                lightMeshes[2].render();
+
+        }
         #endregion
 
         public SuperRender.tipo tipoShader()

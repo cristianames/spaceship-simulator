@@ -28,15 +28,22 @@ namespace AlumnoEjemplos.TheGRID
 
         TgcMp3Player playerMP3 = GuiController.Instance.Mp3Player;
         TgcStaticSound lazer = new TgcStaticSound();
+        TgcStaticSound lazer2_carga = new TgcStaticSound();
+        TgcStaticSound lazer2_disparo = new TgcStaticSound();
         TgcStaticSound asteroideColision = new TgcStaticSound();
         TgcStaticSound asteroideFragmentacion = new TgcStaticSound();
         TgcStaticSound asteroideImpacto = new TgcStaticSound();
+        TgcStaticSound warp_time = new TgcStaticSound();
+
         public Musique()
         {
             lazer.loadSound(EjemploAlumno.TG_Folder + "Music\\laser_shot.wav");
+            lazer2_carga.loadSound(EjemploAlumno.TG_Folder + "Music\\laser2_carga.wav");
+            lazer2_disparo.loadSound(EjemploAlumno.TG_Folder + "Music\\laser2.wav");
             asteroideColision.loadSound(EjemploAlumno.TG_Folder + "Music\\Asteroide\\colision_1.wav");
             asteroideFragmentacion.loadSound(EjemploAlumno.TG_Folder + "Music\\Asteroide\\fragmentacion_1.wav");
             asteroideImpacto.loadSound(EjemploAlumno.TG_Folder + "Music\\Asteroide\\impacto_1.wav");
+            warp_time.loadSound(EjemploAlumno.TG_Folder + "Music\\warp.wav");
         }
 
 
@@ -49,6 +56,28 @@ namespace AlumnoEjemplos.TheGRID
             lazer.SoundBuffer.Stop();
             lazer.SoundBuffer.SetCurrentPosition(0);
             lazer.play();
+        }
+        public void playLazerCarga()
+        {
+            lazer2_carga.play(true);
+        }
+        public void playLazer2()
+        {
+            lazer2_carga.SoundBuffer.Stop();
+            lazer2_carga.SoundBuffer.SetCurrentPosition(0);
+            lazer2_disparo.SoundBuffer.Stop();
+            lazer2_disparo.SoundBuffer.SetCurrentPosition(0);
+            lazer2_disparo.play();
+        }
+
+        public void playWarp()
+        {
+            warp_time.play(true);
+        }
+        public void stopWarp()
+        {
+            warp_time.SoundBuffer.Stop();
+            warp_time.SoundBuffer.SetCurrentPosition(0);
         }
         public void playAsteroideColision()
         {
@@ -73,8 +102,12 @@ namespace AlumnoEjemplos.TheGRID
         {
             playerMP3.closeFile();
             lazer.dispose();
+            lazer2_carga.dispose();
+            lazer2_disparo.dispose();
             asteroideColision.dispose();
             asteroideFragmentacion.dispose();
+            asteroideImpacto.dispose();
+            warp_time.dispose();
         }
 
         internal void refrescar()

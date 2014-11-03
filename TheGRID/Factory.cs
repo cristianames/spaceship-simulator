@@ -181,10 +181,10 @@ namespace AlumnoEjemplos.TheGRID
         public static Dibujable crearLaserAzul()   //Carga la Mesh con los valores default + la OBB.
         {
             //Creemos la mesh
-            TgcMesh mesh_laser = cargarMesh("Laser\\Laser_Box-TgcScene.xml");
+            TgcMesh mesh_laser = cargarMesh("Laser\\gridLaser-TgcScene.xml");
             //Cargamos las cosas en el dibujable
             Dibujable laser = new Dibujable();
-            laser.setObject(mesh_laser, 6000, 100, new Vector3(0.09F, 0.09F, 0.13F));
+            laser.setObject(mesh_laser, 600, 100, new Vector3(0.09F, 0.09F, 0.13F));
             laser.desactivar();
             asignarOBB_Laser(laser, new Vector3(0.1F, 0.1F, 0.15F));
             EjemploAlumno.addMesh(laser);
@@ -222,6 +222,11 @@ namespace AlumnoEjemplos.TheGRID
             laser.rotacion = 0;
             laser.traslacion = 1;
             rotarOBB(laser.getEjes().lRotor, laser.getColision());
+        }
+        public static void escalarLaser(Dibujable laser, Vector3 escalado)
+        {
+            laser.escalarSinBB(escalado);
+            Factory.asignarOBB_Laser(laser, new Vector3(escalado.X + 0.01F, escalado.Y + 0.01F, escalado.Z +  0.02F));
         }
         #endregion
     }

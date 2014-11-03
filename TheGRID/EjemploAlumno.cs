@@ -34,7 +34,7 @@ namespace AlumnoEjemplos.TheGRID
         /// Completar nombre del grupo en formato Grupo NN
         public override string getName(){ return "Grupo TheGRID"; }
         /// Completar con la descripción del TP
-        public override string getDescription() { return "Welcome to TheGRID                                                                            FLECHAS: Rotaciones              WASD: Desplazamiento              LeftShift: Efecto Blur                     LeftCtrl: Modo Crucero                  Espacio - Disparo Principal"; }
+        public override string getDescription() { return "Welcome to TheGRID"+Environment.NewLine+"FLECHAS: Rotaciones"+Environment.NewLine+"WASD: Desplazamiento"+Environment.NewLine+"LeftShift: Efecto Blur"+Environment.NewLine+"LeftCtrl: Modo Crucero"+Environment.NewLine+"Espacio: Disparo Principal"+Environment.NewLine+"RightShift: Disparo Secundario"; }
         #endregion
 
         #region ATRIBUTOS
@@ -69,6 +69,13 @@ namespace AlumnoEjemplos.TheGRID
         SuperRender superRender;
         internal SuperRender Shader { get { return superRender; } }
         public Musique music = new Musique();
+        //Lazer Azul
+        float pressed_time_lazer = 0;
+        //Variables para el parpadeo
+        float tiempo_acum = 0;
+        float periodo_parpadeo = 1.5f;
+        public bool parpadeoIzq = true;
+        public bool parpadeoDer = false;
         #endregion
 
         #region METODOS AUXILIARES
@@ -192,8 +199,8 @@ namespace AlumnoEjemplos.TheGRID
             //GuiController.Instance.Modifiers.addFloat("Frenado", 0f, 1000f, objetoPrincipal.getAcelFrenado());    De momento lo saco.
             //Crear un modifier para un ComboBox con opciones
             //List<int> pistaDeAudio = new List<int>(){0,1,2,3,4,5,6,7,8,9};
-            string[] opciones0 = new string[] { "THE OPENING", "IMPULSE DRIVE", "WELCOME HOME", "VACUUM" };
-            GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 3);
+            string[] opciones0 = new string[] { "THE OPENING","WELCOME HOME", "VACUUM" };
+            GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 2);
             string[] opciones1 = new string[] { "Tercera Persona", "Camara FPS", "Libre" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
             string[] opciones2 = new string[] { "Lista Completa", "Castor", "Derezzed", "M4 Part 2", "ME Theme", "New Worlds", "Solar Sailer", "Spectre", "Tali", "The Son of Flynn", "Tron Ending", "Sin Musica" };
@@ -201,7 +208,7 @@ namespace AlumnoEjemplos.TheGRID
             //GuiController.Instance.Modifiers.addBoolean("Velocidad Manual", "Activado", true);
             GuiController.Instance.Modifiers.addBoolean("Desplaz. Avanzado", "Activado", true);
             GuiController.Instance.Modifiers.addBoolean("Ver BoundingBox", "Activado", false);
-            GuiController.Instance.Modifiers.addColor("lightColor", Color.FromArgb(142,145,240));
+            GuiController.Instance.Modifiers.addBoolean("glow", "Activado", true);
             //string[] opciones4 = new string[] { "Activado", "Desactivado" };
             //GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);  De momento lo saco.
             string opcionElegida = (string)GuiController.Instance.Modifiers["Escenario Actual"];
@@ -252,9 +259,7 @@ namespace AlumnoEjemplos.TheGRID
                     tiempoBlur = 0.3f;
                     velocidadBlur = 0;
                     objetoPrincipal.fisica.velocidadMaxima = objetoPrincipal.velMaxNormal;
-                    objetoPrincipal.fisica.aceleracion = objetoPrincipal.acelNormal;
-                    
-                    
+                    objetoPrincipal.fisica.aceleracion = objetoPrincipal.acelNormal;                   
                 }
                 else
                 {
@@ -271,9 +276,9 @@ namespace AlumnoEjemplos.TheGRID
             if (superRender.motionBlurActivado) nave.acelerar();//Si el Blur esta activado la nave solamente acelera
             else if (objetoPrincipal.velocidadActual() > objetoPrincipal.fisica.velocidadMaxima) objetoPrincipal.fisica.velocidadInstantanea = objetoPrincipal.velMaxNormal;//Esto esta para cuando el blur se desactiva, desacelrar rapidamente la nave
             if (input.keyDown(Key.P)) { scheme.asteroidManager.explotaAlPrimero(); }
-            if (input.keyDown(Key.Space))
+            if (scheme.escenarioActual == Escenario.TipoModo.THE_OPENING)
             {
-                if (!superRender.motionBlurActivado)
+                if (input.keyDown(Key.Space))
                 {
                     timeLaser += elapsedTime;
                     if (timeLaser > betweenTime)
@@ -282,12 +287,41 @@ namespace AlumnoEjemplos.TheGRID
                         timeLaser = 0;
                     }
                 }
+                if (input.keyDown(Key.RightShift))
+                {
+                    pressed_time_lazer += elapsedTime;
+                    music.playLazerCarga();
+                }
+                else
+                    if (input.keyUp(Key.RightShift))
+                    {
+                        scheme.dispararLaserAzul(pressed_time_lazer);
+                        pressed_time_lazer = 0;
+                        music.playLazer2();
+                    }
             }
+
             #endregion
 
             #region -----Update------
             tiempoPupila = elapsedTime; //Para el HDRL
 
+            //Parpadeo de las luces
+            tiempo_acum += elapsedTime;
+            if(tiempo_acum >= periodo_parpadeo)
+            {
+                if(parpadeoIzq)
+                {
+                    parpadeoIzq = false;
+                    parpadeoDer = true;
+                }
+                else
+                {
+                    parpadeoIzq = true;
+                    parpadeoDer = false;
+                }
+                tiempo_acum = 0;
+            }
             nave.rotarPorTiempo(elapsedTime, listaDibujable);
             nave.desplazarsePorTiempo(elapsedTime, new List<Dibujable>(scheme.CuerposGravitacionales));
 
@@ -295,7 +329,13 @@ namespace AlumnoEjemplos.TheGRID
 
             camara.cambiarPosicionCamara();
             currentFrustrum.updateMesh(GuiController.Instance.CurrentCamera.getPosition(),GuiController.Instance.CurrentCamera.getLookAt());
-            
+
+            //Si estamos en una vel de warp considerable, le damos sonido
+            if (nave.velocidadActual() > 3000f)
+                music.playWarp();
+            else
+                music.stopWarp();
+
             //Cargar valores de la flecha
             //Vector3 navePos = nave.getPosicion();
             //Vector3 naveDir = Vector3.Subtract(new Vector3(0, 0, 10000), nave.getDireccion());
@@ -349,7 +389,7 @@ namespace AlumnoEjemplos.TheGRID
             scheme.laserManager.destruirListas();
             scheme.dispose();
             nave.dispose();
-            arrow.dispose();
+            //arrow.dispose();
             skySphere.dispose();
             music.liberarRecursos();
         }

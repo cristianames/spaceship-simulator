@@ -11,7 +11,7 @@ namespace AlumnoEjemplos.TheGRID
     public class Asteroide : Dibujable
     {
         public Asteroide() : base() {}
-        private float limite = 300f;    //QUE MIERDA ES LIMITE??
+        private float limite = 300f;    //QUE MIERDA ES LIMITE?? - anda a saber, quien lo puso.... - Tomas
         public TamanioAsteroide tamanioAnterior;
         public ManagerAsteroide manager;
         private float vida;
