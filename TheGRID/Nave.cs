@@ -14,6 +14,12 @@ namespace AlumnoEjemplos.TheGRID
 {
     public class Nave : Dibujable
     {
+        public float acelNormal;//Estos atributos se setean en las clases hijas con los valores correspondientes
+        public float velMaxNormal;
+        public float rotNormal;
+        public float velMaxBlur;
+        public float rotBlur;
+
         public Nave() : base() 
         {
             TgcTexture normalMap = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Nave\\Textures\\Bump.jpg");
@@ -21,9 +27,11 @@ namespace AlumnoEjemplos.TheGRID
             TgcMesh meshNave_base =  Factory.cargarMesh("Nave\\naveTrooper-TgcScene.xml");
             TgcMeshBumpMapping meshNave = TgcMeshBumpMapping.fromTgcMesh(meshNave_base, normalMapArray);
             acelNormal = 600;
-            acelBlur = 50000;
             velMaxNormal = 2500;
+            rotNormal = 50;
             velMaxBlur = 300000;
+            rotBlur = 5;
+
             meshNave.Transform *= Matrix.RotationY(Geometry.DegreeToRadian(180));
             setObject(meshNave, 100, 50, new Vector3(0.5f, 0.5f, 0.5f));
             setFisica(acelNormal, 1000, velMaxNormal, 100000);
@@ -51,6 +59,11 @@ namespace AlumnoEjemplos.TheGRID
         private void restaVida(Dibujable colisionador)
         {
             //throw new NotImplementedException();
+        }
+
+        public void setearAceleracion(float acel)
+        {
+            fisica.aceleracion = acel;
         }
 
         public Vector3 puntoLuzIzq()

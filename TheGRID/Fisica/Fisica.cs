@@ -13,7 +13,7 @@ namespace AlumnoEjemplos.TheGRID
         private Dibujable duenio;
         internal float aceleracion { set; get; }
         public float velocidadInstantanea;
-        public float velocidadMaxima;
+        public float velocidadMaxima { set; get; }
         public float velocidadCrucero;
         private float masa;
         public float Masa { get { return masa; } }
@@ -84,7 +84,6 @@ namespace AlumnoEjemplos.TheGRID
                 auxiliar1 += auxiliar2;
                 float acelGlobal = Vector3.Length(auxiliar1);
                 float temp = velocidadInstantanea + acelGlobal * time;
-                //if (velocidadInstantanea < 0) velocidadInstantanea = 0;
                 if (temp > velocidadCrucero) velocidadInstantanea = velocidadCrucero;
                 else velocidadInstantanea = temp;
             }
