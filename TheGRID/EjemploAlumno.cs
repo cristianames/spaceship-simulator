@@ -15,7 +15,6 @@ using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Input;
 using TgcViewer.Utils.Terrain;
-using TgcViewer.Example;
 
 using AlumnoEjemplos.TheGRID;
 using AlumnoEjemplos.TheGRID.Colisiones;
@@ -138,13 +137,14 @@ namespace AlumnoEjemplos.TheGRID
             estrellasNo = new List<TgcMesh>();
             estrellaControl = new Estrella();
             estrellaControl.recur = false;
+            estrellaControl.cuadrante = 1;
 
             for (int i = 0; i < 500; i++)
             {
                 TgcTriangle prueba = new TgcTriangle();
-                prueba.A = new Vector3(-20, 0, 20);
-                prueba.B = new Vector3(20, 0, 20);
-                prueba.C = new Vector3(0, 20, 20);
+                prueba.A = new Vector3(-1, 0, 20);
+                prueba.B = new Vector3(0, 2, 20);
+                prueba.C = new Vector3(1, 0, 20);
                 prueba.Color = Color.White;
                 TgcMesh prueba2;
                 prueba2 = prueba.toMesh("asd");
@@ -356,8 +356,8 @@ namespace AlumnoEjemplos.TheGRID
             #endregion
            
             
-           
-            estrellaControl.insertarEstrellas(estrellas,estrellasNo,nave.getPosicion(),nave.getDireccion(),elapsedTime);
+           //nave.ultimaTraslacion
+            estrellaControl.insertarEstrellas(estrellas,estrellasNo,nave.getPosicion(),nave.getDireccion(),nave.ultimaTraslacion,elapsedTime);
             superRender.render(nave, sol, dibujableCollection, objectosNoMeshesCollection, objetosBrillantes); //Redirige todo lo que renderiza dentro del "shader"
             //d3dDevice.VertexFormat = CustomVertex.PositionColoredTextured.Format;
            // d3dDevice.DrawUserPrimitives(PrimitiveType.TriangleList, 1, data);
