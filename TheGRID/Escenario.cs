@@ -38,8 +38,14 @@ namespace AlumnoEjemplos.TheGRID
             principal = ppal;
             asteroidManager = new ManagerAsteroide(2000); //Siempre debe ser mucho mayor que la cantidad de asteroides que queremos tener, pero no tanto sino colapsa
             limite = new TgcBoundingCylinder(principal.getPosicion(), 1500, 15000);
+            
+            crearSol();
+            crearPlaneta();
+            //crearEstrellas();   
+        }
 
-            //Creamos.....EL SOL
+        private void crearSol()
+        {
             TgcMesh mesh_Sol = Factory.cargarMesh(@"Sol\sol-TgcScene.xml");
             sol = new Dibujable();
             sol.setObject(mesh_Sol, 0, 200, new Vector3(2F, 2F, 2F));
@@ -47,14 +53,13 @@ namespace AlumnoEjemplos.TheGRID
             sol.ubicarEnUnaPosicion(new Vector3(0, 0, 9000));
             sol.activar();
             EjemploAlumno.workspace().sol = sol;
-
-            //Creamos.....THE PLANET
+        }
+        private void crearPlaneta()
+        {
             TgcMesh mesh_Planet = Factory.cargarMesh(@"asteroid\theplanet-TgcScene.xml");
             TgcTexture normalMapPlanet = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "asteroid\\Textures\\marsbump1k.jpg");
             TgcTexture[] normalPlanetArray = new TgcTexture[] { normalMapPlanet };
-
-            TgcMeshBumpMapping bump_planet = TgcMeshBumpMapping
-                .fromTgcMesh(mesh_Planet, normalPlanetArray);
+            TgcMeshBumpMapping bump_planet = TgcMeshBumpMapping.fromTgcMesh(mesh_Planet, normalPlanetArray);
             planet = new Dibujable();
             planet.setObject(bump_planet, 0, 10, new Vector3(10F, 10F, 10F));
             planet.setFisica(0, 0, 0, 500000000);
@@ -84,6 +89,7 @@ namespace AlumnoEjemplos.TheGRID
                 EjemploAlumno.workspace().estrellas.Add(estrella);
                 EjemploAlumno.workspace().objetosBrillantes.Add(estrella);
             }
+
         }
         public void dispose()
         {

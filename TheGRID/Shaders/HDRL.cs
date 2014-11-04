@@ -150,7 +150,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                     renderScene(parametros.objetosBrillantes, "DefaultTechnique");
                         if (!EjemploAlumno.workspace().camara.soyFPS())
                             renderScene(parametros.nave, "DibujarObjetosOscuros");
-                    //renderScene(parametros.elementosRenderizables);
                         renderLuces(mainShader.lightMeshes, "DefaultTechnique", "DibujarObjetosOscuros");
                 device.EndScene();
                 pSurf.Dispose();
@@ -305,6 +304,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                         device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
                     effect.EndPass();
                 effect.End();
+                renderScene(parametros.elementosRenderizables);
             device.EndScene();
             #endregion
 

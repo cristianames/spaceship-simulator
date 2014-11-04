@@ -150,9 +150,9 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.SetRenderTarget(0, pSurf);
             device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
+                renderScene(parametros.elementosRenderizables);
                 renderScene(parametros.meshes, light_sol, "BumpMappingTechnique");
                 renderScene(parametros.sol, light_sol, "BumpMappingTechnique");
-                    renderScene(parametros.elementosRenderizables);
                     renderScene(new List<IRenderObject>(parametros.objetosBrillantes));
                     if (!EjemploAlumno.workspace().camara.soyFPS())
                         renderScene(parametros.nave, light_sol, "BumpMappingTechnique");
@@ -169,7 +169,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 {
                     renderScene(parametros.meshes, light_der, "VERTEX_COLOR");
                     renderScene(parametros.sol, light_der, "VERTEX_COLOR");
-                    //renderScene(parametros.elementosRenderizables);
                     if (!EjemploAlumno.workspace().camara.soyFPS())
                         renderScene(parametros.nave, light_der, "BumpMappingTechnique");
                 }
@@ -185,7 +184,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 {
                     renderScene(parametros.meshes, light_izq, "VERTEX_COLOR");
                     renderScene(parametros.sol, light_izq, "VERTEX_COLOR");
-                    //renderScene(parametros.elementosRenderizables);
                     if (!EjemploAlumno.workspace().camara.soyFPS())
                         renderScene(parametros.nave, light_izq, "BumpMappingTechnique");
                 }
@@ -198,7 +196,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.BeginScene();
                 renderScene(parametros.meshes, light_front, "VERTEX_COLOR");
                 renderScene(parametros.sol, light_front, "VERTEX_COLOR");
-                //renderScene(parametros.elementosRenderizables);
                 if (!EjemploAlumno.workspace().camara.soyFPS())
                     renderScene(parametros.nave, light_front, "VERTEX_COLOR");
             device.EndScene();
