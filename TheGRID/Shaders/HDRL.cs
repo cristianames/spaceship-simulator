@@ -148,6 +148,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                     renderScene(parametros.meshes, "DibujarObjetosOscuros");
                     renderScene(parametros.sol, "DefaultTechnique");
                     renderScene(parametros.objetosBrillantes, "DefaultTechnique");
+                    renderScene(parametros.elementosRenderizables);
                         if (!EjemploAlumno.workspace().camara.soyFPS())
                             renderScene(parametros.nave, "DibujarObjetosOscuros");
                         renderLuces(mainShader.lightMeshes, "DefaultTechnique", "DibujarObjetosOscuros");
@@ -304,7 +305,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                         device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
                     effect.EndPass();
                 effect.End();
-                renderScene(parametros.elementosRenderizables);
             device.EndScene();
             #endregion
 
@@ -353,6 +353,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         {
             foreach (IRenderObject elemento in elementosRenderizables)
             {
+                ((TgcMesh)elemento).Effect = effect;
+                ((TgcMesh)elemento).Technique = "DibujarObjetosOscuros";
                 elemento.render();
             }
         }

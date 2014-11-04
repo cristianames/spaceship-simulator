@@ -35,6 +35,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
     {
         #region Atributos
         private string ShaderDirectory = EjemploAlumno.TG_Folder + "Shaders\\BumpMapping.fx";
+        private string ShaderDirectory_altern = EjemploAlumno.TG_Folder + "Shaders\\MotionBlur.fx";
         private SuperRender mainShader;
         TgcTexture normalMapAsteroid;
         private Surface g_pDepthStencil;     // Depth-stencil buffer 
@@ -56,6 +57,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         private Effect bumpEffect_asteroides;
         private Effect bumpEffect_nave;
         private Effect bumpEffect_sol;
+        private Effect fx_base;
 
         public bool parpadeoIzq = false;
         public bool parpadeoDer = false;
@@ -66,6 +68,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         {
             mainShader = main;
             Device d3dDevice = GuiController.Instance.D3dDevice;
+            fx_base = TgcShaders.loadEffect(ShaderDirectory_altern);
             normalMapAsteroid = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "asteroid\\Textures\\3215_Bump.jpg");
             //Inicializo el depth stencil
             g_pDepthStencil = d3dDevice.CreateDepthStencilSurface(d3dDevice.PresentationParameters.BackBufferWidth,
@@ -122,6 +125,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 mainShader.lightMeshes[i] = TgcBox.fromSize(new Vector3(1f, 1f, 1f), c[i]);
                 //EjemploAlumno.workspace().objectosNoMeshesCollection.Add(lightMeshes[i]);
             }
+
             cargarBumpEffect();
         }
 
@@ -148,14 +152,14 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.DepthStencilSurface = g_pDepthStencil;
             pSurf = g_BumpSol.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
-            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
-                renderScene(parametros.elementosRenderizables);
+                device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
                 renderScene(parametros.meshes, light_sol, "BumpMappingTechnique");
                 renderScene(parametros.sol, light_sol, "BumpMappingTechnique");
-                    renderScene(new List<IRenderObject>(parametros.objetosBrillantes));
-                    if (!EjemploAlumno.workspace().camara.soyFPS())
-                        renderScene(parametros.nave, light_sol, "BumpMappingTechnique");
+                renderScene(new List<IRenderObject>(parametros.objetosBrillantes));
+                if (!EjemploAlumno.workspace().camara.soyFPS())
+                    renderScene(parametros.nave, light_sol, "BumpMappingTechnique");
+                renderScene(parametros.elementosRenderizables);
             device.EndScene();
             pSurf.Dispose();
 
@@ -167,6 +171,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.BeginScene();
                 if (parpadeoDer)
                 {
+                    renderScene(parametros.elementosRenderizables);
                     renderScene(parametros.meshes, light_der, "VERTEX_COLOR");
                     renderScene(parametros.sol, light_der, "VERTEX_COLOR");
                     if (!EjemploAlumno.workspace().camara.soyFPS())
@@ -182,6 +187,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.BeginScene();
                 if (parpadeoIzq)
                 {
+                    renderScene(parametros.elementosRenderizables);
                     renderScene(parametros.meshes, light_izq, "VERTEX_COLOR");
                     renderScene(parametros.sol, light_izq, "VERTEX_COLOR");
                     if (!EjemploAlumno.workspace().camara.soyFPS())
@@ -194,6 +200,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             pSurf = g_BumpFront.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
             device.BeginScene();
+                renderScene(parametros.elementosRenderizables);
                 renderScene(parametros.meshes, light_front, "VERTEX_COLOR");
                 renderScene(parametros.sol, light_front, "VERTEX_COLOR");
                 if (!EjemploAlumno.workspace().camara.soyFPS())
@@ -218,7 +225,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                         device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
                     bumpEffect_asteroides.EndPass();
                 bumpEffect_asteroides.End();
-                renderScene(parametros.elementosRenderizables);
             device.EndScene();
             pSurf.Dispose();
             //Vuelvo a Setear el depthbuffer y el Render target
@@ -272,8 +278,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         {
             foreach (IRenderObject elemento in elementosRenderizables)
             {
-                //((TgcArrow)elemento).Effect = bumpEffect_nave;
-                //((TgcArrow)elemento).Technique = "BumpMappingTechnique";
+                ((TgcMesh)elemento).Effect = bumpEffect_nave;
+                ((TgcMesh)elemento).Technique = "BumpMappingTechnique";
                 elemento.render();
             }
         }

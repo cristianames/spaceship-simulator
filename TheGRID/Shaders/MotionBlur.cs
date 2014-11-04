@@ -104,7 +104,9 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
         public Texture renderEffect(EstructuraRender parametros)
         {
-            if (mainShader.motionBlurActivado || (EjemploAlumno.workspace().Escenario.escenarioActual == Escenario.TipoModo.IMPULSE_DRIVE))
+            Device device = GuiController.Instance.D3dDevice;
+            antMatView = device.Transform.View;
+            if (mainShader.motionBlurActivado)
             {
                 dibujarVelocidad(parametros);
                 renderPostProccess(parametros);
@@ -118,10 +120,10 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         {
             Device device = GuiController.Instance.D3dDevice;
 
-            //Pedimos que nos renderizen la pantalla default
+            //Obtenemos la textura dspues de todos los efectos anteriores
             g_pRenderTarget = mainShader.renderAnterior(parametros, tipoShader());
 
-            //Hacemos el post Procesado
+            //La renderizamos sobre un TriangleStrip
             device.BeginScene();
                 effect.Technique = "OnlyTexture";
                 device.VertexFormat = CustomVertex.PositionTextured.Format;
@@ -142,55 +144,57 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             Device device = GuiController.Instance.D3dDevice;
             float pixel_blur_variable;
 
-            pixel_blur_variable = 0.2f * (EjemploAlumno.workspace().nave.velocidadActual() / 300000); 
             //Calcula el porcentual de aplicacion sobre el blur.
+            pixel_blur_variable = 0.2f * (EjemploAlumno.workspace().nave.velocidadActual() / 300000); 
             effect.SetValue("PixelBlurConst", pixel_blur_variable);
 
-            // guardo el Render target anterior y seteo la textura como render target
+            //Cambio el render target por la textura de velocidad
             Surface pOldRT = device.GetRenderTarget(0);
             Surface pSurf = g_pVel1.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
-            // hago lo mismo con el depthbuffer, necesito el que no tiene multisampling
+            //Cambio el depthbuffer por uno sin multisampling
             Surface pOldDS = device.DepthStencilSurface;
             device.DepthStencilSurface = g_pDepthStencil;
 
-            //Seteo la Technique
+            //PASADA DE MAPA DE VELOCIDAD
             effect.Technique = "VelocityMap";
-            // necesito mandarle la matrix de view actual y la anterior
+            //Mando las matrices de vision
             effect.SetValue("matView", device.Transform.View);
             effect.SetValue("matViewAnt", antMatView);
             device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
-            renderScene(parametros.meshes, "VelocityMap");
-            if (!EjemploAlumno.workspace().camara.soyFPS())
-                renderScene(parametros.nave, "VelocityMap");
-            renderScene(parametros.elementosRenderizables);
+                //Renderizo los objetos
+                renderScene(parametros.meshes, "VelocityMap");
+                if (!EjemploAlumno.workspace().camara.soyFPS())
+                    renderScene(parametros.nave, "VelocityMap");
+                renderScene(parametros.elementosRenderizables);
             device.EndScene();
             pSurf.Dispose();
 
-            //Vuelvo a Setear el depthbuffer y el Render target
+            //Vuelvo a Setear el depthbuffer y el Render target originales
             device.SetRenderTarget(0, pOldRT);
             device.DepthStencilSurface = pOldDS;
 
-            // actualizo los valores para el proximo frame
-            antMatView = device.Transform.View;
-            Texture aux = g_pVel1;
-            if (mainShader.motionBlurActivado)
-                aux = g_pVel2;
+            //Actualizo los valores para el proximo frame
+            Texture aux = g_pVel2;
             g_pVel2 = g_pVel1;
             g_pVel1 = aux;
 
         }
 
         #region RenderScene
-
+        /// <summary>
+        /// Renderizar la mesh de la nave segun una technique
+        /// </summary>
         public void renderScene(Nave nave, string technique)
         {
             ((TgcMesh)nave.objeto).Effect = effect;
             ((TgcMesh)nave.objeto).Technique = technique;
             nave.render();
         }
-
+        /// <summary>
+        /// Renderizar un dibujable segun una technique
+        /// </summary>
         public void renderScene(Dibujable dibujable, string technique)
         {
             if (dibujable.soyAsteroide() && mainShader.fueraFrustrum(dibujable)) return;
@@ -198,7 +202,9 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             ((TgcMesh)dibujable.objeto).Technique = technique;
             dibujable.render();
         }
-
+        /// <summary>
+        /// Renderizar una lista de dibujables segun una technique
+        /// </summary>
         public void renderScene(List<Dibujable> dibujables, string technique)
         {
             foreach (Dibujable dibujable in dibujables)
@@ -206,7 +212,9 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 renderScene(dibujable, technique);
             }
         }
-
+        /// <summary>
+        /// Renderizar objetos sin efectos
+        /// </summary>
         public void renderScene(List<IRenderObject> elementosRenderizables)
         {
             foreach (IRenderObject elemento in elementosRenderizables)

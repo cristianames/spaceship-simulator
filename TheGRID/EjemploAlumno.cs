@@ -351,11 +351,19 @@ namespace AlumnoEjemplos.TheGRID
             #endregion
            
             
-           //nave.ultimaTraslacion
+            //nave.ultimaTraslacion
             //estrellaControl.insertarEstrellas(estrellas,estrellasNo,nave.getPosicion(),nave.getDireccion(),nave.ultimaTraslacion,elapsedTime);
             superRender.render(nave, sol, dibujableCollection, objectosNoMeshesCollection, objetosBrillantes); //Redirige todo lo que renderiza dentro del "shader"
+            /*nave.render();
+            sol.render();
+            foreach(Dibujable dib in dibujableCollection)
+                dib.render();
+            foreach (IRenderObject obj in objectosNoMeshesCollection)
+                obj.render();
+            foreach (TgcMesh mesh in objetosBrillantes)
+                mesh.render();*/
             //d3dDevice.VertexFormat = CustomVertex.PositionColoredTextured.Format;
-           // d3dDevice.DrawUserPrimitives(PrimitiveType.TriangleList, 1, data);
+            // d3dDevice.DrawUserPrimitives(PrimitiveType.TriangleList, 1, data);
 
             #region Refrescar panel lateral
             string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
