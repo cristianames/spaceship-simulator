@@ -38,8 +38,14 @@ namespace AlumnoEjemplos.TheGRID
             principal = ppal;
             asteroidManager = new ManagerAsteroide(2000); //Siempre debe ser mucho mayor que la cantidad de asteroides que queremos tener, pero no tanto sino colapsa
             limite = new TgcBoundingCylinder(principal.getPosicion(), 1500, 15000);
+            
+            crearSol();
+            crearPlaneta();
+            //crearEstrellas();   
+        }
 
-            //Creamos.....EL SOL
+        private void crearSol()
+        {
             TgcMesh mesh_Sol = Factory.cargarMesh(@"Sol\sol-TgcScene.xml");
             sol = new Dibujable();
             sol.setObject(mesh_Sol, 0, 200, new Vector3(2F, 2F, 2F));
@@ -47,14 +53,13 @@ namespace AlumnoEjemplos.TheGRID
             sol.ubicarEnUnaPosicion(new Vector3(0, 0, 9000));
             sol.activar();
             EjemploAlumno.workspace().sol = sol;
-
-            //Creamos.....THE PLANET
+        }
+        private void crearPlaneta()
+        {
             TgcMesh mesh_Planet = Factory.cargarMesh(@"asteroid\theplanet-TgcScene.xml");
             TgcTexture normalMapPlanet = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "asteroid\\Textures\\marsbump1k.jpg");
             TgcTexture[] normalPlanetArray = new TgcTexture[] { normalMapPlanet };
-
-            TgcMeshBumpMapping bump_planet = TgcMeshBumpMapping
-                .fromTgcMesh(mesh_Planet, normalPlanetArray);
+            TgcMeshBumpMapping bump_planet = TgcMeshBumpMapping.fromTgcMesh(mesh_Planet, normalPlanetArray);
             planet = new Dibujable();
             planet.setObject(bump_planet, 0, 10, new Vector3(10F, 10F, 10F));
             planet.setFisica(0, 0, 0, 500000000);
@@ -65,7 +70,6 @@ namespace AlumnoEjemplos.TheGRID
             planet.setColision(new ColisionAsteroide());
             planet.getColision().setBoundingBox(bounding_asteroide);
             EjemploAlumno.workspace().objectosNoMeshesCollection.Add(planet.objeto);
-            //crearEstrellas();   
         }
         public void dispose()
         {
@@ -87,8 +91,6 @@ namespace AlumnoEjemplos.TheGRID
         {
             disposeOld();
             escenarioActual = TipoModo.IMPULSE_DRIVE;
-            EjemploAlumno.workspace().Shader.motionBlurActivado = true;
-            EjemploAlumno.workspace().tiempoBlur = 5F;// velocidadBlur = 299800;
         }
         //-------------------------------------------------------------------------------------------CHAPTER-3
         public void loadChapter3() 
@@ -152,6 +154,9 @@ namespace AlumnoEjemplos.TheGRID
                 case TipoModo.WELCOME_HOME:
                     colisionNavePlaneta(EjemploAlumno.workspace().ObjetoPrincipal);
                     planet.rotarPorTiempo(elapsedTime, new List<Dibujable>());
+                    break;
+                case TipoModo.IMPULSE_DRIVE:
+                    //ACA VAN TUS ESTRELLAS DAN!!
                     break;
             }
             /*if (TgcCollisionUtils.testPointCylinder(principal.getPosicion(), limite))
