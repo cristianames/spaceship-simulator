@@ -40,8 +40,31 @@ namespace AlumnoEjemplos.TheGRID
             limite = new TgcBoundingCylinder(principal.getPosicion(), 1500, 15000);
             
             crearSol();
+            crearParticulas();
             crearPlaneta();
             //crearEstrellas();   
+        }
+
+        private static void crearParticulas()
+        {
+            EjemploAlumno.workspace().estrellas = new List<TgcMesh>();
+            EjemploAlumno.workspace().estrellasNo = new List<TgcMesh>();
+            EjemploAlumno.workspace().estrellaControl = new Estrella();
+            EjemploAlumno.workspace().estrellaControl.recur = false;
+            EjemploAlumno.workspace().estrellaControl.cuadrante = 1;
+
+            for (int i = 0; i < 100; i++)
+            {
+                TgcTriangle protoestrella = new TgcTriangle();
+                protoestrella.A = new Vector3(-1f, 0, 20);
+                protoestrella.B = new Vector3(0, 2, 20);
+                protoestrella.C = new Vector3(1f, 0, 20);
+                protoestrella.Color = Color.White;
+                TgcMesh estrella;
+                estrella = protoestrella.toMesh("asd");
+                EjemploAlumno.workspace().estrellas.Add(estrella);
+                EjemploAlumno.workspace().objetosBrillantes.Add(estrella);
+            }
         }
 
         private void crearSol()
@@ -69,27 +92,10 @@ namespace AlumnoEjemplos.TheGRID
             TgcBoundingSphere bounding_asteroide = new TgcBoundingSphere(new Vector3(0, 0, 0), 15000);
             planet.setColision(new ColisionAsteroide());
             planet.getColision().setBoundingBox(bounding_asteroide);
-            EjemploAlumno.workspace().objectosNoMeshesCollection.Add(planet.objeto);
-            //crearEstrellas(); 
-            EjemploAlumno.workspace().estrellas = new List<TgcMesh>();
-            EjemploAlumno.workspace().estrellasNo = new List<TgcMesh>();
-            EjemploAlumno.workspace().estrellaControl = new Estrella();
-            EjemploAlumno.workspace().estrellaControl.recur = false;
-            EjemploAlumno.workspace().estrellaControl.cuadrante = 1;
-
-            for (int i = 0; i < 100; i++)
-            {
-                TgcTriangle protoestrella = new TgcTriangle();
-                protoestrella.A = new Vector3(-1f, 0, 20);
-                protoestrella.B = new Vector3(0, 2, 20);
-                protoestrella.C = new Vector3(1f, 0, 20);
-                protoestrella.Color = Color.White;
-                TgcMesh estrella;
-                estrella = protoestrella.toMesh("asd");
-                EjemploAlumno.workspace().estrellas.Add(estrella);
-                EjemploAlumno.workspace().objetosBrillantes.Add(estrella);
-            }
-
+            EjemploAlumno.workspace().dibujableCollection.Add(planet);
+            //EjemploAlumno.workspace().objetosBrillantes.Add(planet.objeto);
+            //EjemploAlumno.workspace().objectosNoMeshesCollection.Add(planet.objeto);
+            //EjemploAlumno.workspace().sol = planet;
         }
         public void dispose()
         {
@@ -125,7 +131,7 @@ namespace AlumnoEjemplos.TheGRID
             posicion.Add(Vector3.Multiply(ppal.getDireccion_Y(), (new Random()).Next(-3000,3000)));
             planet.ubicarEnUnaPosicion(posicion);
             planet.activar();
-            //cuerposGravitacionales = new List<Dibujable>() { planet };
+            cuerposGravitacionales = new List<Dibujable>() { planet };
         }
         //-------------------------------------------------------------------------------------------VACUUM
         public void loadVacuum() 
@@ -209,14 +215,13 @@ namespace AlumnoEjemplos.TheGRID
                 float velocidad = nave.fisica.velocidadInstantanea * 0.7f;// / 3f;
                 //velocidad = (velocidad * distancias.X)+(velocidad * distancias.Y)+(velocidad * distancias.Z);
                 float radioCuad = FastMath.Pow2(((TgcBoundingSphere)planet.getColision().getBoundingBox()).Radius) + 0;
-                /*while (Vector3.LengthSq(Vector3.Subtract(nave.getPosicion(), planet.getPosicion())) < radioCuad)
+                while (Vector3.LengthSq(Vector3.Subtract(nave.getPosicion(), planet.getPosicion())) < radioCuad)
                 {
                     nave.impulsate(direccion, velocidad, 0.01f);
-                } */               
+                }               
                 if (flagReintento == 0) EjemploAlumno.workspace().music.playAsteroideColision();
                 //--------
             }
-            //((TgcBoundingSphere)planet.getColision().getBoundingBox()).setRenderColor(color);
             ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(color);
         }
         #endregion
