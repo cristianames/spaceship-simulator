@@ -36,13 +36,15 @@ namespace AlumnoEjemplos.TheGRID
         }*/
         #endregion
 
-        public void insertarEstrellas(List<TgcMesh> estrellas, List<TgcMesh> estrellasUsadas, Vector3 posicionNave, Vector3 direccionNave,Vector3 movNave, float elapsedTime)
+        public void insertarEstrellas(List<TgcMesh> estrellas, List<TgcMesh> estrellasUsadas, Vector3 posicionNave, Vector3 direccionNave,Vector3 movNave,Matrix rotacion, float elapsedTime)
         {
 
            /* foreach (TgcMesh estrella in estrellas)
             {
-                estrella.Position = estrella.Position + 0.20f*(movNave);
-            }*/
+                estrella.AutoTransformEnable = true;
+                estrella.Transform = rotacion;
+            }
+            */
             int a, b, c;
             Vector3 generatriz;
             generatriz = posicionNave + 3000 * direccionNave*elapsedTime;

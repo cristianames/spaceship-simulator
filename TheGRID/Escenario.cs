@@ -65,7 +65,25 @@ namespace AlumnoEjemplos.TheGRID
             planet.setColision(new ColisionAsteroide());
             planet.getColision().setBoundingBox(bounding_asteroide);
             EjemploAlumno.workspace().objectosNoMeshesCollection.Add(planet.objeto);
-            //crearEstrellas();   
+            //crearEstrellas(); 
+            EjemploAlumno.workspace().estrellas = new List<TgcMesh>();
+            EjemploAlumno.workspace().estrellasNo = new List<TgcMesh>();
+            EjemploAlumno.workspace().estrellaControl = new Estrella();
+            EjemploAlumno.workspace().estrellaControl.recur = false;
+            EjemploAlumno.workspace().estrellaControl.cuadrante = 1;
+
+            for (int i = 0; i < 100; i++)
+            {
+                TgcTriangle protoestrella = new TgcTriangle();
+                protoestrella.A = new Vector3(-1f, 0, 20);
+                protoestrella.B = new Vector3(0, 2, 20);
+                protoestrella.C = new Vector3(1f, 0, 20);
+                protoestrella.Color = Color.White;
+                TgcMesh estrella;
+                estrella = protoestrella.toMesh("asd");
+                EjemploAlumno.workspace().estrellas.Add(estrella);
+                EjemploAlumno.workspace().objetosBrillantes.Add(estrella);
+            }
         }
         public void dispose()
         {
@@ -152,7 +170,8 @@ namespace AlumnoEjemplos.TheGRID
                     planet.rotarPorTiempo(elapsedTime, new List<Dibujable>());
                     break;
                 case TipoModo.IMPULSE_DRIVE:
-                    //ACA VAN TUS ESTRELLAS DAN!!
+                    if(EjemploAlumno.workspace().Shader.motionBlurActivado)
+                        EjemploAlumno.workspace().estrellaControl.insertarEstrellas(EjemploAlumno.workspace().estrellas, EjemploAlumno.workspace().estrellasNo, EjemploAlumno.workspace().nave.getPosicion(), EjemploAlumno.workspace().nave.getDireccion(), EjemploAlumno.workspace().nave.ultimaTraslacion, EjemploAlumno.workspace().nave.getEjes().mRotor, elapsedTime);
                     break;
             }
             /*if (TgcCollisionUtils.testPointCylinder(principal.getPosicion(), limite))

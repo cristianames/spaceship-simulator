@@ -127,50 +127,7 @@ namespace AlumnoEjemplos.TheGRID
 
             //Cargamos la nave como objeto principal.
             camara = new CambioCamara(nave);
-            
-            //Carga estrellas
-            //estrella = new Estrella(new Vector3(0, 0, 100), d3dDevice);
-            estrellas =new List<TgcMesh>();
-            estrellasNo = new List<TgcMesh>();
-            estrellaControl = new Estrella();
-            estrellaControl.recur = false;
-            estrellaControl.cuadrante = 1;
-
-            for (int i = 0; i < 500; i++)
-            {
-                TgcTriangle prueba = new TgcTriangle();
-                prueba.A = new Vector3(-1, 0, 20);
-                prueba.B = new Vector3(0, 2, 20);
-                prueba.C = new Vector3(1, 0, 20);
-                prueba.Color = Color.White;
-                TgcMesh prueba2;
-                prueba2 = prueba.toMesh("asd");
-                estrellas.Add(prueba2);
-                objetosBrillantes.Add(prueba2);
-            }
-           
-
-
-            /*
-            for (int i = 0; i < 500; i++)
-            {
-                TgcBox cajaloca = new TgcBox();
-                cajaloca.Color = Color.Red;
-                cajaloca = TgcBox.fromSize(new Vector3(10, 10, 10), TgcTexture.createTexture(GuiController.Instance.ExamplesMediaDir + "\\Texturas\\pasto.jpg"));
-                //cajaloca.Scale = new Vector3(15, 15, 15);
-                cajaloca.Position = new Vector3(i, i, 20);
-                estrellas.Add(cajaloca);
-                objectosNoMeshesCollection.Add(cajaloca);
-            }*/
-         //   TgcTriangle rar = new TgcTriangle();
-          //  rar.Color = Color.Red;
-            //rar.Scale = new Vector3(15, 15, 15);
-           // rar.A = new Vector3(0, 0, 20);
-           // rar.B = new Vector3(10, 0, 20);
-            //rar.C = new Vector3(0, 10, 20);
-          //  objectosNoMeshesCollection.Add(rar);
-           // objectosNoMeshesCollection.Add(estrella);
-
+                        
             //Flecha direccion objetivo
             //arrow = new TgcArrow();
             //arrow.BodyColor = Color.FromArgb(230, Color.Cyan);
@@ -380,7 +337,7 @@ namespace AlumnoEjemplos.TheGRID
            
             
            //nave.ultimaTraslacion
-            estrellaControl.insertarEstrellas(estrellas,estrellasNo,nave.getPosicion(),nave.getDireccion(),nave.ultimaTraslacion,elapsedTime);
+            //estrellaControl.insertarEstrellas(estrellas,estrellasNo,nave.getPosicion(),nave.getDireccion(),nave.ultimaTraslacion,elapsedTime);
             superRender.render(nave, sol, dibujableCollection, objectosNoMeshesCollection, objetosBrillantes); //Redirige todo lo que renderiza dentro del "shader"
             //d3dDevice.VertexFormat = CustomVertex.PositionColoredTextured.Format;
            // d3dDevice.DrawUserPrimitives(PrimitiveType.TriangleList, 1, data);
