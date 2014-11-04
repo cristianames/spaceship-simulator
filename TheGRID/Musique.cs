@@ -51,6 +51,11 @@ namespace AlumnoEjemplos.TheGRID
         {
             playerMP3.play(loop);
         }
+        public void playPauseBackgound()
+        {
+            if (playerMP3.getStatus() == TgcMp3Player.States.Playing) { playerMP3.pause(); return; }
+            if (playerMP3.getStatus() == TgcMp3Player.States.Paused) { playerMP3.resume(); return; }
+        }
         public void playLazer()
         {
             lazer.SoundBuffer.Stop();

@@ -74,6 +74,8 @@ namespace AlumnoEjemplos.TheGRID
         float periodo_parpadeo = 1.5f;
         public bool parpadeoIzq = true;
         public bool parpadeoDer = false;
+        public bool pausa = false;
+        Pausa gui = new Pausa();
         #endregion
 
         #region METODOS AUXILIARES
@@ -182,10 +184,23 @@ namespace AlumnoEjemplos.TheGRID
 
         public override void render(float elapsedTime)
         {
-            #region -----KEYS-----
             TgcD3dInput input = GuiController.Instance.D3dInput;
-
+            if (pausa)
+            {
+                gui.pausa();
+                if (input.keyPressed(Key.P)) 
+                { 
+                    pausa = false;
+                    music.playPauseBackgound();
+                }
+                return;
+            }
+            #region -----KEYS-----
             if (input.keyPressed(Key.I)) { music.refrescar(); }
+            if (input.keyPressed(Key.P)) { 
+                pausa = true;
+                music.playPauseBackgound();
+            }     //Pausa.
 
             //Flechas
             if (input.keyDown(Key.Left)) { nave.rotacion = 1; }
@@ -250,7 +265,7 @@ namespace AlumnoEjemplos.TheGRID
 
 
 
-            if (input.keyDown(Key.P)) { scheme.asteroidManager.explotaAlPrimero(); }
+            //if (input.keyDown(Key.P)) { scheme.asteroidManager.explotaAlPrimero(); }
             if (scheme.escenarioActual == Escenario.TipoModo.THE_OPENING)
             {
                 if (input.keyDown(Key.Space))
