@@ -34,7 +34,7 @@ namespace AlumnoEjemplos.TheGRID
         /// Completar nombre del grupo en formato Grupo NN
         public override string getName(){ return "Grupo TheGRID"; }
         /// Completar con la descripción del TP
-        public override string getDescription() { return "Welcome to TheGRID"+Environment.NewLine+"FLECHAS: Rotaciones"+Environment.NewLine+"WASD: Desplazamiento"+Environment.NewLine+"LeftShift: Efecto Blur"+Environment.NewLine+"LeftCtrl: Modo Crucero"+Environment.NewLine+"Espacio: Disparo Principal"+Environment.NewLine+"RightShift: Disparo Secundario"; }
+        public override string getDescription() { return "Welcome to TheGRID"+Environment.NewLine+"FLECHAS: Rotaciones"+Environment.NewLine+"WASD: Desplazamiento"+Environment.NewLine+"LeftShift: Efecto Blur"+Environment.NewLine+"LeftCtrl: Modo Crucero"+Environment.NewLine+"Espacio: Disparo Principal"+Environment.NewLine+"RightShift: Disparo Secundario"+Environment.NewLine+"Z: DO A BARREL ROLL!!"; }
         #endregion
 
         #region ATRIBUTOS
