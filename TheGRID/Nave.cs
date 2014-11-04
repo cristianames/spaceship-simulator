@@ -48,7 +48,6 @@ namespace AlumnoEjemplos.TheGRID
             //nave.getColision().transladar(posicionNave);
         }
 
-        private float vida;
 
         public override void teChoque(Dibujable colisionador, float velocidadColisionador)
         {

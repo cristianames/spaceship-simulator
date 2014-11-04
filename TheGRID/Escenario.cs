@@ -125,7 +125,7 @@ namespace AlumnoEjemplos.TheGRID
             posicion.Add(Vector3.Multiply(ppal.getDireccion_Y(), (new Random()).Next(-3000,3000)));
             planet.ubicarEnUnaPosicion(posicion);
             planet.activar();
-            cuerposGravitacionales = new List<Dibujable>() { planet };
+            //cuerposGravitacionales = new List<Dibujable>() { planet };
         }
         //-------------------------------------------------------------------------------------------VACUUM
         public void loadVacuum() 
@@ -209,10 +209,10 @@ namespace AlumnoEjemplos.TheGRID
                 float velocidad = nave.fisica.velocidadInstantanea * 0.7f;// / 3f;
                 //velocidad = (velocidad * distancias.X)+(velocidad * distancias.Y)+(velocidad * distancias.Z);
                 float radioCuad = FastMath.Pow2(((TgcBoundingSphere)planet.getColision().getBoundingBox()).Radius) + 0;
-                while (Vector3.LengthSq(Vector3.Subtract(nave.getPosicion(), planet.getPosicion())) < radioCuad)
+                /*while (Vector3.LengthSq(Vector3.Subtract(nave.getPosicion(), planet.getPosicion())) < radioCuad)
                 {
                     nave.impulsate(direccion, velocidad, 0.01f);
-                }                
+                } */               
                 if (flagReintento == 0) EjemploAlumno.workspace().music.playAsteroideColision();
                 //--------
             }
