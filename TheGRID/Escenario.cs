@@ -87,8 +87,6 @@ namespace AlumnoEjemplos.TheGRID
         {
             disposeOld();
             escenarioActual = TipoModo.IMPULSE_DRIVE;
-            EjemploAlumno.workspace().Shader.motionBlurActivado = true;
-            EjemploAlumno.workspace().tiempoBlur = 5F;// velocidadBlur = 299800;
         }
         //-------------------------------------------------------------------------------------------CHAPTER-3
         public void loadChapter3() 
@@ -152,6 +150,9 @@ namespace AlumnoEjemplos.TheGRID
                 case TipoModo.WELCOME_HOME:
                     colisionNavePlaneta(EjemploAlumno.workspace().ObjetoPrincipal);
                     planet.rotarPorTiempo(elapsedTime, new List<Dibujable>());
+                    break;
+                case TipoModo.IMPULSE_DRIVE:
+                    //ACA VAN TUS ESTRELLAS DAN!!
                     break;
             }
             /*if (TgcCollisionUtils.testPointCylinder(principal.getPosicion(), limite))

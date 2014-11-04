@@ -50,8 +50,7 @@ namespace AlumnoEjemplos.TheGRID
         public float velocidadBlur = 0;
         bool velocidadCrucero = false;
         public float tiempoBlur=0.3f;
-        private Dibujable objetoPrincipal;  //Este va a ser configurable con el panel de pantalla.
-        public Dibujable ObjetoPrincipal { get { return objetoPrincipal; } }
+        public Dibujable ObjetoPrincipal { get { return nave; } }
         List<Dibujable> listaDibujable = new List<Dibujable>();
         float timeLaser = 0; //Inicializacion.
         const float betweenTime = 0.15f;    //Tiempo de espera entre cada disparo de laser.
@@ -62,7 +61,6 @@ namespace AlumnoEjemplos.TheGRID
         public List<TgcMesh> objetosBrillantes = new List<TgcMesh>();
         //Modificador de la camara del proyecto
         public CambioCamara camara;
-        TgcArrow arrow;
         private TgcFrustum currentFrustrum;
         public TgcFrustum CurrentFrustrum { get { return currentFrustrum; } }
         private SkySphere skySphere;
@@ -129,7 +127,6 @@ namespace AlumnoEjemplos.TheGRID
             scheme = new Escenario(nave);
 
             //Cargamos la nave como objeto principal.
-            objetoPrincipal = nave;
             camara = new CambioCamara(nave);
             
             //Carga estrellas
@@ -187,25 +184,27 @@ namespace AlumnoEjemplos.TheGRID
 
             //Cargamos valores en el panel lateral
             GuiController.Instance.UserVars.addVar("Vel-Actual:");
-            GuiController.Instance.UserVars.addVar("Integtidad Nave:");
+            /*GuiController.Instance.UserVars.addVar("Integtidad Nave:");
             GuiController.Instance.UserVars.addVar("Integridad Escudos:");
             GuiController.Instance.UserVars.addVar("Posicion X:");
             GuiController.Instance.UserVars.addVar("Posicion Y:");
             GuiController.Instance.UserVars.addVar("Posicion Z:");
+             */
             //Cargar valor en UserVar
-            GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual());
-            GuiController.Instance.UserVars.setValue("Integtidad Nave:", objetoPrincipal.explosion.vida);
+            GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
+            /*GuiController.Instance.UserVars.setValue("Integtidad Nave:", objetoPrincipal.explosion.vida);
             GuiController.Instance.UserVars.setValue("Integridad Escudos:", objetoPrincipal.explosion.escudo);
             GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);
             GuiController.Instance.UserVars.setValue("Posicion Y:", objetoPrincipal.getPosicion().Y);
             GuiController.Instance.UserVars.setValue("Posicion Z:", objetoPrincipal.getPosicion().Z);
+             */
             //Crear un modifier para un valor FLOAT
             //GuiController.Instance.Modifiers.addFloat("Aceleracion", 0f,500f, objetoPrincipal.getAceleracion());  De momento lo saco.
             //GuiController.Instance.Modifiers.addFloat("Frenado", 0f, 1000f, objetoPrincipal.getAcelFrenado());    De momento lo saco.
             //Crear un modifier para un ComboBox con opciones
             //List<int> pistaDeAudio = new List<int>(){0,1,2,3,4,5,6,7,8,9};
-            string[] opciones0 = new string[] { "THE OPENING","WELCOME HOME", "VACUUM" };
-            GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 2);
+            string[] opciones0 = new string[] { "THE OPENING", "IMPULSE DRIVE", "WELCOME HOME" };
+            GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 0);
             string[] opciones1 = new string[] { "Tercera Persona", "Camara FPS", "Libre" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
             string[] opciones2 = new string[] { "Lista Completa", "Castor", "Derezzed", "M4 Part 2", "ME Theme", "New Worlds", "Solar Sailer", "Spectre", "Tali", "The Son of Flynn", "Tron Ending", "Sin Musica" };
@@ -241,45 +240,59 @@ namespace AlumnoEjemplos.TheGRID
             if (input.keyDown(Key.D)) { nave.giro = 1; }
             if (input.keyDown(Key.W)) { nave.acelerar(); }
             if (input.keyDown(Key.S)) { if (!superRender.motionBlurActivado)nave.frenar(); }
-            if (input.keyPressed(Key.S)) { objetoPrincipal.fisica.desactivarCrucero(); velocidadCrucero = false; }
+            if (input.keyPressed(Key.S)) { nave.fisica.desactivarCrucero(); velocidadCrucero = false; }
             if (input.keyDown(Key.Z)) { nave.rotarPorVectorDeAngulos(new Vector3(0, 0, 15)); }
             if (input.keyPressed(Key.LeftControl)) 
             {
                 if (velocidadCrucero)
                 {
-                    objetoPrincipal.fisica.desactivarCrucero();
+                    nave.fisica.desactivarCrucero();
                     velocidadCrucero = false;
                 }
                 else
                 {
-                    objetoPrincipal.fisica.activarCrucero();
+                    nave.fisica.activarCrucero();
                     velocidadCrucero = true;
                 }
             }
-            if (input.keyPressed(Key.LeftShift)) 
+            if (scheme.escenarioActual == Escenario.TipoModo.IMPULSE_DRIVE)
             {
-                if (superRender.motionBlurActivado)
+                if (input.keyPressed(Key.LeftShift))
                 {
-                    superRender.motionBlurActivado = false;
-                    tiempoBlur = 0.3f;
-                    velocidadBlur = 0;
-                    objetoPrincipal.fisica.velocidadMaxima = objetoPrincipal.velMaxNormal;
-                    objetoPrincipal.fisica.aceleracion = objetoPrincipal.acelNormal;                   
-                }
-                else
-                {
-                    if (objetoPrincipal.velocidadActual() >= objetoPrincipal.fisica.velocidadMaxima)
+                    if (superRender.motionBlurActivado)
                     {
-                        superRender.motionBlurActivado = true;
-                        objetoPrincipal.fisica.velocidadMaxima = objetoPrincipal.velMaxBlur;
-                        objetoPrincipal.fisica.aceleracion = objetoPrincipal.acelBlur;
-                        objetoPrincipal.fisica.desactivarCrucero(); velocidadCrucero = false; 
+                        superRender.motionBlurActivado = false;
+                        tiempoBlur = 0.3f;
+                        nave.fisica.velocidadMaxima = nave.velMaxNormal;
+                        nave.fisica.velocidadCrucero = nave.velMaxNormal;
+                        nave.fisica.aceleracion = nave.acelNormal;
+                        nave.velocidadRadial = nave.rotNormal;
+                        nave.fisica.velocidadInstantanea = nave.velMaxNormal;//Esto esta para cuando el blur se desactiva, desacelrar rapidamente la nave
+                        //camara = new CambioCamara(nave);
                     }
+                    else
+                    {
+                        if (nave.velocidadActual() >= nave.fisica.velocidadMaxima)
+                        {
+                            superRender.motionBlurActivado = true;
+                            nave.fisica.velocidadMaxima = nave.velMaxBlur;
+                            nave.fisica.desactivarCrucero(); velocidadCrucero = false;
+                            nave.velocidadRadial = nave.rotBlur;
+                        }
 
+                    }
                 }
             }
-            if (superRender.motionBlurActivado) nave.acelerar();//Si el Blur esta activado la nave solamente acelera
-            else if (objetoPrincipal.velocidadActual() > objetoPrincipal.fisica.velocidadMaxima) objetoPrincipal.fisica.velocidadInstantanea = objetoPrincipal.velMaxNormal;//Esto esta para cuando el blur se desactiva, desacelrar rapidamente la nave
+
+            
+
+
+            //if (superRender.motionBlurActivado) nave.acelerar();//Si el Blur esta activado la nave solamente acelera
+            //else if (objetoPrincipal.velocidadActual() > objetoPrincipal.fisica.velocidadMaxima) objetoPrincipal.fisica.velocidadInstantanea = nave.velMaxNormal;//Esto esta para cuando el blur se desactiva, desacelrar rapidamente la nave
+
+
+
+
             if (input.keyDown(Key.P)) { scheme.asteroidManager.explotaAlPrimero(); }
             if (scheme.escenarioActual == Escenario.TipoModo.THE_OPENING)
             {
@@ -327,6 +340,16 @@ namespace AlumnoEjemplos.TheGRID
                 }
                 tiempo_acum = 0;
             }
+
+            //Aceleracion Blur
+            if (superRender.motionBlurActivado && tiempoBlur < 5f)
+            {
+                tiempoBlur += elapsedTime;
+                nave.fisica.aceleracion += FastMath.Pow(tiempoBlur, 10);
+                nave.acelerar();
+            }
+
+
             nave.rotarPorTiempo(elapsedTime, listaDibujable);
             nave.desplazarsePorTiempo(elapsedTime, new List<Dibujable>(scheme.CuerposGravitacionales));
 
@@ -334,9 +357,9 @@ namespace AlumnoEjemplos.TheGRID
 
             camara.cambiarPosicionCamara();
             currentFrustrum.updateMesh(GuiController.Instance.CurrentCamera.getPosition(),GuiController.Instance.CurrentCamera.getLookAt());
-
+            
             //Si estamos en una vel de warp considerable, le damos sonido
-            if (nave.velocidadActual() > 3000f)
+            if (nave.velocidadActual() > 25000f)
                 music.playWarp();
             else
                 music.stopWarp();
@@ -370,18 +393,19 @@ namespace AlumnoEjemplos.TheGRID
             opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
             music.chequearCambio(opcionElegida);
             //objetoPrincipal.velocidadManual = (bool)GuiController.Instance.Modifiers["Velocidad Manual"];
-            objetoPrincipal.desplazamientoReal = (bool)GuiController.Instance.Modifiers["Desplaz. Avanzado"];
+            nave.desplazamientoReal = (bool)GuiController.Instance.Modifiers["Desplaz. Avanzado"];
             boundingBoxes = (bool)GuiController.Instance.Modifiers["Ver BoundingBox"];
             //opcionElegida = (string)GuiController.Instance.Modifiers["Rotacion Avanzada"];
             //if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.rotacionReal = true; else objetoPrincipal.rotacionReal = false;   De momento lo saco.
             
             //Refrescar User Vars
-            GuiController.Instance.UserVars.setValue("Vel-Actual:", objetoPrincipal.velocidadActual());            
-            GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);
+            GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());            
+            /*GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);
             GuiController.Instance.UserVars.setValue("Posicion Y:", objetoPrincipal.getPosicion().Y);
             GuiController.Instance.UserVars.setValue("Posicion Z:", objetoPrincipal.getPosicion().Z);
             GuiController.Instance.UserVars.setValue("Integtidad Nave:", objetoPrincipal.explosion.vida);
             GuiController.Instance.UserVars.setValue("Integridad Escudos:", objetoPrincipal.explosion.escudo);
+             */
             //Obtener valores de Modifiers
             //objetoPrincipal.fisica.aceleracion = (float)GuiController.Instance.Modifiers["Aceleracion"];  De momento lo saco.
             //objetoPrincipal.fisica.acelFrenado = (float)GuiController.Instance.Modifiers["Frenado"];      De momento lo saco.
