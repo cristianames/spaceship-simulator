@@ -61,6 +61,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
         public bool parpadeoIzq = false;
         public bool parpadeoDer = false;
+        public bool linterna = false;
 
         #endregion
 
@@ -139,6 +140,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             actualizarLuces();
             parpadeoIzq = EjemploAlumno.workspace().parpadeoIzq;
             parpadeoDer = EjemploAlumno.workspace().parpadeoDer;
+            linterna = EjemploAlumno.workspace().linterna;
             Device device = GuiController.Instance.D3dDevice;
 
             // guardo el Render target anterior y seteo la textura como render target
@@ -199,12 +201,16 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.DepthStencilSurface = g_pDepthStencil;
             pSurf = g_BumpFront.GetSurfaceLevel(0);
             device.SetRenderTarget(0, pSurf);
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
-                renderScene(parametros.elementosRenderizables);
-                renderScene(parametros.meshes, light_front, "VERTEX_COLOR");
-                renderScene(parametros.sol, light_front, "VERTEX_COLOR");
-                if (!EjemploAlumno.workspace().camara.soyFPS())
-                    renderScene(parametros.nave, light_front, "VERTEX_COLOR");
+                if (linterna)
+                {
+                    renderScene(parametros.elementosRenderizables);
+                    renderScene(parametros.meshes, light_front, "VERTEX_COLOR");
+                    renderScene(parametros.sol, light_front, "VERTEX_COLOR");
+                    if (!EjemploAlumno.workspace().camara.soyFPS())
+                        renderScene(parametros.nave, light_front, "VERTEX_COLOR");
+                }
             device.EndScene();
             pSurf.Dispose();
             device.DepthStencilSurface = pOldDS;

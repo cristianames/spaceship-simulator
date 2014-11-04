@@ -74,6 +74,8 @@ namespace AlumnoEjemplos.TheGRID
         float periodo_parpadeo = 1.5f;
         public bool parpadeoIzq = true;
         public bool parpadeoDer = false;
+        public bool linterna = true;
+        //GUI
         public bool pausa = false;
         Pausa gui = new Pausa();
         #endregion
@@ -172,6 +174,8 @@ namespace AlumnoEjemplos.TheGRID
             GuiController.Instance.Modifiers.addBoolean("Desplaz. Avanzado", "Activado", true);
             GuiController.Instance.Modifiers.addBoolean("Ver BoundingBox", "Activado", false);
             GuiController.Instance.Modifiers.addBoolean("glow", "Activado", true);
+            GuiController.Instance.Modifiers.addBoolean("Linterna", "Activado", true);
+            GuiController.Instance.Modifiers.addBoolean("Luces de Posicion", "Activado", true);
             //string[] opciones4 = new string[] { "Activado", "Desactivado" };
             //GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);  De momento lo saco.
             string opcionElegida = (string)GuiController.Instance.Modifiers["Escenario Actual"];
@@ -296,22 +300,31 @@ namespace AlumnoEjemplos.TheGRID
             #region -----Update------
             tiempoPupila = elapsedTime; //Para el HDRL
 
-            //Parpadeo de las luces
+            #region Parpadeo de las luces
             tiempo_acum += elapsedTime;
             if(tiempo_acum >= periodo_parpadeo)
             {
-                if(parpadeoIzq)
+                if ((bool)GuiController.Instance.Modifiers["Luces de Posicion"])
                 {
-                    parpadeoIzq = false;
-                    parpadeoDer = true;
+                    if (parpadeoIzq)
+                    {
+                        parpadeoIzq = false;
+                        parpadeoDer = true;
+                    }
+                    else
+                    {
+                        parpadeoIzq = true;
+                        parpadeoDer = false;
+                    }
                 }
                 else
                 {
-                    parpadeoIzq = true;
                     parpadeoDer = false;
+                    parpadeoIzq = false;
                 }
                 tiempo_acum = 0;
             }
+            #endregion
 
             //Aceleracion Blur
             if (superRender.motionBlurActivado && tiempoBlur < 5f)
@@ -350,20 +363,7 @@ namespace AlumnoEjemplos.TheGRID
             skySphere.render();     //Solo actualiza pos. Tiene deshabiltiado los render propiamente dicho.
             #endregion
            
-            
-            //nave.ultimaTraslacion
-            //estrellaControl.insertarEstrellas(estrellas,estrellasNo,nave.getPosicion(),nave.getDireccion(),nave.ultimaTraslacion,elapsedTime);
             superRender.render(nave, sol, dibujableCollection, objectosNoMeshesCollection, objetosBrillantes); //Redirige todo lo que renderiza dentro del "shader"
-            /*nave.render();
-            sol.render();
-            foreach(Dibujable dib in dibujableCollection)
-                dib.render();
-            foreach (IRenderObject obj in objectosNoMeshesCollection)
-                obj.render();
-            foreach (TgcMesh mesh in objetosBrillantes)
-                mesh.render();*/
-            //d3dDevice.VertexFormat = CustomVertex.PositionColoredTextured.Format;
-            // d3dDevice.DrawUserPrimitives(PrimitiveType.TriangleList, 1, data);
 
             #region Refrescar panel lateral
             string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
@@ -375,11 +375,12 @@ namespace AlumnoEjemplos.TheGRID
             //objetoPrincipal.velocidadManual = (bool)GuiController.Instance.Modifiers["Velocidad Manual"];
             nave.desplazamientoReal = (bool)GuiController.Instance.Modifiers["Desplaz. Avanzado"];
             boundingBoxes = (bool)GuiController.Instance.Modifiers["Ver BoundingBox"];
+            linterna = (bool)GuiController.Instance.Modifiers["Linterna"];
             //opcionElegida = (string)GuiController.Instance.Modifiers["Rotacion Avanzada"];
             //if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.rotacionReal = true; else objetoPrincipal.rotacionReal = false;   De momento lo saco.
             
             //Refrescar User Vars
-            GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());            
+            GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
             /*GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);
             GuiController.Instance.UserVars.setValue("Posicion Y:", objetoPrincipal.getPosicion().Y);
             GuiController.Instance.UserVars.setValue("Posicion Z:", objetoPrincipal.getPosicion().Z);

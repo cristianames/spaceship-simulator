@@ -92,10 +92,7 @@ namespace AlumnoEjemplos.TheGRID
             TgcBoundingSphere bounding_asteroide = new TgcBoundingSphere(new Vector3(0, 0, 0), 15000);
             planet.setColision(new ColisionAsteroide());
             planet.getColision().setBoundingBox(bounding_asteroide);
-            //EjemploAlumno.workspace().dibujableCollection.Add(planet);
-            //EjemploAlumno.workspace().objetosBrillantes.Add(planet.objeto);
             EjemploAlumno.workspace().objectosNoMeshesCollection.Add(planet.objeto);
-            //EjemploAlumno.workspace().sol = planet;
         }
         public void dispose()
         {
