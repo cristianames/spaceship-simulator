@@ -97,6 +97,7 @@ namespace AlumnoEjemplos.TheGRID
         public bool musicaActivada = true;
         public bool despl_avanzado = true;
         public string escenarioActivado = "THE OPENING";
+        public bool entreWarp = false;
         #endregion
 
         #region METODOS AUXILIARES
@@ -257,7 +258,7 @@ namespace AlumnoEjemplos.TheGRID
                 }
             }
             //Activamos el motionBlur si estamos en Impuse Drive y presionan LeftShift
-            if (scheme.escenarioActual == Escenario.TipoModo.IMPULSE_DRIVE)
+            if (scheme.escenarioActual == Escenario.TipoModo.IMPULSE_DRIVE || scheme.escenarioActual == Escenario.TipoModo.MISION)
             {
                 if (input.keyPressed(Key.LeftShift))
                 {
@@ -353,6 +354,8 @@ namespace AlumnoEjemplos.TheGRID
             nave.rotarPorTiempo(elapsedTime, listaDibujable);
             if(gravity)nave.desplazarsePorTiempo(elapsedTime, new List<Dibujable>(scheme.CuerposGravitacionales));
             else nave.desplazarsePorTiempo(elapsedTime, new List<Dibujable>());
+            if(nave.reajustarSiSuperoLimite()) 
+                sol.ubicarEnUnaPosicion(nave.getPosicion());
 
             //Update del escnario
             scheme.refrescar(elapsedTime);

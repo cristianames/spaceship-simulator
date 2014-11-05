@@ -21,7 +21,7 @@ namespace AlumnoEjemplos.TheGRID
         public ManagerLaser laserManager = new ManagerLaser(100);
         public ManagerAsteroide asteroidManager; 
         public Dibujable principal;
-        public enum TipoModo { THE_OPENING, IMPULSE_DRIVE, WELCOME_HOME, VACUUM };
+        public enum TipoModo { THE_OPENING, IMPULSE_DRIVE, WELCOME_HOME, VACUUM, MISION };
         public TipoModo escenarioActual = TipoModo.VACUUM;
         //Objetos
         public Dibujable sol;
@@ -122,6 +122,12 @@ namespace AlumnoEjemplos.TheGRID
             planet.activar();
             cuerposGravitacionales = new List<Dibujable>() { planet };
         }
+        //-------------------------------------------------------------------------------------------MISION
+        public void loadMision()
+        {
+            disposeOld();
+            escenarioActual = TipoModo.MISION;
+        }
         //-------------------------------------------------------------------------------------------VACUUM
         public void loadVacuum() 
         {
@@ -174,6 +180,35 @@ namespace AlumnoEjemplos.TheGRID
                     if(EjemploAlumno.workspace().Shader.motionBlurActivado)
                         EjemploAlumno.workspace().estrellaControl.insertarEstrellas(EjemploAlumno.workspace().estrellas, EjemploAlumno.workspace().estrellasNo, EjemploAlumno.workspace().nave.getPosicion(), EjemploAlumno.workspace().nave.getDireccion(), EjemploAlumno.workspace().nave.ultimaTraslacion, EjemploAlumno.workspace().nave.getEjes().mRotor, elapsedTime);
                     break;
+                case TipoModo.MISION:
+                    
+                    laserManager.operar(elapsedTime);
+                    asteroidManager.reinsertarSiEsNecesario();
+                    asteroidManager.operar(elapsedTime);
+                    asteroidManager.chocoNave(principal);
+                    laserManager.chocoAsteroide();
+                    asteroidManager.colisionEntreAsteroides(0);
+                    if (EjemploAlumno.workspace().Shader.motionBlurActivado) 
+                    { 
+                        EjemploAlumno.workspace().estrellaControl.insertarEstrellas(EjemploAlumno.workspace().estrellas, EjemploAlumno.workspace().estrellasNo, EjemploAlumno.workspace().nave.getPosicion(), EjemploAlumno.workspace().nave.getDireccion(), EjemploAlumno.workspace().nave.ultimaTraslacion, EjemploAlumno.workspace().nave.getEjes().mRotor, elapsedTime);
+                        EjemploAlumno.workspace().entreWarp = true;
+                    }
+                    if (EjemploAlumno.workspace().entreWarp && !EjemploAlumno.workspace().Shader.motionBlurActivado)
+                    {
+                       
+                        /*colisionNavePlaneta(EjemploAlumno.workspace().ObjetoPrincipal);
+                        planet.rotarPorTiempo(elapsedTime, new List<Dibujable>());*/
+                        /*loadChapter3();
+                        EjemploAlumno.workspace().entreWarp = false;
+                        EjemploAlumno.workspace().nave.fisica.velocidadInstantanea = 0;*/
+                        chequearCambio("WELCOME HOME");
+                        EjemploAlumno.workspace().nave.rotarPorVectorDeAngulos(new Vector3(0, 0, 15));                    
+                        
+
+                    }
+                    //colisionNavePlaneta(EjemploAlumno.workspace().ObjetoPrincipal);
+                    //planet.rotarPorTiempo(elapsedTime, new List<Dibujable>());
+                        break;
             }
         }
 
@@ -225,6 +260,10 @@ namespace AlumnoEjemplos.TheGRID
                 case "VACUUM":
                     if (escenarioActual != TipoModo.VACUUM)
                         loadVacuum();
+                    break;
+                case "MISION":
+                    if (escenarioActual != TipoModo.MISION)
+                        loadMision();
                     break;
             }
         }

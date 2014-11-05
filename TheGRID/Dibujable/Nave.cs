@@ -47,6 +47,21 @@ namespace AlumnoEjemplos.TheGRID
             getColision().setBoundingBox(naveObb);
         }
 
+        float max_eje = 1000000000000;
+        public bool reajustarSiSuperoLimite()
+        {
+            Vector3 pos = getPosicion();
+            bool flag = false;
+            if (Math.Pow(pos.X, 2).CompareTo(max_eje) > 0)
+                flag = true;
+            if (Math.Pow(pos.Y, 2).CompareTo(max_eje) > 0)
+                flag = true;
+            if (Math.Pow(pos.Z, 2).CompareTo(max_eje) > 0)
+                flag = true;
+
+            if (flag) ubicarEnUnaPosicion(new Vector3(0, 0, 0));//Chequeamos que no nos hayamos pasado del mapa
+            return flag;
+        }
         public override void teChoque(Dibujable colisionador, float velocidadColisionador)
         {
             //Aqui se bajaria la vida de la nave o explotaria, pero para mayor experiencia, lo removimos asi la nave no muere.

@@ -503,13 +503,14 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
                     sonido.playPauseBackgound();
                     break;
                 case Clase.CAPITULO3:
-                    EjemploAlumno.workspace().escenarioActivado = "WELCOME HOME";
+                    EjemploAlumno.workspace().escenarioActivado = "WELCOME HOME";                   
                     sonido.playChangePause(); 
                     EjemploAlumno.workspace().config = false;
                     sonido.playPauseBackgound();
                     break;
                 case Clase.MISION:
-                    //COMPLETAR DESPUES
+                    EjemploAlumno.workspace().escenarioActivado = "MISION";
+                    sonido.playChangePause(); 
                     break;
             }
         }
