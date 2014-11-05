@@ -222,56 +222,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 }
                 
             }
-
-            #region Promedio
-            pSurf = g_pLuminance[NUM_REDUCE_TX - 1].GetSurfaceLevel(0);
-            screen_dx = pSurf.Description.Width;
-            screen_dy = pSurf.Description.Height;
-            device.SetRenderTarget(0, pSurf);
-            device.BeginScene();
-                effect.Technique = "DownFilter4";
-                device.VertexFormat = CustomVertex.PositionTextured.Format;
-                device.SetStreamSource(0, g_pVBV3D, 0);
-                effect.SetValue("g_RenderTarget", g_pRenderTarget);
-                device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
-                effect.Begin(FX.None);
-                    effect.BeginPass(0);
-                        device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
-                    effect.EndPass();
-                effect.End();
-                pSurf.Dispose();
-            device.EndScene();
-            device.DepthStencilSurface = pOldDS;
-            string fname2 = string.Format("Pass{0:D}.bmp", NUM_REDUCE_TX);
-
-            // Reduce
-            for (int i = NUM_REDUCE_TX - 1; i > 0; i--)
-            {
-
-                pSurf = g_pLuminance[i - 1].GetSurfaceLevel(0);
-                effect.SetValue("screen_dx", screen_dx);
-                effect.SetValue("screen_dy", screen_dy);
-
-                device.SetRenderTarget(0, pSurf);
-                effect.SetValue("g_RenderTarget", g_pLuminance[i]);
-                device.BeginScene();
-                    device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
-                    effect.Begin(FX.None);
-                        effect.BeginPass(0);
-                            device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
-                        effect.EndPass();
-                    effect.End();
-                    pSurf.Dispose();
-                device.EndScene();
-
-                string fname = string.Format("Pass{0:D}.bmp", i);
-                //SurfaceLoader.Save(fname, ImageFileFormat.Bmp, pSurf);
-
-                screen_dx /= 4.0f;
-                screen_dy /= 4.0f;
-            }
-            #endregion
-
             #region ToneMapping Effect
             effect.SetValue("pantalla_completa", true);
             effect.SetValue("screen_dx", device.PresentationParameters.BackBufferWidth);
