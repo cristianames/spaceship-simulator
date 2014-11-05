@@ -67,6 +67,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         {
             motionShader.renderEffect(new EstructuraRender(nave, sol, meshes, elementosRenderizables, objetosBrillantes));
             GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
+            GuiController.Instance.Text3d.drawText("Velocidad: " +EjemploAlumno.workspace().nave.velocidadActual(), 0, 15 , Color.Yellow);
             GuiController.Instance.AxisLines.render();
         }
 

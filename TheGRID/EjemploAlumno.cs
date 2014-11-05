@@ -172,17 +172,13 @@ namespace AlumnoEjemplos.TheGRID
             anchoPantalla = focusWindows.Width;
 
             #region PANEL DERECHO
-            //Cargar valor en UserVar
-            GuiController.Instance.UserVars.addVar("Vel-Actual:");
-            GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
-
             string[] opciones2 = new string[] { "Lista Completa", "Castor", "Derezzed", "M4 Part 2", "ME Theme", "New Worlds", "Solar Sailer", "Spectre", "Tali", "The Son of Flynn", "Tron Ending", "Sin Musica" };
             GuiController.Instance.Modifiers.addInterval("Musica de fondo", opciones2, 0);
             string opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
             music.chequearCambio(opcionElegida);
             music.refrescar();
-            scheme.chequearCambio("THE OPENING");
             #endregion
+            scheme.chequearCambio("THE OPENING");
         }   
 
         public override void render(float elapsedTime)
@@ -219,7 +215,7 @@ namespace AlumnoEjemplos.TheGRID
             //Flechas
             
             float sensibilidad = 0.003f;
-            float zonaMuerta = 20f;
+            float zonaMuerta = 10f;
             if (mouse)
             {
                 float temp = input.Ypos - mouseCenter.Y;
@@ -378,7 +374,6 @@ namespace AlumnoEjemplos.TheGRID
             //Redirige todo lo que renderiza para aplicar los efectos
             superRender.render(nave, sol, dibujableCollection, objectosNoMeshesCollection, objetosBrillantes); 
 
-            #region Refrescar Variables
             
             //scheme.chequearCambio(escenarioActivado); //Realiza el cambio de capitulo
             nave.desplazamientoReal = despl_avanzado; //Setea si se habilito el modo real o avanzado de desplazamiento (Con atraccion y choque)
@@ -386,9 +381,6 @@ namespace AlumnoEjemplos.TheGRID
             string opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
             music.chequearCambio(opcionElegida);
 
-            //Refrescar User Vars
-            GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
-            #endregion
         }
 
         public override void close()
