@@ -22,6 +22,7 @@ using AlumnoEjemplos.TheGRID.Colisiones;
 using AlumnoEjemplos.TheGRID.Explosiones;
 using AlumnoEjemplos.TheGRID.Shaders;
 using AlumnoEjemplos.TheGRID.Camara;
+using AlumnoEjemplos.TheGRID.InterfazGrafica;
 
 namespace AlumnoEjemplos.TheGRID
 {
@@ -79,7 +80,9 @@ namespace AlumnoEjemplos.TheGRID
         public Point mouseCenter;
         //GUI
         public bool pausa = false;
-        Pausa gui = new Pausa();
+        public bool config = false;
+        Pausa guiPausa = new Pausa();
+        Configuracion guiConfig;
         #endregion
 
         #region METODOS AUXILIARES
@@ -122,6 +125,7 @@ namespace AlumnoEjemplos.TheGRID
 
             currentFrustrum = new TgcFrustum();           
             superRender = new SuperRender();
+            guiConfig = new Configuracion(music);
 
             //Crear la nave
             nave = new Nave();
@@ -201,10 +205,20 @@ namespace AlumnoEjemplos.TheGRID
             TgcD3dInput input = GuiController.Instance.D3dInput;
             if (pausa)
             {
-                gui.pausa();
+                guiPausa.pausa();
                 if (input.keyPressed(Key.P)) 
                 { 
                     pausa = false;
+                    music.playPauseBackgound();
+                }
+                return;
+            }
+            if (config)
+            {
+                guiConfig.operar(elapsedTime);
+                if (input.keyPressed(Key.C))
+                {
+                    config = false;
                     music.playPauseBackgound();
                 }
                 return;
@@ -213,6 +227,11 @@ namespace AlumnoEjemplos.TheGRID
             if (input.keyPressed(Key.I)) { music.refrescar(); }
             if (input.keyPressed(Key.P)) { 
                 pausa = true;
+                music.playPauseBackgound();
+            }     //Pausa.
+            if (input.keyPressed(Key.C))
+            {
+                config = true;
                 music.playPauseBackgound();
             }     //Pausa.
 
