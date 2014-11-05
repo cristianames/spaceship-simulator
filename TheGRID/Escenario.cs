@@ -115,6 +115,7 @@ namespace AlumnoEjemplos.TheGRID
         {
             disposeOld();
             escenarioActual = TipoModo.WELCOME_HOME;
+            EjemploAlumno.workspace().nave.fisica.velocidadInstantanea = 10;
             Dibujable ppal = EjemploAlumno.workspace().ObjetoPrincipal;
             List<int> opciones = new List<int>() { -8000, 8000 };
             Vector3 posicion = ppal.getPosicion();
@@ -199,19 +200,9 @@ namespace AlumnoEjemplos.TheGRID
                     }
                     if (EjemploAlumno.workspace().entreWarp && !EjemploAlumno.workspace().Shader.motionBlurActivado)
                     {
-                       
-                        /*colisionNavePlaneta(EjemploAlumno.workspace().ObjetoPrincipal);
-                        planet.rotarPorTiempo(elapsedTime, new List<Dibujable>());*/
-                        /*loadChapter3();
-                        EjemploAlumno.workspace().entreWarp = false;
-                        EjemploAlumno.workspace().nave.fisica.velocidadInstantanea = 0;*/
                         chequearCambio("WELCOME HOME");
-                        //EjemploAlumno.workspace().nave.rotarPorVectorDeAngulos(new Vector3(0, 0, 15));                    
-                        
-
                     }
-                    //colisionNavePlaneta(EjemploAlumno.workspace().ObjetoPrincipal);
-                    //planet.rotarPorTiempo(elapsedTime, new List<Dibujable>());
+
                         break;
             }
         }

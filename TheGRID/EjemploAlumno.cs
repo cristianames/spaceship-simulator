@@ -285,7 +285,7 @@ namespace AlumnoEjemplos.TheGRID
                     }
                 }
             }
-            if (scheme.escenarioActual == Escenario.TipoModo.THE_OPENING) //Habilita el disparo si estamos con los asteroides
+            if (scheme.escenarioActual == Escenario.TipoModo.THE_OPENING || scheme.escenarioActual == Escenario.TipoModo.MISION) //Habilita el disparo si estamos con los asteroides
             {
                 if (input.keyDown(Key.Space) || (input.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT) && mouse))
                 {
