@@ -77,6 +77,8 @@ namespace AlumnoEjemplos.TheGRID
         public bool parpadeoDer = false;
         public bool linterna = true;
         public Point mouseCenter;
+        public int altoPantalla;
+        public int anchoPantalla;
         //GUI
         public bool pausa = false;
         Pausa gui = new Pausa();
@@ -150,6 +152,8 @@ namespace AlumnoEjemplos.TheGRID
                     focusWindows.Height / 2)
                     );
 
+            altoPantalla = focusWindows.Height;
+            anchoPantalla = focusWindows.Width;
 
             #region PANEL DERECHO
 
@@ -217,17 +221,19 @@ namespace AlumnoEjemplos.TheGRID
             }     //Pausa.
 
             //Flechas
-
             
-            
+            //int giroX = -1+2*((int)GuiController.Instance.D3dInput.Xpos/anchoPantalla);
+            //int giroY = -1+2*((int)GuiController.Instance.D3dInput.Ypos/altoPantalla);
+            int sensibilidad =1;
+            nave.rotarPorVectorDeAngulos(new Vector3(GuiController.Instance.D3dInput.YposRelative * sensibilidad, 0, GuiController.Instance.D3dInput.XposRelative * sensibilidad));
             if (input.keyDown(Key.Left)) { nave.rotacion = 1; }
-            if (GuiController.Instance.D3dInput.XposRelative < 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) { nave.rotacion = 1; }
+           // if (GuiController.Instance.D3dInput.XposRelative < 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) {nave.rotacion = 1;  }
             if (input.keyDown(Key.Right)) { nave.rotacion = -1; }
-            if (GuiController.Instance.D3dInput.XposRelative > 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) { nave.rotacion = -1; }
+            //if (GuiController.Instance.D3dInput.XposRelative > 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) { nave.rotacion = -1; }
             if (input.keyDown(Key.Up)) { nave.inclinacion = 1; }
-            if (GuiController.Instance.D3dInput.YposRelative > 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) { nave.inclinacion = 1; }
+           // if (GuiController.Instance.D3dInput.YposRelative > 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) { nave.inclinacion = 1; }
             if (input.keyDown(Key.Down)) { nave.inclinacion = -1; }
-            if (GuiController.Instance.D3dInput.YposRelative < 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) { nave.inclinacion = -1; }
+           // if (GuiController.Instance.D3dInput.YposRelative < 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) { nave.inclinacion = -1; }
             //Letras
             
             if (input.keyDown(Key.A)) { nave.giro = -1; }
