@@ -132,7 +132,8 @@ namespace AlumnoEjemplos.TheGRID
             //Crear la nave
             nave = new Nave();
 
-            skySphere = new SkySphere();
+            skySphere = new SkySphere("SkyBox\\skysphere-TgcScene.xml");
+            addMesh(skySphere.dibujable_skySphere);
 
             //Creamos el escenario.
             scheme = new Escenario(nave);
@@ -400,7 +401,7 @@ namespace AlumnoEjemplos.TheGRID
             //arrow.HeadSize = new Vector2(2,2);
             //arrow.updateValues();
             
-            skySphere.render();     //Solo actualiza pos. Tiene deshabiltiado los render propiamente dicho.
+            skySphere.render(nave);     //Solo actualiza pos. Tiene deshabiltiado los render propiamente dicho.
             #endregion
            
             superRender.render(nave, sol, dibujableCollection, objectosNoMeshesCollection, objetosBrillantes); //Redirige todo lo que renderiza dentro del "shader"
