@@ -12,7 +12,7 @@ namespace AlumnoEjemplos.TheGRID
     public class SkySphere
     {
         public TgcMesh horizonteVision;
-        public TgcBoundingSphere bordeSky;
+        public TgcBoundingSphere bordeSky; //Borde de la skysphere para desactivar los objetos fuera de la misma
         public Dibujable dibujable_skySphere;
 
         public SkySphere(string path)

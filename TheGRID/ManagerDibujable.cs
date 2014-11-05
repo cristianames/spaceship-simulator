@@ -15,6 +15,7 @@ namespace AlumnoEjemplos.TheGRID
     #region Manager Base
     public abstract class ManagerDibujable
     {
+        //Listas de reciclaje de dibujables
         protected List<Dibujable> controlados;
         protected List<Dibujable> inactivos;
         protected int limiteControlados;
@@ -29,7 +30,7 @@ namespace AlumnoEjemplos.TheGRID
 
         internal void addNew(Dibujable nuevo)
         {
-            if (inactivos.Count == limiteControlados) controlados.RemoveAt(0);      //¿¿NO DEBERIA SER EL COUNT EN CONTROLADOS TMB??
+            if (inactivos.Count == limiteControlados) controlados.RemoveAt(0);
             controlados.Add(nuevo);
         }
 
@@ -58,7 +59,6 @@ namespace AlumnoEjemplos.TheGRID
             controlados.Remove(aEliminar);
             aEliminar.dispose();
         }
-
         public void destruirListas()
         {
             foreach (var item in controlados) { item.dispose(); }
@@ -84,7 +84,7 @@ namespace AlumnoEjemplos.TheGRID
     #endregion
 
     #region Manager Laser
-    public class ManagerLaser : ManagerDibujable
+    public class ManagerLaser : ManagerDibujable //Clase Para Manejar los láseres
     {
         bool alternado;
         protected List<Dibujable> controlados_azul;
@@ -123,8 +123,7 @@ namespace AlumnoEjemplos.TheGRID
             Dibujable laser = activar();
             Factory.reubicarLaserAPosicion(laser, ejes, posicionNave);
         }
-
-        public void cargarSuperDisparo(EjeCoordenadas ejes, Vector3 posicionNave, float tiempo)
+        public void cargarSuperDisparo(EjeCoordenadas ejes, Vector3 posicionNave, float tiempo) //El disparo azul
         {
             Vector3 atras = ejes.vectorZ;
             atras.Multiply(20);
@@ -137,20 +136,17 @@ namespace AlumnoEjemplos.TheGRID
             Dibujable laser = activar_azul();
             if (tiempo > 5)
                 tiempo = 5;
-            //laser.velocidad = 6000 + 100 * tiempo; 
             Factory.escalarLaser(laser, new Vector3(0.3f*tiempo, 0.3f*tiempo, 0.7f));
             Factory.reubicarLaserAPosicion(laser, ejes, posicionNave);
             laser.setFisica(0, 0, 10000, 0.15f * tiempo);
             laser.impulsate(laser.getDireccion(), 600, 0.1f);
         }
-
         public override void desactivar(Dibujable objeto)
         {
             controlados.Remove(objeto);            
             inactivos.Add(Factory.resetearLaser(objeto));
             objeto.desactivar();
         }
-
         public void desactivar_azul(Dibujable objeto)
         {
             controlados_azul.Remove(objeto);
@@ -174,8 +170,7 @@ namespace AlumnoEjemplos.TheGRID
                 rotar(item, time);
             }
         }
-
-        public void chocoAsteroide()
+        public void chocoAsteroide() //Chequear por Fuerza bruta si los láseres chocaron algo
         {
             foreach (Dibujable laser in controlados)
                 if(laser.objeto.Enabled) EjemploAlumno.workspace().Escenario.asteroidManager.chocoLaser(laser);
@@ -186,7 +181,7 @@ namespace AlumnoEjemplos.TheGRID
     #endregion
 
     #region Manager Asteroide
-    public class ManagerAsteroide : ManagerDibujable
+    public class ManagerAsteroide : ManagerDibujable //Clase Para Manejar los láseres
     {
         int cantidadEnMapa = 0;
         public ManagerAsteroide(int limite) : base(limite) 
@@ -211,7 +206,6 @@ namespace AlumnoEjemplos.TheGRID
             {
                 trasladar(item, time);
                 rotar(item, time);
-                //((TgcBoundingSphere)item.getColision().getBoundingBox()).setCenter(item.getPosicion());
             }
 
             reciclajeAsteroidesFueraDelSky();            
@@ -231,8 +225,7 @@ namespace AlumnoEjemplos.TheGRID
                 foreach (var asteroide in controlados)
                     if (!asteroide.getColision().colisiono(skysphere.bordeSky))
                     {
-                        //reinsertar(asteroide);
-                        desactivar(asteroide);    //Probaremos en vez de desactivar, reinsertar.
+                        desactivar(asteroide);
                         breakForzoso = true;
                         break;
                     }
@@ -248,7 +241,6 @@ namespace AlumnoEjemplos.TheGRID
             Vector3 ejeZ = EjemploAlumno.workspace().ObjetoPrincipal.getDireccion();
             Vector3 ejeX = EjemploAlumno.workspace().ObjetoPrincipal.getDireccion_X();
             Vector3 ejeY = EjemploAlumno.workspace().ObjetoPrincipal.getDireccion_Y();
-            //desactivar(asteroide);
             for (int i = 0; i < cantidadAReinsertar; i++)
             {                
                 setearFormato.tamanio = Factory.elementoRandom<TamanioAsteroide>(opciones);
@@ -257,10 +249,7 @@ namespace AlumnoEjemplos.TheGRID
                 //Pasaje de asteroides con formato
                 activarAsteroide(setearFormato);
             }
-            
-
         }
-
         public void desactivarTodos()
         {
             while (controlados.Count() > 0)
@@ -268,7 +257,6 @@ namespace AlumnoEjemplos.TheGRID
                 desactivar(controlados.First());
             }
         }
-
         public void activarAsteroide(Formato formato)     
         {
             if(inactivos.Count > 0)
@@ -286,15 +274,13 @@ namespace AlumnoEjemplos.TheGRID
                 asteroide.activar();                                   
             }
         }
-
         public override void desactivar(Dibujable objeto)
         {
             controlados.Remove(objeto);
             inactivos.Add(Factory.resetearAsteroide((Asteroide) objeto));
             objeto.desactivar();
         }
-
-        public void fabricarMiniAsteroides(int cuantos, TamanioAsteroide tam, Vector3 pos, float radio)
+        public void fabricarMiniAsteroides(int cuantos, TamanioAsteroide tam, Vector3 pos, float radio) //Crear los fragmentos de asteroides
         {
             Formato format = new Formato();
             format.tamanio = tam;
@@ -308,11 +294,10 @@ namespace AlumnoEjemplos.TheGRID
                 activarAsteroide(format);
             }
         }
-
-        public void fabricarMapaAsteroides(Vector3 pos_base, int cantidadAsteroides, int radioAdmisible)
+        public void fabricarMapaAsteroides(Vector3 pos_base, int cantidadAsteroides, int radioAdmisible) //Crear la disposicion de los asteroides
         {
-            foreach (var asteroide in controlados)  //No se realmente si conviene desactivar los que ya estaban activos. //Si, si conviene, no se quien sos, pero voy a encontrarte y voy a matarte. - Tomas(11/10)
-            {                                       //Weon, me dijeron que vos no podes matar ni a una mosca!!  - Dante(?)(13/10) 
+            foreach (var asteroide in controlados)  
+            {                                      
                 desactivar(asteroide);
             }
             float max_x =  radioAdmisible + pos_base.X;
@@ -334,7 +319,7 @@ namespace AlumnoEjemplos.TheGRID
             cantidadEnMapa = cantidadAsteroides;
         }
 
-        public void chocoNave(Dibujable nave)
+        public void chocoNave(Dibujable nave) //Chequeo contra la nave de colision
         {
             bool naveColision = false;
             foreach (Dibujable asteroide in controlados)
@@ -353,20 +338,16 @@ namespace AlumnoEjemplos.TheGRID
                     nave.impulsate(velocidades.snd, modulos.snd, 0.01f);
                     if (flagReintento == 0) EjemploAlumno.workspace().music.playAsteroideColision();
                     //--------
-                    //nave.teChoque(asteroide, asteroide.velocidadActual());
                     asteroide.teChoque(nave, nave.velocidadActual());
                     break;
                 }
                 ((TgcBoundingSphere)asteroide.getColision().getBoundingBox()).setRenderColor(color);
             }
-            //controlados.Concat(buffer);
-            //buffer.Clear();
             if (!naveColision) ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(Color.Yellow);
         }
 
-        public void chocoLaser(Dibujable laser)
+        public void chocoLaser(Dibujable laser) //Chequeo contra el laser por colision
         {
-            //if (controlados.Count() < 1) return;      No hace falta
             foreach (Asteroide asteroide in controlados)
             {
                 if (laser.getColision().colisiono(((TgcBoundingSphere)asteroide.getColision().getBoundingBox())))
@@ -386,16 +367,14 @@ namespace AlumnoEjemplos.TheGRID
             int pos = i;
             int cant = controlados.Count();
             if (cant<2) return;
-            if (i + 1 == cant/*controlados.Count()*/) //osea es el ultimo
+            if (i + 1 == cant) //osea es el ultimo
             {
                 //no hace nada
             }
-
             else
             {
                 for (++i; i < controlados.Count(); i++)
                 {
-                    //float velocidad;
                     Dupla<Vector3> velocidades;
                     Dupla<float> modulos;
                     if (controlados[pos].getColision().colisiono(((TgcBoundingSphere)controlados[i].getColision().getBoundingBox()))) 
@@ -412,7 +391,7 @@ namespace AlumnoEjemplos.TheGRID
                         {
                             controlados[pos].impulsate(Vector3.Multiply(controlados[pos].ultimaTraslacion, -1), modulos.fst, 0.5f);
                             controlados[i].impulsate(Vector3.Multiply(controlados[i].ultimaTraslacion, -1), modulos.snd, 0.5f);
-                            if (flagReintento > 1000) { desactivar(controlados[i]); break; } //controlados[i].teChoque(controlados[pos], 10000); break; }   //Como reacomoda a lo pavote, puede vivir fallando.
+                            if (flagReintento > 1000) { desactivar(controlados[i]); break; }
                             flagReintento++;
                         }
                         if (flagReintento == 0) EjemploAlumno.workspace().music.playAsteroideColision();
@@ -441,6 +420,7 @@ namespace AlumnoEjemplos.TheGRID
     #region Formato
     public class Formato
     {
+        //Clase que sirve para actualizar los asteroides y reciclarlo
         public TamanioAsteroide tamanio;
         public Vector3 posicion;
         List<int> opciones = new List<int>() { -1, 1 };
@@ -462,7 +442,7 @@ namespace AlumnoEjemplos.TheGRID
 
             float radioMalla3DsMax = 10.633f;
             TgcBoundingSphere bounding = (TgcBoundingSphere) asteroide.getColision().getBoundingBox();
-/*TAMAÑO*/  bounding.setValues(bounding.Center, radioMalla3DsMax * formatoAUsar.getVolumen().X);
+            bounding.setValues(bounding.Center, radioMalla3DsMax * formatoAUsar.getVolumen().X);
             asteroide.ubicarEnUnaPosicion(posicion);
         }
     }

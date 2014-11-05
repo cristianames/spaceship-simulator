@@ -167,13 +167,7 @@ namespace AlumnoEjemplos.TheGRID
             #region PANEL DERECHO
             //Cargar valor en UserVar
             GuiController.Instance.UserVars.addVar("Vel-Actual:");
-            GuiController.Instance.UserVars.addVar("PosX:");
-            GuiController.Instance.UserVars.addVar("PosY:");
-            GuiController.Instance.UserVars.addVar("PosZ:");
             GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
-            GuiController.Instance.UserVars.setValue("PosX:", nave.getPosicion().X);
-            GuiController.Instance.UserVars.setValue("PosY:", nave.getPosicion().Y);
-            GuiController.Instance.UserVars.setValue("PosZ:", nave.getPosicion().Z);
 
             string[] opciones1 = new string[] { "Tercera Persona", "Camara FPS", "Libre" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
@@ -386,9 +380,6 @@ namespace AlumnoEjemplos.TheGRID
 
             //Refrescar User Vars
             GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
-            GuiController.Instance.UserVars.setValue("PosX:", nave.getPosicion().X);
-            GuiController.Instance.UserVars.setValue("PosY:", nave.getPosicion().Y);
-            GuiController.Instance.UserVars.setValue("PosZ:", nave.getPosicion().Z);
             #endregion
         }
 

@@ -27,6 +27,7 @@ namespace AlumnoEjemplos.TheGRID
 
         public Factory()
         {
+            //Cargamos las meshes bases al iniciar la fabrica
             meshes_asteroide_base = new List<TgcMesh>();
             meshes_asteroide_base.Add(cargarMesh("asteroid\\asteroid1-TgcScene.xml"));
             meshes_asteroide_base.Add(cargarMesh("asteroid\\asteroid_b-TgcScene.xml"));
@@ -34,7 +35,7 @@ namespace AlumnoEjemplos.TheGRID
             TgcTexture normalMapAsteroid = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "asteroid\\Textures\\3215_Bump.jpg");
             normalMapAsteroidArray = new TgcTexture[] { normalMapAsteroid };
         }
-        
+        //Sistema de generacion de azar
         #region Random
         public static int numeroRandom(int seed)
         {
@@ -101,9 +102,9 @@ namespace AlumnoEjemplos.TheGRID
             auxiliar.objeto.Transform = Matrix.Identity;
             victima.setObject(auxiliar.objeto, auxiliar.velocidad, auxiliar.velocidadRadial, auxiliar.escala);
         }
-        public static void resetearDefault_Asteroide(ref Asteroide victima)   //Vuelve a cargar el dibujable, dejandolo sin Fisica ni Colision. Ademas queda desactivado.
+        public static void resetearDefault_Asteroide(ref Asteroide victima)   //Vuelve a cargar el asteroide, dejandolo sin Fisica ni Colision. Ademas queda desactivado.
         {
-            Asteroide auxiliar = victima;
+            Asteroide auxiliar = victima; //Es necesario distinguirlos ha que sino hay problemas de polimorfismo
             victima = new Asteroide();
             auxiliar.objeto.Transform = Matrix.Identity;
             victima.setObject(auxiliar.objeto, auxiliar.velocidad, auxiliar.velocidadRadial, auxiliar.escala);
@@ -114,6 +115,7 @@ namespace AlumnoEjemplos.TheGRID
         #region Asteroide
         public Asteroide crearAsteroide(TamanioAsteroide tamanio, Vector3 posicion, ManagerAsteroide manager)
         {
+            //Cargamos el asteroide con bump
             TgcMeshBumpMapping mesh_asteroide = TgcMeshBumpMapping
                 .fromTgcMesh(elementoRandom(meshes_asteroide_base), normalMapAsteroidArray);
 

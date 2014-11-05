@@ -52,17 +52,25 @@ namespace AlumnoEjemplos.TheGRID
             changePause.loadSound(EjemploAlumno.TG_Folder + "Music\\Menu\\Pause.wav");
         }
 
-
+        /// <summary>
+        /// Reproducir la musica de fondo en loop si esta activada
+        /// </summary>
         public void playBackgound(bool loop)
         {
-            playerMP3.play(loop);
+            if (EjemploAlumno.workspace().musicaActivada) playerMP3.play(loop);
         }
+        /// <summary>
+        /// Reproducir la musica de fondo
+        /// </summary>
         public void playPauseBackgound()
         {
             if (!EjemploAlumno.workspace().musicaActivada) { playerMP3.pause(); return; }
             if (playerMP3.getStatus() == TgcMp3Player.States.Playing) { playerMP3.pause(); return; }
             if (playerMP3.getStatus() == TgcMp3Player.States.Paused) { playerMP3.resume(); return; }
         }
+        /// <summary>
+        /// Reproducir la musica de carga del laser rojo
+        /// </summary>
         public void playLazer()
         {
 
@@ -70,10 +78,16 @@ namespace AlumnoEjemplos.TheGRID
             lazer.SoundBuffer.SetCurrentPosition(0);
             if (EjemploAlumno.workspace().musicaActivada) { lazer.play(); };
         }
+        /// <summary>
+        /// Reproducir la musica de carga del laser azul
+        /// </summary>
         public void playLazerCarga()
         {
             if (EjemploAlumno.workspace().musicaActivada) { lazer2_carga.play(true); }
         }
+        /// <summary>
+        /// Reproducir la musica de disparo del laser azul deteniendo la de carga
+        /// </summary>
         public void playLazer2()
         {
             lazer2_carga.SoundBuffer.Stop();
@@ -82,11 +96,16 @@ namespace AlumnoEjemplos.TheGRID
             lazer2_disparo.SoundBuffer.SetCurrentPosition(0);
             if (EjemploAlumno.workspace().musicaActivada) { lazer2_disparo.play(); }
         }
-
+        /// <summary>
+        /// Reproducir la musica del warp
+        /// </summary>
         public void playWarp()
         {
             if (EjemploAlumno.workspace().musicaActivada) { warp_time.play(true); }
         }
+        /// <summary>
+        /// Detener la musica del warp
+        /// </summary>
         public void stopWarp()
         {
             warp_time.SoundBuffer.Stop();
@@ -151,7 +170,7 @@ namespace AlumnoEjemplos.TheGRID
             nuevaPista(Factory.elementoRandom<int>(listaPistas),false);
 
         }
-        internal void nuevaPista(int pista, bool loop)
+        internal void nuevaPista(int pista, bool loop) //Cargar nueva cancion
         {
             playerMP3.closeFile();
             playerMP3.FileName = EjemploAlumno.TG_Folder + listaTemas[pista];
@@ -159,7 +178,7 @@ namespace AlumnoEjemplos.TheGRID
             pistaActual = pista;
         }
 
-        internal void chequearCambio(string opcionElegida)
+        internal void chequearCambio(string opcionElegida) //Switch de comportamiento de los diferentes temas
         {
             switch (opcionElegida)
             {
@@ -246,7 +265,6 @@ namespace AlumnoEjemplos.TheGRID
                     break;
             }
         }
-
         internal void playDeniedPress()
         {
             throw new NotImplementedException();

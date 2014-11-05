@@ -1496,6 +1496,7 @@ namespace TgcViewer.Utils.Gui
             }
             catch (System.Exception error)
             {
+                GuiController.Instance.Logger.log(error.Message);
             }
             return textura;
         }
