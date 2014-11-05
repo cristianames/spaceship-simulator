@@ -96,6 +96,7 @@ namespace AlumnoEjemplos.TheGRID
         public bool musicaActivada = true;
         public bool despl_avanzado = true;
         public string escenarioActivado = "THE OPENING";
+        public bool entreWarp = false;
         #endregion
 
         #region METODOS AUXILIARES
@@ -248,7 +249,7 @@ namespace AlumnoEjemplos.TheGRID
                     velocidadAutomatica = true;
                 }
             }
-            if (scheme.escenarioActual == Escenario.TipoModo.IMPULSE_DRIVE)
+            if (scheme.escenarioActual == Escenario.TipoModo.IMPULSE_DRIVE || scheme.escenarioActual == Escenario.TipoModo.MISION)
             {
                 if (input.keyPressed(Key.LeftShift))
                 {

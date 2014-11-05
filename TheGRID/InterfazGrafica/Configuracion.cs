@@ -427,11 +427,12 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
                     sonido.playChangePause(); 
                     break;
                 case Clase.CAPITULO3:
-                    EjemploAlumno.workspace().escenarioActivado = "WELCOME HOME";
+                    EjemploAlumno.workspace().escenarioActivado = "WELCOME HOME";                   
                     sonido.playChangePause(); 
                     break;
                 case Clase.MISION:
-                    //COMPLETAR DESPUES
+                    EjemploAlumno.workspace().escenarioActivado = "MISION";
+                    sonido.playChangePause(); 
                     break;
             }
         }
