@@ -245,5 +245,10 @@ namespace AlumnoEjemplos.TheGRID
                     break;
             }
         }
+
+        internal void playDeniedPress()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

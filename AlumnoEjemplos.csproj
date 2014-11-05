@@ -109,6 +109,9 @@
     <Compile Include="TheGRID\Helpers\TgcMeshBumpMapping.cs" />
     <Compile Include="TheGRID\InterfazGrafica\AlternativeDimension.cs" />
     <Compile Include="TheGRID\InterfazGrafica\Configuracion.cs" />
+    <Compile Include="TheGRID\InterfazGrafica\gui.cs" />
+    <Compile Include="TheGRID\InterfazGrafica\gui_item.cs" />
+    <Compile Include="TheGRID\InterfazGrafica\Hud.cs" />
     <Compile Include="TheGRID\InterfazGrafica\Pausa.cs" />
     <Compile Include="TheGRID\ManagerDibujable.cs" />
     <Compile Include="TheGRID\Musique.cs" />

@@ -77,6 +77,7 @@ namespace AlumnoEjemplos.TheGRID
         //GUI
         public bool pausa = false;
         public bool config = false;
+        public bool gravity = true;
         public bool mouse;
         public int invertirMira = -1;
         Pausa guiPausa = new Pausa();
@@ -84,14 +85,14 @@ namespace AlumnoEjemplos.TheGRID
         #endregion
 
         #region Atributos Menu
-        public bool glow = true;
-        public bool luces_posicionales = true;
+        public bool glow = false;
+        public bool luces_posicionales = false;
         //Variables para el parpadeo
             float tiempo_acum = 0;
             float periodo_parpadeo = 1.5f;
             public bool parpadeoIzq = true;
             public bool parpadeoDer = false;
-            public bool linterna = true;
+            public bool linterna = false;
         public bool boundingBoxes = false;
         public bool musicaActivada = true;
         public bool despl_avanzado = true;
@@ -136,6 +137,8 @@ namespace AlumnoEjemplos.TheGRID
             logger.log("Paso 3: Para avanzar con cuidado, acelere o frene hasta la velocidad deseada, pulse una vez LeftCtrl y luego acelere. Esto activa el modo crucero. Para desactivarlo basta con frenar un poco o volver a pulsar LeftCtrl.");
             logger.log("Paso 4: Para activar el Motion Blur debe ir a la maxima velocidad y luego pulsar una vez LeftShift. La desactivacion es de la misma forma. Por ultimo pruebe disparar presionando SpaceBar. -- Disfrute el ejemplo.");
 
+            //GuiController.Instance.FullScreenEnable = true;
+
             currentFrustrum = new TgcFrustum();           
             superRender = new SuperRender();
             guiConfig = new Configuracion(music);
@@ -157,7 +160,7 @@ namespace AlumnoEjemplos.TheGRID
             mouse = false;
             Cursor.Position = mouseCenter;
 
-            //GuiController.Instance.FullScreenEnable = true;
+            
             altoPantalla = focusWindows.Height;
             anchoPantalla = focusWindows.Width;
 
@@ -165,8 +168,14 @@ namespace AlumnoEjemplos.TheGRID
 
             //Cargamos valores en el panel lateral
             GuiController.Instance.UserVars.addVar("Vel-Actual:");
+            GuiController.Instance.UserVars.addVar("PosX:");
+            GuiController.Instance.UserVars.addVar("PosY:");
+            GuiController.Instance.UserVars.addVar("PosZ:");
             //Cargar valor en UserVar
             GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
+            GuiController.Instance.UserVars.setValue("PosX:", nave.getPosicion().X);
+            GuiController.Instance.UserVars.setValue("PosY:", nave.getPosicion().Y);
+            GuiController.Instance.UserVars.setValue("PosZ:", nave.getPosicion().Z);
 
             string[] opciones1 = new string[] { "Tercera Persona", "Camara FPS", "Libre" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
@@ -179,16 +188,11 @@ namespace AlumnoEjemplos.TheGRID
             #endregion
         }   
 
-
-
-
-
-
         public override void render(float elapsedTime)
         {
             if (mouse)
             {
-                //Cursor.Hide();
+                Cursor.Hide();
             }
             TgcD3dInput input = GuiController.Instance.D3dInput;
             if (pausa)
@@ -207,6 +211,13 @@ namespace AlumnoEjemplos.TheGRID
                 pausa = true;
                 music.playPauseBackgound();
             }
+            if (input.keyPressed(Key.C))
+            {
+                EjemploAlumno.workspace().config = true;
+                EjemploAlumno.workspace().pausa = false;
+                EjemploAlumno.workspace().guiConfig.restart();
+                EjemploAlumno.workspace().music.playPauseBackgound();
+            }     //Configuracion.
 
             //Flechas
             
@@ -341,8 +352,12 @@ namespace AlumnoEjemplos.TheGRID
             }
 
             if (velocidadAutomatica) nave.acelerar();
+
             nave.rotarPorTiempo(elapsedTime, listaDibujable);
-            nave.desplazarsePorTiempo(elapsedTime, new List<Dibujable>(scheme.CuerposGravitacionales));
+            if(gravity)nave.desplazarsePorTiempo(elapsedTime, new List<Dibujable>(scheme.CuerposGravitacionales));
+            else nave.desplazarsePorTiempo(elapsedTime, new List<Dibujable>());
+            if(nave.reajustarSiSuperoLimite()) 
+                sol.ubicarEnUnaPosicion(nave.getPosicion());
 
             scheme.refrescar(elapsedTime);
 
@@ -370,6 +385,9 @@ namespace AlumnoEjemplos.TheGRID
             nave.desplazamientoReal = despl_avanzado;
             //Refrescar User Vars
             GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
+            GuiController.Instance.UserVars.setValue("PosX:", nave.getPosicion().X);
+            GuiController.Instance.UserVars.setValue("PosY:", nave.getPosicion().Y);
+            GuiController.Instance.UserVars.setValue("PosZ:", nave.getPosicion().Z);
             #endregion
         }
 

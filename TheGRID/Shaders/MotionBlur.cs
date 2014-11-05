@@ -45,11 +45,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                                                                          MultiSampleType.None,
                                                                          0,
                                                                          true);
-            /*// Inicializo la Textura donde vamos a volcar la pantalla
-            g_pRenderTarget = new Texture(d3dDevice, d3dDevice.PresentationParameters.BackBufferWidth
-                    , d3dDevice.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget,
-                        Format.X8R8G8B8, Pool.Default);*/
-
             // Inicializo las Texturas de Velocidad
             g_pVel1 = new Texture(d3dDevice, d3dDevice.PresentationParameters.BackBufferWidth
                     , d3dDevice.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget,

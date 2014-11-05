@@ -38,13 +38,6 @@ namespace AlumnoEjemplos.TheGRID
                 EjemploAlumno.workspace().pausa = false;
                 EjemploAlumno.workspace().music.playPauseBackgound();
             }
-            if (input.keyPressed(Key.O))
-            {
-                EjemploAlumno.workspace().config = true;
-                EjemploAlumno.workspace().pausa = false;
-                EjemploAlumno.workspace().guiConfig.restart();
-                //EjemploAlumno.workspace().music.playPauseBackgound();
-            }     //Configuracion.
 
             GuiController.Instance.Drawer2D.beginDrawSprite();
             sprite.render();

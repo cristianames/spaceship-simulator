@@ -276,6 +276,7 @@ namespace AlumnoEjemplos.TheGRID
             Transform *= matriz;
             setPosicion(posicion);
             if (colision != null) this.getColision().transladar(movimiento);
+            ultimaTraslacion = new Vector3(0,0,0);
         }
         public void desplazarUnaDistancia(Vector3 VDesplazamiento)  //Desplaza la mesh y la BB en la direccion indicada, la distancia contenida en el modulo de dicho vector.
         {
