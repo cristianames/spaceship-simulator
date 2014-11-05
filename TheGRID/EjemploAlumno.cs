@@ -164,8 +164,14 @@ namespace AlumnoEjemplos.TheGRID
 
             //Cargamos valores en el panel lateral
             GuiController.Instance.UserVars.addVar("Vel-Actual:");
+            GuiController.Instance.UserVars.addVar("PosX:");
+            GuiController.Instance.UserVars.addVar("PosY:");
+            GuiController.Instance.UserVars.addVar("PosZ:");
             //Cargar valor en UserVar
             GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
+            GuiController.Instance.UserVars.setValue("PosX:", nave.getPosicion().X);
+            GuiController.Instance.UserVars.setValue("PosY:", nave.getPosicion().Y);
+            GuiController.Instance.UserVars.setValue("PosZ:", nave.getPosicion().Z);
 
             string[] opciones1 = new string[] { "Tercera Persona", "Camara FPS", "Libre" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
@@ -177,11 +183,6 @@ namespace AlumnoEjemplos.TheGRID
             music.refrescar();
             #endregion
         }   
-
-
-
-
-
 
         public override void render(float elapsedTime)
         {
@@ -206,6 +207,13 @@ namespace AlumnoEjemplos.TheGRID
                 pausa = true;
                 music.playPauseBackgound();
             }
+            if (input.keyPressed(Key.C))
+            {
+                EjemploAlumno.workspace().config = true;
+                EjemploAlumno.workspace().pausa = false;
+                EjemploAlumno.workspace().guiConfig.restart();
+                EjemploAlumno.workspace().music.playPauseBackgound();
+            }     //Configuracion.
 
             //Flechas
             
@@ -369,6 +377,9 @@ namespace AlumnoEjemplos.TheGRID
             nave.desplazamientoReal = despl_avanzado;
             //Refrescar User Vars
             GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
+            GuiController.Instance.UserVars.setValue("PosX:", nave.getPosicion().X);
+            GuiController.Instance.UserVars.setValue("PosY:", nave.getPosicion().Y);
+            GuiController.Instance.UserVars.setValue("PosZ:", nave.getPosicion().Z);
             #endregion
         }
 

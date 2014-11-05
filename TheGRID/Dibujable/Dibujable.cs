@@ -281,6 +281,13 @@ namespace AlumnoEjemplos.TheGRID
         {
             Matrix desplazamiento = Matrix.Translation(VDesplazamiento);
             Vector4 vector4 = Vector3.Transform(posicion.getActual(), desplazamiento);
+            if (superoLimite(vector4)) //Chequeamos que no nos hayamos pasado del mapa
+            {
+                vector4.X = 0;
+                vector4.Y = 0;
+                vector4.Z = 0;
+                desplazamiento = Matrix.Translation(new Vector3(0, 0, 0));
+            }
             posicion.setActual(vector4.X, vector4.Y, vector4.Z);
             Transform *= desplazamiento;
             if (colision != null) this.getColision().transladar(VDesplazamiento);
@@ -289,6 +296,17 @@ namespace AlumnoEjemplos.TheGRID
         public void impulsate(Vector3 vector, float velocidad, float tiempo)
         {  //Genera un impulso por un instante de tiempo, para desplazar el cuerpo una pequeña distancia, asignandole una nueva velocidad.
             fisica.impulsar(vector, velocidad, tiempo);
+        }
+        float max_eje = 1000000000000;
+        public bool superoLimite(Vector4 pos)
+        {
+            if (Math.Pow(pos.X, 2).CompareTo(max_eje) > 0)
+                return true;           
+            if (Math.Pow(pos.Y, 2).CompareTo(max_eje) > 0)
+                return true;
+            if (Math.Pow(pos.Z, 2).CompareTo(max_eje) > 0)
+                return true;
+            return false;
         }
         #endregion
 
