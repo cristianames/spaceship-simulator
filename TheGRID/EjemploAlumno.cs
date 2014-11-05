@@ -355,6 +355,8 @@ namespace AlumnoEjemplos.TheGRID
             nave.rotarPorTiempo(elapsedTime, listaDibujable);
             if(gravity)nave.desplazarsePorTiempo(elapsedTime, new List<Dibujable>(scheme.CuerposGravitacionales));
             else nave.desplazarsePorTiempo(elapsedTime, new List<Dibujable>());
+            if(nave.reajustarSiSuperoLimite()) 
+                sol.ubicarEnUnaPosicion(nave.getPosicion());
 
             scheme.refrescar(elapsedTime);
 
