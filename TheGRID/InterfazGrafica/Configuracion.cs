@@ -14,8 +14,8 @@ using TgcViewer.Utils.TgcSceneLoader;
 namespace AlumnoEjemplos.TheGRID.InterfazGrafica
 {
     #region Estructuras Previas
-    public enum Clase { NULL, VOLVER, OPCIONES, JUEGO, GRAFICOS, AUDIO, CONTINUAR, CREDITOS,
-        CAPITULO, GRAVEDAD, REALISMO,
+    public enum Clase { NULL, VOLVER, OPCIONES, JUEGO, GRAFICOS, AUDIO, CONTINUAR, FONDO,
+        CAPITULO, GRAVEDAD, REALISMO, MOUSE,
         CAPITULO1, CAPITULO2, CAPITULO3, MISION,
         EFECTO_GLOW, FARO_DELANTERO, FARO_POSICIONAL, BOUNDING_BOX, FULLSCREEN,
         MUSICA_FONDO, SELECCIONAR_TEMA};
@@ -25,6 +25,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
         internal TgcSprite spriteAlternativo;
         internal TgcSprite spriteDeshabilitado;
         internal Clase nombre;
+        internal bool on;
         internal bool habilitado;
 
         public Sprite(Clase a) 
@@ -33,9 +34,10 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
             spriteAlternativo = new TgcSprite();
             spriteDeshabilitado = new TgcSprite();
             habilitado = true;
+            on = true;
             nombre = a; }
 
-        public void alternarSprite()
+        public void alternsarSprite()
         {
             TgcSprite temp = spritePrincipal;
             spritePrincipal = spriteAlternativo;
@@ -45,6 +47,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
         {
             spritePrincipal.Position = posicion;
             spriteAlternativo.Position = posicion;
+            spriteDeshabilitado.Position = posicion;
         }
     }
     public struct Menu
@@ -58,7 +61,13 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
 
     public class Configuracion
     {
+
+
         #region Atributos
+        bool fondoAnimado = false;
+        TgcSprite fondoAlternativo;
+        TgcSprite fondoPrincipal;
+        bool verFondo = false;
         int opcionElegida;
         TgcSprite puntero;
         Size tamanioOriginalPuntero;
@@ -84,6 +93,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
         AlternativeDimension miMundo;
         #endregion
 
+
         #region Inicializacion
         public Configuracion(Musique media)
         {
@@ -97,8 +107,31 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
             opciones3 = cargarAudio();
             opciones11 = cargarCapitulos();
             //opciones31 = cargarMusica();
+            crearFondos();
             restart();
-            miMundo = new AlternativeDimension();
+            if (fondoAnimado) miMundo = new AlternativeDimension();
+        }
+
+        private void crearFondos()
+        {
+            //Crear Sprite
+            fondoAlternativo = new TgcSprite();
+            fondoAlternativo.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\FondoAlternativo.png");
+            //Ubicarlo centrado en la pantalla
+            Size screenSize = GuiController.Instance.Panel3d.Size;
+            Size textureSize = fondoAlternativo.Texture.Size;
+            fondoAlternativo.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSize.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSize.Height / 2, 0));
+            fondoAlternativo.Scaling = new Vector2((float)screenSize.Width / (float)textureSize.Width, (float)screenSize.Height / (float)textureSize.Height);
+            //fondoAlternativo.Scaling = new Vector2(0.5f, 0.5f);
+
+            //Crear Sprite
+            fondoPrincipal = new TgcSprite();
+            fondoPrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\FondoPrincipal.png");
+            //Ubicarlo centrado en la pantalla
+            screenSize = GuiController.Instance.Panel3d.Size;
+            textureSize = fondoPrincipal.Texture.Size;
+            fondoPrincipal.Scaling = new Vector2((float)screenSize.Width / (float)textureSize.Width * 0.7f, (float)screenSize.Height / (float)textureSize.Height * 0.95f);
+            fondoPrincipal.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - (textureSize.Width * fondoPrincipal.Scaling.X)/ 2, 0), FastMath.Max(screenSize.Height / 2 - (textureSize.Height * fondoPrincipal.Scaling.Y) / 2, 0));
         }
         private Menu cargarOpciones()
         {
@@ -119,9 +152,12 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
             spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Opcion\\Audio.png");
             spriteTemp.spritePrincipal.Scaling = new Vector2(0.5f,0.5f);
             listaTemp.Add(spriteTemp);
-            spriteTemp = new Sprite(Clase.CREDITOS);
-            spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Opcion\\Creditos.png");
+            spriteTemp = new Sprite(Clase.FONDO);
+            spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Opcion\\Fondo.png");
             spriteTemp.spritePrincipal.Scaling = new Vector2(0.5f, 0.5f);
+            spriteTemp.spriteDeshabilitado.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Opcion\\FondoIN.png");
+            spriteTemp.spriteDeshabilitado.Scaling = new Vector2(0.4f, 0.4f);
+            if (!fondoAnimado) spriteTemp.habilitado = false;
             listaTemp.Add(spriteTemp);
             spriteTemp = new Sprite(Clase.CONTINUAR);
             spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Opcion\\Continuar.png");
@@ -136,7 +172,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
             List<Sprite> listaTemp = new List<Sprite>();
             Sprite spriteTemp = new Sprite(Clase.JUEGO);
             spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Juego\\Juego.png");
-            spriteTemp.spritePrincipal.Scaling = new Vector2(0.5f, 0.5f);
+            spriteTemp.spritePrincipal.Scaling = new Vector2(0.6f, 0.55f);
             listaTemp.Add(spriteTemp);
             spriteTemp = new Sprite(Clase.CAPITULO);
             spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Juego\\Capitulo.png");
@@ -147,12 +183,24 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
             spriteTemp.spritePrincipal.Scaling = new Vector2(0.5f, 0.5f);
             spriteTemp.spriteAlternativo.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Juego\\GravedadOFF.png");
             spriteTemp.spriteAlternativo.Scaling = new Vector2(0.5f, 0.5f);
+            spriteTemp.on = EjemploAlumno.workspace().gravity;
             listaTemp.Add(spriteTemp);
             spriteTemp = new Sprite(Clase.REALISMO);
             spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Juego\\RealismoON.png");
             spriteTemp.spritePrincipal.Scaling = new Vector2(0.5f, 0.5f);
             spriteTemp.spriteAlternativo.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Juego\\RealismoOFF.png");
             spriteTemp.spriteAlternativo.Scaling = new Vector2(0.5f, 0.5f);
+            spriteTemp.on = EjemploAlumno.workspace().despl_avanzado;
+            listaTemp.Add(spriteTemp);
+            spriteTemp = new Sprite(Clase.MOUSE);
+            spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Juego\\MouseON.png");
+            spriteTemp.spritePrincipal.Scaling = new Vector2(0.8f, 0.5f);
+            spriteTemp.spriteAlternativo.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Juego\\MouseOFF.png");
+            spriteTemp.spriteAlternativo.Scaling = new Vector2(0.4f, 0.5f);
+            spriteTemp.spriteDeshabilitado.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Juego\\MouseIN.png");
+            spriteTemp.spriteDeshabilitado.Scaling = new Vector2(0.5f, 0.5f);
+            spriteTemp.habilitado = GuiController.Instance.FullScreenEnable;
+            spriteTemp.on = EjemploAlumno.workspace().mouse;
             listaTemp.Add(spriteTemp);
             spriteTemp = new Sprite(Clase.VOLVER);
             spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Juego\\Volver.png");
@@ -174,31 +222,35 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
             spriteTemp.spritePrincipal.Scaling = new Vector2(0.5f, 0.5f);
             spriteTemp.spriteAlternativo.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\GlowOFF.png");
             spriteTemp.spriteAlternativo.Scaling = new Vector2(0.5f, 0.5f);
+            spriteTemp.on = EjemploAlumno.workspace().glow;
             listaTemp.Add(spriteTemp);
             spriteTemp = new Sprite(Clase.FARO_DELANTERO);
             spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\FaroON.png");
             spriteTemp.spritePrincipal.Scaling = new Vector2(0.5f, 0.5f);
             spriteTemp.spriteAlternativo.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\FaroOFF.png");
             spriteTemp.spriteAlternativo.Scaling = new Vector2(0.5f, 0.5f);
+            spriteTemp.on = EjemploAlumno.workspace().linterna;
             listaTemp.Add(spriteTemp);
             spriteTemp = new Sprite(Clase.FARO_POSICIONAL);
             spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\PosicionON.png");
             spriteTemp.spritePrincipal.Scaling = new Vector2(0.5f, 0.5f);
             spriteTemp.spriteAlternativo.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\PosicionOFF.png");
             spriteTemp.spriteAlternativo.Scaling = new Vector2(0.5f, 0.5f);
+            spriteTemp.on = EjemploAlumno.workspace().luces_posicionales;
             listaTemp.Add(spriteTemp);
             spriteTemp = new Sprite(Clase.BOUNDING_BOX);
             spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\BoundingOFF.png");
             spriteTemp.spritePrincipal.Scaling = new Vector2(0.5f, 0.5f);
             spriteTemp.spriteAlternativo.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\BoundingON.png");
             spriteTemp.spriteAlternativo.Scaling = new Vector2(0.5f, 0.5f);
+            spriteTemp.on = EjemploAlumno.workspace().boundingBoxes;
             listaTemp.Add(spriteTemp);
-            spriteTemp = new Sprite(Clase.FULLSCREEN);
+            /*spriteTemp = new Sprite(Clase.FULLSCREEN);
             spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\FullscreenOFF.png");
             spriteTemp.spritePrincipal.Scaling = new Vector2(0.5f, 0.5f);
             spriteTemp.spriteAlternativo.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\FullscreenON.png");
             spriteTemp.spriteAlternativo.Scaling = new Vector2(0.5f, 0.5f);
-            listaTemp.Add(spriteTemp);
+            listaTemp.Add(spriteTemp);*/
             spriteTemp = new Sprite(Clase.VOLVER);
             spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\Volver.png");
             spriteTemp.spritePrincipal.Scaling = new Vector2(0.5f, 0.5f);
@@ -212,7 +264,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
             List<Sprite> listaTemp = new List<Sprite>();
             Sprite spriteTemp = new Sprite(Clase.AUDIO);
             spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Audio\\Audio.png");
-            spriteTemp.spritePrincipal.Scaling = new Vector2(0.5f, 0.5f);
+            spriteTemp.spritePrincipal.Scaling = new Vector2(0.6f, 0.55f);
             listaTemp.Add(spriteTemp);
             spriteTemp = new Sprite(Clase.MUSICA_FONDO);
             spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Audio\\MusicaON.png");
@@ -265,11 +317,13 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
         }
         #endregion
 
+
         #region Herramientas
         internal void restart()
         {
             velocidadEfecto = 15f;
             opcionElegida = 1;
+            if (menuActivo.listaOpciones != null) resetearPosicionLista(menuActivo);
             menuActivo = opciones0;
             resetearPosicionLista(menuActivo);
             contadorEntrada = menuActivo.listaOpciones.Count;
@@ -278,16 +332,32 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
         }
         private void resetearPosicionLista(Menu menu)
         {
-            foreach (var item in menu.listaOpciones) { item.posicionarSprite(reajustarPosicionTextura(item.spritePrincipal, puntoEntrada)); }
+            foreach (var item in menu.listaOpciones) 
+            {
+                if (item.habilitado)
+                {
+                    if(item.on)item.posicionarSprite(reajustarPosicionTextura(item.spritePrincipal, puntoEntrada));
+                    else item.posicionarSprite(reajustarPosicionTextura(item.spriteAlternativo, puntoEntrada));
+                }
+                else item.posicionarSprite(reajustarPosicionTextura(item.spriteDeshabilitado, puntoEntrada));
+            }
         }
         private void reajustarPuntero()
         {
-            Size chosenSize = menuActivo.listaOpciones[opcionElegida].spritePrincipal.Texture.Size;
-            float temp = (float)chosenSize.Width * menuActivo.listaOpciones[opcionElegida].spritePrincipal.Scaling.X;
+            TgcSprite chosenSprite;
+            if (menuActivo.listaOpciones[opcionElegida].habilitado)
+            {
+                if (menuActivo.listaOpciones[opcionElegida].on) chosenSprite = menuActivo.listaOpciones[opcionElegida].spritePrincipal;
+                else chosenSprite = menuActivo.listaOpciones[opcionElegida].spriteAlternativo;
+            }
+            else chosenSprite = menuActivo.listaOpciones[opcionElegida].spriteDeshabilitado;
+
+            Size chosenSize = chosenSprite.Texture.Size;
+            float temp = (float)chosenSize.Width * chosenSprite.Scaling.X;
             chosenSize.Width = (int)temp;
-            temp = (float)chosenSize.Height * menuActivo.listaOpciones[opcionElegida].spritePrincipal.Scaling.Y;
+            temp = (float)chosenSize.Height * chosenSprite.Scaling.Y;
             chosenSize.Height = (int)temp;
-            puntero.Position = menuActivo.listaOpciones[opcionElegida].spritePrincipal.Position;
+            puntero.Position = chosenSprite.Position;
             puntero.Scaling = new Vector2((float)chosenSize.Width / tamanioOriginalPuntero.Width, (float)chosenSize.Height / tamanioOriginalPuntero.Height);
         }
         private Vector2 reajustarPosicionTextura(TgcSprite sprite, Vector2 posicionSolicitada)
@@ -296,37 +366,26 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
             posicionSolicitada.Y -= ((float)sprite.Texture.Height * sprite.Scaling.Y) / 2f;            
             return posicionSolicitada;
         }
+        private static void renderSegunEstado(Sprite item)
+        {
+            if (item.habilitado)
+            {
+                if (item.on) item.spritePrincipal.render();
+                else item.spriteAlternativo.render();
+            }
+            else item.spriteDeshabilitado.render();
+        }
+        public void alternarBooleano(ref bool variable)
+        {
+            if (variable)
+                variable = false;
+            else
+                variable = true;
+        }
         #endregion
 
-        #region Operar y Chequeos
-        public void operar(float elapsedTime)
-        {
-            miMundo.render(elapsedTime);
-            if (transicion)
-            {
-                if (!salidaFin) { operarSalida(elapsedTime); return; }
-                if (!entradaFin) { operarEntrada(elapsedTime); return; }
-                opcionElegida = 1;
-                reajustarPuntero();
-                salidaFin = false;
-                entradaFin = false;
-                transicion = false;
-                return;
-            }
-            GuiController.Instance.Drawer2D.beginDrawSprite();
-            puntero.render();
-            foreach (var item in menuActivo.listaOpciones) 
-            {
-                if (item.habilitado) item.spritePrincipal.render();
-                else item.spriteDeshabilitado.render(); 
-            }
-            //foreach (var item in menuTransicion.listaOpciones) { item.sprite.render(); }
-            GuiController.Instance.Drawer2D.endDrawSprite();
-            if (input.keyPressed(Key.Up)) { if (opcionElegida > 1) { opcionElegida--; reajustarPuntero(); sonido.playSlideButton(); } }
-            if (input.keyPressed(Key.Down)) { if (opcionElegida < menuActivo.listaOpciones.Count - 1) { opcionElegida++; reajustarPuntero(); sonido.playSlideButton(); } }
-            if (input.keyPressed(Key.Return)) { chequearReturn();}
-            if (input.keyPressed(Key.BackSpace)) { chequearBackSpace(); sonido.playSlidePanel(); }
-        }
+
+        #region Chequeos
         private void chequearReturn()
         {
             switch (menuActivo.listaOpciones[opcionElegida].nombre)
@@ -362,8 +421,8 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
                     transicion = true;
                     sonido.playSlidePanel(); 
                     break;
-                case Clase.CREDITOS:
-                    //NADA de momento
+                case Clase.FONDO:
+                    verFondo = true;
                     break;
                 case Clase.CONTINUAR:
                     EjemploAlumno.workspace().config = false;
@@ -379,39 +438,53 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
                     sonido.playSlidePanel(); 
                     break;
                 case Clase.GRAVEDAD:
-                    menuActivo.listaOpciones[opcionElegida].alternarSprite();
+                    menuActivo.listaOpciones[opcionElegida].on = !menuActivo.listaOpciones[opcionElegida].on;
+                    EjemploAlumno.workspace().gravity = !EjemploAlumno.workspace().gravity;
                     sonido.playChangePause(); 
                     break;
                 case Clase.REALISMO:
-                    menuActivo.listaOpciones[opcionElegida].alternarSprite();
+                    menuActivo.listaOpciones[opcionElegida].on = !menuActivo.listaOpciones[opcionElegida].on;
+                    //REALISMO
                     sonido.playChangePause(); 
                     break;
+                case Clase.MOUSE:
+                    if (menuActivo.listaOpciones[opcionElegida].habilitado)
+                    {
+                        menuActivo.listaOpciones[opcionElegida].on = !menuActivo.listaOpciones[opcionElegida].on;
+                        EjemploAlumno.workspace().mouse = !EjemploAlumno.workspace().mouse;
+                        sonido.playChangePause();
+                    }
+                    //else sonido.playDeniedPress();
+                    break;
                 case Clase.EFECTO_GLOW:
-                    menuActivo.listaOpciones[opcionElegida].alternarSprite();
+                    menuActivo.listaOpciones[opcionElegida].on = !menuActivo.listaOpciones[opcionElegida].on;
                     alternarBooleano(ref EjemploAlumno.workspace().glow);
                     sonido.playChangePause(); 
                     break;
                 case Clase.FARO_DELANTERO:
-                    menuActivo.listaOpciones[opcionElegida].alternarSprite();
+                    menuActivo.listaOpciones[opcionElegida].on = !menuActivo.listaOpciones[opcionElegida].on;
                     alternarBooleano(ref EjemploAlumno.workspace().linterna);
                     sonido.playChangePause(); 
                     break;
                 case Clase.FARO_POSICIONAL:
-                    menuActivo.listaOpciones[opcionElegida].alternarSprite();
+                    menuActivo.listaOpciones[opcionElegida].on = !menuActivo.listaOpciones[opcionElegida].on;
                     alternarBooleano(ref EjemploAlumno.workspace().luces_posicionales);
                     sonido.playChangePause(); 
                     break;
                 case Clase.BOUNDING_BOX:
-                    menuActivo.listaOpciones[opcionElegida].alternarSprite();
+                    menuActivo.listaOpciones[opcionElegida].on = !menuActivo.listaOpciones[opcionElegida].on;
                     alternarBooleano(ref EjemploAlumno.workspace().boundingBoxes);
                     sonido.playChangePause(); 
                     break;
                 case Clase.FULLSCREEN:
-                    menuActivo.listaOpciones[opcionElegida].alternarSprite();
-                    sonido.playChangePause(); 
+                    /*if (menuActivo.listaOpciones[opcionElegida].on && opciones11.listaOpciones[4].on) opciones11.listaOpciones[4].on = false;
+                    menuActivo.listaOpciones[opcionElegida].on = !menuActivo.listaOpciones[opcionElegida].on;
+                    opciones11.listaOpciones[4].habilitado = !opciones11.listaOpciones[4].habilitado;
+                    GuiController.Instance.FullScreenEnable = !GuiController.Instance.FullScreenEnable;
+                    sonido.playChangePause(); */
                     break;
                 case Clase.MUSICA_FONDO:
-                    menuActivo.listaOpciones[opcionElegida].alternarSprite();
+                    menuActivo.listaOpciones[opcionElegida].on = !menuActivo.listaOpciones[opcionElegida].on;
                     alternarBooleano(ref EjemploAlumno.workspace().musicaActivada);
                     sonido.playChangePause(); 
                     break;
@@ -421,14 +494,20 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
                 case Clase.CAPITULO1:
                     EjemploAlumno.workspace().escenarioActivado = "THE OPENING";
                     sonido.playChangePause(); 
+                    EjemploAlumno.workspace().config = false;
+                    sonido.playPauseBackgound();
                     break;
                 case Clase.CAPITULO2:
                     EjemploAlumno.workspace().escenarioActivado = "IMPULSE DRIVE";
                     sonido.playChangePause(); 
+                    EjemploAlumno.workspace().config = false;
+                    sonido.playPauseBackgound();
                     break;
                 case Clase.CAPITULO3:
                     EjemploAlumno.workspace().escenarioActivado = "WELCOME HOME";
                     sonido.playChangePause(); 
+                    EjemploAlumno.workspace().config = false;
+                    sonido.playPauseBackgound();
                     break;
                 case Clase.MISION:
                     //COMPLETAR DESPUES
@@ -468,12 +547,40 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
                     break;
             }
         }
-        public void alternarBooleano(ref bool variable)
+        #endregion
+
+
+        #region Operar
+        public void operar(float elapsedTime)
         {
-            if (variable)
-                variable = false;
-            else
-                variable = true;
+            if (fondoAnimado) miMundo.render(elapsedTime);
+         
+            GuiController.Instance.Drawer2D.beginDrawSprite();
+            if (fondoAnimado & !verFondo) fondoPrincipal.render();
+            if (!fondoAnimado) fondoAlternativo.render();
+            GuiController.Instance.Drawer2D.endDrawSprite();
+            if (transicion)
+            {
+                if (!salidaFin) { operarSalida(elapsedTime); return; }
+                if (!entradaFin) { operarEntrada(elapsedTime); return; }
+                opcionElegida = 1;
+                reajustarPuntero();
+                salidaFin = false;
+                entradaFin = false;
+                transicion = false;
+                return;
+            }
+            if (!verFondo)
+            {
+                GuiController.Instance.Drawer2D.beginDrawSprite();
+                puntero.render();
+                foreach (var item in menuActivo.listaOpciones) { renderSegunEstado(item); }
+                GuiController.Instance.Drawer2D.endDrawSprite();
+            }
+            if (input.keyPressed(Key.Up)) { if (!verFondo) { if (opcionElegida > 1) { opcionElegida--; reajustarPuntero(); sonido.playSlideButton(); } } else verFondo = false; }
+            if (input.keyPressed(Key.Down)) { if(!verFondo){if (opcionElegida < menuActivo.listaOpciones.Count - 1) { opcionElegida++; reajustarPuntero(); sonido.playSlideButton(); } } else verFondo = false;  }
+            if (input.keyPressed(Key.Return)) { if(!verFondo){chequearReturn(); } else verFondo = false;  }
+            if (input.keyPressed(Key.BackSpace)) { if (!verFondo) { chequearBackSpace(); sonido.playSlidePanel(); } else verFondo = false; }
         }
         private void operarSalida(float elapsedTime)
         {
@@ -495,7 +602,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
                         if (contadorSalida == 0) velocidadEfecto = 15f;
                     }
                     menuTransicion.listaOpciones[i].posicionarSprite(pos);
-                    menuTransicion.listaOpciones[i].spritePrincipal.render();
+                    renderSegunEstado(menuTransicion.listaOpciones[i]);
                 }
             }
             GuiController.Instance.Drawer2D.endDrawSprite();
@@ -524,7 +631,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
                     }
                     menuActivo.listaOpciones[i].posicionarSprite(temp);
                 }
-                menuActivo.listaOpciones[i].spritePrincipal.render();
+                renderSegunEstado(menuActivo.listaOpciones[i]);
             }
             GuiController.Instance.Drawer2D.endDrawSprite();
             if (contadorEntrada <= 0) { entradaFin = true; velocidadEfecto = 0.1f; }
