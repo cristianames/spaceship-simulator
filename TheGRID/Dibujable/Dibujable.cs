@@ -80,8 +80,8 @@ namespace AlumnoEjemplos.TheGRID
         public float velocidad { set; get; }
         public float velocidadRadial { set; get; }
         public int traslacion { set; get; } // 0: Nada ; -1:frenado ; 1:acelerado
-        public int inclinacion { set; get; } // 0: Nada ; -1:hacia abajo ; 1:hacia arriba //Pitch
-        public int rotacion { set; get; } // 0: Nada ; -1:lateral izquierda ; 1:lateral derecha //Roll
+        public float inclinacion { set; get; } // 0: Nada ; -1:hacia abajo ; 1:hacia arriba //Pitch
+        public float rotacion { set; get; } // 0: Nada ; -1:lateral izquierda ; 1:lateral derecha //Roll
         public int giro { set; get; } // 0: Nada ; -1:lateral izquierda ; 1:lateral derecha //Yaw
         internal bool velocidadManual { set; get; }   //Indica si hay que mantener apretado para moverte o no.
         internal bool desplazamientoReal { set; get; }    //Se usa o no el modulo de Fisica para el desplazamiento.

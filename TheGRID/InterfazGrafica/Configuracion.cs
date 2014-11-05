@@ -23,9 +23,17 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
     {
         internal TgcSprite spritePrincipal;
         internal TgcSprite spriteAlternativo;
+        internal TgcSprite spriteDeshabilitado;
         internal Clase nombre;
+        internal bool habilitado;
 
-        public Sprite(Clase a) { spritePrincipal = new TgcSprite(); spriteAlternativo = new TgcSprite(); nombre = a; }
+        public Sprite(Clase a) 
+        { 
+            spritePrincipal = new TgcSprite(); 
+            spriteAlternativo = new TgcSprite();
+            spriteDeshabilitado = new TgcSprite();
+            habilitado = true;
+            nombre = a; }
 
         public void alternarSprite()
         {
@@ -48,7 +56,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
     }
     #endregion
 
-    class Configuracion
+    public class Configuracion
     {
         #region Atributos
         int opcionElegida;
@@ -307,7 +315,11 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
             }
             GuiController.Instance.Drawer2D.beginDrawSprite();
             puntero.render();
-            foreach (var item in menuActivo.listaOpciones) { item.spritePrincipal.render(); }
+            foreach (var item in menuActivo.listaOpciones) 
+            {
+                if (item.habilitado) item.spritePrincipal.render();
+                else item.spriteDeshabilitado.render(); 
+            }
             //foreach (var item in menuTransicion.listaOpciones) { item.sprite.render(); }
             GuiController.Instance.Drawer2D.endDrawSprite();
             if (input.keyPressed(Key.Up)) { if (opcionElegida > 1) { opcionElegida--; reajustarPuntero(); sonido.playSlideButton(); } }

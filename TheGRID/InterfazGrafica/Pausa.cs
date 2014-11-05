@@ -1,4 +1,5 @@
 ﻿using Microsoft.DirectX;
+using Microsoft.DirectX.DirectInput;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -6,14 +7,16 @@ using System.Linq;
 using System.Text;
 using TgcViewer;
 using TgcViewer.Utils._2D;
+using TgcViewer.Utils.Input;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.TheGRID
 {
-    class Pausa
+    public class Pausa
     {
         TgcSprite sprite;
+        TgcD3dInput input = GuiController.Instance.D3dInput;
         public Pausa()
         {
             //Crear Sprite
@@ -28,13 +31,23 @@ namespace AlumnoEjemplos.TheGRID
             //sprite.Scaling = new Vector2(0.5f, 0.5f);
         }
 
-        public void pausa()
+        public void render()
         {
-            //Iniciar dibujado de todos los Sprites de la escena (en este caso es solo uno)
+            if (input.keyPressed(Key.P))
+            {
+                EjemploAlumno.workspace().pausa = false;
+                EjemploAlumno.workspace().music.playPauseBackgound();
+            }
+            if (input.keyPressed(Key.O))
+            {
+                EjemploAlumno.workspace().config = true;
+                EjemploAlumno.workspace().pausa = false;
+                EjemploAlumno.workspace().guiConfig.restart();
+                //EjemploAlumno.workspace().music.playPauseBackgound();
+            }     //Configuracion.
+
             GuiController.Instance.Drawer2D.beginDrawSprite();
-            //Dibujar sprite (si hubiese mas, deberian ir todos aquí)
             sprite.render();
-            //Finalizar el dibujado de Sprites
             GuiController.Instance.Drawer2D.endDrawSprite();
         }
     }

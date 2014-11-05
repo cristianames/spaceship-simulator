@@ -32,7 +32,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
         {
             currentFrustrum = new TgcFrustum(); 
             ppal = new Nave();
-            skySphere = new SkySphere("SkyBox\\skysphere2-TgcScene.xml");
+            skySphere = new SkySphere("SkyBox\\skysphere-TgcScene.xml");
             sol = crearSol();
             dibujableCollection.Add(skySphere.dibujable_skySphere);
             ppal.rotarPorVectorDeAngulos(Factory.VectorRandom(-50, 50));

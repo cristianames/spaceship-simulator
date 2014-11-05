@@ -49,7 +49,7 @@ namespace AlumnoEjemplos.TheGRID
         public List<TgcMesh> estrellasNo;
         public bool boundingBoxes;
         public float velocidadBlur = 0;
-        bool velocidadCrucero = false;
+        bool velocidadAutomatica = false;
         public float tiempoBlur=0.3f;
         public Dibujable ObjetoPrincipal { get { return nave; } }
         List<Dibujable> listaDibujable = new List<Dibujable>();
@@ -83,8 +83,10 @@ namespace AlumnoEjemplos.TheGRID
         //GUI
         public bool pausa = false;
         public bool config = false;
+        public bool mouse;
+        public int invertirMira = -1;
         Pausa guiPausa = new Pausa();
-        Configuracion guiConfig;
+        public Configuracion guiConfig;
         #endregion
 
         #region METODOS AUXILIARES
@@ -147,15 +149,16 @@ namespace AlumnoEjemplos.TheGRID
             //arrow.HeadColor = Color.FromArgb(230, Color.Yellow);
             //this.objectosNoMeshesCollection.Add(arrow);
 
+            // para capturar el mouse
+            Control focusWindows = GuiController.Instance.D3dDevice.CreationParameters.FocusWindow;
+            mouseCenter = focusWindows.PointToScreen(new Point(focusWindows.Width / 2, focusWindows.Height / 2));
+            mouse = true;
+            Cursor.Position = mouseCenter;
+
+            GuiController.Instance.FullScreenEnable = true;
             //Cargamos el audio
             //music.playBackgound();
-
-            Control focusWindows = GuiController.Instance.D3dDevice.CreationParameters.FocusWindow;
-            mouseCenter = focusWindows.PointToScreen(
-                new Point(
-                    focusWindows.Width / 2,
-                    focusWindows.Height / 2)
-                    );
+            
 
             altoPantalla = focusWindows.Height;
             anchoPantalla = focusWindows.Width;
@@ -174,8 +177,6 @@ namespace AlumnoEjemplos.TheGRID
             GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
             /*GuiController.Instance.UserVars.setValue("Integtidad Nave:", objetoPrincipal.explosion.vida);
             GuiController.Instance.UserVars.setValue("Integridad Escudos:", objetoPrincipal.explosion.escudo);
-            GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);
-            GuiController.Instance.UserVars.setValue("Posicion Y:", objetoPrincipal.getPosicion().Y);
             GuiController.Instance.UserVars.setValue("Posicion Z:", objetoPrincipal.getPosicion().Z);
              */
             //Crear un modifier para un valor FLOAT
@@ -183,6 +184,10 @@ namespace AlumnoEjemplos.TheGRID
             //GuiController.Instance.Modifiers.addFloat("Frenado", 0f, 1000f, objetoPrincipal.getAcelFrenado());    De momento lo saco.
             //Crear un modifier para un ComboBox con opciones
             //List<int> pistaDeAudio = new List<int>(){0,1,2,3,4,5,6,7,8,9};
+            GuiController.Instance.UserVars.addVar("Centro Y:");
+            GuiController.Instance.UserVars.addVar("Mouse Y:");
+            GuiController.Instance.UserVars.setValue("Centro Y:", 0);
+            GuiController.Instance.UserVars.setValue("Mouse Y:", 0);
             string[] opciones0 = new string[] { "THE OPENING", "IMPULSE DRIVE", "WELCOME HOME" };
             GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 0);
             string[] opciones1 = new string[] { "Tercera Persona", "Camara FPS", "Libre" };
@@ -205,17 +210,21 @@ namespace AlumnoEjemplos.TheGRID
             #endregion
         }   
 
+
+
+
+
+
         public override void render(float elapsedTime)
         {
+            if (mouse)
+            {
+                //Cursor.Hide();
+            }
             TgcD3dInput input = GuiController.Instance.D3dInput;
             if (pausa)
             {
-                guiPausa.pausa();
-                if (input.keyPressed(Key.P)) 
-                { 
-                    pausa = false;
-                    music.playPauseBackgound();
-                }
+                guiPausa.render();
                 return;
             }
             if (config)
@@ -228,20 +237,19 @@ namespace AlumnoEjemplos.TheGRID
             if (input.keyPressed(Key.P)) { 
                 pausa = true;
                 music.playPauseBackgound();
-            }     //Pausa.
-            if (input.keyPressed(Key.C))
-            {
-                config = true;
-                guiConfig.restart();
-                music.playPauseBackgound();
-            }     //Pausa.
+            }     //Pausa
 
             //Flechas
             
             //int giroX = -1+2*((int)GuiController.Instance.D3dInput.Xpos/anchoPantalla);
             //int giroY = -1+2*((int)GuiController.Instance.D3dInput.Ypos/altoPantalla);
-            int sensibilidad =1;
-            nave.rotarPorVectorDeAngulos(new Vector3(GuiController.Instance.D3dInput.YposRelative * -sensibilidad, 0, GuiController.Instance.D3dInput.XposRelative * -sensibilidad));
+            //nave.rotarPorVectorDeAngulos(new Vector3(input.YposRelative * sensibilidad * invertirMira, 0, input.XposRelative * -sensibilidad));
+            float sensibilidad = 0.01f;
+            if (mouse)
+            {
+                nave.inclinacion = (input.Ypos - mouseCenter.Y) * sensibilidad * invertirMira;
+                nave.rotacion = (input.Xpos - mouseCenter.X) * -sensibilidad;
+            }
             if (input.keyDown(Key.Left)) { nave.rotacion = 1; }
            // if (GuiController.Instance.D3dInput.XposRelative < 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) {nave.rotacion = 1;  }
             if (input.keyDown(Key.Right)) { nave.rotacion = -1; }
@@ -257,19 +265,19 @@ namespace AlumnoEjemplos.TheGRID
             if (input.keyDown(Key.D)) { nave.giro = 1; }
             if (input.keyDown(Key.W)) { nave.acelerar(); }
             if (input.keyDown(Key.S)) { if (!superRender.motionBlurActivado)nave.frenar(); }
-            if (input.keyPressed(Key.S)) { nave.fisica.desactivarCrucero(); velocidadCrucero = false; }
+            if (input.keyPressed(Key.S)) { nave.fisica.desactivarAutomatico(); velocidadAutomatica = false; }
             if (input.keyDown(Key.Z)) { nave.rotarPorVectorDeAngulos(new Vector3(0, 0, 15)); }
             if (input.keyPressed(Key.LeftControl)) 
             {
-                if (velocidadCrucero)
+                if (velocidadAutomatica)
                 {
-                    nave.fisica.desactivarCrucero();
-                    velocidadCrucero = false;
+                    nave.fisica.desactivarAutomatico();
+                    velocidadAutomatica = false;
                 }
                 else
                 {
-                    nave.fisica.activarCrucero();
-                    velocidadCrucero = true;
+                    nave.fisica.activarAutomatico();
+                    velocidadAutomatica = true;
                 }
             }
             if (scheme.escenarioActual == Escenario.TipoModo.IMPULSE_DRIVE)
@@ -293,7 +301,7 @@ namespace AlumnoEjemplos.TheGRID
                         {
                             superRender.motionBlurActivado = true;
                             nave.fisica.velocidadMaxima = nave.velMaxBlur;
-                            nave.fisica.desactivarCrucero(); velocidadCrucero = false;
+                            nave.fisica.desactivarAutomatico(); velocidadAutomatica = false;
                             nave.velocidadRadial = nave.rotBlur;
                         }
 
@@ -313,7 +321,7 @@ namespace AlumnoEjemplos.TheGRID
             //if (input.keyDown(Key.P)) { scheme.asteroidManager.explotaAlPrimero(); }
             if (scheme.escenarioActual == Escenario.TipoModo.THE_OPENING)
             {
-                if (input.keyDown(Key.Space))
+                if (input.keyDown(Key.Space) || (input.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT) && mouse))
                 {
                     timeLaser += elapsedTime;
                     if (timeLaser > betweenTime)
@@ -322,13 +330,13 @@ namespace AlumnoEjemplos.TheGRID
                         timeLaser = 0;
                     }
                 }
-                if (input.keyDown(Key.RightShift))
+                if (input.keyDown(Key.RightControl) || input.keyDown(Key.RightShift) || (input.buttonDown(TgcD3dInput.MouseButtons.BUTTON_RIGHT) && mouse))
                 {
                     pressed_time_lazer += elapsedTime;
                     music.playLazerCarga();
                 }
                 else
-                    if (input.keyUp(Key.RightShift))
+                    if (input.keyUp(Key.RightControl) || input.keyUp(Key.RightShift) || (input.buttonUp(TgcD3dInput.MouseButtons.BUTTON_RIGHT) && mouse))
                     {
                         scheme.dispararLaserAzul(pressed_time_lazer);
                         pressed_time_lazer = 0;
@@ -375,6 +383,7 @@ namespace AlumnoEjemplos.TheGRID
                 nave.acelerar();
             }
 
+            if (velocidadAutomatica) nave.acelerar();
 
             nave.rotarPorTiempo(elapsedTime, listaDibujable);
             nave.desplazarsePorTiempo(elapsedTime, new List<Dibujable>(scheme.CuerposGravitacionales));
@@ -422,8 +431,9 @@ namespace AlumnoEjemplos.TheGRID
             
             //Refrescar User Vars
             GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
-            /*GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);
-            GuiController.Instance.UserVars.setValue("Posicion Y:", objetoPrincipal.getPosicion().Y);
+            GuiController.Instance.UserVars.setValue("Centro Y:", mouseCenter.Y);
+            GuiController.Instance.UserVars.setValue("Mouse Y:", input.Ypos);
+            /*
             GuiController.Instance.UserVars.setValue("Posicion Z:", objetoPrincipal.getPosicion().Z);
             GuiController.Instance.UserVars.setValue("Integtidad Nave:", objetoPrincipal.explosion.vida);
             GuiController.Instance.UserVars.setValue("Integridad Escudos:", objetoPrincipal.explosion.escudo);

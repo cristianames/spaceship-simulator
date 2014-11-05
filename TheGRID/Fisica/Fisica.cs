@@ -108,8 +108,8 @@ namespace AlumnoEjemplos.TheGRID
             ultimaDireccionCalculada = devolucion;
             return devolucion;
         }
-        public void activarCrucero() { velocidadCrucero = velocidadInstantanea; }
-        public void desactivarCrucero() { velocidadCrucero = velocidadMaxima; }
+        public void activarAutomatico() { velocidadCrucero = velocidadInstantanea; }
+        public void desactivarAutomatico() { velocidadCrucero = velocidadMaxima; }
         public void impulsar(Vector3 direccionDeImpulso, float velocidadDeImpulso, float elapsedTimed)
         {
             direccionDeImpulso.Normalize();
