@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
@@ -75,6 +76,7 @@ namespace AlumnoEjemplos.TheGRID
         public bool parpadeoIzq = true;
         public bool parpadeoDer = false;
         public bool linterna = true;
+        public Point mouseCenter;
         //GUI
         public bool pausa = false;
         Pausa gui = new Pausa();
@@ -140,6 +142,14 @@ namespace AlumnoEjemplos.TheGRID
 
             //Cargamos el audio
             //music.playBackgound();
+
+            Control focusWindows = GuiController.Instance.D3dDevice.CreationParameters.FocusWindow;
+            mouseCenter = focusWindows.PointToScreen(
+                new Point(
+                    focusWindows.Width / 2,
+                    focusWindows.Height / 2)
+                    );
+
 
             #region PANEL DERECHO
 
@@ -207,12 +217,21 @@ namespace AlumnoEjemplos.TheGRID
             }     //Pausa.
 
             //Flechas
+
+            
+            
             if (input.keyDown(Key.Left)) { nave.rotacion = 1; }
+            if (GuiController.Instance.D3dInput.XposRelative < 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) { nave.rotacion = 1; }
             if (input.keyDown(Key.Right)) { nave.rotacion = -1; }
+            if (GuiController.Instance.D3dInput.XposRelative > 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) { nave.rotacion = -1; }
             if (input.keyDown(Key.Up)) { nave.inclinacion = 1; }
+            if (GuiController.Instance.D3dInput.YposRelative > 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) { nave.inclinacion = 1; }
             if (input.keyDown(Key.Down)) { nave.inclinacion = -1; }
+            if (GuiController.Instance.D3dInput.YposRelative < 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) { nave.inclinacion = -1; }
             //Letras
+            
             if (input.keyDown(Key.A)) { nave.giro = -1; }
+            
             if (input.keyDown(Key.D)) { nave.giro = 1; }
             if (input.keyDown(Key.W)) { nave.acelerar(); }
             if (input.keyDown(Key.S)) { if (!superRender.motionBlurActivado)nave.frenar(); }
