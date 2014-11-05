@@ -63,7 +63,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
     {
 
         #region Atributos
-        bool fondoAnimado = false;
+        bool fondoAnimado = true;
         TgcSprite fondoAlternativo;
         TgcSprite fondoPrincipal;
         bool verFondo = false;

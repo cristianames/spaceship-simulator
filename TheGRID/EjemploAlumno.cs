@@ -145,7 +145,7 @@ namespace AlumnoEjemplos.TheGRID
             logger.log("Paso 4: Para activar el Motion Blur debe ir a la maxima velocidad y luego pulsar una vez LeftShift. La desactivacion es de la misma forma.");
             logger.log("Por ultimo pruebe disparar presionando SpaceBar o RightShift. -- Disfrute el ejemplo.");
 
-            //GuiController.Instance.FullScreenEnable = true;
+            GuiController.Instance.FullScreenEnable = true;
 
             currentFrustrum = new TgcFrustum();           
             superRender = new SuperRender();
@@ -218,23 +218,19 @@ namespace AlumnoEjemplos.TheGRID
 
             //Flechas
             
-            //int giroX = -1+2*((int)GuiController.Instance.D3dInput.Xpos/anchoPantalla);
-            //int giroY = -1+2*((int)GuiController.Instance.D3dInput.Ypos/altoPantalla);
-            //nave.rotarPorVectorDeAngulos(new Vector3(input.YposRelative * sensibilidad * invertirMira, 0, input.XposRelative * -sensibilidad));
-            float sensibilidad = 0.01f;
+            float sensibilidad = 0.003f;
+            float zonaMuerta = 20f;
             if (mouse)
             {
-                nave.inclinacion = (input.Ypos - mouseCenter.Y) * sensibilidad * invertirMira;
-                nave.rotacion = (input.Xpos - mouseCenter.X) * -sensibilidad;
+                float temp = input.Ypos - mouseCenter.Y;
+                if (FastMath.Abs(temp) > zonaMuerta) nave.inclinacion = temp * sensibilidad * invertirMira;
+                temp = input.Xpos - mouseCenter.X;
+                if (FastMath.Abs(temp) > zonaMuerta) nave.rotacion = temp * -sensibilidad;
             }
             if (input.keyDown(Key.Left)) { nave.rotacion = 1; }
-           // if (GuiController.Instance.D3dInput.XposRelative < 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) {nave.rotacion = 1;  }
             if (input.keyDown(Key.Right)) { nave.rotacion = -1; }
-            //if (GuiController.Instance.D3dInput.XposRelative > 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) { nave.rotacion = -1; }
             if (input.keyDown(Key.Up)) { nave.inclinacion = 1; }
-           // if (GuiController.Instance.D3dInput.YposRelative > 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) { nave.inclinacion = 1; }
             if (input.keyDown(Key.Down)) { nave.inclinacion = -1; }
-           // if (GuiController.Instance.D3dInput.YposRelative < 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) { nave.inclinacion = -1; }
             
             //Cambios de cámara con los F1-F3
             if (input.keyDown(Key.F1))
