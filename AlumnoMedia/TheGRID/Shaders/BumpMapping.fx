@@ -1,8 +1,8 @@
-/*
-* Shader utilizado para efecto de BumpMapping sobre un TgcMesh.
-* Solo soporta TgcMesh con RenderType del tipo DIFFUSE_MAP
-* Tiene una Technique de BumpMappingTechnique y una de PostProcesado
-*/
+// ------------------------------------------------------------------------------------
+// Shader de BumpMapping e iluminacion dinamica
+// Solo soporta TgcMesh con RenderType del tipo DIFFUSE_MAP
+// Techniques: de BumpMappingTechnique, Spotlight, Join (PostProcesado Unificador)
+// -------------------------------------------------------------------------------------
 
 
 /**************************************************************************************/
@@ -39,7 +39,7 @@ sampler2D normalMap = sampler_state
 	MIPFILTER = LINEAR;
 };
 
-float screen_dx;					// tamaño de la pantalla en pixels
+float screen_dx; // tamaño de la pantalla en pixels
 float screen_dy;
 
 //Material del mesh
@@ -111,13 +111,11 @@ float3 spotLightDir; //Direccion del cono de luz
 float spotLightAngleCos; //Angulo de apertura del cono de luz (en radianes)
 float spotLightExponent; //Exponente de atenuacion dentro del cono de luz
 
-
 /**************************************************************************************/
-/* BumpMappingTechnique */
+/* Estructuras! */
 /**************************************************************************************/
 
-
-//Input del Vertex Shader
+//Input del Vertex Shader del Bump
 struct VS_INPUT 
 {
 	float4 Position : POSITION0;
@@ -128,7 +126,7 @@ struct VS_INPUT
 	float3 Binormal : BINORMAL0;
 };
 
-//Output del Vertex Shader
+//Output del Vertex Shader del Bump
 struct VS_OUTPUT 
 {
 	float4 Position : POSITION0;
@@ -141,40 +139,7 @@ struct VS_OUTPUT
 	float3 HalfAngleVec	: TEXCOORD6;
 };
 
-//Vertex Shader
-VS_OUTPUT vs_general(VS_INPUT input)
-{
-	VS_OUTPUT output;
-
-	//Proyectar posicion
-	output.Position = mul(input.Position, matWorldViewProj);
-
-	//Las Coordenadas de textura quedan igual
-	output.Texcoord = input.Texcoord;
-	
-	//Posicion pasada a World-Space
-	output.WorldPosition = mul(input.Position, matWorld).xyz;
-	
-	//Pasar normal, tangent y binormal a World-Space
-	output.WorldNormal = mul(input.Normal, matInverseTransposeWorld).xyz;
-    output.WorldTangent = mul(input.Tangent, matInverseTransposeWorld).xyz;
-    output.WorldBinormal = mul(input.Binormal, matInverseTransposeWorld).xyz;
-	
-	//LightVec (L): vector que va desde el vertice hacia la luz. Usado en Diffuse y Specular
-	output.LightVec = lightPosition.xyz - output.WorldPosition;
-	
-	//ViewVec (V): vector que va desde el vertice hacia la camara.
-	float3 viewVector = eyePosition.xyz - output.WorldPosition;
-	
-	//HalfAngleVec (H): vector de reflexion simplificado de Phong-Blinn (H = |V + L|). Usado en Specular
-	output.HalfAngleVec = viewVector + output.LightVec;
-	
-	
-	return output;
-}
-
-
-//Input del Pixel Shader
+//Input del Pixel Shader del Bump
 struct PS_INPUT 
 {
 	float2 Texcoord : TEXCOORD0;
@@ -185,15 +150,79 @@ struct PS_INPUT
 	float3 LightVec	: TEXCOORD5;
 	float3 HalfAngleVec	: TEXCOORD6;
 };
-	
 
+//Input del Vertex Shader para Spotlight
+struct VS_INPUT_Spotlight
+{
+	float4 Position : POSITION0;
+	float3 Normal : NORMAL0;
+	float4 Color : COLOR;
+};
+
+//Output del Vertex Shader para Spotlight
+struct VS_OUTPUT_Spotlight
+{
+	float4 Position : POSITION0;
+	float4 Color : COLOR;
+	float3 WorldPosition : TEXCOORD0;
+	float3 WorldNormal : TEXCOORD1;
+	float3 LightVec	: TEXCOORD2;
+	float3 HalfAngleVec	: TEXCOORD3;
+};
+
+//Input del Pixel Shader para Spotlight
+struct PS_INPUT_Spotlight
+{
+	float4 Color : COLOR0;
+	float3 WorldPosition : TEXCOORD0;
+	float3 WorldNormal : TEXCOORD1;
+	float3 LightVec	: TEXCOORD2;
+	float3 HalfAngleVec	: TEXCOORD3;
+};
+
+
+/**************************************************************************************/
+/* BumpMappingTechnique */
+/**************************************************************************************/
 float k_la = 0.3;							// luz ambiente global
 float k_ld = 0.9;							// luz difusa
 float k_ls = 0.8;							// luz specular
 float fSpecularPower = 16.84;				// exponente de la luz specular
 
+//Vertex Shader
+VS_OUTPUT vs_bump(VS_INPUT input)
+{
+	VS_OUTPUT output;
+
+	//Proyectar posicion
+	output.Position = mul(input.Position, matWorldViewProj);
+
+	//Las Coordenadas de textura quedan igual
+	output.Texcoord = input.Texcoord;
+
+	//Posicion pasada a World-Space
+	output.WorldPosition = mul(input.Position, matWorld).xyz;
+
+	//Pasar normal, tangent y binormal a World-Space
+	output.WorldNormal = mul(input.Normal, matInverseTransposeWorld).xyz;
+	output.WorldTangent = mul(input.Tangent, matInverseTransposeWorld).xyz;
+	output.WorldBinormal = mul(input.Binormal, matInverseTransposeWorld).xyz;
+
+	//LightVec (L): vector que va desde el vertice hacia la luz. Usado en Diffuse y Specular
+	output.LightVec = lightPosition.xyz - output.WorldPosition;
+
+	//ViewVec (V): vector que va desde el vertice hacia la camara.
+	float3 viewVector = eyePosition.xyz - output.WorldPosition;
+
+		//HalfAngleVec (H): vector de reflexion simplificado de Phong-Blinn (H = |V + L|). Usado en Specular
+		output.HalfAngleVec = viewVector + output.LightVec;
+
+
+	return output;
+}
+
 //Pixel Shader
-float4 ps_general(PS_INPUT input) : COLOR0
+float4 ps_bump(PS_INPUT input) : COLOR0
 {      
 	float ld = 0;		// luz difusa
 	float le = 0;		// luz specular
@@ -241,68 +270,27 @@ float4 ps_general(PS_INPUT input) : COLOR0
 	return finalColor;
 }
 
-///////////////////////////////Efecto Join//////////////////////////////////////////////////////////
-
-
-float Ksol = float(2);
-float Kalfa = float(5);
-float Kder = float(0.8);
-float Kizq = float(0.8);
-float Kfront = float(0.8);
-
-void vs_join(float4 vPos : POSITION, float2 vTex : TEXCOORD0, out float4 oPos : POSITION, out float2 oScreenPos : TEXCOORD0)
+/*
+* Technique de BumpMapping
+*/
+technique BumpMappingTechnique
 {
-	oPos = vPos;
-	oScreenPos = vTex;
-	oPos.w = 1;
+	pass Pass_0
+	{
+		VertexShader = compile vs_2_0 vs_bump();
+		PixelShader = compile ps_2_0 ps_bump();
+	}
+
 }
 
-//Pixel Shader
-void ps_join(in float2 Texcoord: TEXCOORD0, out float4 Color : COLOR)
-{	//Obtener los textels
-	float4 sol = tex2D(SolTarget, Texcoord);
-		float4 izq = tex2D(IzqTarget, Texcoord);
-		float4 der = tex2D(DerTarget, Texcoord);
-		float4 front = tex2D(FrontalTarget, Texcoord);
-		//mergeamos los textels
-		//Color = sol + saturate((sol*Ksol) + (izq*Kizq) + (der*Kder) + (front*Kfront));
-		float4 sol_rel = sol*Ksol;
-		float4 izq_rel = float4(izq.rgb, izq.a*Kalfa) * Kizq;
-		float4 der_rel = float4(der.rgb, der.a*Kalfa) * Kder;
-		float4 front_rel = float4(front.rgb, front.a*Kalfa) * Kfront;
-
-	Color = sol + saturate(sol_rel + izq_rel + der_rel + front_rel);
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
 /**************************************************************************************/
-/* VERTEX_COLOR */
+/* Spotlight */
 /**************************************************************************************/
-
-//Input del Vertex Shader
-struct VS_INPUT_VERTEX_COLOR
-{
-	float4 Position : POSITION0;
-	float3 Normal : NORMAL0;
-	float4 Color : COLOR;
-};
-
-//Output del Vertex Shader
-struct VS_OUTPUT_VERTEX_COLOR
-{
-	float4 Position : POSITION0;
-	float4 Color : COLOR;
-	float3 WorldPosition : TEXCOORD0;
-	float3 WorldNormal : TEXCOORD1;
-	float3 LightVec	: TEXCOORD2;
-	float3 HalfAngleVec	: TEXCOORD3;
-};
-
 
 //Vertex Shader
-VS_OUTPUT_VERTEX_COLOR vs_VertexColor(VS_INPUT_VERTEX_COLOR input)
+VS_OUTPUT_Spotlight vs_Spotlight(VS_INPUT_Spotlight input)
 {
-	VS_OUTPUT_VERTEX_COLOR output;
+	VS_OUTPUT_Spotlight output;
 
 	//Proyectar posicion
 	output.Position = mul(input.Position, matWorldViewProj);
@@ -330,28 +318,18 @@ VS_OUTPUT_VERTEX_COLOR vs_VertexColor(VS_INPUT_VERTEX_COLOR input)
 	return output;
 }
 
-//Input del Pixel Shader
-struct PS_INPUT_VERTEX_COLOR
-{
-	float4 Color : COLOR0;
-	float3 WorldPosition : TEXCOORD0;
-	float3 WorldNormal : TEXCOORD1;
-	float3 LightVec	: TEXCOORD2;
-	float3 HalfAngleVec	: TEXCOORD3;
-};
-
 //Pixel Shader
-float4 ps_VertexColor(PS_INPUT_VERTEX_COLOR input) : COLOR0
+float4 ps_Spotlight(PS_INPUT_Spotlight input) : COLOR0
 {
 	float ld = 0;		// luz difusa
 	float le = 0;		// luz specular
 	//Normalizar vectores
 	float3 Nn = normalize(input.WorldNormal);
-	float3 Ln = normalize(input.LightVec);
-	float3 Hn = normalize(input.HalfAngleVec);
+		float3 Ln = normalize(input.LightVec);
+		float3 Hn = normalize(input.HalfAngleVec);
 
-	//Calcular atenuacion por distancia
-	float distAtten = length(lightPosition.xyz - input.WorldPosition) * lightAttenuation;
+		//Calcular atenuacion por distancia
+		float distAtten = length(lightPosition.xyz - input.WorldPosition) * lightAttenuation;
 
 	//Calcular atenuacion por Spot Light. Si esta fuera del angulo del cono tiene 0 intensidad.
 	float spotAtten = dot(-spotLightDir, Ln);
@@ -368,53 +346,68 @@ float4 ps_VertexColor(PS_INPUT_VERTEX_COLOR input) : COLOR0
 		//Componente Diffuse: N dot L
 		float3 n_dot_l = dot(Nn, Ln);
 		float3 diffuseLight = intensity * lightColor * materialDiffuseColor.rgb * max(0.0, n_dot_l); //Controlamos que no de negativo
-
 		//Componente Specular: (N dot H)^exp
 		float3 n_dot_h = dot(Nn, Hn);
 		n_dot_h = pow(n_dot_h, fSpecularPower);
-		le += n_dot_h*k_ls;
-		float3 specularLight = n_dot_l <= 0.0
+	le += n_dot_h*k_ls;
+	float3 specularLight = n_dot_l <= 0.0
 		? float3(0.0, 0.0, 0.0)
 		: (intensity * lightColor * materialSpecularColor * pow(max(0.0, le), materialSpecularExp));
-
-
-	/* Color final: modular (Emissive + Ambient + Diffuse) por el color del mesh, y luego sumar Specular.
-	El color Alpha sale del diffuse material */
-	float4 finalColor = float4(saturate(materialEmissiveColor + ambientLight + diffuseLight) * input.Color + specularLight, materialDiffuseColor.a);
-
-
-		return finalColor;
+	return float4(saturate(materialEmissiveColor + ambientLight + diffuseLight) * input.Color + specularLight, materialDiffuseColor.a);
 }
 
 /*
-* Technique VERTEX_COLOR
+* Technique Spotlight
 */
-technique VERTEX_COLOR
+technique Spotlight
 {
 	pass Pass_0
 	{
-		VertexShader = compile vs_2_0 vs_VertexColor();
-		PixelShader = compile ps_2_0 ps_VertexColor();
+		VertexShader = compile vs_2_0 vs_Spotlight();
+		PixelShader = compile ps_2_0 ps_Spotlight();
 	}
 }
 
-/*
-* Technique de BumpMapping
-*/
-technique BumpMappingTechnique
+/**************************************************************************************/
+/* Join */
+/**************************************************************************************/
+
+float Ksol = float(2);
+float Kalfa = float(5);
+float Kder = float(0.8);
+float Kizq = float(0.8);
+float Kfront = float(0.8);
+
+//Vertex Shader
+void vs_join(float4 vPos : POSITION, float2 vTex : TEXCOORD0, out float4 oPos : POSITION, out float2 oScreenPos : TEXCOORD0)
 {
-   pass Pass_0
-   {
-	  VertexShader = compile vs_2_0 vs_general();
-	  PixelShader = compile ps_2_0 ps_general();
-   }
-
+	oPos = vPos;
+	oScreenPos = vTex;
+	oPos.w = 1;
 }
+
+//Pixel Shader
+void ps_join(in float2 Texcoord: TEXCOORD0, out float4 Color : COLOR)
+{	//Obtener los textels
+	float4 sol = tex2D(SolTarget, Texcoord);
+		float4 izq = tex2D(IzqTarget, Texcoord);
+		float4 der = tex2D(DerTarget, Texcoord);
+		float4 front = tex2D(FrontalTarget, Texcoord);
+		//mergeamos los textels
+		//Color = sol + saturate((sol*Ksol) + (izq*Kizq) + (der*Kder) + (front*Kfront));
+		float4 sol_rel = sol*Ksol;
+		float4 izq_rel = float4(izq.rgb, izq.a*Kalfa) * Kizq;
+		float4 der_rel = float4(der.rgb, der.a*Kalfa) * Kder;
+		float4 front_rel = float4(front.rgb, front.a*Kalfa) * Kfront;
+
+	Color = sol + saturate(sol_rel + izq_rel + der_rel + front_rel);
+}
+
 /*
-* Technique de PosProcesado
+* Technique de Join (Post Procesado)
 */
 
-technique JoinBumpsTechnique
+technique Join
 {
 	pass Pass_0
 	{
@@ -422,3 +415,6 @@ technique JoinBumpsTechnique
 		PixelShader = compile ps_2_0 ps_join();
 	}
 }
+
+
+
