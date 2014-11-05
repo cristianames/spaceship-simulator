@@ -174,8 +174,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 if (parpadeoDer)
                 {
                     renderScene(parametros.elementosRenderizables);
-                    renderScene(parametros.meshes, light_der, "VERTEX_COLOR");
-                    renderScene(parametros.sol, light_der, "VERTEX_COLOR");
+                    renderScene(parametros.meshes, light_der, "Spotlight");
+                    renderScene(parametros.sol, light_der, "Spotlight");
                     if (!EjemploAlumno.workspace().camara.soyFPS())
                         renderScene(parametros.nave, light_der, "BumpMappingTechnique");
                 }
@@ -190,8 +190,8 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 if (parpadeoIzq)
                 {
                     renderScene(parametros.elementosRenderizables);
-                    renderScene(parametros.meshes, light_izq, "VERTEX_COLOR");
-                    renderScene(parametros.sol, light_izq, "VERTEX_COLOR");
+                    renderScene(parametros.meshes, light_izq, "Spotlight");
+                    renderScene(parametros.sol, light_izq, "Spotlight");
                     if (!EjemploAlumno.workspace().camara.soyFPS())
                         renderScene(parametros.nave, light_izq, "BumpMappingTechnique");
                 }
@@ -206,10 +206,10 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                 if (linterna)
                 {
                     renderScene(parametros.elementosRenderizables);
-                    renderScene(parametros.meshes, light_front, "VERTEX_COLOR");
-                    renderScene(parametros.sol, light_front, "VERTEX_COLOR");
+                    renderScene(parametros.meshes, light_front, "Spotlight");
+                    renderScene(parametros.sol, light_front, "Spotlight");
                     if (!EjemploAlumno.workspace().camara.soyFPS())
-                        renderScene(parametros.nave, light_front, "VERTEX_COLOR");
+                        renderScene(parametros.nave, light_front, "Spotlight");
                 }
             device.EndScene();
             pSurf.Dispose();
@@ -219,7 +219,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             device.SetRenderTarget(0, pSurf);
             device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
             device.BeginScene();
-                bumpEffect_asteroides.Technique = "JoinBumpsTechnique";
+                bumpEffect_asteroides.Technique = "Join";
                 device.VertexFormat = CustomVertex.PositionTextured.Format;
                 device.SetStreamSource(0, g_pVBV3D, 0);
                 bumpEffect_asteroides.SetValue("luzSolarTarget", g_BumpSol);

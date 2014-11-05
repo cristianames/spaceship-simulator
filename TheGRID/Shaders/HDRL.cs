@@ -112,7 +112,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         public Texture renderEffect(EstructuraRender parametros)
         {
             float elapsedTime = EjemploAlumno.workspace().tiempoPupila;
-            glow = (bool)GuiController.Instance.Modifiers["glow"];
+            glow = EjemploAlumno.workspace().glow;
 
             Device device = GuiController.Instance.D3dDevice;
             Control panel3d = GuiController.Instance.Panel3d;

@@ -1,6 +1,7 @@
-// ---------------------------------------------------------
-// Ejemplo toon Shading
-// ---------------------------------------------------------
+// ------------------------------------------------------------------------------------
+// Shader de Motion Blur
+// Techniques: de DefaultTechnique, VelocityMap, PostProcessMotionBlur, OnlyTexture
+// -------------------------------------------------------------------------------------
 
 /**************************************************************************************/
 /* Variables comunes */
@@ -27,17 +28,12 @@ sampler2D diffuseMap = sampler_state
 	MIPFILTER = LINEAR;
 };
 
-float screen_dx;					// tamaño de la pantalla en pixels
+float screen_dx; //Tamaño de la pantalla en pixels
 float screen_dy;
 
-//Input del Vertex Shader
-struct VS_INPUT 
-{
-   float4 Position : POSITION0;
-   float3 Normal :   NORMAL0;
-   float4 Color : COLOR;
-   float2 Texcoord : TEXCOORD0;
-};
+/**************************************************************************************/
+/* Texturas */
+/**************************************************************************************/
 
 texture g_RenderTarget;
 sampler RenderTarget = 
@@ -82,6 +78,19 @@ sampler2D only = sampler_state
 	AddressV = Clamp;
 };
 
+/**************************************************************************************/
+/* Estructuras! */
+/**************************************************************************************/
+
+//Input del Vertex Shader
+struct VS_INPUT
+{
+	float4 Position : POSITION0;
+	float3 Normal :   NORMAL0;
+	float4 Color : COLOR;
+	float2 Texcoord : TEXCOORD0;
+};
+
 //Output del Vertex Shader
 struct VS_OUTPUT 
 {
@@ -94,6 +103,10 @@ struct VS_OUTPUT
    //float2 Vel :			TEXCOORD3;		// velocidad por pixel
 
 };
+
+/**************************************************************************************/
+/* DefaultTechnique y VelocityMap */
+/**************************************************************************************/
 
 //Vertex Shader
 VS_OUTPUT vs_main( VS_INPUT Input )
@@ -161,8 +174,11 @@ technique VelocityMap
 
 }
 
-
-
+/**************************************************************************************/
+/* PostProcessMotionBlur y Only Texture (Para renderizar todo la textura only dada */
+/**************************************************************************************/
+float PixelBlurConst = 0.05f;
+static const float NumberOfPostProcessSamples = 12.0f;
 
 void vs_copy( float4 vPos : POSITION, float2 vTex : TEXCOORD0,out float4 oPos : POSITION,out float2 oScreenPos: TEXCOORD0)
 {
@@ -170,10 +186,6 @@ void vs_copy( float4 vPos : POSITION, float2 vTex : TEXCOORD0,out float4 oPos : 
 	oScreenPos = vTex;
 	oPos.w = 1;
 }
-
-
-float PixelBlurConst = 0.05f;
-static const float NumberOfPostProcessSamples = 12.0f;
 
 float4 ps_motion_blur( in float2 Tex : TEXCOORD0) : COLOR0
 {
@@ -207,12 +219,7 @@ float4 ps_motion_blur( in float2 Tex : TEXCOORD0) : COLOR0
     }
 
 	return float4(Blurred / NumberOfPostProcessSamples, 1.0f);
-//	return tex2D(velocityMap,Tex)  ;
-//	return tex2D(RenderTarget,Tex) ;
 }
-
-
-
 
 technique PostProcessMotionBlur
 {
@@ -224,24 +231,6 @@ technique PostProcessMotionBlur
 
 }
 
-float4 ps_draw_grid( in float2 Tex : TEXCOORD0, float2 vPos: VPOS) : COLOR0
-{
-	int x = round(vPos.x / 4);
-	int y = round(vPos.y / 4);
-	if(x % 5 != 0  || y % 5 != 0 )
-		discard;
-	return float4(1,1,1,1);
-}
-
-technique DrawGrid
-{
-	pass Pass_0
-	{
-		VertexShader = compile vs_3_0 vs_copy();
-		PixelShader = compile ps_3_0 ps_draw_grid();
-	}
-
-}
 
 float4 ps_onlytex(float3 Texcoord: TEXCOORD0) : COLOR0
 {

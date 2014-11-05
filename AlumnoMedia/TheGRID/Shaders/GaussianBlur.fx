@@ -1,6 +1,8 @@
-// ---------------------------------------------------------
-// Ejemplo toon Shading
-// ---------------------------------------------------------
+// ------------------------------------------------------------------------------------
+// Shader de Glow
+// Solo soporta TgcMesh con RenderType del tipo DIFFUSE_MAP
+// Techniques: de BumpMappingTechnique, Spotlight, Join (PostProcesado Unificador)
+// -------------------------------------------------------------------------------------
 
 /**************************************************************************************/
 /* Variables comunes */
@@ -25,9 +27,9 @@ sampler2D diffuseMap = sampler_state
 };
 
 
-float screen_dx;					// tamaño de la pantalla en pixels
+float screen_dx; // tamaño de la pantalla en pixels
 float screen_dy;
-float KLum = 1;						// factor de luminancia
+float KLum = 1; // factor de luminancia
 
 //Input del Vertex Shader
 struct VS_INPUT 
@@ -90,10 +92,10 @@ sampler_state
 };
 
 // Depth of field
-float zn = 1;				// near plane
-float zf = 10000;			// far plane
+float zn = 1;			// near plane
+float zf = 10000; 		// far plane
 float zfoco = 300;		// focus plane
-float blur_k = 0.5;			// factor de desenfoque
+float blur_k = 0.5;		// factor de desenfoque
 
 texture g_BlurFactor;	
 sampler BlurFactor = 
@@ -327,49 +329,15 @@ float4 PSToneMapping( in float2 Tex : TEXCOORD0 , in float2 vpos : VPOS) : COLOR
 			Tex.x -= 0.5;
 		}
 	}
-	
     float vLum = dot(tex2D(Luminance, float2(0,0) ), LUM_VECTOR);
     float vLumAnt = dot(tex2D(Luminance_ant, float2(0,0) ), LUM_VECTOR);
 	float Yk = lerp(vLumAnt ,vLum ,  pupila_time);
 	float4 ColorBase = tex2D(RenderTarget, Tex);
 	float4 ColorBrillante = glow && tone_mapping ? tex2D(GlowMap, Tex+float2((float)16/screen_dx,(float)16/screen_dy)) : 0;
-
-	/*
-	// Tone mapping
-	if(tone_mapping==1)
-	{
-		// Reinhard 
-		ColorBase.rgb = ColorBase.rgb / (1 + ColorBase.rgb);
-		ColorBase.rgb *= MIDDLE_GRAY / (Yk+ 0.001f);
-	}
-	else
-	if(tone_mapping==2)
-	{
-		// Modified Reinhard
-		Yk *= 1.5;
-		ColorBase.rgb = (ColorBase.rgb * (1 + ColorBase.rgb / Yk*Yk)) / (1 + ColorBase.rgb);
-		ColorBase.rgb *= MIDDLE_GRAY / (Yk+ 0.001f);
-	}
-	else
-	if(tone_mapping==3)
-	{
-		// logaritmico
-		ColorBase.rgb = log(ColorBase.rgb+1) / log(1.2*Yk+1);
-	}
-	else
-	if(tone_mapping==4)
-	{
-		// falta averiguar el nombre
-		ColorBase.rgb *= MIDDLE_GRAY / (Yk+ 0.001f);
-		ColorBase.rgb *= (1.0f + ColorBase/LUM_WHITE);
-		ColorBase.rgb /= (1.0f + ColorBase);
-	}*/
-
 	// combino con glow 
 	float4 rta = float4(ColorBase.rgb + 2.6*ColorBrillante.rgb, 1);
 	return rta;
 }
-
 
 technique ToneMapping
 {
@@ -396,8 +364,6 @@ VS_OUTPUT2 BlurFactorVS( float4 vPos : POSITION, float3 vNormal : NORMAL,
     return Output;    
 }
 
-
-
 // Pixel shader que genera el blur map
 float4 BlurFactorPS(float4 Pos : TEXCOORD0) : COLOR0
 { 
@@ -408,8 +374,6 @@ float4 BlurFactorPS(float4 Pos : TEXCOORD0) : COLOR0
     return color;
 }
 
-
-// 
 technique RenderBlurFactor
 {
     pass P0
@@ -418,9 +382,6 @@ technique RenderBlurFactor
         PixelShader  = compile ps_3_0 BlurFactorPS(); 
     }
 }
-
-
-
 
 // Gaussian blur 
 float4 PSBlur(float2 TextureUV  : TEXCOORD0) : COLOR0
