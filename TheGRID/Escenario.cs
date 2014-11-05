@@ -23,12 +23,14 @@ namespace AlumnoEjemplos.TheGRID
         public Dibujable principal;
         public enum TipoModo { THE_OPENING, IMPULSE_DRIVE, WELCOME_HOME, VACUUM, MISION };
         public TipoModo escenarioActual = TipoModo.VACUUM;
+        public TipoModo escenarioElegido = TipoModo.VACUUM;
         //Objetos
         public Dibujable sol;
         public float distanciaSol = 9000;
         public Dibujable planet;
         private List<Dibujable> cuerposGravitacionales = new List<Dibujable>();
         public List<Dibujable> CuerposGravitacionales { get{ return cuerposGravitacionales; } }
+        public bool ingresoMision;
         #endregion
 
         #region Constructor y Destructor
@@ -114,9 +116,9 @@ namespace AlumnoEjemplos.TheGRID
             disposeOld();
             escenarioActual = TipoModo.WELCOME_HOME;
             Dibujable ppal = EjemploAlumno.workspace().ObjetoPrincipal;
-            List<int> opciones = new List<int>() { -15000, 15000 };
+            List<int> opciones = new List<int>() { -8000, 8000 };
             Vector3 posicion = ppal.getPosicion();
-            posicion.Add(Vector3.Multiply(ppal.getDireccion(),13000));
+            posicion.Add(Vector3.Multiply(ppal.getDireccion(),21000));
             posicion.Add(Vector3.Multiply(ppal.getDireccion_X(), Factory.elementoRandom<int>(opciones)));
             posicion.Add(Vector3.Multiply(ppal.getDireccion_Y(), (new Random()).Next(-3000,3000)));
             planet.ubicarEnUnaPosicion(posicion);
@@ -174,13 +176,13 @@ namespace AlumnoEjemplos.TheGRID
                     laserManager.chocoAsteroide();
                     asteroidManager.colisionEntreAsteroides(0);
                     break;
+                case TipoModo.IMPULSE_DRIVE:
+                    if (EjemploAlumno.workspace().Shader.motionBlurActivado)
+                        EjemploAlumno.workspace().estrellaControl.insertarEstrellas(EjemploAlumno.workspace().estrellas, EjemploAlumno.workspace().estrellasNo, EjemploAlumno.workspace().nave.getPosicion(), EjemploAlumno.workspace().nave.getDireccion(), EjemploAlumno.workspace().nave.ultimaTraslacion, EjemploAlumno.workspace().nave.getEjes().mRotor, elapsedTime);
+                    break;
                 case TipoModo.WELCOME_HOME:
                     colisionNavePlaneta(EjemploAlumno.workspace().ObjetoPrincipal);
                     planet.rotarPorTiempo(elapsedTime, new List<Dibujable>());
-                    break;
-                case TipoModo.IMPULSE_DRIVE:
-                    if(EjemploAlumno.workspace().Shader.motionBlurActivado)
-                        EjemploAlumno.workspace().estrellaControl.insertarEstrellas(EjemploAlumno.workspace().estrellas, EjemploAlumno.workspace().estrellasNo, EjemploAlumno.workspace().nave.getPosicion(), EjemploAlumno.workspace().nave.getDireccion(), EjemploAlumno.workspace().nave.ultimaTraslacion, EjemploAlumno.workspace().nave.getEjes().mRotor, elapsedTime);
                     break;
                 case TipoModo.MISION:
                     
@@ -204,7 +206,7 @@ namespace AlumnoEjemplos.TheGRID
                         EjemploAlumno.workspace().entreWarp = false;
                         EjemploAlumno.workspace().nave.fisica.velocidadInstantanea = 0;*/
                         chequearCambio("WELCOME HOME");
-                        EjemploAlumno.workspace().nave.rotarPorVectorDeAngulos(new Vector3(0, 0, 15));                    
+                        //EjemploAlumno.workspace().nave.rotarPorVectorDeAngulos(new Vector3(0, 0, 15));                    
                         
 
                     }
@@ -248,24 +250,29 @@ namespace AlumnoEjemplos.TheGRID
             switch (opcion)
             {
                 case "THE OPENING":
-                    if (escenarioActual != TipoModo.THE_OPENING)
+                    //if (escenarioElegido != TipoModo.THE_OPENING)
                         loadChapter1();
+                    escenarioElegido = TipoModo.THE_OPENING;
                     break;
                 case "IMPULSE DRIVE":
-                    if (escenarioActual != TipoModo.IMPULSE_DRIVE)
+                    //if (escenarioElegido != TipoModo.IMPULSE_DRIVE)
                         loadChapter2();
+                    escenarioElegido = TipoModo.IMPULSE_DRIVE;
                     break;
                 case "WELCOME HOME":
-                    if (escenarioActual != TipoModo.WELCOME_HOME)
+                    //if (escenarioElegido != TipoModo.WELCOME_HOME)
                         loadChapter3();
+                    escenarioElegido = TipoModo.WELCOME_HOME;
                     break;
                 case "VACUUM":
-                    if (escenarioActual != TipoModo.VACUUM)
+                    //if (escenarioElegido != TipoModo.VACUUM)
                         loadVacuum();
+                    escenarioElegido = TipoModo.VACUUM;
                     break;
                 case "MISION":
-                    if (escenarioActual != TipoModo.MISION)
+                    //if (escenarioElegido != TipoModo.MISION)
                         loadMision();
+                    escenarioElegido = TipoModo.MISION;
                     break;
             }
         }

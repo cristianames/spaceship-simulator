@@ -491,26 +491,28 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
                     //NADA de momento
                     break;
                 case Clase.CAPITULO1:
-                    EjemploAlumno.workspace().escenarioActivado = "THE OPENING";
+                    EjemploAlumno.workspace().Escenario.chequearCambio("THE OPENING");
                     sonido.playChangePause(); 
                     EjemploAlumno.workspace().config = false;
                     sonido.playPauseBackgound();
                     break;
                 case Clase.CAPITULO2:
-                    EjemploAlumno.workspace().escenarioActivado = "IMPULSE DRIVE";
+                    EjemploAlumno.workspace().Escenario.chequearCambio("IMPULSE DRIVE");
                     sonido.playChangePause(); 
                     EjemploAlumno.workspace().config = false;
                     sonido.playPauseBackgound();
                     break;
                 case Clase.CAPITULO3:
-                    EjemploAlumno.workspace().escenarioActivado = "WELCOME HOME";                   
+                    EjemploAlumno.workspace().Escenario.chequearCambio("WELCOME HOME");           
                     sonido.playChangePause(); 
                     EjemploAlumno.workspace().config = false;
                     sonido.playPauseBackgound();
                     break;
                 case Clase.MISION:
-                    EjemploAlumno.workspace().escenarioActivado = "MISION";
+                    EjemploAlumno.workspace().Escenario.chequearCambio("MISION");
                     sonido.playChangePause(); 
+                    EjemploAlumno.workspace().config = false;
+                    sonido.playPauseBackgound();
                     break;
             }
         }

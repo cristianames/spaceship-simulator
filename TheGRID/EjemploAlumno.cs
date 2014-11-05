@@ -181,6 +181,7 @@ namespace AlumnoEjemplos.TheGRID
             string opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
             music.chequearCambio(opcionElegida);
             music.refrescar();
+            scheme.chequearCambio("THE OPENING");
             #endregion
         }   
 
@@ -383,7 +384,7 @@ namespace AlumnoEjemplos.TheGRID
 
             #region Refrescar Variables
             
-            scheme.chequearCambio(escenarioActivado); //Realiza el cambio de capitulo
+            //scheme.chequearCambio(escenarioActivado); //Realiza el cambio de capitulo
             nave.desplazamientoReal = despl_avanzado; //Setea si se habilito el modo real o avanzado de desplazamiento (Con atraccion y choque)
 
             string opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
