@@ -34,6 +34,9 @@ namespace AlumnoEjemplos.TheGRID
         TgcStaticSound asteroideFragmentacion = new TgcStaticSound();
         TgcStaticSound asteroideImpacto = new TgcStaticSound();
         TgcStaticSound warp_time = new TgcStaticSound();
+        TgcStaticSound slideButton = new TgcStaticSound();
+        TgcStaticSound slidePanel = new TgcStaticSound();
+        TgcStaticSound changePause = new TgcStaticSound();
 
         public Musique()
         {
@@ -44,6 +47,9 @@ namespace AlumnoEjemplos.TheGRID
             asteroideFragmentacion.loadSound(EjemploAlumno.TG_Folder + "Music\\Asteroide\\fragmentacion_1.wav");
             asteroideImpacto.loadSound(EjemploAlumno.TG_Folder + "Music\\Asteroide\\impacto_1.wav");
             warp_time.loadSound(EjemploAlumno.TG_Folder + "Music\\warp.wav");
+            slideButton.loadSound(EjemploAlumno.TG_Folder + "Music\\Menu\\Slide.wav");
+            slidePanel.loadSound(EjemploAlumno.TG_Folder + "Music\\Menu\\Select.wav");
+            changePause.loadSound(EjemploAlumno.TG_Folder + "Music\\Menu\\Pause.wav");
         }
 
 
@@ -101,6 +107,24 @@ namespace AlumnoEjemplos.TheGRID
             asteroideImpacto.SoundBuffer.Stop();
             asteroideImpacto.SoundBuffer.SetCurrentPosition(0);
             asteroideImpacto.play();
+        }
+        public void playSlideButton()
+        {
+            slideButton.SoundBuffer.Stop();
+            slideButton.SoundBuffer.SetCurrentPosition(0);
+            slideButton.play();
+        }
+        public void playSlidePanel()
+        {
+            slidePanel.SoundBuffer.Stop();
+            slidePanel.SoundBuffer.SetCurrentPosition(0);
+            slidePanel.play();
+        }
+        public void playChangePause()
+        {
+            changePause.SoundBuffer.Stop();
+            changePause.SoundBuffer.SetCurrentPosition(0);
+            changePause.play();
         }
 
         internal void liberarRecursos()
