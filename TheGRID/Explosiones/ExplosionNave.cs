@@ -5,6 +5,7 @@ using System.Text;
 
 namespace AlumnoEjemplos.TheGRID.Explosiones
 {
+    //Modulo de explosion de la nave. El mismo no se usa en el estado actual del ejemplo
     class ExplosionNave : Explosion
     {
         public ExplosionNave(Dibujable owner, float life, float shield)
@@ -23,8 +24,7 @@ namespace AlumnoEjemplos.TheGRID.Explosiones
                 if (vida > danio) vida -= danio;
                 else
                 {
-                    vida = 0;
-                    //.morite();
+                    vida = 0; //Directamente se muere, para no tener negativos
                 }
             }
         }

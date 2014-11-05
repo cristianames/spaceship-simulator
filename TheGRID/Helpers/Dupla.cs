@@ -7,6 +7,10 @@ namespace AlumnoEjemplos.TheGRID.Helpers
 {
     public class Dupla<T>
     {
+        /*Clase definida para cuando es necesario retornar
+         * dos objetos.
+         * Utilizada mayormente en el sistema de deteccion de colisiones
+         */
         private T item1;
         private T item2;
         

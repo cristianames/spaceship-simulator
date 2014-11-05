@@ -6,9 +6,9 @@ using AlumnoEjemplos.TheGRID;
 
 namespace AlumnoEjemplos.TheGRID.Explosiones
 {
+    //Modulo de explosion de los asteroides que implementa la fragmentacion de los mismos.
     class ExplosionAsteroide : Explosion
     {
-        internal int categoria;
         List<int> fragmentos;
 
         ExplosionAsteroide(Dibujable owner, float life)
@@ -35,7 +35,6 @@ namespace AlumnoEjemplos.TheGRID.Explosiones
         {
             int pedazos;
             pedazos = Factory.elementoRandom<int>(fragmentos);
-            //duenio.morite();
 
         }
     }

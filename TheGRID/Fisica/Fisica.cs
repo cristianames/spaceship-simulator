@@ -40,10 +40,6 @@ namespace AlumnoEjemplos.TheGRID
             resultado += (acel * tiempo)/ (float)2;
             return resultado;
         }
-        public void rotar(float time, List<Dibujable> dibujables)
-        {
-            //duenio.rotar(time, dibujables);
-        }
         public Vector3 calcularTraslado(float time, List<Dibujable> dibujables)
         {
             Vector3 devolucion = new Vector3();
@@ -68,7 +64,6 @@ namespace AlumnoEjemplos.TheGRID
                 //Desplazamiento Direccional
                 Vector3 auxiliar2 = duenio.getDireccion();
                 Vector3 dDireccion = auxiliar2;
-                //direccion.Normalize();   //Ya viene normalizado.
                 float desplazo = calcularDistanciaDesplazada(0, duenio.traslacion * aceleracion, time);
                 dDireccion.Multiply(desplazo);
 
@@ -108,8 +103,8 @@ namespace AlumnoEjemplos.TheGRID
             ultimaDireccionCalculada = devolucion;
             return devolucion;
         }
-        public void activarAutomatico() { velocidadCrucero = velocidadInstantanea; }
-        public void desactivarAutomatico() { velocidadCrucero = velocidadMaxima; }
+        public void activarAutomatico() { velocidadCrucero = velocidadInstantanea; } //Activa el modo automatico, osea, no aceleramos por demas
+        public void desactivarAutomatico() { velocidadCrucero = velocidadMaxima; } //Desactiva el modo automatico
         public void impulsar(Vector3 direccionDeImpulso, float velocidadDeImpulso, float elapsedTimed)
         {
             direccionDeImpulso.Normalize();
@@ -126,7 +121,7 @@ namespace AlumnoEjemplos.TheGRID
             distanciaCuad *= distanciaCuad;
             float gravity = mass * masa;
             gravity = gravity / distanciaCuad;
-            gravity *= (float) 0.001; //Aca deberia ir el coeficiente de gravitacion universal.
+            gravity *= (float) 0.001; //Coeficiente de gravitacion adaptado para el ejemplo
             posicionSolicitante.Normalize();
             posicionSolicitante.Multiply(gravity);
             return posicionSolicitante;

@@ -102,7 +102,6 @@ namespace AlumnoEjemplos.TheGRID
             posicion.setActual(0, 0, 0);
             fisica = null;
             colision = null;
-            //explosion = null;
             vectorDireccion = new EjeCoordenadas();
             vectorDireccion.centrar(0, 0, 0);
             velocidadManual = false;
@@ -129,7 +128,7 @@ namespace AlumnoEjemplos.TheGRID
         }
         public void setFisica(float acel, float aFrenado, float velMax, float masaCuerpo) { fisica = new Fisica(this, acel, aFrenado, velMax, masaCuerpo); }  //Carga un nuevo módulo de fisica.        
         public void SetPropiedades(bool velMan, bool despReal, bool rotReal)    //La velocidad vuelve a 0 cuando no ocurre un evento continuo.
-        {       //Se usa el desplazamiento y la rotacion del modulo de fisica. Por defecto viene todo false.
+        {   //Se usa el desplazamiento y la rotacion del modulo de fisica. Por defecto viene todo false.
             velocidadManual = velMan;
             desplazamientoReal = despReal;
             rotacionReal = rotReal;
@@ -206,32 +205,26 @@ namespace AlumnoEjemplos.TheGRID
         #region Rotacion
         public void rotarPorTiempo(float time, List<Dibujable> dibujables)   //Movimiento de rotacion base de un dibujable.
         {
-            if (fisica != null && rotacionReal) fisica.rotar(time, dibujables);
-            else
+            float angulo = velocidadRadial * time;
+            Matrix rotation;
+            Vector3 rotacionActual = new Vector3();
+            if (inclinacion != 0) //Rotar en X
             {
-                float angulo = velocidadRadial * time;
-                Matrix rotation;
-                Vector3 rotacionActual = new Vector3();
-                if (inclinacion != 0) //Rotar en X
-                {
-                    rotation = vectorDireccion.calculoRotarX_desde(posicion.getActual(), angulo * inclinacion, ref rotacionActual);// paso un vector por referencia para luego poder aplicarsselo a la obb
-                    Transform *= rotation;
-                    if (colision != null) this.getColision().rotar(rotacionActual);
-
-
-                }
-                if (giro != 0) //Rotar en Y
-                {
-                    rotation = vectorDireccion.calculoRotarY_desde(posicion.getActual(), angulo * giro, ref rotacionActual);
-                    Transform *= rotation;
-                    if (colision != null) this.getColision().rotar(rotacionActual);
-                }
-                if (rotacion != 0) //Rotar en Z
-                {
-                    rotation = vectorDireccion.calculoRotarZ_desde(posicion.getActual(), angulo * rotacion * 2, ref rotacionActual);
-                    Transform *= rotation;
-                    if (colision != null) this.getColision().rotar(rotacionActual);
-                }
+                rotation = vectorDireccion.calculoRotarX_desde(posicion.getActual(), angulo * inclinacion, ref rotacionActual);// paso un vector por referencia para luego poder aplicarselo a la obb
+                Transform *= rotation;
+                if (colision != null) this.getColision().rotar(rotacionActual);
+            }
+            if (giro != 0) //Rotar en Y
+            {
+                rotation = vectorDireccion.calculoRotarY_desde(posicion.getActual(), angulo * giro, ref rotacionActual);
+                Transform *= rotation;
+                if (colision != null) this.getColision().rotar(rotacionActual);
+            }
+            if (rotacion != 0) //Rotar en Z
+            {
+                rotation = vectorDireccion.calculoRotarZ_desde(posicion.getActual(), angulo * rotacion * 2, ref rotacionActual);
+                Transform *= rotation;
+                if (colision != null) this.getColision().rotar(rotacionActual);
             }
             if (velocidadManual)
             {
@@ -267,7 +260,6 @@ namespace AlumnoEjemplos.TheGRID
             move = Matrix.Translation(director);
             desplazarUnaDistancia(director);
             if (velocidadManual) traslacion = 0;
-            //if (colision != null) colision.transladar(director);
         }
         public void ubicarEnUnaPosicion(Vector3 posicion)   //Ubica la mesh y la BB a la posicion indicada, a partir de la posicion actual del Dibujable.
         {
@@ -314,7 +306,7 @@ namespace AlumnoEjemplos.TheGRID
         public void render()
         {
             objeto.render();
-            if (colision != null)
+            if (colision != null) //Si tiene modulo de colisiones, renderiza la bounding del modulo
             {
                 if (EjemploAlumno.workspace().boundingBoxes && objeto.Enabled)
                     colision.render();
@@ -342,7 +334,7 @@ namespace AlumnoEjemplos.TheGRID
         #region Colisiones
         public virtual void teChoque(Dibujable colisionador, float moduloVelocidad)
         {
-            //Explosion.exiteChoqueEntre(colisionador, this);
+            //Metodo virtual que se utilizara para poder definir los choques
         }
         #endregion
     }

@@ -62,7 +62,6 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
     public class Configuracion
     {
 
-
         #region Atributos
         bool fondoAnimado = false;
         TgcSprite fondoAlternativo;
@@ -78,7 +77,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
         Menu opciones11;     //Capitulos.
         Menu opciones2;      //Graficos.
         Menu opciones3;      //Musica.
-        Menu opciones31;     //Audio.
+        //Menu opciones31;     //Audio.
         Size screenSize = GuiController.Instance.Panel3d.Size;
         Vector2 puntoEntrada = new Vector2(GuiController.Instance.Panel3d.Size.Width / 2f, -20f);
         Vector2 puntoSalida = new Vector2(-1000, GuiController.Instance.Panel3d.Size.Height / 2f - 5);

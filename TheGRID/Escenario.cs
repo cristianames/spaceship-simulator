@@ -21,8 +21,6 @@ namespace AlumnoEjemplos.TheGRID
         public ManagerLaser laserManager = new ManagerLaser(100);
         public ManagerAsteroide asteroidManager; 
         public Dibujable principal;
-        public TgcBoundingCylinder limite;
-        //private Boolean fuera_limite = false;
         public enum TipoModo { THE_OPENING, IMPULSE_DRIVE, WELCOME_HOME, VACUUM };
         public TipoModo escenarioActual = TipoModo.VACUUM;
         //Objetos
@@ -36,13 +34,10 @@ namespace AlumnoEjemplos.TheGRID
         public Escenario(Dibujable ppal) 
         {
             principal = ppal;
-            asteroidManager = new ManagerAsteroide(2000); //Siempre debe ser mucho mayor que la cantidad de asteroides que queremos tener, pero no tanto sino colapsa
-            limite = new TgcBoundingCylinder(principal.getPosicion(), 1500, 15000);
-            
+            asteroidManager = new ManagerAsteroide(2000);
             crearSol();
             crearParticulas();
-            crearPlaneta();
-            //crearEstrellas();   
+            crearPlaneta(); 
         }
 
         private static void crearParticulas()
@@ -80,9 +75,6 @@ namespace AlumnoEjemplos.TheGRID
         private void crearPlaneta()
         {
             TgcMesh mesh_Planet = Factory.cargarMesh(@"asteroid\theplanet-TgcScene.xml");
-            /*TgcTexture normalMapPlanet = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "asteroid\\Textures\\marsbump1k.jpg");
-            TgcTexture[] normalPlanetArray = new TgcTexture[] { normalMapPlanet };
-            TgcMeshBumpMapping bump_planet = TgcMeshBumpMapping.fromTgcMesh(mesh_Planet, normalPlanetArray);*/
             planet = new Dibujable();
             planet.setObject(mesh_Planet, 0, 10, new Vector3(10F, 10F, 10F));
             planet.setFisica(0, 0, 0, 500000000);
@@ -155,13 +147,13 @@ namespace AlumnoEjemplos.TheGRID
         }
         internal void dispararLaserAzul(float tiempo)
         {
-            if (tiempo == 0) return;
+            if (tiempo == 0) return; //Si no cargo nada, no hay lazer que disparar
             laserManager.cargarSuperDisparo(principal.getEjes(), principal.getPosicion(), tiempo);
         }
 
-        internal void refrescar(float elapsedTime)                                                  //RENDER DEL ESCENARIO
+        internal void refrescar(float elapsedTime)
         {
-
+            //Movemos el sol en funcion a la nave
             sol.rotarPorTiempo(elapsedTime, new List<Dibujable>());
             sol.desplazarUnaDistancia(principal.ultimaTraslacion);
             switch (escenarioActual)
@@ -183,11 +175,6 @@ namespace AlumnoEjemplos.TheGRID
                         EjemploAlumno.workspace().estrellaControl.insertarEstrellas(EjemploAlumno.workspace().estrellas, EjemploAlumno.workspace().estrellasNo, EjemploAlumno.workspace().nave.getPosicion(), EjemploAlumno.workspace().nave.getDireccion(), EjemploAlumno.workspace().nave.ultimaTraslacion, EjemploAlumno.workspace().nave.getEjes().mRotor, elapsedTime);
                     break;
             }
-            /*if (TgcCollisionUtils.testPointCylinder(principal.getPosicion(), limite))
-            {
-                fuera_limite = true;
-                //Aca activaria el bombardeo de asteroides que te destrozarian la carroceria
-            }*/
         }
 
         private void colisionNavePlaneta(Dibujable nave)
@@ -196,21 +183,16 @@ namespace AlumnoEjemplos.TheGRID
             if (nave.getColision().colisiono(((TgcBoundingSphere)planet.getColision().getBoundingBox())))
             {
                 color = Color.Red;
-                //--------
+                //--------Realiza el calculo para determinar para donde salir disparado por el choque elastico con el Planeta
                 int flagReintento = 0;
-                //Dupla<Vector3> velocidades = Fisica.CalcularChoqueElastico(nave, planet);
                 Vector3 direccion = nave.getDireccion();
                 Vector3 distancias = Vector3.Subtract(nave.getPosicion(), planet.getPosicion());
-                //distancias.X *= distancias.X;
-                //distancias.Y *= distancias.Y;
-                //distancias.Z *= distancias.Z;
                 distancias.Normalize();
                 distancias.Multiply(1);
                 direccion.X *= distancias.X;
                 direccion.Y *= distancias.Y;
                 direccion.Z *= distancias.Z;
-                float velocidad = nave.fisica.velocidadInstantanea * 0.7f;// / 3f;
-                //velocidad = (velocidad * distancias.X)+(velocidad * distancias.Y)+(velocidad * distancias.Z);
+                float velocidad = nave.fisica.velocidadInstantanea * 0.7f;
                 float radioCuad = FastMath.Pow2(((TgcBoundingSphere)planet.getColision().getBoundingBox()).Radius) + 0;
                 while (Vector3.LengthSq(Vector3.Subtract(nave.getPosicion(), planet.getPosicion())) < radioCuad)
                 {
@@ -224,7 +206,7 @@ namespace AlumnoEjemplos.TheGRID
         #endregion
 
         #region Chequeo de cambios
-        internal void chequearCambio(string opcion)
+        internal void chequearCambio(string opcion) //Cambio de Capitulo
         {
             switch (opcion)
             {
@@ -248,6 +230,7 @@ namespace AlumnoEjemplos.TheGRID
         }
         #endregion
 
+        //Codigo funcional, pero no utilizado aun. Genera la dispersion de particulas espaciales
         #region Deprecados
         private void crearEstrellas()
         {
@@ -269,7 +252,7 @@ namespace AlumnoEjemplos.TheGRID
                 star.Radius = 20;
                 int resto;
                 Math.DivRem(i, texturasEstrellas.Count(), out resto);
-                star.setTexture(texturasEstrellas[resto]);         //(Factory.elementoRandom<TgcTexture>(texturasEstrellas));
+                star.setTexture(texturasEstrellas[resto]);      
                 star.Position = new Vector3(0, 0, 0);
                 star.BasePoly = TgcSphere.eBasePoly.ICOSAHEDRON;
                 star.Inflate = true;

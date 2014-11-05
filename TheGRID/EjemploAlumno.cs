@@ -35,7 +35,7 @@ namespace AlumnoEjemplos.TheGRID
         /// Completar nombre del grupo en formato Grupo NN
         public override string getName(){ return "Grupo TheGRID"; }
         /// Completar con la descripción del TP
-        public override string getDescription() { return "Welcome to TheGRID"+Environment.NewLine+"TAB: Menú de Configuracion"+Environment.NewLine+"P: Menú de Pausa"+Environment.NewLine+"LeftShift: Efecto Blur"+Environment.NewLine+"LeftCtrl: Modo Crucero"+Environment.NewLine+"Espacio: Disparo Principal"+Environment.NewLine+"RightShift: Disparo Secundario"+Environment.NewLine+"Z: DO A BARREL ROLL!!"; }
+        public override string getDescription() { return "Welcome to TheGRID"+Environment.NewLine+"C: Menú de Configuracion"+Environment.NewLine+"P: Menú de Pausa"+Environment.NewLine+"LeftShift: Efecto Blur"+Environment.NewLine+"LeftCtrl: Modo Automático"+Environment.NewLine+"Espacio: Disparo Principal"+Environment.NewLine+"RightShift: Disparo Secundario"; }
         #endregion
 
         #region ATRIBUTOS
@@ -133,8 +133,9 @@ namespace AlumnoEjemplos.TheGRID
             logger.log("Le damos la bienvenida a este simulador. A continuacion le indicaremos los controles que puede utilizar:");
             logger.log("Paso 1: Para rotar sobre los ejes Z y X utilice las FLECHAS de direccion. Para rotar sobre el eje Y utilice las teclas A y D.");
             logger.log("Paso 2: Para avanzar presione la W pero cuidado con el movimiento inercial. Seguramente se va a dar cuenta de lo que hablo. Para frenar puede presionar la tecla S. Esto estabiliza la nave sin importar que fuerzas tiren de ella.");
-            logger.log("Paso 3: Para avanzar con cuidado, acelere o frene hasta la velocidad deseada, pulse una vez LeftCtrl y luego acelere. Esto activa el modo crucero. Para desactivarlo basta con frenar un poco o volver a pulsar LeftCtrl.");
-            logger.log("Paso 4: Para activar el Motion Blur debe ir a la maxima velocidad y luego pulsar una vez LeftShift. La desactivacion es de la misma forma. Por ultimo pruebe disparar presionando SpaceBar. -- Disfrute el ejemplo.");
+            logger.log("Paso 3: Para avanzar con cuidado, acelere o frene hasta la velocidad deseada, pulse una vez LeftCtrl y luego acelere. Esto activa el modo automatico. Para desactivarlo basta con frenar un poco o volver a pulsar LeftCtrl.");
+            logger.log("Paso 4: Para activar el Motion Blur debe ir a la maxima velocidad y luego pulsar una vez LeftShift. La desactivacion es de la misma forma.");
+            logger.log("Por ultimo pruebe disparar presionando SpaceBar o RightShift. -- Disfrute el ejemplo.");
 
             //GuiController.Instance.FullScreenEnable = true;
 
@@ -154,23 +155,20 @@ namespace AlumnoEjemplos.TheGRID
             //Cargamos la nave como objeto principal.
             camara = new CambioCamara(nave);
 
+            //Inicializacion del Control por Mouse
             Control focusWindows = GuiController.Instance.D3dDevice.CreationParameters.FocusWindow;
             mouseCenter = focusWindows.PointToScreen(new Point(focusWindows.Width / 2, focusWindows.Height / 2));
             mouse = false;
             Cursor.Position = mouseCenter;
-
-            
             altoPantalla = focusWindows.Height;
             anchoPantalla = focusWindows.Width;
 
             #region PANEL DERECHO
-
-            //Cargamos valores en el panel lateral
+            //Cargar valor en UserVar
             GuiController.Instance.UserVars.addVar("Vel-Actual:");
             GuiController.Instance.UserVars.addVar("PosX:");
             GuiController.Instance.UserVars.addVar("PosY:");
             GuiController.Instance.UserVars.addVar("PosZ:");
-            //Cargar valor en UserVar
             GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
             GuiController.Instance.UserVars.setValue("PosX:", nave.getPosicion().X);
             GuiController.Instance.UserVars.setValue("PosY:", nave.getPosicion().Y);
@@ -180,7 +178,6 @@ namespace AlumnoEjemplos.TheGRID
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
             string[] opciones2 = new string[] { "Lista Completa", "Castor", "Derezzed", "M4 Part 2", "ME Theme", "New Worlds", "Solar Sailer", "Spectre", "Tali", "The Son of Flynn", "Tron Ending", "Sin Musica" };
             GuiController.Instance.Modifiers.addInterval("Musica de fondo", opciones2, 0);
-            //GuiController.Instance.Modifiers.addBoolean("Velocidad Manual", "Activado", true);
             string opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
             music.chequearCambio(opcionElegida);
             music.refrescar();
@@ -194,12 +191,12 @@ namespace AlumnoEjemplos.TheGRID
                 Cursor.Hide();
             }
             TgcD3dInput input = GuiController.Instance.D3dInput;
-            if (pausa)
+            if (pausa) //Entramos a la pantalla de pausa
             {
                 guiPausa.render();
                 return;
             }
-            if (config)
+            if (config) //Entramos al menu de configuracion
             {
                 guiConfig.operar(elapsedTime);
                 return;
@@ -237,16 +234,16 @@ namespace AlumnoEjemplos.TheGRID
            // if (GuiController.Instance.D3dInput.YposRelative > 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) { nave.inclinacion = 1; }
             if (input.keyDown(Key.Down)) { nave.inclinacion = -1; }
            // if (GuiController.Instance.D3dInput.YposRelative < 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) { nave.inclinacion = -1; }
-            //Letras
             
-            if (input.keyDown(Key.A)) { nave.giro = -1; }
-            
+            //Movimientos
+            if (input.keyDown(Key.A)) { nave.giro = -1; }          
             if (input.keyDown(Key.D)) { nave.giro = 1; }
             if (input.keyDown(Key.W)) { nave.acelerar(); }
             if (input.keyDown(Key.S)) { if (!superRender.motionBlurActivado)nave.frenar(); }
             if (input.keyPressed(Key.S)) { nave.fisica.desactivarAutomatico(); velocidadAutomatica = false; }
             if (input.keyDown(Key.Z)) { nave.rotarPorVectorDeAngulos(new Vector3(0, 0, 15)); }
-            if (input.keyPressed(Key.LeftControl)) 
+
+            if (input.keyPressed(Key.LeftControl)) //Modo Automatico
             {
                 if (velocidadAutomatica)
                 {
@@ -259,6 +256,7 @@ namespace AlumnoEjemplos.TheGRID
                     velocidadAutomatica = true;
                 }
             }
+            //Activamos el motionBlur si estamos en Impuse Drive y presionan LeftShift
             if (scheme.escenarioActual == Escenario.TipoModo.IMPULSE_DRIVE)
             {
                 if (input.keyPressed(Key.LeftShift))
@@ -286,7 +284,7 @@ namespace AlumnoEjemplos.TheGRID
                     }
                 }
             }
-            if (scheme.escenarioActual == Escenario.TipoModo.THE_OPENING)
+            if (scheme.escenarioActual == Escenario.TipoModo.THE_OPENING) //Habilita el disparo si estamos con los asteroides
             {
                 if (input.keyDown(Key.Space) || (input.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT) && mouse))
                 {
@@ -350,36 +348,40 @@ namespace AlumnoEjemplos.TheGRID
                 nave.acelerar();
             }
 
+            //Update de la nave
             if (velocidadAutomatica) nave.acelerar();
-
             nave.rotarPorTiempo(elapsedTime, listaDibujable);
             if(gravity)nave.desplazarsePorTiempo(elapsedTime, new List<Dibujable>(scheme.CuerposGravitacionales));
             else nave.desplazarsePorTiempo(elapsedTime, new List<Dibujable>());
 
+            //Update del escnario
             scheme.refrescar(elapsedTime);
-
+            //Update de la camara
             camara.cambiarPosicionCamara();
             currentFrustrum.updateMesh(GuiController.Instance.CurrentCamera.getPosition(),GuiController.Instance.CurrentCamera.getLookAt());
             
-            //Si estamos en una vel de warp considerable, le damos sonido
+            //Si estamos en una vel de warp considerable, le damos sonido al warp
             if (nave.velocidadActual() > 25000f)
                 music.playWarp();
             else
                 music.stopWarp();
             
-            skySphere.render(nave);     //Solo actualiza pos. Tiene deshabiltiado los render propiamente dicho.
+            skySphere.render(nave);     //Solo actualiza posicion de la skysphere. Tiene deshabiltiado los render, eso lo hace el SuperRender
             #endregion
-           
-            superRender.render(nave, sol, dibujableCollection, objectosNoMeshesCollection, objetosBrillantes); //Redirige todo lo que renderiza dentro del "shader"
+
+            //Redirige todo lo que renderiza para aplicar los efectos
+            superRender.render(nave, sol, dibujableCollection, objectosNoMeshesCollection, objetosBrillantes); 
 
             #region Refrescar panel lateral
+            
             scheme.chequearCambio(escenarioActivado); //Realiza el cambio de capitulo
+            nave.desplazamientoReal = despl_avanzado; //Setea si se habilito el modo real o avanzado de desplazamiento (Con atraccion y choque)
 
             string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
             camara.chequearCambio(opcionElegida);
             opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
             music.chequearCambio(opcionElegida);
-            nave.desplazamientoReal = despl_avanzado;
+
             //Refrescar User Vars
             GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
             GuiController.Instance.UserVars.setValue("PosX:", nave.getPosicion().X);

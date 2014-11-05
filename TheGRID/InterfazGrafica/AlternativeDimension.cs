@@ -19,7 +19,6 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
         Nave ppal;
         Dibujable sol;
         SkySphere skySphere;
-        //CambioCamara camara;
         List<Dibujable> dibujableCollection = new List<Dibujable>();
         List<IRenderObject> objectosNoMeshesCollection = new List<IRenderObject>();
         List<TgcMesh> objetosBrillantes = new List<TgcMesh>();
@@ -37,7 +36,6 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
             dibujableCollection.Add(skySphere.dibujable_skySphere);
             ppal.rotarPorVectorDeAngulos(Factory.VectorRandom(-50, 50));
             GuiController.Instance.RotCamera.CameraDistance = 75;
-            //camara = new CambioCamara(ppal);
 
         }
         public void render(float elapsedTime)

@@ -65,13 +65,14 @@ namespace AlumnoEjemplos.TheGRID
         }
         public void playLazer()
         {
+
             lazer.SoundBuffer.Stop();
             lazer.SoundBuffer.SetCurrentPosition(0);
-            lazer.play();
+            if (EjemploAlumno.workspace().musicaActivada) { lazer.play(); };
         }
         public void playLazerCarga()
         {
-            lazer2_carga.play(true);
+            if (EjemploAlumno.workspace().musicaActivada) { lazer2_carga.play(true); }
         }
         public void playLazer2()
         {
@@ -79,12 +80,12 @@ namespace AlumnoEjemplos.TheGRID
             lazer2_carga.SoundBuffer.SetCurrentPosition(0);
             lazer2_disparo.SoundBuffer.Stop();
             lazer2_disparo.SoundBuffer.SetCurrentPosition(0);
-            lazer2_disparo.play();
+            if (EjemploAlumno.workspace().musicaActivada) { lazer2_disparo.play(); }
         }
 
         public void playWarp()
         {
-            warp_time.play(true);
+            if (EjemploAlumno.workspace().musicaActivada) { warp_time.play(true); }
         }
         public void stopWarp()
         {
@@ -95,37 +96,37 @@ namespace AlumnoEjemplos.TheGRID
         {
             asteroideColision.SoundBuffer.Stop();
             asteroideColision.SoundBuffer.SetCurrentPosition(0);
-            asteroideColision.play();
+            if (EjemploAlumno.workspace().musicaActivada) { asteroideColision.play(); }
         }
         public void playAsteroideFragmentacion()
         {
             asteroideFragmentacion.SoundBuffer.Stop();
             asteroideFragmentacion.SoundBuffer.SetCurrentPosition(0);
-            asteroideFragmentacion.play();
+            if (EjemploAlumno.workspace().musicaActivada) { asteroideFragmentacion.play(); }
         }
         public void playAsteroideImpacto()
         {
             asteroideImpacto.SoundBuffer.Stop();
             asteroideImpacto.SoundBuffer.SetCurrentPosition(0);
-            asteroideImpacto.play();
+            if (EjemploAlumno.workspace().musicaActivada) { asteroideImpacto.play(); }
         }
         public void playSlideButton()
         {
             slideButton.SoundBuffer.Stop();
             slideButton.SoundBuffer.SetCurrentPosition(0);
-            slideButton.play();
+            if (EjemploAlumno.workspace().musicaActivada) { slideButton.play(); }
         }
         public void playSlidePanel()
         {
             slidePanel.SoundBuffer.Stop();
             slidePanel.SoundBuffer.SetCurrentPosition(0);
-            slidePanel.play();
+            if (EjemploAlumno.workspace().musicaActivada) { slidePanel.play(); }
         }
         public void playChangePause()
         {
             changePause.SoundBuffer.Stop();
             changePause.SoundBuffer.SetCurrentPosition(0);
-            changePause.play();
+            if (EjemploAlumno.workspace().musicaActivada) { changePause.play(); }
         }
 
         internal void liberarRecursos()
