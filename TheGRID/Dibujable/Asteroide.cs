@@ -11,7 +11,6 @@ namespace AlumnoEjemplos.TheGRID
     public class Asteroide : Dibujable
     {
         public Asteroide() : base() {}
-        private float limite = 300f;    //QUE MIERDA ES LIMITE?? - anda a saber, quien lo puso.... - Tomas
         public TamanioAsteroide tamanioAnterior;
         public ManagerAsteroide manager;
         private float vida;
@@ -21,44 +20,36 @@ namespace AlumnoEjemplos.TheGRID
 
         public override void teChoque(Dibujable colisionador, float moduloVelocidad)
         {
-            //Verificacion de mierda por culpa del diseño de mieeeeeerda  --  Que onda gato!
+            //Verificacion por si el asteroide NO posee fisica asociada.
             float masa = 0.01f;
-            if (colisionador.fisica != null) masa = colisionador.fisica.Masa;
-            
+            if (colisionador.fisica != null) masa = colisionador.fisica.Masa;           
             daniate(masa, moduloVelocidad);
             if (vida <= 0) sinVida(colisionador);
         }
 
         private void sinVida(Dibujable colisionador)
         {
-            //float volumen = FastMath.PI * 2 * FastMath.Pow2(((TgcBoundingSphere)getColision().getBoundingBox()).Radius);
-            if (limite < fisica.Masa) { fraccionate(); if (!colisionador.soyAsteroide())EjemploAlumno.workspace().music.playAsteroideFragmentacion(); }
-            else
-            {
-                // Explosion.explosionAsteroide(this);
-                //ManagerAsteroide manager = TheGrid.EjemploAlumno.workspace().AsteroidManager;
-                manager.desactivar(this);
-            }
+            fraccionate();
+            if (!colisionador.soyAsteroide())
+                EjemploAlumno.workspace().music.playAsteroideFragmentacion();
         }
 
         private void daniate(float masa, float moduloVelocidad)
         {
-            //Flaseada para bajar la vida
+            //Perdida de vida
             vida -= (float) 5 * masa * moduloVelocidad;
         }
 
         private void fraccionate()
         {
-            //ManagerAsteroide manager = TheGrid.EjemploAlumno.workspace().Escenario.asteroidManager;
             manager.desactivar(this);
-            if (tamanioAnterior != TamanioAsteroide.NULO) 
+            if (tamanioAnterior != TamanioAsteroide.NULO) //Chequeo de si no es el asteroide mas chico
                     manager.fabricarMiniAsteroides(3, tamanioAnterior, getPosicion(),((TgcBoundingSphere)colision.getBoundingBox()).Radius);
-            
         }
 
         public static FormatoAsteroide elegirAsteroidePor(TamanioAsteroide tamanio)
         {
-            switch (tamanio)
+            switch (tamanio) //Factory de asteroides en funcion al enum
             {
                 case TamanioAsteroide.MUYGRANDE: return new AsteroideMuyGrande();
                 case TamanioAsteroide.GRANDE: return new AsteroideGrande();
@@ -71,12 +62,13 @@ namespace AlumnoEjemplos.TheGRID
 
     public enum TamanioAsteroide { MUYGRANDE, GRANDE, MEDIANO, CHICO, NULO }
 
+    //Extract Class que se encarga de setear la forma del asteroide
     public interface FormatoAsteroide
     {
         float getMasa(); //En toneladas
         Vector3 getVolumen(); //En realidad un factor de escalado
         float getVelocidad();
-        TamanioAsteroide tamanioAnterior();
+        TamanioAsteroide tamanioAnterior(); //Para saber cual es el asteroide mas chico siguiente. Si es el mas chico, es TamanioAsteroide.NULO
         float vidaInicial();
     }
 

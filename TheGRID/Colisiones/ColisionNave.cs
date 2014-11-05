@@ -10,9 +10,8 @@ namespace AlumnoEjemplos.TheGRID.Colisiones
 {
     class ColisionNave : IColision
     {
-        private TgcObb Obb;
-
-
+        private TgcObb Obb; //Como es una nave medianamente cuadrada, la implementamos con una Obb para simplificar el chequeo
+        //Para ver notas sobre las Colisiones, ir a la interfaz de donde extiende
         public IRenderObject getBoundingBox()
         {
             return this.Obb;
@@ -39,7 +38,7 @@ namespace AlumnoEjemplos.TheGRID.Colisiones
         }
         public void escalar(Vector3 tamanio)
         {
-            ;
+            ; //La nave siempre se mantiene del mismo tamaño
         }
 
         public bool colisiono(TgcBoundingSphere objeto) 

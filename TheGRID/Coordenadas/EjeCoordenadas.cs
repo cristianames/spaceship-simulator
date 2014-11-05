@@ -9,6 +9,11 @@ namespace AlumnoEjemplos.TheGRID
 {
     public class EjeCoordenadas
     {
+        /* Esta clase funciona como un eje de coordenadas relativo
+         * para trabajar las rotaciones en funcion a un pivote.
+         * Ademas permite una rotacion mejorada en funcion de los desplazamientos,
+         * no de los angulos resplazados.
+         */ 
         public Vector3 vectorX;
         public Vector3 vectorY;
         public Vector3 vectorZ;
@@ -143,11 +148,11 @@ namespace AlumnoEjemplos.TheGRID
 
             return rototraslation;
         }
-        //De la subclase
+        //Ejes del sistema de coordenadas
         public Vector3 direccion() { return vectorZ; }
         public Vector3 direccion_Y() { return vectorY; }
         public Vector3 direccion_X() { return vectorX; }
-        public Vector3 direccionAnterior() { return vectorK; }
+        public Vector3 direccionAnterior() { return vectorK; } //Eje Z anterior a la rotacion para poder determinar cuanto se roto.
 
     }
 }

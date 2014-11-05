@@ -11,6 +11,10 @@ namespace AlumnoEjemplos.TheGRID.Camara
 {
     public class CambioCamara
     {
+        /* Redefimos las camaras debido a que la camara FPS del TgcViewer,
+         * tiene ciertos detalles al trabajar con los 3 ejes de rotacion
+         * y para solucionarlo creamos la nuestra
+         */
         enum TipoModo {FPS, TPS, Exterior};
         private TipoModo modo = TipoModo.TPS; 
         private Dibujable objeto_foco;
@@ -43,7 +47,7 @@ namespace AlumnoEjemplos.TheGRID.Camara
             Vector3 temp = objeto_foco.getDireccion();
             temp.Multiply(150);
             posicionDeCamara -= temp;
-            posicionDeCamara += new Vector3(0, 40, 0);
+            posicionDeCamara += new Vector3(0, 40, 0); //Lo desplazamos para obtener una perpectiva exterior a la de la nave
             GuiController.Instance.setCamera(posicionDeCamara, objeto_foco.getPosicion() + temp);
         }
         private void moverFirst()
@@ -55,7 +59,7 @@ namespace AlumnoEjemplos.TheGRID.Camara
             Vector3 focoCamara = objeto_foco.getPosicion();
             temp = objeto_foco.getDireccion();
             temp.Multiply(500);
-            focoCamara += temp;
+            focoCamara += temp; //Lo desplazamos para obtener una vista desde la punta de la nave
 
             GuiController.Instance.setCamera(posicionDeCamara, focoCamara);
         }

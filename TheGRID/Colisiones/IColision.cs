@@ -1,4 +1,4 @@
-﻿using Microsoft.DirectX;
+﻿    using Microsoft.DirectX;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +11,11 @@ namespace AlumnoEjemplos.TheGRID.Colisiones
 {
     public interface IColision
     {
+        /* Esta es la interfaz para tratar el modulo de colisiones
+         * donde se trabaja con las boundings. 
+         * Tiene la particularidad de ser medianamente polimorfico,
+         * ya que los chequeos entre boundings NO son polimorficos
+         */
         IRenderObject getBoundingBox();
         void setBoundingBox(IRenderObject bb);
         void render();

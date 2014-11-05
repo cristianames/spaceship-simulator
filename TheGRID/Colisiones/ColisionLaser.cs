@@ -10,8 +10,8 @@ namespace AlumnoEjemplos.TheGRID.Colisiones
 {
     class ColisionLaser: IColision
     {
-        private TgcObb Obb;
-        
+        private TgcObb Obb; //Idem a lo de la nave...los laseres SON tecnicamente cajas que se mueven
+        //Para ver notas sobre las Colisiones, ir a la interfaz de donde extiende
 
         public IRenderObject getBoundingBox()
         {

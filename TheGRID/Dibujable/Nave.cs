@@ -45,58 +45,47 @@ namespace AlumnoEjemplos.TheGRID
             foreach (var vRotor in getEjes().lRotor) { naveObb.rotate(vRotor); } //Le aplicamos TODAS las rotaciones que hasta ahora lleva la nave.
             setColision(new ColisionNave());
             getColision().setBoundingBox(naveObb);
-            //nave.getColision().transladar(posicionNave);
         }
-
 
         public override void teChoque(Dibujable colisionador, float velocidadColisionador)
         {
+            //Aqui se bajaria la vida de la nave o explotaria, pero para mayor experiencia, lo removimos asi la nave no muere.
             //if (vida <= 0) Explosion.explosionNave(this);
             //else restaVida(colisionador);
         }
 
         private void restaVida(Dibujable colisionador)
         {
-            //throw new NotImplementedException();
+            //Idem arriba
         }
 
         public void setearAceleracion(float acel)
         {
             fisica.aceleracion = acel;
         }
-
-        public Vector3 puntoLuzIzq()
+        //Luces de la nave
+        public Vector3 puntoLuzIzq() //Posicion de la luz izquierda de la nave
         {
-            /*
-            Vector3 posNave = getPosicion();
-            Vector3 desp_X = Vector3.Multiply(getDireccion_X(),9);
-            Vector3 desp_Z = Vector3.Multiply(getDireccion(),15);
-            Vector3 desp_Y = Vector3.Multiply(getDireccion_Y(),2);
-            return Vector3.Add(Vector3.Add(Vector3.Add(posNave, desp_X), desp_Y), desp_Z);
-             */
-            //Ahora la version mas optimizada y menos descriptiva.
             return Vector3.Add(Vector3.Add(Vector3.Add(getPosicion(), Vector3.Multiply(getDireccion_X(), -9.7f)),
                 Vector3.Multiply(getDireccion_Y(), 0)), Vector3.Multiply(getDireccion(), 6));
         }
-        public Vector3 puntoLuzDer()
+        public Vector3 puntoLuzDer() //Posicion de la luz derecha de la nave
         {
             return Vector3.Add(Vector3.Add(Vector3.Add(getPosicion(), Vector3.Multiply(getDireccion_X(), 9.7f)),
                 Vector3.Multiply(getDireccion_Y(), 0)), Vector3.Multiply(getDireccion(), 6));
         }
-        public Vector3 puntoLuzCent()
+        public Vector3 puntoLuzCent() //Posicion de la luz frontal de la nave
         {
             return Vector3.Add(Vector3.Add(Vector3.Add(getPosicion(), Vector3.Multiply(getDireccion_X(), 0)),
                 Vector3.Multiply(getDireccion_Y(), -1)), Vector3.Multiply(getDireccion(), 48));
         }
-        public Vector3 dirLuzIzq()
+        public Vector3 dirLuzIzq() //Direccion de la luz izquierda de la nave
         {
-            //return Vector3.Add(puntoLuzIzq(), Vector3.Multiply(getDireccion(), 50)) - getPosicion();
             return Vector3.Subtract(puntoLuzIzq(), getPosicion());
         }
-        public Vector3 dirLuzDer()
+        public Vector3 dirLuzDer() //Posicion de la luz derecha de la nave
         {
-            //return Vector3.Add(puntoLuzDer(), Vector3.Multiply(getDireccion(), 50)) - getPosicion();
             return Vector3.Subtract(puntoLuzDer(), getPosicion());
-        }        //Ya estan los puntos de las luces. Para obtener la direccion de la luz usar el metodo getDireccion();
+        }
     }
 }

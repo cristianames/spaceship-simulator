@@ -10,8 +10,9 @@ namespace AlumnoEjemplos.TheGRID.Colisiones
 {
     class ColisionAsteroide: IColision
     {
-        private TgcBoundingSphere bounding_sphere;
+        private TgcBoundingSphere bounding_sphere; //Asteroides medianamente redondos, bounding sphere....tiene sentido no?
 
+        //Para ver notas sobre las Colisiones, ir a la interfaz de donde extiende
 
         public IRenderObject getBoundingBox()
         {
@@ -33,7 +34,7 @@ namespace AlumnoEjemplos.TheGRID.Colisiones
         }
 
 
-        public void rotar(Vector3 rotacion) { ; }
+        public void rotar(Vector3 rotacion) { ; } //Es una esfera!
         public void escalar(Vector3 tamanio)
         {
             this.bounding_sphere.setValues(this.bounding_sphere.Center, tamanio.Length());
