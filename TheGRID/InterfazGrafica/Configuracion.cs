@@ -162,21 +162,21 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
             spriteTemp.spritePrincipal.Scaling = new Vector2(0.5f, 0.5f);
             listaTemp.Add(spriteTemp);
             spriteTemp = new Sprite(Clase.EFECTO_GLOW);
-            spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\GlowOFF.png");
+            spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\GlowON.png");
             spriteTemp.spritePrincipal.Scaling = new Vector2(0.5f, 0.5f);
-            spriteTemp.spriteAlternativo.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\GlowON.png");
+            spriteTemp.spriteAlternativo.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\GlowOFF.png");
             spriteTemp.spriteAlternativo.Scaling = new Vector2(0.5f, 0.5f);
             listaTemp.Add(spriteTemp);
             spriteTemp = new Sprite(Clase.FARO_DELANTERO);
-            spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\FaroOFF.png");
+            spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\FaroON.png");
             spriteTemp.spritePrincipal.Scaling = new Vector2(0.5f, 0.5f);
-            spriteTemp.spriteAlternativo.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\FaroON.png");
+            spriteTemp.spriteAlternativo.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\FaroOFF.png");
             spriteTemp.spriteAlternativo.Scaling = new Vector2(0.5f, 0.5f);
             listaTemp.Add(spriteTemp);
             spriteTemp = new Sprite(Clase.FARO_POSICIONAL);
-            spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\PosicionOFF.png");
+            spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\PosicionON.png");
             spriteTemp.spritePrincipal.Scaling = new Vector2(0.5f, 0.5f);
-            spriteTemp.spriteAlternativo.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\PosicionON.png");
+            spriteTemp.spriteAlternativo.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\PosicionOFF.png");
             spriteTemp.spriteAlternativo.Scaling = new Vector2(0.5f, 0.5f);
             listaTemp.Add(spriteTemp);
             spriteTemp = new Sprite(Clase.BOUNDING_BOX);
@@ -376,18 +376,22 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
                     break;
                 case Clase.EFECTO_GLOW:
                     menuActivo.listaOpciones[opcionElegida].alternarSprite();
+                    alternarBooleano(ref EjemploAlumno.workspace().glow);
                     sonido.playChangePause(); 
                     break;
                 case Clase.FARO_DELANTERO:
                     menuActivo.listaOpciones[opcionElegida].alternarSprite();
+                    alternarBooleano(ref EjemploAlumno.workspace().linterna);
                     sonido.playChangePause(); 
                     break;
                 case Clase.FARO_POSICIONAL:
                     menuActivo.listaOpciones[opcionElegida].alternarSprite();
+                    alternarBooleano(ref EjemploAlumno.workspace().luces_posicionales);
                     sonido.playChangePause(); 
                     break;
                 case Clase.BOUNDING_BOX:
                     menuActivo.listaOpciones[opcionElegida].alternarSprite();
+                    alternarBooleano(ref EjemploAlumno.workspace().boundingBoxes);
                     sonido.playChangePause(); 
                     break;
                 case Clase.FULLSCREEN:
@@ -396,19 +400,23 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
                     break;
                 case Clase.MUSICA_FONDO:
                     menuActivo.listaOpciones[opcionElegida].alternarSprite();
+                    alternarBooleano(ref EjemploAlumno.workspace().musicaActivada);
                     sonido.playChangePause(); 
                     break;
                 case Clase.SELECCIONAR_TEMA:
                     //NADA de momento
                     break;
                 case Clase.CAPITULO1:
-                    //COMPLETAR DESPUES
+                    EjemploAlumno.workspace().escenarioActivado = "THE OPENING";
+                    sonido.playChangePause(); 
                     break;
                 case Clase.CAPITULO2:
-                    //COMPLETAR DESPUES
+                    EjemploAlumno.workspace().escenarioActivado = "IMPULSE DRIVE";
+                    sonido.playChangePause(); 
                     break;
                 case Clase.CAPITULO3:
-                    //COMPLETAR DESPUES
+                    EjemploAlumno.workspace().escenarioActivado = "WELCOME HOME";
+                    sonido.playChangePause(); 
                     break;
                 case Clase.MISION:
                     //COMPLETAR DESPUES
@@ -447,6 +455,13 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
                     transicion = true;
                     break;
             }
+        }
+        public void alternarBooleano(ref bool variable)
+        {
+            if (variable)
+                variable = false;
+            else
+                variable = true;
         }
         private void operarSalida(float elapsedTime)
         {

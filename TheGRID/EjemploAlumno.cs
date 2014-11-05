@@ -35,7 +35,7 @@ namespace AlumnoEjemplos.TheGRID
         /// Completar nombre del grupo en formato Grupo NN
         public override string getName(){ return "Grupo TheGRID"; }
         /// Completar con la descripción del TP
-        public override string getDescription() { return "Welcome to TheGRID"+Environment.NewLine+"FLECHAS: Rotaciones"+Environment.NewLine+"WASD: Desplazamiento"+Environment.NewLine+"LeftShift: Efecto Blur"+Environment.NewLine+"LeftCtrl: Modo Crucero"+Environment.NewLine+"Espacio: Disparo Principal"+Environment.NewLine+"RightShift: Disparo Secundario"+Environment.NewLine+"Z: DO A BARREL ROLL!!"; }
+        public override string getDescription() { return "Welcome to TheGRID"+Environment.NewLine+"TAB: Menú de Configuracion"+Environment.NewLine+"P: Menú de Pausa"+Environment.NewLine+"LeftShift: Efecto Blur"+Environment.NewLine+"LeftCtrl: Modo Crucero"+Environment.NewLine+"Espacio: Disparo Principal"+Environment.NewLine+"RightShift: Disparo Secundario"+Environment.NewLine+"Z: DO A BARREL ROLL!!"; }
         #endregion
 
         #region ATRIBUTOS
@@ -47,7 +47,6 @@ namespace AlumnoEjemplos.TheGRID
         public Estrella estrellaControl;
         public List<TgcMesh> estrellas;
         public List<TgcMesh> estrellasNo;
-        public bool boundingBoxes;
         public float velocidadBlur = 0;
         bool velocidadCrucero = false;
         public float tiempoBlur=0.3f;
@@ -71,12 +70,7 @@ namespace AlumnoEjemplos.TheGRID
         public Musique music = new Musique();
         //Lazer Azul
         float pressed_time_lazer = 0;
-        //Variables para el parpadeo
-        float tiempo_acum = 0;
-        float periodo_parpadeo = 1.5f;
-        public bool parpadeoIzq = true;
-        public bool parpadeoDer = false;
-        public bool linterna = true;
+
         public Point mouseCenter;
         public int altoPantalla;
         public int anchoPantalla;
@@ -85,6 +79,21 @@ namespace AlumnoEjemplos.TheGRID
         public bool config = false;
         Pausa guiPausa = new Pausa();
         Configuracion guiConfig;
+        #endregion
+
+        #region Atributos Menu
+        public bool glow = true;
+        public bool luces_posicionales = true;
+        //Variables para el parpadeo
+            float tiempo_acum = 0;
+            float periodo_parpadeo = 1.5f;
+            public bool parpadeoIzq = true;
+            public bool parpadeoDer = false;
+            public bool linterna = true;
+        public bool boundingBoxes = false;
+        public bool musicaActivada = true;
+        public bool despl_avanzado = true;
+        public string escenarioActivado = "THE OPENING";
         #endregion
 
         #region METODOS AUXILIARES
@@ -118,7 +127,6 @@ namespace AlumnoEjemplos.TheGRID
             //Informacion sobre los movimientos en la parte inferior de la pantalla.
             TgcViewer.Utils.Logger logger = GuiController.Instance.Logger;
             logger.clear();
-            //logger.log("Welcome to TheGRID", Color.DarkCyan);
             logger.log("Le damos la bienvenida a este simulador. A continuacion le indicaremos los controles que puede utilizar:");
             logger.log("Paso 1: Para rotar sobre los ejes Z y X utilice las FLECHAS de direccion. Para rotar sobre el eje Y utilice las teclas A y D.");
             logger.log("Paso 2: Para avanzar presione la W pero cuidado con el movimiento inercial. Seguramente se va a dar cuenta de lo que hablo. Para frenar puede presionar la tecla S. Esto estabiliza la nave sin importar que fuerzas tiren de ella.");
@@ -140,15 +148,6 @@ namespace AlumnoEjemplos.TheGRID
 
             //Cargamos la nave como objeto principal.
             camara = new CambioCamara(nave);
-                        
-            //Flecha direccion objetivo
-            //arrow = new TgcArrow();
-            //arrow.BodyColor = Color.FromArgb(230, Color.Cyan);
-            //arrow.HeadColor = Color.FromArgb(230, Color.Yellow);
-            //this.objectosNoMeshesCollection.Add(arrow);
-
-            //Cargamos el audio
-            //music.playBackgound();
 
             Control focusWindows = GuiController.Instance.D3dDevice.CreationParameters.FocusWindow;
             mouseCenter = focusWindows.PointToScreen(
@@ -164,42 +163,18 @@ namespace AlumnoEjemplos.TheGRID
 
             //Cargamos valores en el panel lateral
             GuiController.Instance.UserVars.addVar("Vel-Actual:");
-            /*GuiController.Instance.UserVars.addVar("Integtidad Nave:");
-            GuiController.Instance.UserVars.addVar("Integridad Escudos:");
-            GuiController.Instance.UserVars.addVar("Posicion X:");
+            /*GuiController.Instance.UserVars.addVar("Posicion X:");
             GuiController.Instance.UserVars.addVar("Posicion Y:");
             GuiController.Instance.UserVars.addVar("Posicion Z:");
              */
             //Cargar valor en UserVar
             GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
-            /*GuiController.Instance.UserVars.setValue("Integtidad Nave:", objetoPrincipal.explosion.vida);
-            GuiController.Instance.UserVars.setValue("Integridad Escudos:", objetoPrincipal.explosion.escudo);
-            GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);
-            GuiController.Instance.UserVars.setValue("Posicion Y:", objetoPrincipal.getPosicion().Y);
-            GuiController.Instance.UserVars.setValue("Posicion Z:", objetoPrincipal.getPosicion().Z);
-             */
-            //Crear un modifier para un valor FLOAT
-            //GuiController.Instance.Modifiers.addFloat("Aceleracion", 0f,500f, objetoPrincipal.getAceleracion());  De momento lo saco.
-            //GuiController.Instance.Modifiers.addFloat("Frenado", 0f, 1000f, objetoPrincipal.getAcelFrenado());    De momento lo saco.
-            //Crear un modifier para un ComboBox con opciones
-            //List<int> pistaDeAudio = new List<int>(){0,1,2,3,4,5,6,7,8,9};
-            string[] opciones0 = new string[] { "THE OPENING", "IMPULSE DRIVE", "WELCOME HOME" };
-            GuiController.Instance.Modifiers.addInterval("Escenario Actual", opciones0, 0);
             string[] opciones1 = new string[] { "Tercera Persona", "Camara FPS", "Libre" };
             GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
             string[] opciones2 = new string[] { "Lista Completa", "Castor", "Derezzed", "M4 Part 2", "ME Theme", "New Worlds", "Solar Sailer", "Spectre", "Tali", "The Son of Flynn", "Tron Ending", "Sin Musica" };
             GuiController.Instance.Modifiers.addInterval("Musica de fondo", opciones2, 0);
             //GuiController.Instance.Modifiers.addBoolean("Velocidad Manual", "Activado", true);
-            GuiController.Instance.Modifiers.addBoolean("Desplaz. Avanzado", "Activado", true);
-            GuiController.Instance.Modifiers.addBoolean("Ver BoundingBox", "Activado", false);
-            GuiController.Instance.Modifiers.addBoolean("glow", "Activado", true);
-            GuiController.Instance.Modifiers.addBoolean("Linterna", "Activado", true);
-            GuiController.Instance.Modifiers.addBoolean("Luces de Posicion", "Activado", true);
-            //string[] opciones4 = new string[] { "Activado", "Desactivado" };
-            //GuiController.Instance.Modifiers.addInterval("Rotacion Avanzada", opciones4, 1);  De momento lo saco.
-            string opcionElegida = (string)GuiController.Instance.Modifiers["Escenario Actual"];
-            scheme.chequearCambio(opcionElegida);
-            opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
+            string opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
             music.chequearCambio(opcionElegida);
             music.refrescar();
             #endregion
@@ -229,7 +204,7 @@ namespace AlumnoEjemplos.TheGRID
                 pausa = true;
                 music.playPauseBackgound();
             }     //Pausa.
-            if (input.keyPressed(Key.C))
+            if (input.keyPressed(Key.Tab))
             {
                 config = true;
                 guiConfig.restart();
@@ -285,7 +260,6 @@ namespace AlumnoEjemplos.TheGRID
                         nave.fisica.aceleracion = nave.acelNormal;
                         nave.velocidadRadial = nave.rotNormal;
                         nave.fisica.velocidadInstantanea = nave.velMaxNormal;//Esto esta para cuando el blur se desactiva, desacelrar rapidamente la nave
-                        //camara = new CambioCamara(nave);
                     }
                     else
                     {
@@ -300,17 +274,6 @@ namespace AlumnoEjemplos.TheGRID
                     }
                 }
             }
-
-            
-
-
-            //if (superRender.motionBlurActivado) nave.acelerar();//Si el Blur esta activado la nave solamente acelera
-            //else if (objetoPrincipal.velocidadActual() > objetoPrincipal.fisica.velocidadMaxima) objetoPrincipal.fisica.velocidadInstantanea = nave.velMaxNormal;//Esto esta para cuando el blur se desactiva, desacelrar rapidamente la nave
-
-
-
-
-            //if (input.keyDown(Key.P)) { scheme.asteroidManager.explotaAlPrimero(); }
             if (scheme.escenarioActual == Escenario.TipoModo.THE_OPENING)
             {
                 if (input.keyDown(Key.Space))
@@ -345,7 +308,7 @@ namespace AlumnoEjemplos.TheGRID
             tiempo_acum += elapsedTime;
             if(tiempo_acum >= periodo_parpadeo)
             {
-                if ((bool)GuiController.Instance.Modifiers["Luces de Posicion"])
+                if (luces_posicionales)
                 {
                     if (parpadeoIzq)
                     {
@@ -375,7 +338,6 @@ namespace AlumnoEjemplos.TheGRID
                 nave.acelerar();
             }
 
-
             nave.rotarPorTiempo(elapsedTime, listaDibujable);
             nave.desplazarsePorTiempo(elapsedTime, new List<Dibujable>(scheme.CuerposGravitacionales));
 
@@ -389,17 +351,6 @@ namespace AlumnoEjemplos.TheGRID
                 music.playWarp();
             else
                 music.stopWarp();
-
-            //Cargar valores de la flecha
-            //Vector3 navePos = nave.getPosicion();
-            //Vector3 naveDir = Vector3.Subtract(new Vector3(0, 0, 10000), nave.getDireccion());
-            //naveDir.Normalize();
-            //naveDir.Multiply(75);
-            //arrow.PStart = navePos;
-            //arrow.PEnd = navePos + naveDir;
-            //arrow.Thickness = 0.5f;
-            //arrow.HeadSize = new Vector2(2,2);
-            //arrow.updateValues();
             
             skySphere.render(nave);     //Solo actualiza pos. Tiene deshabiltiado los render propiamente dicho.
             #endregion
@@ -407,30 +358,19 @@ namespace AlumnoEjemplos.TheGRID
             superRender.render(nave, sol, dibujableCollection, objectosNoMeshesCollection, objetosBrillantes); //Redirige todo lo que renderiza dentro del "shader"
 
             #region Refrescar panel lateral
+            scheme.chequearCambio(escenarioActivado); //Realiza el cambio de capitulo
+
             string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
             camara.chequearCambio(opcionElegida);
-            opcionElegida = (string)GuiController.Instance.Modifiers["Escenario Actual"];
-            scheme.chequearCambio(opcionElegida);
             opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
             music.chequearCambio(opcionElegida);
-            //objetoPrincipal.velocidadManual = (bool)GuiController.Instance.Modifiers["Velocidad Manual"];
-            nave.desplazamientoReal = (bool)GuiController.Instance.Modifiers["Desplaz. Avanzado"];
-            boundingBoxes = (bool)GuiController.Instance.Modifiers["Ver BoundingBox"];
-            linterna = (bool)GuiController.Instance.Modifiers["Linterna"];
-            //opcionElegida = (string)GuiController.Instance.Modifiers["Rotacion Avanzada"];
-            //if (String.Compare(opcionElegida, "Activado") == 0) objetoPrincipal.rotacionReal = true; else objetoPrincipal.rotacionReal = false;   De momento lo saco.
-            
+            nave.desplazamientoReal = despl_avanzado;
             //Refrescar User Vars
             GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
             /*GuiController.Instance.UserVars.setValue("Posicion X:", objetoPrincipal.getPosicion().X);
             GuiController.Instance.UserVars.setValue("Posicion Y:", objetoPrincipal.getPosicion().Y);
             GuiController.Instance.UserVars.setValue("Posicion Z:", objetoPrincipal.getPosicion().Z);
-            GuiController.Instance.UserVars.setValue("Integtidad Nave:", objetoPrincipal.explosion.vida);
-            GuiController.Instance.UserVars.setValue("Integridad Escudos:", objetoPrincipal.explosion.escudo);
              */
-            //Obtener valores de Modifiers
-            //objetoPrincipal.fisica.aceleracion = (float)GuiController.Instance.Modifiers["Aceleracion"];  De momento lo saco.
-            //objetoPrincipal.fisica.acelFrenado = (float)GuiController.Instance.Modifiers["Frenado"];      De momento lo saco.
             #endregion
         }
 
@@ -440,7 +380,6 @@ namespace AlumnoEjemplos.TheGRID
             scheme.laserManager.destruirListas();
             scheme.dispose();
             nave.dispose();
-            //arrow.dispose();
             skySphere.dispose();
             music.liberarRecursos();
         }
