@@ -25,6 +25,7 @@ namespace AlumnoEjemplos.TheGRID
         public TipoModo escenarioActual = TipoModo.VACUUM;
         //Objetos
         public Dibujable sol;
+        public float distanciaSol = 9000;
         public Dibujable planet;
         private List<Dibujable> cuerposGravitacionales = new List<Dibujable>();
         public List<Dibujable> CuerposGravitacionales { get{ return cuerposGravitacionales; } }
@@ -66,9 +67,9 @@ namespace AlumnoEjemplos.TheGRID
         {
             TgcMesh mesh_Sol = Factory.cargarMesh(@"Sol\sol-TgcScene.xml");
             sol = new Dibujable();
-            sol.setObject(mesh_Sol, 0, 200, new Vector3(2F, 2F, 2F));
+            sol.setObject(mesh_Sol, 0, 20, new Vector3(2F, 2F, 2F));
             sol.giro = -1;
-            sol.ubicarEnUnaPosicion(new Vector3(0, 0, 9000));
+            sol.ubicarEnUnaPosicion(new Vector3(0, 0, distanciaSol));
             sol.activar();
             EjemploAlumno.workspace().sol = sol;
         }
@@ -161,7 +162,8 @@ namespace AlumnoEjemplos.TheGRID
         {
             //Movemos el sol en funcion a la nave
             sol.rotarPorTiempo(elapsedTime, new List<Dibujable>());
-            sol.desplazarUnaDistancia(principal.ultimaTraslacion);
+            sol.ubicarEnUnaPosicion(Vector3.Add(principal.getPosicion(), new Vector3(0, 0, distanciaSol)));
+
             switch (escenarioActual)
             {
                 case TipoModo.THE_OPENING:
