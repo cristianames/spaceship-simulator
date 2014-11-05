@@ -65,7 +65,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
         Size screenSize = GuiController.Instance.Panel3d.Size;
         Vector2 puntoEntrada = new Vector2(GuiController.Instance.Panel3d.Size.Width / 2f, -20f);
         Vector2 puntoSalida = new Vector2(-1000, GuiController.Instance.Panel3d.Size.Height / 2f - 5);
-        float velocidadEfecto = 4f;
+        float velocidadEfecto;
         bool salidaFin = false;
         bool entradaFin = false;
         int contadorSalida = 0;
@@ -88,11 +88,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
             opciones3 = cargarAudio();
             opciones11 = cargarCapitulos();
             //opciones31 = cargarMusica();
-
-            menuActivo = opciones0;
-            contadorEntrada = menuActivo.listaOpciones.Count;
-            transicion = true;
-            salidaFin = true;
+            restart();
         }
         private Menu cargarOpciones()
         {
@@ -260,6 +256,16 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
         #endregion
 
         #region Herramientas
+        internal void restart()
+        {
+            velocidadEfecto = 4f;
+            opcionElegida = 1;
+            menuActivo = opciones0;
+            resetearPosicionLista(menuActivo);
+            contadorEntrada = menuActivo.listaOpciones.Count;
+            transicion = true;
+            salidaFin = true;
+        }
         private void resetearPosicionLista(Menu menu)
         {
             foreach (var item in menu.listaOpciones) { item.posicionarSprite(reajustarPosicionTextura(item.spritePrincipal, puntoEntrada)); }
@@ -345,7 +351,8 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
                     //NADA de momento
                     break;
                 case Clase.CONTINUAR:
-                    //COMPLETAR AL FINAL
+                    EjemploAlumno.workspace().config = false;
+                    sonido.playPauseBackgound();
                     break;
                 case Clase.CAPITULO:
                     transicion = true;

@@ -216,11 +216,6 @@ namespace AlumnoEjemplos.TheGRID
             if (config)
             {
                 guiConfig.operar(elapsedTime);
-                if (input.keyPressed(Key.C))
-                {
-                    config = false;
-                    music.playPauseBackgound();
-                }
                 return;
             }
             #region -----KEYS-----
@@ -232,6 +227,7 @@ namespace AlumnoEjemplos.TheGRID
             if (input.keyPressed(Key.C))
             {
                 config = true;
+                guiConfig.restart();
                 music.playPauseBackgound();
             }     //Pausa.
 
