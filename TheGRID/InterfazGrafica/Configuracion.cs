@@ -239,9 +239,9 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
             spriteTemp.on = EjemploAlumno.workspace().luces_posicionales;
             listaTemp.Add(spriteTemp);
             spriteTemp = new Sprite(Clase.BOUNDING_BOX);
-            spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\BoundingOFF.png");
+            spriteTemp.spritePrincipal.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\BoundingON.png");
             spriteTemp.spritePrincipal.Scaling = new Vector2(0.5f, 0.5f);
-            spriteTemp.spriteAlternativo.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\BoundingON.png");
+            spriteTemp.spriteAlternativo.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Menu\\Graficos\\BoundingOFF.png");
             spriteTemp.spriteAlternativo.Scaling = new Vector2(0.5f, 0.5f);
             spriteTemp.on = EjemploAlumno.workspace().boundingBoxes;
             listaTemp.Add(spriteTemp);
@@ -422,7 +422,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
                     sonido.playSlidePanel(); 
                     break;
                 case Clase.FONDO:
-                    verFondo = true;
+                    if (menuActivo.listaOpciones[opcionElegida].habilitado)verFondo = true;
                     break;
                 case Clase.CONTINUAR:
                     EjemploAlumno.workspace().config = false;
