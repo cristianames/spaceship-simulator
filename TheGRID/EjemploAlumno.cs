@@ -35,7 +35,14 @@ namespace AlumnoEjemplos.TheGRID
         /// Completar nombre del grupo en formato Grupo NN
         public override string getName(){ return "Grupo TheGRID"; }
         /// Completar con la descripción del TP
-        public override string getDescription() { return "Welcome to TheGRID"+Environment.NewLine+"C: Menú de Configuracion"+Environment.NewLine+"P: Menú de Pausa"+Environment.NewLine+"LeftShift: Efecto Blur"+Environment.NewLine+"LeftCtrl: Modo Automático"+Environment.NewLine+"Espacio: Disparo Principal"+Environment.NewLine+"RightShift: Disparo Secundario"; }
+        public override string getDescription() { return    "Welcome to TheGRID"+Environment.NewLine+
+                                                            "C: Menú de Configuracion"+Environment.NewLine+
+                                                            "P: Menú de Pausa"+Environment.NewLine+
+                                                            "F1-F3: Cámara Tercera Persona / FPS / Fija"+Environment.NewLine+
+                                                            "LeftShift: Efecto Blur"+Environment.NewLine+
+                                                            "LeftCtrl: Modo Automático"+Environment.NewLine+
+                                                            "Espacio: Disparo Principal"+Environment.NewLine+
+                                                            "RightShift: Disparo Secundario"; }
         #endregion
 
         #region ATRIBUTOS
@@ -169,8 +176,6 @@ namespace AlumnoEjemplos.TheGRID
             GuiController.Instance.UserVars.addVar("Vel-Actual:");
             GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
 
-            string[] opciones1 = new string[] { "Tercera Persona", "Camara FPS", "Libre" };
-            GuiController.Instance.Modifiers.addInterval("Tipo de Camara", opciones1, 0);
             string[] opciones2 = new string[] { "Lista Completa", "Castor", "Derezzed", "M4 Part 2", "ME Theme", "New Worlds", "Solar Sailer", "Spectre", "Tali", "The Son of Flynn", "Tron Ending", "Sin Musica" };
             GuiController.Instance.Modifiers.addInterval("Musica de fondo", opciones2, 0);
             string opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
@@ -230,6 +235,14 @@ namespace AlumnoEjemplos.TheGRID
             if (input.keyDown(Key.Down)) { nave.inclinacion = -1; }
            // if (GuiController.Instance.D3dInput.YposRelative < 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) { nave.inclinacion = -1; }
             
+            //Cambios de cámara con los F1-F3
+            if (input.keyDown(Key.F1))
+                camara.chequearCambio("Tercera Persona");
+            else if (input.keyDown(Key.F2))
+                camara.chequearCambio("Camara FPS");
+            else if (input.keyDown(Key.F3))
+                camara.chequearCambio("Libre");
+
             //Movimientos
             if (input.keyDown(Key.A)) { nave.giro = -1; }          
             if (input.keyDown(Key.D)) { nave.giro = 1; }
@@ -368,14 +381,12 @@ namespace AlumnoEjemplos.TheGRID
             //Redirige todo lo que renderiza para aplicar los efectos
             superRender.render(nave, sol, dibujableCollection, objectosNoMeshesCollection, objetosBrillantes); 
 
-            #region Refrescar panel lateral
+            #region Refrescar Variables
             
             scheme.chequearCambio(escenarioActivado); //Realiza el cambio de capitulo
             nave.desplazamientoReal = despl_avanzado; //Setea si se habilito el modo real o avanzado de desplazamiento (Con atraccion y choque)
 
-            string opcionElegida = (string)GuiController.Instance.Modifiers["Tipo de Camara"];
-            camara.chequearCambio(opcionElegida);
-            opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
+            string opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
             music.chequearCambio(opcionElegida);
 
             //Refrescar User Vars
