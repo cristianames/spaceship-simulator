@@ -240,7 +240,7 @@ namespace AlumnoEjemplos.TheGRID
             //int giroX = -1+2*((int)GuiController.Instance.D3dInput.Xpos/anchoPantalla);
             //int giroY = -1+2*((int)GuiController.Instance.D3dInput.Ypos/altoPantalla);
             int sensibilidad =1;
-            nave.rotarPorVectorDeAngulos(new Vector3(GuiController.Instance.D3dInput.YposRelative * sensibilidad, 0, GuiController.Instance.D3dInput.XposRelative * sensibilidad));
+            nave.rotarPorVectorDeAngulos(new Vector3(GuiController.Instance.D3dInput.YposRelative * -sensibilidad, 0, GuiController.Instance.D3dInput.XposRelative * -sensibilidad));
             if (input.keyDown(Key.Left)) { nave.rotacion = 1; }
            // if (GuiController.Instance.D3dInput.XposRelative < 0 && GuiController.Instance.D3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)) {nave.rotacion = 1;  }
             if (input.keyDown(Key.Right)) { nave.rotacion = -1; }
