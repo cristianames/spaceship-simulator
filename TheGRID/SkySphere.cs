@@ -15,9 +15,9 @@ namespace AlumnoEjemplos.TheGRID
         public TgcBoundingSphere bordeSky;
         public Dibujable dibujable_skySphere;
 
-        public SkySphere()
+        public SkySphere(string path)
         {
-            horizonteVision = Factory.cargarMesh("SkyBox\\skysphere-TgcScene.xml");
+            horizonteVision = Factory.cargarMesh(path);
             horizonteVision.Position = new Vector3(0, 0, 0);
             horizonteVision.Enabled = true;
             bordeSky = new TgcBoundingSphere(new Vector3(0, 0, 0), 11000);
@@ -26,11 +26,10 @@ namespace AlumnoEjemplos.TheGRID
             dibujable_skySphere.setColision(new ColisionAsteroide());
             dibujable_skySphere.getColision().setBoundingBox(bordeSky);
             dibujable_skySphere.valor = 1;
-            EjemploAlumno.addMesh(dibujable_skySphere);
         }
 
-        internal void render(){
-            dibujable_skySphere.ubicarEnUnaPosicion(EjemploAlumno.workspace().ObjetoPrincipal.getPosicion());
+        internal void render(Dibujable ppal){
+            dibujable_skySphere.ubicarEnUnaPosicion(ppal.getPosicion());
         }
         public void dispose()
         {

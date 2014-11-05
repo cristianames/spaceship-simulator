@@ -73,6 +73,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
         bool transicion = false;
         TgcD3dInput input = GuiController.Instance.D3dInput;
         Musique sonido;
+        AlternativeDimension miMundo;
         #endregion
 
         #region Inicializacion
@@ -89,6 +90,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
             opciones11 = cargarCapitulos();
             //opciones31 = cargarMusica();
             restart();
+            miMundo = new AlternativeDimension();
         }
         private Menu cargarOpciones()
         {
@@ -258,7 +260,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
         #region Herramientas
         internal void restart()
         {
-            velocidadEfecto = 4f;
+            velocidadEfecto = 15f;
             opcionElegida = 1;
             menuActivo = opciones0;
             resetearPosicionLista(menuActivo);
@@ -291,6 +293,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
         #region Operar y Chequeos
         public void operar(float elapsedTime)
         {
+            miMundo.render(elapsedTime);
             if (transicion)
             {
                 if (!salidaFin) { operarSalida(elapsedTime); return; }
@@ -447,7 +450,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
         }
         private void operarSalida(float elapsedTime)
         {
-            if (velocidadEfecto < 4f) velocidadEfecto += elapsedTime * 3.5f;
+            if (velocidadEfecto < 20f) velocidadEfecto += elapsedTime * 30f;
             GuiController.Instance.Drawer2D.beginDrawSprite();
             for (int i = 0; i < menuTransicion.listaOpciones.Count; i++)
             {
@@ -458,10 +461,11 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
                     temp.Normalize();
                     temp.Multiply(velocidadEfecto);
                     pos += temp;
-                    if (Vector2.LengthSq(Vector2.Subtract(pos, puntoSalida)) < 4)
+                    if (pos.X < -800)//Vector2.LengthSq(Vector2.Subtract(pos, puntoSalida)) < 10)
                     {
                         pos = puntoSalida;
                         contadorSalida--;
+                        if (contadorSalida == 0) velocidadEfecto = 15f;
                     }
                     menuTransicion.listaOpciones[i].posicionarSprite(pos);
                     menuTransicion.listaOpciones[i].spritePrincipal.render();
@@ -476,7 +480,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
         }
         private void operarEntrada(float elapsedTime)
         {
-            if (velocidadEfecto > 0.2) velocidadEfecto -= elapsedTime;
+            if (velocidadEfecto > 3) velocidadEfecto -= elapsedTime * 2f;
             GuiController.Instance.Drawer2D.beginDrawSprite();
             for (int i = 0; i < menuActivo.listaOpciones.Count; i++)
             {
@@ -486,7 +490,7 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
                 {
                     if (temp.Y < yRef) temp.Y += velocidadEfecto;
                     //if (temp.Y > yRef) temp.Y -= velocidadEfecto;
-                    if (FastMath.Abs(temp.Y - yRef) < 2f)
+                    if (FastMath.Abs(temp.Y - yRef) < 8f)
                     {
                         temp.Y = yRef;
                         contadorEntrada--;
