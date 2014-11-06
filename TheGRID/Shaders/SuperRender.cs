@@ -1,4 +1,5 @@
-﻿using Microsoft.DirectX;
+﻿using AlumnoEjemplos.TheGRID.InterfazGrafica;
+using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using System;
 using System.Collections.Generic;
@@ -46,6 +47,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
 
         public TgcBox[] lightMeshes;
 
+        public Hud hud = new Hud();
 
         public SuperRender()
         {
@@ -66,9 +68,10 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         public void render(Nave nave, Dibujable sol, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables, List<TgcMesh> objetosBrillantes)
         {
             motionShader.renderEffect(new EstructuraRender(nave, sol, meshes, elementosRenderizables, objetosBrillantes));
-            GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
-            GuiController.Instance.Text3d.drawText("Velocidad: " +EjemploAlumno.workspace().nave.velocidadActual(), 0, 15 , Color.Yellow);
-            GuiController.Instance.AxisLines.render();
+            hud.operar();
+            //GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
+            //GuiController.Instance.Text3d.drawText("Velocidad: " +EjemploAlumno.workspace().nave.velocidadActual(), 0, 15 , Color.Yellow);
+            //GuiController.Instance.AxisLines.render();
         }
 
         public void close()
