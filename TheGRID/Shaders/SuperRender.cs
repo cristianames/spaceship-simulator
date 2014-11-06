@@ -68,10 +68,12 @@ namespace AlumnoEjemplos.TheGRID.Shaders
         public void render(Nave nave, Dibujable sol, List<Dibujable> meshes, List<IRenderObject> elementosRenderizables, List<TgcMesh> objetosBrillantes)
         {
             motionShader.renderEffect(new EstructuraRender(nave, sol, meshes, elementosRenderizables, objetosBrillantes));
-            hud.operar();
-            //GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
-            //GuiController.Instance.Text3d.drawText("Velocidad: " +EjemploAlumno.workspace().nave.velocidadActual(), 0, 15 , Color.Yellow);
-            //GuiController.Instance.AxisLines.render();
+            hud.operar(); //Se muestran los sprites de la HUD
+            //Dibujamos las FPS y la Velocidad actual
+            GuiController.Instance.Text3d.drawText( "FPS: " + HighResolutionTimer.Instance.FramesPerSecond + Environment.NewLine + 
+                                                    "Velocidad: " +EjemploAlumno.workspace().nave.velocidadActual(), 0, 0, Color.Yellow);
+            GuiController.Instance.AxisLines.render();//Dibujamos los ejes
+            if (EjemploAlumno.workspace().helpActivado) helpHUD(); //Si se pidio ayuda, se muestran los comandos
         }
 
         public void close()
@@ -87,7 +89,6 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             switch(tipoEfecto)
             {
                 case tipo.MOTION:
-                    //texturaRetorno = bumpShader.renderEffect(parametros);
                     texturaRetorno = hdrlShader.renderEffect(parametros);
                     break;
                 case tipo.HDRL:
@@ -98,6 +99,18 @@ namespace AlumnoEjemplos.TheGRID.Shaders
             }
 
             return texturaRetorno;
+        }
+        public void helpHUD()
+        {
+            GuiController.Instance.Text3d.drawText( "C: Menú de Configuración"+Environment.NewLine+
+                                                    "P: Menú de Pausa"+Environment.NewLine+
+                                                    "F1-F3: Cámara Tercera Persona / FPS / Fija"+Environment.NewLine+
+                                                    "LeftShift: Efecto Blur"+Environment.NewLine+
+                                                    "LeftCtrl: Modo Automático"+Environment.NewLine+
+                                                    "Espacio: Disparo Principal"+Environment.NewLine+
+                                                    "RightShift: Disparo Secundario"
+                                                    , 1024, 0, Color.White);
+
         }
     }
 }

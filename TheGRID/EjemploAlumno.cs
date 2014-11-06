@@ -106,6 +106,7 @@ namespace AlumnoEjemplos.TheGRID
         public bool despl_avanzado = true;
         public string escenarioActivado = "THE OPENING";
         public bool entreWarp = false;
+        public bool helpActivado = false;
         #endregion
 
         #region METODOS AUXILIARES
@@ -247,7 +248,13 @@ namespace AlumnoEjemplos.TheGRID
             if (input.keyDown(Key.S)) { if (!superRender.motionBlurActivado)nave.frenar(); }
             if (input.keyPressed(Key.S)) { nave.fisica.desactivarAutomatico(); velocidadAutomatica = false; }
             if (input.keyDown(Key.Z)) { nave.rotarPorVectorDeAngulos(new Vector3(0, 0, 15)); }
-
+            if (input.keyPressed(Key.H)) //Muestra el HUD de ayuda en pantalla
+            {
+                if (helpActivado)
+                    helpActivado = false;
+                else
+                    helpActivado = true;
+            }
             if (input.keyPressed(Key.LeftControl)) //Modo Automatico
             {
                 if (velocidadAutomatica)
