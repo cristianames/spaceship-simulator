@@ -16,6 +16,7 @@ using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Input;
 using TgcViewer.Utils.Terrain;
+using TgcViewer.Utils._2D;
 
 using AlumnoEjemplos.TheGRID;
 using AlumnoEjemplos.TheGRID.Colisiones;
@@ -89,6 +90,11 @@ namespace AlumnoEjemplos.TheGRID
         public int invertirMira = -1;
         Pausa guiPausa = new Pausa();
         public Configuracion guiConfig;
+        public TgcSprite sprite;
+        public TgcSprite sprite2;
+        public int incremento = 0;
+        public float timeSprite = 0;
+        public bool credit1 = false;
         #endregion
 
         #region Atributos Menu
@@ -145,6 +151,26 @@ namespace AlumnoEjemplos.TheGRID
             logger.log("Paso 4: Para activar el Motion Blur debe ir a la maxima velocidad y luego pulsar una vez LeftShift. La desactivacion es de la misma forma.");
             logger.log("Por ultimo pruebe disparar presionando SpaceBar o RightShift. -- Disfrute el ejemplo.");
 
+            //Crear Sprite
+            sprite = new TgcSprite();
+            sprite.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Cris.png");
+
+            //Ubicarlo centrado en la pantalla
+            Size screenSize = GuiController.Instance.Panel3d.Size;
+            Size textureSize = sprite.Texture.Size;
+            
+            sprite.Position = new Vector2(-700, 0);
+
+            //Crear Sprite
+            sprite2 = new TgcSprite();
+            sprite2.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\CrisTareas.png");
+
+            //Ubicarlo centrado en la pantalla
+            Size screenSize2 = GuiController.Instance.Panel3d.Size;
+            Size textureSize2 = sprite.Texture.Size;
+
+            sprite2.Position = new Vector2(screenSize.Height+550, screenSize.Height-200);
+           
             GuiController.Instance.FullScreenEnable = true;
 
             currentFrustrum = new TgcFrustum();           
@@ -375,8 +401,39 @@ namespace AlumnoEjemplos.TheGRID
             skySphere.render(nave);     //Solo actualiza posicion de la skysphere. Tiene deshabiltiado los render, eso lo hace el SuperRender
             #endregion
 
+            if (credit1)
+            {
+                if (sprite.Position.X < 50)
+                {
+                    sprite.Position += new Vector2(elapsedTime * 1000, 0);
+                    sprite2.Position -= new Vector2(elapsedTime * 1000, 0);
+                }
+                if (sprite.Position.X > 50 && timeSprite <= 2)
+                {
+                    timeSprite += elapsedTime;
+                    sprite.Position += new Vector2(elapsedTime * 10, 0);
+                    sprite2.Position -= new Vector2(elapsedTime * 10, 0);
+                }
+                if (timeSprite > 2)
+                {
+                    incremento++;
+                    sprite.Position += new Vector2(elapsedTime * 50 * incremento, 0);
+                    sprite2.Position -= new Vector2(elapsedTime * 50 * incremento, 0);
+                }
+            }
+           
             //Redirige todo lo que renderiza para aplicar los efectos
-            superRender.render(nave, sol, dibujableCollection, objectosNoMeshesCollection, objetosBrillantes); 
+            superRender.render(nave, sol, dibujableCollection, objectosNoMeshesCollection, objetosBrillantes);
+
+            //Iniciar dibujado de todos los Sprites de la escena (en este caso es solo uno)
+            GuiController.Instance.Drawer2D.beginDrawSprite();
+            
+            //Dibujar sprite (si hubiese mas, deberian ir todos aquí)
+            sprite.render();
+            sprite2.render();
+
+            //Finalizar el dibujado de Sprites
+            GuiController.Instance.Drawer2D.endDrawSprite();
 
             #region Refrescar Variables
             

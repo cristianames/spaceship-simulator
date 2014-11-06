@@ -21,7 +21,7 @@ namespace AlumnoEjemplos.TheGRID
         public ManagerLaser laserManager = new ManagerLaser(100);
         public ManagerAsteroide asteroidManager; 
         public Dibujable principal;
-        public enum TipoModo { THE_OPENING, IMPULSE_DRIVE, WELCOME_HOME, VACUUM, MISION };
+        public enum TipoModo { THE_OPENING, IMPULSE_DRIVE, WELCOME_HOME, VACUUM, MISION, WELCOME_HOME_FINAL };
         public TipoModo escenarioActual = TipoModo.VACUUM;
         public TipoModo escenarioElegido = TipoModo.VACUUM;
         //Objetos
@@ -132,7 +132,24 @@ namespace AlumnoEjemplos.TheGRID
             disposeOld();
             escenarioActual = TipoModo.MISION;
         }
-        //-------------------------------------------------------------------------------------------VACUUM
+        //-------------------------------------------------------------------------------------------FINAL
+        public void loadChapterFinal()
+        {
+            disposeOld();
+            escenarioActual = TipoModo.WELCOME_HOME;
+            EjemploAlumno.workspace().nave.fisica.velocidadInstantanea = 10;
+            Dibujable ppal = EjemploAlumno.workspace().ObjetoPrincipal;
+            List<int> opciones = new List<int>() { -8000, 8000 };
+            Vector3 posicion = ppal.getPosicion();
+            posicion.Add(Vector3.Multiply(ppal.getDireccion(), 21000));
+            posicion.Add(Vector3.Multiply(ppal.getDireccion_X(), Factory.elementoRandom<int>(opciones)));
+            posicion.Add(Vector3.Multiply(ppal.getDireccion_Y(), (new Random()).Next(-3000, 3000)));
+            planet.ubicarEnUnaPosicion(posicion);
+            planet.activar();
+            cuerposGravitacionales = new List<Dibujable>() { planet };
+            EjemploAlumno.workspace().credit1 = true;
+        }
+        //-------------------------------------------------------------------------------------------VACUUM        
         public void loadVacuum() 
         {
             disposeOld();
@@ -200,9 +217,31 @@ namespace AlumnoEjemplos.TheGRID
                     }
                     if (EjemploAlumno.workspace().entreWarp && !EjemploAlumno.workspace().Shader.motionBlurActivado)
                     {
-                        chequearCambio("WELCOME HOME");
+                        chequearCambio("WELCOME HOME FINAL");
                     }
 
+                        break;
+                case TipoModo.WELCOME_HOME_FINAL:
+                        colisionNavePlaneta(EjemploAlumno.workspace().ObjetoPrincipal);
+                        planet.rotarPorTiempo(elapsedTime, new List<Dibujable>());
+                        EjemploAlumno.workspace().nave.rotarPorVectorDeAngulos(new Vector3(0, 0, 15));
+                     if (EjemploAlumno.workspace().sprite.Position.X<50)
+                         {
+                             EjemploAlumno.workspace().sprite.Position += new Vector2(elapsedTime * 5, 0);
+                             EjemploAlumno.workspace().sprite2.Position -= new Vector2(elapsedTime * 5, 0);
+                         }
+                     if (EjemploAlumno.workspace().sprite.Position.X > 50 && EjemploAlumno.workspace().timeSprite <= 2)
+                           {
+                               EjemploAlumno.workspace().timeSprite += elapsedTime;
+                               EjemploAlumno.workspace().sprite.Position += new Vector2(elapsedTime * 3, 0);
+                               EjemploAlumno.workspace().sprite2.Position -= new Vector2(elapsedTime * 3, 0);
+                          }
+                     if (EjemploAlumno.workspace().timeSprite > 2)
+                           {
+                               EjemploAlumno.workspace().incremento++;
+                               EjemploAlumno.workspace().sprite.Position += new Vector2(elapsedTime * 50 * EjemploAlumno.workspace().incremento, 0);
+                               EjemploAlumno.workspace().sprite2.Position -= new Vector2(elapsedTime * 50 * EjemploAlumno.workspace().incremento, 0);
+                          }
                         break;
             }
         }
@@ -254,6 +293,11 @@ namespace AlumnoEjemplos.TheGRID
                     //if (escenarioElegido != TipoModo.WELCOME_HOME)
                         loadChapter3();
                     escenarioElegido = TipoModo.WELCOME_HOME;
+                    break;
+                case "WELCOME HOME FINAL":
+                    //if (escenarioElegido != TipoModo.WELCOME_HOME)
+                    loadChapterFinal();
+                    escenarioElegido = TipoModo.WELCOME_HOME_FINAL;
                     break;
                 case "VACUUM":
                     //if (escenarioElegido != TipoModo.VACUUM)
