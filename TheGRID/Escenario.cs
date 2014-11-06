@@ -225,7 +225,7 @@ namespace AlumnoEjemplos.TheGRID
                         colisionNavePlaneta(EjemploAlumno.workspace().ObjetoPrincipal);
                         planet.rotarPorTiempo(elapsedTime, new List<Dibujable>());
                         EjemploAlumno.workspace().nave.rotarPorVectorDeAngulos(new Vector3(0, 0, 15));
-                     if (EjemploAlumno.workspace().sprite.Position.X<50)
+                     /*if (EjemploAlumno.workspace().sprite.Position.X<50)
                          {
                              EjemploAlumno.workspace().sprite.Position += new Vector2(elapsedTime * 5, 0);
                              EjemploAlumno.workspace().sprite2.Position -= new Vector2(elapsedTime * 5, 0);
@@ -241,7 +241,7 @@ namespace AlumnoEjemplos.TheGRID
                                EjemploAlumno.workspace().incremento++;
                                EjemploAlumno.workspace().sprite.Position += new Vector2(elapsedTime * 50 * EjemploAlumno.workspace().incremento, 0);
                                EjemploAlumno.workspace().sprite2.Position -= new Vector2(elapsedTime * 50 * EjemploAlumno.workspace().incremento, 0);
-                          }
+                          }*/
                         break;
             }
         }
