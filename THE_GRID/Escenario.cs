@@ -26,11 +26,17 @@ namespace AlumnoEjemplos.THE_GRID
         public TipoModo escenarioElegido = TipoModo.VACUUM;
         //Objetos
         public Dibujable sol;
-        public float distanciaSol = 9000;
+        public float distanciaSol = 9200;
         public Dibujable planet;
         private List<Dibujable> cuerposGravitacionales = new List<Dibujable>();
         public List<Dibujable> CuerposGravitacionales { get{ return cuerposGravitacionales; } }
         public bool ingresoMision;
+        float valorDeTransicionCapitulo1 = 30000;
+        bool sePuedeSalirDelCapitulo1 = false;
+        float valorDeTransicionCapitulo2 = 20;
+        float acumTimeCapitulo2;
+        bool sePuedeSalirDelCapitulo2 = false;
+
         #endregion
 
         #region Constructor y Destructor
@@ -130,27 +136,8 @@ namespace AlumnoEjemplos.THE_GRID
         public void loadMision()
         {
             disposeOld();
-            escenarioActual = TipoModo.MISION;
+            loadChapter1();
         }
-        //-------------------------------------------------------------------------------------------FINAL
-        public void loadChapterFinal()
-        {
-            disposeOld();
-            escenarioActual = TipoModo.WELCOME_HOME;
-            EjemploAlumno.workspace().nave.fisica.velocidadInstantanea = 10;
-            Dibujable ppal = EjemploAlumno.workspace().ObjetoPrincipal;
-            List<int> opciones = new List<int>() { -8000, 8000 };
-            Vector3 posicion = ppal.getPosicion();
-            posicion.Add(Vector3.Multiply(ppal.getDireccion(), 21000));
-            posicion.Add(Vector3.Multiply(ppal.getDireccion_X(), Factory.elementoRandom<int>(opciones)));
-            posicion.Add(Vector3.Multiply(ppal.getDireccion_Y(), (new Random()).Next(-3000, 3000)));
-            planet.ubicarEnUnaPosicion(posicion);
-            planet.activar();
-            cuerposGravitacionales = new List<Dibujable>() { planet };
-            EjemploAlumno.workspace().credit1 = true;
-            EjemploAlumno.workspace().music.chequearCambio("Tron Ending");
-        }
-        //-------------------------------------------------------------------------------------------VACUUM        
         public void loadVacuum() 
         {
             disposeOld();
@@ -203,48 +190,30 @@ namespace AlumnoEjemplos.THE_GRID
                     colisionNavePlaneta(EjemploAlumno.workspace().ObjetoPrincipal);
                     planet.rotarPorTiempo(elapsedTime, new List<Dibujable>());
                     break;
-                case TipoModo.MISION:
-                    
-                    laserManager.operar(elapsedTime);
-                    asteroidManager.reinsertarSiEsNecesario();
-                    asteroidManager.operar(elapsedTime);
-                    asteroidManager.chocoNave(principal);
-                    laserManager.chocoAsteroide();
-                    asteroidManager.colisionEntreAsteroides(0);
-                    if (EjemploAlumno.workspace().Shader.motionBlurActivado) 
-                    { 
-                        EjemploAlumno.workspace().estrellaControl.insertarEstrellas(EjemploAlumno.workspace().estrellas, EjemploAlumno.workspace().estrellasNo, EjemploAlumno.workspace().nave.getPosicion(), EjemploAlumno.workspace().nave.getDireccion(), EjemploAlumno.workspace().nave.ultimaTraslacion, EjemploAlumno.workspace().nave.getEjes().mRotor, elapsedTime);
-                        EjemploAlumno.workspace().entreWarp = true;
-                    }
-                    if (EjemploAlumno.workspace().entreWarp && !EjemploAlumno.workspace().Shader.motionBlurActivado)
-                    {
-                        chequearCambio("WELCOME HOME FINAL");
-                    }
-
-                        break;
-                case TipoModo.WELCOME_HOME_FINAL:
-                        colisionNavePlaneta(EjemploAlumno.workspace().ObjetoPrincipal);
-                        planet.rotarPorTiempo(elapsedTime, new List<Dibujable>());
-                        EjemploAlumno.workspace().nave.rotarPorVectorDeAngulos(new Vector3(0, 0, 15));
-                     /*if (EjemploAlumno.workspace().sprite.Position.X<50)
-                         {
-                             EjemploAlumno.workspace().sprite.Position += new Vector2(elapsedTime * 5, 0);
-                             EjemploAlumno.workspace().sprite2.Position -= new Vector2(elapsedTime * 5, 0);
-                         }
-                     if (EjemploAlumno.workspace().sprite.Position.X > 50 && EjemploAlumno.workspace().timeSprite <= 2)
-                           {
-                               EjemploAlumno.workspace().timeSprite += elapsedTime;
-                               EjemploAlumno.workspace().sprite.Position += new Vector2(elapsedTime * 3, 0);
-                               EjemploAlumno.workspace().sprite2.Position -= new Vector2(elapsedTime * 3, 0);
-                          }
-                     if (EjemploAlumno.workspace().timeSprite > 2)
-                           {
-                               EjemploAlumno.workspace().incremento++;
-                               EjemploAlumno.workspace().sprite.Position += new Vector2(elapsedTime * 50 * EjemploAlumno.workspace().incremento, 0);
-                               EjemploAlumno.workspace().sprite2.Position -= new Vector2(elapsedTime * 50 * EjemploAlumno.workspace().incremento, 0);
-                          }*/
-                        break;
             }
+            switch (escenarioElegido)
+            {
+                case TipoModo.MISION:
+                    if (sePuedeSalirDelCapitulo1 && principal.getPosicion().Length() > valorDeTransicionCapitulo1)
+                    {
+                        loadChapter2();
+                        sePuedeSalirDelCapitulo1 = false;
+                        sePuedeSalirDelCapitulo2 = true;
+                    }
+                    if (sePuedeSalirDelCapitulo2 && acumTimeCapitulo2 > valorDeTransicionCapitulo2 && 
+                        EjemploAlumno.workspace().Shader.motionBlurActivado)
+                    {
+                        EjemploAlumno.workspace().desactivarBlur();
+                        loadChapter3();
+                        sePuedeSalirDelCapitulo2 = false;
+                        EjemploAlumno.workspace().credit1 = true;
+                        EjemploAlumno.workspace().music.chequearCambio("Tron Ending");
+                    }
+                    if (sePuedeSalirDelCapitulo2) acumTimeCapitulo2 += elapsedTime;
+                    break;
+            }
+            #endregion
+
         }
 
         private void colisionNavePlaneta(Dibujable nave)
@@ -273,7 +242,6 @@ namespace AlumnoEjemplos.THE_GRID
             }
             ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(color);
         }
-        #endregion
 
         #region Chequeo de cambios
         internal void chequearCambio(string opcion) //Cambio de Capitulo
@@ -295,11 +263,6 @@ namespace AlumnoEjemplos.THE_GRID
                         loadChapter3();
                     escenarioElegido = TipoModo.WELCOME_HOME;
                     break;
-                case "WELCOME HOME FINAL":
-                    //if (escenarioElegido != TipoModo.WELCOME_HOME)
-                    loadChapterFinal();
-                    escenarioElegido = TipoModo.WELCOME_HOME_FINAL;
-                    break;
                 case "VACUUM":
                     //if (escenarioElegido != TipoModo.VACUUM)
                         loadVacuum();
@@ -307,7 +270,8 @@ namespace AlumnoEjemplos.THE_GRID
                     break;
                 case "MISION":
                     //if (escenarioElegido != TipoModo.MISION)
-                        loadMision();
+                    loadMision();
+                    sePuedeSalirDelCapitulo1 = true;
                     escenarioElegido = TipoModo.MISION;
                     break;
             }

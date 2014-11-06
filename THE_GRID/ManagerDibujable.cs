@@ -245,7 +245,7 @@ namespace AlumnoEjemplos.THE_GRID
             {                
                 setearFormato.tamanio = Factory.elementoRandom<TamanioAsteroide>(opciones);
                 //Seteamos posicion de reinsercion
-                setearFormato.posicion = Vector3.Add(Vector3.Add(Vector3.Add(posicion, Vector3.Multiply(ejeZ, 9500)), Vector3.Multiply(ejeX, random.Next(-3000, 3000))), Vector3.Multiply(ejeY, random.Next(-3000, 3000)));
+                setearFormato.posicion = Vector3.Add(Vector3.Add(Vector3.Add(posicion, Vector3.Multiply(ejeZ, 9000)), Vector3.Multiply(ejeX, random.Next(-3000, 3000))), Vector3.Multiply(ejeY, random.Next(-3000, 3000)));
                 //Pasaje de asteroides con formato
                 activarAsteroide(setearFormato);
             }

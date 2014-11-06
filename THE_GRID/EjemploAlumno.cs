@@ -84,7 +84,7 @@ namespace AlumnoEjemplos.THE_GRID
         public int altoPantalla;
         public int anchoPantalla;
         //GUI
-        public bool pausa = true;
+        public bool pausa = false;
         public bool config = false;
         public bool gravity = true;
         public bool mouse;
@@ -112,6 +112,9 @@ namespace AlumnoEjemplos.THE_GRID
         #region Atributos Menu
         public bool glow = false;
         public bool luces_posicionales = false;
+        //Variable para el Help Inicial
+        TgcText2d textHelp;
+        float tiempo_inicial = 0;
         //Variables para el parpadeo
             float tiempo_acum = 0;
             float periodo_parpadeo = 1.5f;
@@ -224,6 +227,17 @@ namespace AlumnoEjemplos.THE_GRID
 
             #endregion
 
+            #region Help
+            //Texto help
+            textHelp = new TgcText2d();
+            textHelp.Position = new Point(15, 260);
+            textHelp.Size = new Size(500, 100);
+            textHelp.changeFont(new System.Drawing.Font("TimesNewRoman", 16, FontStyle.Regular));
+            textHelp.Color = Color.Yellow;
+            textHelp.Align = TgcText2d.TextAlign.LEFT;
+            textHelp.Text = "¿Por dónde empezar? Presionar \"P\"";
+            #endregion
+
             GuiController.Instance.FullScreenEnable = false;         //HABILITA O DESHABILITA EL MODO FULLSCREEN
 
             currentFrustrum = new TgcFrustum();           
@@ -252,13 +266,16 @@ namespace AlumnoEjemplos.THE_GRID
             anchoPantalla = focusWindows.Width;
 
             music.chequearCambio("Lista Completa"); //Cargamos la musica para reproducir
-            music.playPauseBackgound(); //Arranca en pausa por el tutorial.
+            //music.playPauseBackgound(); //Arranca en pausa por el tutorial.
             scheme.chequearCambio("THE OPENING"); //Capitulo por defecto
         }   
 
         public override void render(float elapsedTime)
         {
             #region GUI
+            tiempo_inicial+=elapsedTime;
+            if (tiempo_inicial < 1000) 
+                textHelp.render();
             guiHud.operar();
             if (mouse)
             {
@@ -278,12 +295,12 @@ namespace AlumnoEjemplos.THE_GRID
             #endregion
             
             #region -----KEYS-----
-            if (input.keyPressed(Key.I)) { music.refrescar(); }
+            if (input.keyPressed(Key.I) || input.keyPressed(Key.N)) { music.refrescar(); }
             if (input.keyPressed(Key.P)) { 
                 pausa = true;
                 music.playPauseBackgound();
             }
-            if (input.keyPressed(Key.C))
+            if (input.keyPressed(Key.C) || input.keyPressed(Key.O))
             {
                 EjemploAlumno.workspace().config = true;
                 EjemploAlumno.workspace().pausa = false;
@@ -349,13 +366,7 @@ namespace AlumnoEjemplos.THE_GRID
                 {
                     if (superRender.motionBlurActivado)
                     {
-                        superRender.motionBlurActivado = false;
-                        tiempoBlur = 0.3f;
-                        nave.fisica.velocidadMaxima = nave.velMaxNormal;
-                        nave.fisica.velocidadCrucero = nave.velMaxNormal;
-                        nave.fisica.aceleracion = nave.acelNormal;
-                        nave.velocidadRadial = nave.rotNormal;
-                        nave.fisica.velocidadInstantanea = nave.velMaxNormal;//Esto esta para cuando el blur se desactiva, desacelrar rapidamente la nave
+                        desactivarBlur();//Esto esta para cuando el blur se desactiva, desacelrar rapidamente la nave
                     }
                     else
                     {
@@ -610,6 +621,17 @@ namespace AlumnoEjemplos.THE_GRID
 
             //scheme.chequearCambio(escenarioActivado); //Realiza el cambio de capitulo
             nave.desplazamientoReal = despl_avanzado; //Setea si se habilito el modo real o avanzado de desplazamiento (Con atraccion y choque)
+        }
+
+        public void desactivarBlur()
+        {
+            superRender.motionBlurActivado = false;
+            tiempoBlur = 0.3f;
+            nave.fisica.velocidadMaxima = nave.velMaxNormal;
+            nave.fisica.velocidadCrucero = nave.velMaxNormal;
+            nave.fisica.aceleracion = nave.acelNormal;
+            nave.velocidadRadial = nave.rotNormal;
+            nave.fisica.velocidadInstantanea = nave.velMaxNormal;
         }
 
         public override void close()

@@ -65,10 +65,10 @@ namespace AlumnoEjemplos.THE_GRID.InterfazGrafica
                         {
                             float an = (max_dist - dist) / max_dist * 3.1415f * 2.0f;
                             int d = (int)dist;
-                                gui.DrawArc(new Vector2(pos_enemigo.X + 20, pos_enemigo.Y), 40, 0, an, 10, dist < 2000 ? Color.Tomato : Color.WhiteSmoke);
-                                gui.DrawLine(pos_enemigo.X, pos_enemigo.Y, pos_enemigo.X + 20, pos_enemigo.Y, 3, Color.PowderBlue);
-                                gui.DrawLine(pos_enemigo.X + 20, pos_enemigo.Y, pos_enemigo.X + 40, pos_enemigo.Y - 20, 3, Color.PowderBlue);
-                                gui.TextOut((int)pos_enemigo.X + 50, (int)pos_enemigo.Y - 20, "Proximidad " + d, Color.PowderBlue);
+                                gui.DrawArc(new Vector2(pos_enemigo.X /*+ 20*/, pos_enemigo.Y), 40, 0, an, 10, dist < 2000 ? Color.Tomato : Color.WhiteSmoke);
+                                gui.DrawLine(pos_enemigo.X, pos_enemigo.Y, pos_enemigo.X /*+ 20*/, pos_enemigo.Y, 3, Color.PowderBlue);
+                                gui.DrawLine(pos_enemigo.X /*+ 20*/, pos_enemigo.Y, pos_enemigo.X /*+ 40*/, pos_enemigo.Y /*- 20*/, 3, Color.PowderBlue);
+                                gui.TextOut((int)pos_enemigo.X /*+ 50*/, (int)pos_enemigo.Y /*- 20*/, "Proximidad " + d, Color.PowderBlue);
                         }
                     }
                 }                
