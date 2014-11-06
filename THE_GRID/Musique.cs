@@ -82,6 +82,7 @@ namespace AlumnoEjemplos.THE_GRID
         {
             lazer2_carga.SoundBuffer.Stop();
             lazer2_carga.SoundBuffer.SetCurrentPosition(0); //Para solucionar un bug de cuando carga el laser azul
+            stopPropulsion();
             if (!EjemploAlumno.workspace().musicaActivada) { playerMP3.pause(); return; }
             if (playerMP3.getStatus() == TgcMp3Player.States.Playing) { playerMP3.pause(); cancionActual = "Sin Musica"; return; }
             if (playerMP3.getStatus() == TgcMp3Player.States.Paused) { playerMP3.resume(); cancionActual = listaTemas[pistaActual]; return; }

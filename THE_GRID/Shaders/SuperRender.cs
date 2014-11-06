@@ -48,6 +48,7 @@ namespace AlumnoEjemplos.THE_GRID.Shaders
         public TgcBox[] lightMeshes;
 
         //public Hud hud = new Hud();
+        //Es una interfaz de proximidad, pero desgraciadamente esta buggeada y provoca parpadeos
 
         public SuperRender()
         {
