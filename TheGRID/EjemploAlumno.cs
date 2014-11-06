@@ -95,6 +95,8 @@ namespace AlumnoEjemplos.TheGRID
         public int incremento = 0;
         public float timeSprite = 0;
         public bool credit1 = false;
+        public Hud guiHud;
+
         #endregion
 
         #region Atributos Menu
@@ -111,6 +113,7 @@ namespace AlumnoEjemplos.TheGRID
         public bool despl_avanzado = true;
         public string escenarioActivado = "THE OPENING";
         public bool entreWarp = false;
+        public bool helpActivado = false;
         #endregion
 
         #region METODOS AUXILIARES
@@ -176,6 +179,8 @@ namespace AlumnoEjemplos.TheGRID
             currentFrustrum = new TgcFrustum();           
             superRender = new SuperRender();
             guiConfig = new Configuracion(music);
+            guiHud = new Hud();
+
 
             //Crear la nave
             nave = new Nave();
@@ -198,21 +203,18 @@ namespace AlumnoEjemplos.TheGRID
             anchoPantalla = focusWindows.Width;
 
             #region PANEL DERECHO
-            //Cargar valor en UserVar
-            GuiController.Instance.UserVars.addVar("Vel-Actual:");
-            GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
-
             string[] opciones2 = new string[] { "Lista Completa", "Castor", "Derezzed", "M4 Part 2", "ME Theme", "New Worlds", "Solar Sailer", "Spectre", "Tali", "The Son of Flynn", "Tron Ending", "Sin Musica" };
             GuiController.Instance.Modifiers.addInterval("Musica de fondo", opciones2, 0);
             string opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
             music.chequearCambio(opcionElegida);
             music.refrescar();
-            scheme.chequearCambio("THE OPENING");
             #endregion
+            scheme.chequearCambio("THE OPENING");
         }   
 
         public override void render(float elapsedTime)
         {
+            guiHud.operar();
             if (mouse)
             {
                 Cursor.Hide();
@@ -245,7 +247,7 @@ namespace AlumnoEjemplos.TheGRID
             //Flechas
             
             float sensibilidad = 0.003f;
-            float zonaMuerta = 20f;
+            float zonaMuerta = 10f;
             if (mouse)
             {
                 float temp = input.Ypos - mouseCenter.Y;
@@ -273,7 +275,13 @@ namespace AlumnoEjemplos.TheGRID
             if (input.keyDown(Key.S)) { if (!superRender.motionBlurActivado)nave.frenar(); }
             if (input.keyPressed(Key.S)) { nave.fisica.desactivarAutomatico(); velocidadAutomatica = false; }
             if (input.keyDown(Key.Z)) { nave.rotarPorVectorDeAngulos(new Vector3(0, 0, 15)); }
-
+            if (input.keyPressed(Key.H)) //Muestra el HUD de ayuda en pantalla
+            {
+                if (helpActivado)
+                    helpActivado = false;
+                else
+                    helpActivado = true;
+            }
             if (input.keyPressed(Key.LeftControl)) //Modo Automatico
             {
                 if (velocidadAutomatica)
@@ -435,7 +443,6 @@ namespace AlumnoEjemplos.TheGRID
             //Finalizar el dibujado de Sprites
             GuiController.Instance.Drawer2D.endDrawSprite();
 
-            #region Refrescar Variables
             
             //scheme.chequearCambio(escenarioActivado); //Realiza el cambio de capitulo
             nave.desplazamientoReal = despl_avanzado; //Setea si se habilito el modo real o avanzado de desplazamiento (Con atraccion y choque)
@@ -443,9 +450,6 @@ namespace AlumnoEjemplos.TheGRID
             string opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
             music.chequearCambio(opcionElegida);
 
-            //Refrescar User Vars
-            GuiController.Instance.UserVars.setValue("Vel-Actual:", nave.velocidadActual());
-            #endregion
         }
 
         public override void close()

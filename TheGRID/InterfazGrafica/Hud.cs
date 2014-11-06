@@ -23,8 +23,8 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
             float H = GuiController.Instance.Panel3d.Height;
             gui.Create();
             gui.InitDialog(false);
-            gui.InsertFrame("Combo Rata", 10, 10, 200, 200, Color.FromArgb(32, 120, 255, 132), frameBorder.sin_borde);
-            gui.InsertFrame("", 10, (int)H - 150, 200, 140, Color.FromArgb(62, 120, 132, 255), frameBorder.sin_borde);
+            //gui.InsertFrame("Combo Rata", 10, 10, 200, 200, Color.FromArgb(32, 120, 255, 132), frameBorder.sin_borde);
+            //gui.InsertFrame("", 10, (int)H - 150, 200, 140, Color.FromArgb(62, 120, 132, 255), frameBorder.sin_borde);
             gui.cursor_izq = gui.cursor_der = tipoCursor.sin_cursor;
 
             // le cambio el font
@@ -43,21 +43,19 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
 
         public void operar()
         {
-
-
             Device device = GuiController.Instance.D3dDevice;
             Control panel3d = GuiController.Instance.Panel3d;
 
             //radar de proximidad
-            float max_dist = 80;
-            foreach (TgcSkeletalMesh m in new List<TgcSkeletalMesh>())
+            float max_dist = 8000;
+            foreach (Dibujable item in EjemploAlumno.workspace().Escenario.CuerposGravitacionales)
             {
-                Vector3 pos_personaje = GuiController.Instance.FpsCamera.getPosition();
-                Vector3 pos_enemigo = m.Position * 1;
+                Vector3 pos_personaje = EjemploAlumno.workspace().nave.getPosicion();
+                Vector3 pos_enemigo = item.getPosicion();
                 float dist = (pos_personaje - pos_enemigo).Length();
                 if (dist < max_dist)
                 {
-                    pos_enemigo.Y = m.BoundingBox.PMax.Y * 0.75f + m.BoundingBox.PMin.Y * 0.25f;
+                    //pos_enemigo.Y = item.getColision().getBoundingBox().BoundingBox.PMax.Y * 0.75f + item.BoundingBox.PMin.Y * 0.25f;
                     pos_enemigo.Project(device.Viewport, device.Transform.Projection, device.Transform.View, device.Transform.World);
                     if (pos_enemigo.Z > 0 && pos_enemigo.Z < 1)
                     {
