@@ -89,6 +89,7 @@ namespace AlumnoEjemplos.TheGRID
         public int invertirMira = -1;
         Pausa guiPausa = new Pausa();
         public Configuracion guiConfig;
+        public Hud guiHud;
         #endregion
 
         #region Atributos Menu
@@ -150,6 +151,8 @@ namespace AlumnoEjemplos.TheGRID
             currentFrustrum = new TgcFrustum();           
             superRender = new SuperRender();
             guiConfig = new Configuracion(music);
+            guiHud = new Hud();
+
 
             //Crear la nave
             nave = new Nave();
@@ -183,6 +186,7 @@ namespace AlumnoEjemplos.TheGRID
 
         public override void render(float elapsedTime)
         {
+            guiHud.operar();
             if (mouse)
             {
                 Cursor.Hide();
