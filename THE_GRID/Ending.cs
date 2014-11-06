@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using TgcViewer;
 using TgcViewer.Utils._2D;
+using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.THE_GRID
@@ -13,6 +14,7 @@ namespace AlumnoEjemplos.THE_GRID
     public class Ending
     {
         #region Atributos
+        float desplazamiento;
         public TgcSprite cris;
         public TgcSprite crisTareas;
         public TgcSprite eze;
@@ -35,68 +37,59 @@ namespace AlumnoEjemplos.THE_GRID
             cris = new TgcSprite();
             cris.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Cris.png");
 
+            desplazamiento = 640; //Desplazamiento fuera de la plantalla. Viene de que las imagenes de los sprites son de 640x400
 
             Size screenSize = GuiController.Instance.Panel3d.Size;
             Size textureSize = cris.Texture.Size;
 
-            cris.Position = new Vector2(-700, 0);
+            cris.Position = new Vector2(-desplazamiento, 0);
 
             //Crear Sprite CrisTareas
             crisTareas = new TgcSprite();
             crisTareas.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\CrisTareas.png");
-
-
-            Size screenSize2 = GuiController.Instance.Panel3d.Size;
-            Size textureSize2 = cris.Texture.Size;
-
-            crisTareas.Position = new Vector2(screenSize.Height + 550, screenSize.Height - 200);
+            crisTareas.Position = new Vector2(screenSize.Width, screenSize.Height - 200);
 
             //Crear Sprite Eze
             eze = new TgcSprite();
             eze.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Eze.png");
-
-            eze.Position = new Vector2(screenSize.Height + 550, 0);
+            eze.Position = new Vector2(screenSize.Width, 0);
 
             //Crear Sprite EzeTareas
             ezeTareas = new TgcSprite();
             ezeTareas.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\EzeTareas.png");
-
-            ezeTareas.Position = new Vector2(-1000, screenSize.Height - 200);
+            ezeTareas.Position = new Vector2(-desplazamiento, screenSize.Height - 200);
 
             //Crear Sprite Dante
             dante = new TgcSprite();
             dante.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Dante.png");
-
-            dante.Position = new Vector2(-1000, 0);
+            dante.Position = new Vector2(-desplazamiento, 0);
 
             //Crear Sprite DanteTareas
             danteTareas = new TgcSprite();
             danteTareas.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\DanteTareas.png");
-
-            danteTareas.Position = new Vector2(screenSize.Height + 550, screenSize.Height - 200);
+            danteTareas.Position = new Vector2(screenSize.Width, screenSize.Height - 200);
 
             //Crear Sprite Tomas
             tomas = new TgcSprite();
             tomas.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Tomas.png");
-
-            tomas.Position = new Vector2(screenSize.Height + 650, 0);
+            tomas.Position = new Vector2(screenSize.Width, 0);
 
             //Crear Sprite TomasTareas
             tomasTareas = new TgcSprite();
             tomasTareas.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\TomasTareas.png");
-
-            tomasTareas.Position = new Vector2(-900, screenSize.Height - 200);
+            tomasTareas.Position = new Vector2(-desplazamiento, screenSize.Height - 200);
         }
         public void update(float elapsedTime)
         {
+            Size screenSize = GuiController.Instance.Panel3d.Size;
             if (credit1)
             {
-                if (cris.Position.X < 50)
+                if (cris.Position.X < 50) //Mientras que no este completamente dentro de la plantalla, aumenta rapido
                 {
                     cris.Position += new Vector2(elapsedTime * 1000, 0);
                     crisTareas.Position -= new Vector2(elapsedTime * 1000, 0);
                 }
-                if (cris.Position.X > 50 && timeSprite <= 2)
+                if (cris.Position.X.IsBetween(50, 50 + desplazamiento) && timeSprite <= 2) //Va mas lento durante 2 segundos
                 {
                     timeSprite += elapsedTime;
                     cris.Position += new Vector2(elapsedTime * 10, 0);
@@ -120,12 +113,12 @@ namespace AlumnoEjemplos.THE_GRID
             }
             if (credit2)
             {
-                if (eze.Position.X > 300)
+                if (ezeTareas.Position.X < 50)
                 {
                     eze.Position -= new Vector2(elapsedTime * 1000, 0);
                     ezeTareas.Position += new Vector2(elapsedTime * 1000, 0);
                 }
-                if (eze.Position.X < 300 && timeSprite <= 2)
+                if (ezeTareas.Position.X.IsBetween(50, 50 + desplazamiento) && timeSprite <= 2)
                 {
                     timeSprite += elapsedTime;
                     eze.Position -= new Vector2(elapsedTime * 10, 0);
@@ -155,7 +148,7 @@ namespace AlumnoEjemplos.THE_GRID
                     dante.Position += new Vector2(elapsedTime * 1000, 0);
                     danteTareas.Position -= new Vector2(elapsedTime * 1000, 0);
                 }
-                if (dante.Position.X > 50 && timeSprite <= 2)
+                if (dante.Position.X.IsBetween(50, 50 + desplazamiento) && timeSprite <= 2)
                 {
                     timeSprite += elapsedTime;
                     dante.Position += new Vector2(elapsedTime * 10, 0);
@@ -179,12 +172,12 @@ namespace AlumnoEjemplos.THE_GRID
             }
             if (credit4)
             {
-                if (tomas.Position.X > 500)
+                if (tomasTareas.Position.X < 50)
                 {
                     tomas.Position -= new Vector2(elapsedTime * 1000, 0);
                     tomasTareas.Position += new Vector2(elapsedTime * 1000, 0);
                 }
-                if (tomas.Position.X < 500 && timeSprite <= 2)
+                if (tomasTareas.Position.X.IsBetween(50, 50 + desplazamiento) && timeSprite <= 2)
                 {
                     timeSprite += elapsedTime;
                     tomas.Position -= new Vector2(elapsedTime * 10, 0);
@@ -216,7 +209,6 @@ namespace AlumnoEjemplos.THE_GRID
             {
                 cris.render();
                 crisTareas.render();
-
             }
             if (credit2)
             {
@@ -241,6 +233,13 @@ namespace AlumnoEjemplos.THE_GRID
         public void habilitarCreditos()
         {
             credit1 = true;
+        }
+    }
+    public static class ExtensionsForFloat //Para trabajar con betweens
+    {
+        public static bool IsBetween(this float val, float low, float high)
+        {
+               return val > low && val < high;
         }
     }
 }
