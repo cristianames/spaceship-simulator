@@ -15,6 +15,7 @@ namespace AlumnoEjemplos.THE_GRID
     {
         #region Atributos
         float desplazamiento;
+        float offset_pantalla;
         public TgcSprite cris;
         public TgcSprite crisTareas;
         public TgcSprite eze;
@@ -37,10 +38,12 @@ namespace AlumnoEjemplos.THE_GRID
             cris = new TgcSprite();
             cris.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Cris.png");
 
-            desplazamiento = 640; //Desplazamiento fuera de la plantalla. Viene de que las imagenes de los sprites son de 640x400
-
             Size screenSize = GuiController.Instance.Panel3d.Size;
             Size textureSize = cris.Texture.Size;
+
+
+            desplazamiento = textureSize.Width; //Desplazamiento fuera de la plantalla. Viene de que las imagenes de los sprites son de 640x400
+            offset_pantalla = screenSize.Width * 0.1f; //El offset en la pantalla es el 10% de la pantalla total
 
             cris.Position = new Vector2(-desplazamiento, 0);
 
@@ -84,12 +87,12 @@ namespace AlumnoEjemplos.THE_GRID
             Size screenSize = GuiController.Instance.Panel3d.Size;
             if (credit1)
             {
-                if (cris.Position.X < 50) //Mientras que no este completamente dentro de la plantalla, aumenta rapido
+                if (cris.Position.X < offset_pantalla) //Mientras que no este completamente dentro de la plantalla, aumenta rapido
                 {
                     cris.Position += new Vector2(elapsedTime * 1000, 0);
                     crisTareas.Position -= new Vector2(elapsedTime * 1000, 0);
                 }
-                if (cris.Position.X.IsBetween(50, 50 + desplazamiento) && timeSprite <= 2) //Va mas lento durante 2 segundos
+                if (cris.Position.X.IsBetween(offset_pantalla, offset_pantalla + desplazamiento) && timeSprite <= 2) //Va mas lento durante 2 segundos
                 {
                     timeSprite += elapsedTime;
                     cris.Position += new Vector2(elapsedTime * 10, 0);
@@ -113,12 +116,12 @@ namespace AlumnoEjemplos.THE_GRID
             }
             if (credit2)
             {
-                if (ezeTareas.Position.X < 50)
+                if (ezeTareas.Position.X < offset_pantalla)
                 {
                     eze.Position -= new Vector2(elapsedTime * 1000, 0);
                     ezeTareas.Position += new Vector2(elapsedTime * 1000, 0);
                 }
-                if (ezeTareas.Position.X.IsBetween(50, 50 + desplazamiento) && timeSprite <= 2)
+                if (ezeTareas.Position.X.IsBetween(offset_pantalla, offset_pantalla + desplazamiento) && timeSprite <= 2)
                 {
                     timeSprite += elapsedTime;
                     eze.Position -= new Vector2(elapsedTime * 10, 0);
@@ -143,12 +146,12 @@ namespace AlumnoEjemplos.THE_GRID
             if (credit3)
             {
 
-                if (dante.Position.X < 50)
+                if (dante.Position.X < offset_pantalla)
                 {
                     dante.Position += new Vector2(elapsedTime * 1000, 0);
                     danteTareas.Position -= new Vector2(elapsedTime * 1000, 0);
                 }
-                if (dante.Position.X.IsBetween(50, 50 + desplazamiento) && timeSprite <= 2)
+                if (dante.Position.X.IsBetween(offset_pantalla, offset_pantalla + desplazamiento) && timeSprite <= 2)
                 {
                     timeSprite += elapsedTime;
                     dante.Position += new Vector2(elapsedTime * 10, 0);
@@ -172,12 +175,12 @@ namespace AlumnoEjemplos.THE_GRID
             }
             if (credit4)
             {
-                if (tomasTareas.Position.X < 50)
+                if (tomasTareas.Position.X < offset_pantalla)
                 {
                     tomas.Position -= new Vector2(elapsedTime * 1000, 0);
                     tomasTareas.Position += new Vector2(elapsedTime * 1000, 0);
                 }
-                if (tomasTareas.Position.X.IsBetween(50, 50 + desplazamiento) && timeSprite <= 2)
+                if (tomasTareas.Position.X.IsBetween(offset_pantalla, offset_pantalla + desplazamiento) && timeSprite <= 2)
                 {
                     timeSprite += elapsedTime;
                     tomas.Position -= new Vector2(elapsedTime * 10, 0);
