@@ -37,6 +37,8 @@ namespace AlumnoEjemplos.TheGRID
         TgcStaticSound slideButton = new TgcStaticSound();
         TgcStaticSound slidePanel = new TgcStaticSound();
         TgcStaticSound changePause = new TgcStaticSound();
+        TgcStaticSound exitMenu = new TgcStaticSound();
+        TgcStaticSound failButton = new TgcStaticSound();
 
         public Musique()
         {
@@ -50,6 +52,8 @@ namespace AlumnoEjemplos.TheGRID
             slideButton.loadSound(EjemploAlumno.TG_Folder + "Music\\Menu\\Slide.wav");
             slidePanel.loadSound(EjemploAlumno.TG_Folder + "Music\\Menu\\Select.wav");
             changePause.loadSound(EjemploAlumno.TG_Folder + "Music\\Menu\\Pause.wav");
+            exitMenu.loadSound(EjemploAlumno.TG_Folder + "Music\\Menu\\ExitMenu.wav");
+            failButton.loadSound(EjemploAlumno.TG_Folder + "Music\\Menu\\FailButton.wav");
         }
 
         /// <summary>
@@ -69,11 +73,23 @@ namespace AlumnoEjemplos.TheGRID
             if (playerMP3.getStatus() == TgcMp3Player.States.Paused) { playerMP3.resume(); return; }
         }
         /// <summary>
+        /// Reproducir la musica de fondo si estaba en Pausa
+        /// </summary>
+        public void onlyResumeBackground()
+        {
+            if (!EjemploAlumno.workspace().musicaActivada) { playerMP3.pause(); return; }
+            if (playerMP3.getStatus() == TgcMp3Player.States.Paused) { playerMP3.resume(); return; }
+        }
+        public void onlyStopBackground()
+        {
+            if (!EjemploAlumno.workspace().musicaActivada) { playerMP3.pause(); return; }
+            if (playerMP3.getStatus() == TgcMp3Player.States.Playing) { playerMP3.pause(); return; }
+        }
+        /// <summary>
         /// Reproducir la musica de carga del laser rojo
         /// </summary>
         public void playLazer()
         {
-
             lazer.SoundBuffer.Stop();
             lazer.SoundBuffer.SetCurrentPosition(0);
             if (EjemploAlumno.workspace().musicaActivada) { lazer.play(); };
@@ -129,6 +145,18 @@ namespace AlumnoEjemplos.TheGRID
             asteroideImpacto.SoundBuffer.SetCurrentPosition(0);
             if (EjemploAlumno.workspace().musicaActivada) { asteroideImpacto.play(); }
         }
+        internal void playDeniedPress()
+        {
+            failButton.SoundBuffer.Stop();
+            failButton.SoundBuffer.SetCurrentPosition(0);
+            if (EjemploAlumno.workspace().musicaActivada) { failButton.play(); }
+        }
+        internal void playExitMenu()
+        {
+            exitMenu.SoundBuffer.Stop();
+            exitMenu.SoundBuffer.SetCurrentPosition(50000);
+            if (EjemploAlumno.workspace().musicaActivada) { exitMenu.play(); }
+        }
         public void playSlideButton()
         {
             slideButton.SoundBuffer.Stop();
@@ -183,91 +211,55 @@ namespace AlumnoEjemplos.TheGRID
             switch (opcionElegida)
             {
                 case "Lista Completa":
-                    if (playerMP3.getStatus() == TgcMp3Player.States.Stopped) refrescar();
+                        refrescar();
                     if (escenarioActual != TipoModo.COMPLETE) escenarioActual = TipoModo.COMPLETE;
                     break;
                 case "Sin Musica":
-                    if (escenarioActual != TipoModo.NONE)
-                    {
                         playerMP3.stop();
                         escenarioActual = TipoModo.NONE;
-                    }
                     break;
                 case "Castor":
-                    if (escenarioActual != TipoModo.CASTOR)
-                    {
                         nuevaPista(0,true);
                         escenarioActual = TipoModo.CASTOR;
-                    }
                     break;
                 case "Derezzed":
-                    if (escenarioActual != TipoModo.DEREZZED)
-                    {
                         nuevaPista(1, true);
                         escenarioActual = TipoModo.DEREZZED;
-                    }
                     break;
                 case "M4 Part 2":
-                    if (escenarioActual != TipoModo.M4PART2)
-                    {
                         nuevaPista(2, true);
                         escenarioActual = TipoModo.M4PART2;
-                    }
                     break;
                 case "ME Theme":
-                    if (escenarioActual != TipoModo.METHEME)
-                    {
                         nuevaPista(3, true);
                         escenarioActual = TipoModo.METHEME;
-                    }
                     break;
                 case "New Worlds":
-                    if (escenarioActual != TipoModo.NEWWORLDS)
-                    {
                         nuevaPista(4, true);
                         escenarioActual = TipoModo.NEWWORLDS;
-                    }
                     break;
                 case "Solar Sailer":
-                    if (escenarioActual != TipoModo.SOLARSAILER)
-                    {
                         nuevaPista(5, true);
                         escenarioActual = TipoModo.SOLARSAILER;
-                    }
                     break;
                 case "Spectre":
-                    if (escenarioActual != TipoModo.SPECTRE)
-                    {
                         nuevaPista(6, true);
                         escenarioActual = TipoModo.SPECTRE;
-                    }
                     break;
                 case "Tali":
-                    if (escenarioActual != TipoModo.TALI)
-                    {
                         nuevaPista(7, true);
                         escenarioActual = TipoModo.TALI;
-                    }
                     break;
                 case "The Son of Flynn":
-                    if (escenarioActual != TipoModo.TSOF)
-                    {
                         nuevaPista(8, true);
                         escenarioActual = TipoModo.TSOF;
-                    }
                     break;
                 case "Tron Ending":
-                    if (escenarioActual != TipoModo.TRONENDING)
-                    {
                         nuevaPista(9, true);
                         escenarioActual = TipoModo.TRONENDING;
-                    }
                     break;
             }
         }
-        internal void playDeniedPress()
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }

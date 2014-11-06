@@ -68,12 +68,16 @@ namespace AlumnoEjemplos.TheGRID
                     EjemploAlumno.workspace().pausa = false;
                     EjemploAlumno.workspace().music.playPauseBackgound();
                     posicionSlide = 0;
+                    EjemploAlumno.workspace().music.playExitMenu();
                     return;
                 }
-                else posicionSlide++;
-                //EjemploAlumno.workspace().music.playPauseBackgound();
+                else
+                {
+                    posicionSlide++;
+                    EjemploAlumno.workspace().music.playSlideButton();
+                }
             }
-            if (input.keyPressed(Key.Left)) { if (posicionSlide > 0) posicionSlide--; }
+            if (input.keyPressed(Key.Left)) { if (posicionSlide > 0) { posicionSlide--; EjemploAlumno.workspace().music.playSlideButton(); } }
 
             GuiController.Instance.Drawer2D.beginDrawSprite();
             papers[posicionSlide].render();

@@ -148,6 +148,7 @@ namespace AlumnoEjemplos.TheGRID
             planet.activar();
             cuerposGravitacionales = new List<Dibujable>() { planet };
             EjemploAlumno.workspace().credit1 = true;
+            EjemploAlumno.workspace().music.chequearCambio("Tron Ending");
         }
         //-------------------------------------------------------------------------------------------VACUUM        
         public void loadVacuum() 

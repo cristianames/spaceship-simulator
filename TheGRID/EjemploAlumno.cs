@@ -220,7 +220,7 @@ namespace AlumnoEjemplos.TheGRID
             tomasTareas.Position = new Vector2(-900, screenSize.Height - 200);
 
 
-            GuiController.Instance.FullScreenEnable = true;         //HABILITA O DESHABILITA EL MODO FULLSCREEN
+            GuiController.Instance.FullScreenEnable = false;         //HABILITA O DESHABILITA EL MODO FULLSCREEN
 
 
             currentFrustrum = new TgcFrustum();           
@@ -249,12 +249,15 @@ namespace AlumnoEjemplos.TheGRID
             altoPantalla = focusWindows.Height;
             anchoPantalla = focusWindows.Width;
 
+            
             #region PANEL DERECHO
+            /*
             string[] opciones2 = new string[] { "Lista Completa", "Castor", "Derezzed", "M4 Part 2", "ME Theme", "New Worlds", "Solar Sailer", "Spectre", "Tali", "The Son of Flynn", "Tron Ending", "Sin Musica" };
             GuiController.Instance.Modifiers.addInterval("Musica de fondo", opciones2, 0);
             string opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
-            music.chequearCambio(opcionElegida);
-            music.refrescar();
+             */
+            music.chequearCambio("Lista Completa");
+            //music.refrescar();
             music.playPauseBackgound(); //Arranca en pausa por el tutorial.
             #endregion
             scheme.chequearCambio("THE OPENING");
@@ -606,11 +609,8 @@ namespace AlumnoEjemplos.TheGRID
             GuiController.Instance.Drawer2D.endDrawSprite();
 
             
-            //scheme.chequearCambio(escenarioActivado); //Realiza el cambio de capitulo
             nave.desplazamientoReal = despl_avanzado; //Setea si se habilito el modo real o avanzado de desplazamiento (Con atraccion y choque)
 
-            string opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
-            music.chequearCambio(opcionElegida);
 
         }
 
