@@ -83,7 +83,7 @@ namespace AlumnoEjemplos.TheGRID
         public int altoPantalla;
         public int anchoPantalla;
         //GUI
-        public bool pausa = false;
+        public bool pausa = true;
         public bool config = false;
         public bool gravity = true;
         public bool mouse;
@@ -219,7 +219,9 @@ namespace AlumnoEjemplos.TheGRID
 
             tomasTareas.Position = new Vector2(-900, screenSize.Height - 200);
 
-            GuiController.Instance.FullScreenEnable = true;
+
+            GuiController.Instance.FullScreenEnable = true;         //HABILITA O DESHABILITA EL MODO FULLSCREEN
+
 
             currentFrustrum = new TgcFrustum();           
             superRender = new SuperRender();
@@ -253,6 +255,7 @@ namespace AlumnoEjemplos.TheGRID
             string opcionElegida = (string)GuiController.Instance.Modifiers["Musica de fondo"];
             music.chequearCambio(opcionElegida);
             music.refrescar();
+            music.playPauseBackgound(); //Arranca en pausa por el tutorial.
             #endregion
             scheme.chequearCambio("THE OPENING");
         }   
