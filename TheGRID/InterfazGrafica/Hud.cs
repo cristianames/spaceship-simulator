@@ -45,28 +45,33 @@ namespace AlumnoEjemplos.TheGRID.InterfazGrafica
         {
             Device device = GuiController.Instance.D3dDevice;
             Control panel3d = GuiController.Instance.Panel3d;
+            
 
             //radar de proximidad
-            float max_dist = 8000;
+            float max_dist = 4000;
+            float min_dist = 800;
             foreach (Dibujable item in EjemploAlumno.workspace().Escenario.CuerposGravitacionales)
             {
-                Vector3 pos_personaje = EjemploAlumno.workspace().nave.getPosicion();
-                Vector3 pos_enemigo = item.getPosicion();
-                float dist = (pos_personaje - pos_enemigo).Length();
-                if (dist < max_dist)
+                if (item.soyAsteroide() && !EjemploAlumno.workspace().Shader.fueraFrustrum(item))
                 {
-                    //pos_enemigo.Y = item.getColision().getBoundingBox().BoundingBox.PMax.Y * 0.75f + item.BoundingBox.PMin.Y * 0.25f;
-                    pos_enemigo.Project(device.Viewport, device.Transform.Projection, device.Transform.View, device.Transform.World);
-                    if (pos_enemigo.Z > 0 && pos_enemigo.Z < 1)
+                    Vector3 pos_personaje = EjemploAlumno.workspace().nave.getPosicion();
+                    Vector3 pos_enemigo = item.getPosicion();
+                    float dist = (pos_personaje - pos_enemigo).Length();
+                    if (dist < max_dist && dist > min_dist)
                     {
-                        float an = (max_dist - dist) / max_dist * 3.1415f * 2.0f;
-                        int d = (int)dist;
-                        gui.DrawArc(new Vector2(pos_enemigo.X + 20, pos_enemigo.Y), 40, 0, an, 10, dist < 30 ? Color.Tomato : Color.WhiteSmoke);
-                        gui.DrawLine(pos_enemigo.X, pos_enemigo.Y, pos_enemigo.X + 20, pos_enemigo.Y, 3, Color.PowderBlue);
-                        gui.DrawLine(pos_enemigo.X + 20, pos_enemigo.Y, pos_enemigo.X + 40, pos_enemigo.Y - 20, 3, Color.PowderBlue);
-                        gui.TextOut((int)pos_enemigo.X + 50, (int)pos_enemigo.Y - 20, "Proximidad " + d, Color.PowderBlue);
+                        //pos_enemigo.Y = item.getColision().getBoundingBox().BoundingBox.PMax.Y * 0.75f + item.BoundingBox.PMin.Y * 0.25f;
+                        pos_enemigo.Project(device.Viewport, device.Transform.Projection, device.Transform.View, device.Transform.World);
+                        if (pos_enemigo.Z > 0 && pos_enemigo.Z < 1)
+                        {
+                            float an = (max_dist - dist) / max_dist * 3.1415f * 2.0f;
+                            int d = (int)dist;
+                            gui.DrawArc(new Vector2(pos_enemigo.X + 20, pos_enemigo.Y), 40, 0, an, 10, dist < 2000 ? Color.Tomato : Color.WhiteSmoke);
+                            gui.DrawLine(pos_enemigo.X, pos_enemigo.Y, pos_enemigo.X + 20, pos_enemigo.Y, 3, Color.PowderBlue);
+                            gui.DrawLine(pos_enemigo.X + 20, pos_enemigo.Y, pos_enemigo.X + 40, pos_enemigo.Y - 20, 3, Color.PowderBlue);
+                            gui.TextOut((int)pos_enemigo.X + 50, (int)pos_enemigo.Y - 20, "Proximidad " + d, Color.PowderBlue);
+                        }
                     }
-                }
+                }                
             }
         }
     }
