@@ -109,7 +109,7 @@ namespace AlumnoEjemplos.TheGRID.Shaders
                                                     "LeftCtrl: Modo Automático"+Environment.NewLine+
                                                     "Espacio: Disparo Principal"+Environment.NewLine+
                                                     "RightShift: Disparo Secundario"
-                                                    , 1024, 0, Color.White);
+                                                    , GuiController.Instance.D3dDevice.Viewport.Width - 300, 0, Color.White);
 
         }
     }
