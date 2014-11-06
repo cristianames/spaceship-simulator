@@ -69,6 +69,8 @@ namespace AlumnoEjemplos.THE_GRID.Shaders
         {
             motionShader.renderEffect(new EstructuraRender(nave, sol, meshes, elementosRenderizables, objetosBrillantes));
             //if(EjemploAlumno.workspace().camara.soyFPS())hud.operar(); //Se muestran los sprites de la HUD si estamos en FPS
+
+            EjemploAlumno.workspace().creditos.render(); //Renderizamos los creditos, si estan habilitados
             //Dibujamos las FPS y la Velocidad actual
             GuiController.Instance.Text3d.drawText( "FPS: " + HighResolutionTimer.Instance.FramesPerSecond + Environment.NewLine + 
                                                     "Velocidad: " +EjemploAlumno.workspace().nave.velocidadActual(), 0, 0, Color.White);
@@ -76,6 +78,7 @@ namespace AlumnoEjemplos.THE_GRID.Shaders
                  GuiController.Instance.D3dDevice.Viewport.Width - 180,
                  GuiController.Instance.D3dDevice.Viewport.Height - 20,Color.White);
             GuiController.Instance.AxisLines.render();//Dibujamos los ejes
+
             if (EjemploAlumno.workspace().helpActivado) helpHUD(); //Si se pidio ayuda, se muestran los comandos
         }
 

@@ -147,7 +147,7 @@ namespace AlumnoEjemplos.THE_GRID
             planet.ubicarEnUnaPosicion(posicion);
             planet.activar();
             cuerposGravitacionales = new List<Dibujable>() { planet };
-            EjemploAlumno.workspace().credit1 = true;
+            EjemploAlumno.workspace().creditos.habilitarCreditos();
             EjemploAlumno.workspace().music.chequearCambio("Tron Ending");
         }
         //-------------------------------------------------------------------------------------------VACUUM        

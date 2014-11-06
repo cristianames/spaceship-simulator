@@ -98,6 +98,7 @@
     <Compile Include="THE_GRID\Coordenadas\EjeCoordenadas.cs" />
     <Compile Include="THE_GRID\Dibujable\Dibujable.cs" />
     <Compile Include="THE_GRID\EjemploAlumno.cs" />
+    <Compile Include="THE_GRID\Ending.cs" />
     <Compile Include="THE_GRID\Escenario.cs" />
     <Compile Include="THE_GRID\Estrella.cs" />
     <Compile Include="THE_GRID\Explosiones\Explosion.cs" />
