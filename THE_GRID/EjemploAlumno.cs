@@ -91,21 +91,6 @@ namespace AlumnoEjemplos.THE_GRID
         public int invertirMira = -1;
         Pausa guiPausa = new Pausa();
         public Configuracion guiConfig;
-        public TgcSprite cris;
-        public TgcSprite crisTareas;
-        public TgcSprite eze;
-        public TgcSprite ezeTareas;
-        public TgcSprite dante;
-        public TgcSprite danteTareas;
-        public TgcSprite tomas;
-        public TgcSprite tomasTareas;
-        public int incremento = 0;
-        public float timeSprite = 0;
-        public bool credit1 = false;
-        public bool credit2 = false;
-        public bool credit3 = false;
-        public bool credit4 = false;
-        public Hud guiHud;
 
         #endregion
 
@@ -114,7 +99,7 @@ namespace AlumnoEjemplos.THE_GRID
         public bool luces_posicionales = false;
         //Variable para el Help Inicial
         TgcText2d textHelp;
-        float tiempo_inicial = 0;
+        public float tiempo_inicial = 0;
         //Variables para el parpadeo
             float tiempo_acum = 0;
             float periodo_parpadeo = 1.5f;
@@ -167,83 +152,14 @@ namespace AlumnoEjemplos.THE_GRID
             logger.log("Paso 4: Para activar el Motion Blur debe ir a la maxima velocidad y luego pulsar una vez LeftShift. La desactivacion es de la misma forma.");
             logger.log("Por ultimo pruebe disparar presionando SpaceBar o RightShift. -- Disfrute el ejemplo.");
 
-            #region Sprites de los creditos
 
-            //Crear Sprite Cris
-            cris = new TgcSprite();
-            cris.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Cris.png");
-
-           
-            Size screenSize = GuiController.Instance.Panel3d.Size;
-            Size textureSize = cris.Texture.Size;
-            
-            cris.Position = new Vector2(-700, 0);
-
-            //Crear Sprite CrisTareas
-            crisTareas = new TgcSprite();
-            crisTareas.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\CrisTareas.png");
-
-            
-            Size screenSize2 = GuiController.Instance.Panel3d.Size;
-            Size textureSize2 = cris.Texture.Size;
-
-            crisTareas.Position = new Vector2(screenSize.Height+550, screenSize.Height-200);
-
-            //Crear Sprite Eze
-            eze = new TgcSprite();
-            eze.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Eze.png");
-
-            eze.Position = new Vector2(screenSize.Height+550, 0);
-
-            //Crear Sprite EzeTareas
-            ezeTareas = new TgcSprite();
-            ezeTareas.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\EzeTareas.png");
-
-            ezeTareas.Position = new Vector2(-1000, screenSize.Height - 200);
-
-            //Crear Sprite Dante
-            dante = new TgcSprite();
-            dante.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Dante.png");
-
-            dante.Position = new Vector2(-1000, 0);
-
-            //Crear Sprite DanteTareas
-            danteTareas = new TgcSprite();
-            danteTareas.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\DanteTareas.png");
-
-            danteTareas.Position = new Vector2(screenSize.Height + 550, screenSize.Height - 200);
-           
-             //Crear Sprite Tomas
-            tomas = new TgcSprite();
-            tomas.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\Tomas.png");
-
-            tomas.Position = new Vector2(screenSize.Height+650, 0);
-
-            //Crear Sprite TomasTareas
-            tomasTareas = new TgcSprite();
-            tomasTareas.Texture = TgcTexture.createTexture(EjemploAlumno.TG_Folder + "Sprites\\TomasTareas.png");
-
-            tomasTareas.Position = new Vector2(-900, screenSize.Height - 200);
-
-            #endregion
-
-            #region Help
-            //Texto help
-            textHelp = new TgcText2d();
-            textHelp.Position = new Point(15, 260);
-            textHelp.Size = new Size(500, 100);
-            textHelp.changeFont(new System.Drawing.Font("TimesNewRoman", 16, FontStyle.Regular));
-            textHelp.Color = Color.Yellow;
-            textHelp.Align = TgcText2d.TextAlign.LEFT;
-            textHelp.Text = "¿Por dónde empezar? Presionar \"P\"";
-            #endregion
+            //Creamos los creditos
 
             GuiController.Instance.FullScreenEnable = false;         //HABILITA O DESHABILITA EL MODO FULLSCREEN
 
             currentFrustrum = new TgcFrustum();           
             superRender = new SuperRender();
             guiConfig = new Configuracion(music);
-            guiHud = new Hud();
 
             //Crear la nave
             nave = new Nave();
@@ -274,9 +190,6 @@ namespace AlumnoEjemplos.THE_GRID
         {
             #region GUI
             tiempo_inicial+=elapsedTime;
-            if (tiempo_inicial < 1000) 
-                textHelp.render();
-            guiHud.operar();
             if (mouse)
             {
                 Cursor.Hide();
@@ -335,7 +248,8 @@ namespace AlumnoEjemplos.THE_GRID
             //Movimientos
             if (input.keyDown(Key.A)) { nave.giro = -1; }          
             if (input.keyDown(Key.D)) { nave.giro = 1; }
-            if (input.keyDown(Key.W)) { nave.acelerar(); }
+            if (input.keyDown(Key.W)) { nave.acelerar(); music.playPropulsion(elapsedTime); }
+            if (input.keyUp(Key.W)) { music.stopPropulsion(); }
             if (input.keyDown(Key.S)) { if (!superRender.motionBlurActivado)nave.frenar(); }
             if (input.keyPressed(Key.S)) { nave.fisica.desactivarAutomatico(); velocidadAutomatica = false; }
             if (input.keyDown(Key.Z)) { nave.rotarPorVectorDeAngulos(new Vector3(0, 0, 15)); }
@@ -467,159 +381,9 @@ namespace AlumnoEjemplos.THE_GRID
             skySphere.render(nave);     //Solo actualiza posicion de la skysphere. Tiene deshabiltiado los render, eso lo hace el SuperRender
             #endregion
 
-            #region Update de Creditos
-            if (credit1)
-            {
-                if (cris.Position.X < 50)
-                {
-                    cris.Position += new Vector2(elapsedTime * 1000, 0);
-                    crisTareas.Position -= new Vector2(elapsedTime * 1000, 0);
-                }
-                if (cris.Position.X > 50 && timeSprite <= 2)
-                {
-                    timeSprite += elapsedTime;
-                    cris.Position += new Vector2(elapsedTime * 10, 0);
-                    crisTareas.Position -= new Vector2(elapsedTime * 10, 0);
-                }
-                if (timeSprite > 2)
-                {
-                    timeSprite += elapsedTime;
-                    incremento++;
-                    cris.Position += new Vector2(elapsedTime * 50 * incremento, 0);
-                    crisTareas.Position -= new Vector2(elapsedTime * 50 * incremento, 0);
-                }
-                if (timeSprite > 4 ) 
-                {
-                    credit1 = false;
-                    credit2 = true;
-                    incremento = 0;
-                    timeSprite = 0;
-                }
-
-            }
-            if (credit2)
-            {
-                if (eze.Position.X > 300)
-                {
-                    eze.Position -= new Vector2(elapsedTime * 1000, 0);
-                    ezeTareas.Position += new Vector2(elapsedTime * 1000, 0);
-                }
-                if (eze.Position.X < 300 && timeSprite <= 2)
-                {
-                    timeSprite += elapsedTime;
-                    eze.Position -= new Vector2(elapsedTime * 10, 0);
-                    ezeTareas.Position += new Vector2(elapsedTime * 10, 0);
-                }
-                if (timeSprite > 2)
-                {
-                    timeSprite += elapsedTime;
-                    incremento++;
-                    eze.Position -= new Vector2(elapsedTime * 50 * incremento, 0);
-                    ezeTareas.Position += new Vector2(elapsedTime * 50 * incremento, 0);
-                }
-                if (timeSprite > 4)
-                {
-                    credit2 = false;
-                    credit3 = true;
-                    incremento = 0;
-                    timeSprite = 0;
-                }
-
-            }
-            if (credit3)
-            {
-
-                if (dante.Position.X < 50)
-                {
-                    dante.Position += new Vector2(elapsedTime * 1000, 0);
-                    danteTareas.Position -= new Vector2(elapsedTime * 1000, 0);
-                }
-                if (dante.Position.X > 50 && timeSprite <= 2)
-                {
-                    timeSprite += elapsedTime;
-                    dante.Position += new Vector2(elapsedTime * 10, 0);
-                    danteTareas.Position -= new Vector2(elapsedTime * 10, 0);
-                }
-                if (timeSprite > 2)
-                {
-                    timeSprite += elapsedTime;
-                    incremento++;
-                    dante.Position += new Vector2(elapsedTime * 50 * incremento, 0);
-                    danteTareas.Position -= new Vector2(elapsedTime * 50 * incremento, 0);
-                }
-                if (timeSprite > 4)
-                {
-                    credit3 = false;
-                    credit4 = true;
-                    incremento = 0;
-                    timeSprite = 0;
-                }
-
-            }
-            if (credit4)
-            {
-                if (tomas.Position.X > 500)
-                {
-                    tomas.Position -= new Vector2(elapsedTime * 1000, 0);
-                    tomasTareas.Position += new Vector2(elapsedTime * 1000, 0);
-                }
-                if (tomas.Position.X < 500 && timeSprite <= 2)
-                {
-                    timeSprite += elapsedTime;
-                    tomas.Position -= new Vector2(elapsedTime * 10, 0);
-                    tomasTareas.Position += new Vector2(elapsedTime * 10, 0);
-                }
-                if (timeSprite > 2)
-                {
-                    timeSprite += elapsedTime;
-                    incremento++;
-                    tomas.Position -= new Vector2(elapsedTime * 50 * incremento, 0);
-                    tomasTareas.Position += new Vector2(elapsedTime * 50 * incremento, 0);
-                }
-                if (timeSprite > 4)
-                {
-                    credit4 = false;
-                    incremento = 0;
-                    timeSprite = 0;
-                }
-            }
-            #endregion
-
             //Redirige todo lo que renderiza para aplicar los efectos
             superRender.render(nave, sol, dibujableCollection, objectosNoMeshesCollection, objetosBrillantes);
 
-            //Iniciar dibujado de todos los Sprites de la escena (en este caso es solo uno)
-            GuiController.Instance.Drawer2D.beginDrawSprite();
-
-            #region Render de los Creditos
-            //Dibujar sprite (si hubiese mas, deberian ir todos aquí)
-            if (credit1) 
-            {
-                cris.render();
-                crisTareas.render();
-
-            }
-            if (credit2)
-            {
-                eze.render();
-                ezeTareas.render();
-            }
-            if (credit3)
-            {
-                dante.render();
-                danteTareas.render();
-            }
-            if (credit4)
-            {
-                tomas.render();
-                tomasTareas.render();
-            }
-
-            //Finalizar el dibujado de Sprites
-            GuiController.Instance.Drawer2D.endDrawSprite();
-            #endregion
-
-            //scheme.chequearCambio(escenarioActivado); //Realiza el cambio de capitulo
             nave.desplazamientoReal = despl_avanzado; //Setea si se habilito el modo real o avanzado de desplazamiento (Con atraccion y choque)
         }
 
@@ -632,6 +396,7 @@ namespace AlumnoEjemplos.THE_GRID
             nave.fisica.aceleracion = nave.acelNormal;
             nave.velocidadRadial = nave.rotNormal;
             nave.fisica.velocidadInstantanea = nave.velMaxNormal;
+            music.playSalidaWarp();
         }
 
         public override void close()

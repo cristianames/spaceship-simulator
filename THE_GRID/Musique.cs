@@ -42,6 +42,8 @@ namespace AlumnoEjemplos.THE_GRID
         TgcStaticSound navePropulsionContinua = new TgcStaticSound();
         TgcStaticSound exitMenu = new TgcStaticSound();
         TgcStaticSound failButton = new TgcStaticSound();
+        TgcStaticSound salidaWarp = new TgcStaticSound();
+        
 
         public Musique()
         {
@@ -59,6 +61,8 @@ namespace AlumnoEjemplos.THE_GRID
             navePropulsionContinua.loadSound(EjemploAlumno.TG_Folder + "Music\\propulsionContinua.wav");
             exitMenu.loadSound(EjemploAlumno.TG_Folder + "Music\\Menu\\ExitMenu.wav");
             failButton.loadSound(EjemploAlumno.TG_Folder + "Music\\Menu\\FailButton.wav");
+            salidaWarp.loadSound(EjemploAlumno.TG_Folder + "Music\\SalidaWarp_1.wav");
+            
         }
 
         /// <summary>
@@ -82,6 +86,7 @@ namespace AlumnoEjemplos.THE_GRID
         {
             lazer2_carga.SoundBuffer.Stop();
             lazer2_carga.SoundBuffer.SetCurrentPosition(0); //Para solucionar un bug de cuando carga el laser azul
+            stopPropulsion();
             if (!EjemploAlumno.workspace().musicaActivada) { playerMP3.pause(); return; }
             if (playerMP3.getStatus() == TgcMp3Player.States.Playing) { playerMP3.pause(); cancionActual = "Sin Musica"; return; }
             if (playerMP3.getStatus() == TgcMp3Player.States.Paused) { playerMP3.resume(); cancionActual = listaTemas[pistaActual]; return; }
@@ -140,6 +145,16 @@ namespace AlumnoEjemplos.THE_GRID
         {
             warp_time.SoundBuffer.Stop();
             warp_time.SoundBuffer.SetCurrentPosition(0);
+            playSalidaWarp();
+        }
+        /// <summary>
+        /// Reproducir la musica de carga del laser rojo
+        /// </summary>
+        public void playSalidaWarp()
+        {
+            salidaWarp.SoundBuffer.Stop();
+            salidaWarp.SoundBuffer.SetCurrentPosition(0);
+            //if (EjemploAlumno.workspace().musicaActivada) { salidaWarp.play(); };
         }
         /// <summary>
         /// Reproducir el sonido de colision

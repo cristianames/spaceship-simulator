@@ -174,7 +174,7 @@ namespace AlumnoEjemplos.THE_GRID
             TgcMesh mesh_laser = cargarMesh("Laser\\Laser_Box-TgcScene.xml");
             //Cargamos las cosas en el dibujable
             Dibujable laser = new Dibujable();
-            laser.setObject(mesh_laser, 4000, 100, new Vector3(0.15F, 0.15F, 0.2F));
+            laser.setObject(mesh_laser, 5600, 100, new Vector3(0.15F, 0.15F, 0.2F));
             laser.desactivar();
             asignarOBB_Laser(laser, new Vector3(0.15F, 0.15F, 0.20F));
             EjemploAlumno.addMesh(laser);
@@ -186,7 +186,7 @@ namespace AlumnoEjemplos.THE_GRID
             TgcMesh mesh_laser = cargarMesh("Laser\\gridLaser-TgcScene.xml");
             //Cargamos las cosas en el dibujable
             Dibujable laser = new Dibujable();
-            laser.setObject(mesh_laser, 6000, 100, new Vector3(0.09F, 0.09F, 0.13F));
+            laser.setObject(mesh_laser, 7000, 100, new Vector3(0.09F, 0.09F, 0.13F));
             laser.desactivar();
             asignarOBB_Laser(laser, new Vector3(0.1F, 0.1F, 0.15F));
             EjemploAlumno.addMesh(laser);

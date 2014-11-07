@@ -658,7 +658,8 @@ private   AlumnoEjemplos.THE_GRID.Musique music;
                 case Clase.NULL:
                     //Retornamos al ejemplo
                     EjemploAlumno.workspace().config = false;
-                    sonido.playPauseBackgound();
+                    sonido.onlyResumeBackground();
+                    sonido.playExitMenu();
                     break;
                 case Clase.OPCIONES:
                     transicion = true;

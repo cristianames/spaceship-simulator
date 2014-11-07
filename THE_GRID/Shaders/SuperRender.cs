@@ -42,12 +42,11 @@ namespace AlumnoEjemplos.THE_GRID.Shaders
         private HDRL hdrlShader;
         private BumpMapping bumpShader;
         public enum tipo { MOTION, HDRL, BUMP };
-
         public bool motionBlurActivado = false;
-
         public TgcBox[] lightMeshes;
 
         //public Hud hud = new Hud();
+        //Es una interfaz de proximidad, pero desgraciadamente esta buggeada y provoca parpadeos
 
         public SuperRender()
         {
@@ -69,6 +68,7 @@ namespace AlumnoEjemplos.THE_GRID.Shaders
         {
             motionShader.renderEffect(new EstructuraRender(nave, sol, meshes, elementosRenderizables, objetosBrillantes));
             //if(EjemploAlumno.workspace().camara.soyFPS())hud.operar(); //Se muestran los sprites de la HUD si estamos en FPS
+
             //Dibujamos las FPS y la Velocidad actual
             GuiController.Instance.Text3d.drawText( "FPS: " + HighResolutionTimer.Instance.FramesPerSecond + Environment.NewLine + 
                                                     "Velocidad: " +EjemploAlumno.workspace().nave.velocidadActual(), 0, 0, Color.White);
@@ -76,7 +76,14 @@ namespace AlumnoEjemplos.THE_GRID.Shaders
                  GuiController.Instance.D3dDevice.Viewport.Width - 180,
                  GuiController.Instance.D3dDevice.Viewport.Height - 20,Color.White);
             GuiController.Instance.AxisLines.render();//Dibujamos los ejes
+
             if (EjemploAlumno.workspace().helpActivado) helpHUD(); //Si se pidio ayuda, se muestran los comandos
+            if (EjemploAlumno.workspace().tiempo_inicial < 30) textHelp();
+            if (EjemploAlumno.workspace().Escenario.mensaje1a) mensajeCapitulo1a();
+            if (EjemploAlumno.workspace().Escenario.mensaje1b) mensajeCapitulo1b();
+            if (EjemploAlumno.workspace().Escenario.mensaje2a) mensajeCapitulo2a();
+            if (EjemploAlumno.workspace().Escenario.mensaje2b) mensajeCapitulo2b();
+            if (EjemploAlumno.workspace().Escenario.mensaje3) mensajeCapitulo3();
         }
 
         public void close()
@@ -115,6 +122,39 @@ namespace AlumnoEjemplos.THE_GRID.Shaders
                                                     "RightShift: Disparo Secundario"
                                                     , GuiController.Instance.D3dDevice.Viewport.Width - 300, 0, Color.White);
 
+        }
+        public void textHelp()
+        {
+            GuiController.Instance.Text3d.drawText("¿Por dónde empezar? Presionar \"P\"",
+                                                    5, GuiController.Instance.D3dDevice.Viewport.Height / 2, Color.Yellow);
+        }
+        public void mensajeCapitulo1a()
+        {
+            GuiController.Instance.Text3d.drawText("DEBES IRTE MAS LEJOS", 50,
+                                                    GuiController.Instance.D3dDevice.Viewport.Height / 4, Color.Yellow);
+        }
+        public void mensajeCapitulo1b()
+        {
+            GuiController.Instance.Text3d.drawText("SIGUE ASI!", 50,
+                                                    GuiController.Instance.D3dDevice.Viewport.Height / 4, Color.Yellow);
+        }
+        public void mensajeCapitulo2a()
+        {
+            GuiController.Instance.Text3d.drawText("¡¡¡ES HORA DE ENTRAR EN WARP!!!", 
+                                                    50,
+                                                    GuiController.Instance.D3dDevice.Viewport.Height / 4, Color.Yellow);
+        }
+        public void mensajeCapitulo2b()
+        {
+            GuiController.Instance.Text3d.drawText("AHORA CREO QUE PUEDES RELAJARTE Y DISFRUTAR",
+                                                    50,
+                                                    GuiController.Instance.D3dDevice.Viewport.Height / 4, Color.Yellow);
+        }
+        public void mensajeCapitulo3()
+        {
+            GuiController.Instance.Text3d.drawText("EXPLORA SI QUIERES, PERO LUEGO VAYAMONOS",
+                                                    50,
+                                                    GuiController.Instance.D3dDevice.Viewport.Height / 4, Color.Yellow);
         }
     }
 }

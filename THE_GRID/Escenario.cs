@@ -30,12 +30,23 @@ namespace AlumnoEjemplos.THE_GRID
         public Dibujable planet;
         private List<Dibujable> cuerposGravitacionales = new List<Dibujable>();
         public List<Dibujable> CuerposGravitacionales { get{ return cuerposGravitacionales; } }
-        public bool ingresoMision;
-        float valorDeTransicionCapitulo1 = 30000;
-        bool sePuedeSalirDelCapitulo1 = false;
-        float valorDeTransicionCapitulo2 = 20;
-        float acumTimeCapitulo2;
-        bool sePuedeSalirDelCapitulo2 = false;
+        //public bool ingresoMision;
+        float valorDeTransicionCapitulo1 = 50000;
+        Vector3 posicionInicialDeConteo;
+        public bool sePuedeSalirDelCapitulo1 = false;
+        public bool mensaje1a = false;
+        public bool mensaje1b = false;
+        public bool mensaje2a = false;
+        public bool mensaje2b = false;
+        public bool mensaje3 = false;
+        float valorDeTransicionCapitulo2 = 30;
+        public bool sePuedeSalirDelCapitulo2 = false;
+        float valorDeTransicionCapitulo3 = 40000;
+        public bool sePuedeSalirDelCapitulo3 = false;
+        float acumTime;
+        float distancia;
+
+
 
         #endregion
 
@@ -136,6 +147,7 @@ namespace AlumnoEjemplos.THE_GRID
         public void loadMision()
         {
             disposeOld();
+            posicionInicialDeConteo = principal.getPosicion();
             loadChapter1();
         }
         public void loadVacuum() 
@@ -194,28 +206,52 @@ namespace AlumnoEjemplos.THE_GRID
             switch (escenarioElegido)
             {
                 case TipoModo.MISION:
-                    if (sePuedeSalirDelCapitulo1 && principal.getPosicion().Length() > valorDeTransicionCapitulo1)
+                    distancia = Vector3.Subtract(principal.getPosicion(), posicionInicialDeConteo).Length();
+                    if (sePuedeSalirDelCapitulo1)
                     {
-                        loadChapter2();
-                        sePuedeSalirDelCapitulo1 = false;
-                        sePuedeSalirDelCapitulo2 = true;
+                        if (distancia > valorDeTransicionCapitulo1)
+                        {
+                            loadChapter2();
+                            sePuedeSalirDelCapitulo1 = false;
+                            sePuedeSalirDelCapitulo2 = true;
+                            mensaje1b = false;
+                            mensaje2a = true;
+                        }
+                        else 
+                        {
+                            if (distancia > valorDeTransicionCapitulo1 / 2)
+                            {
+                                if (!mensaje1b) { mensaje1a = false; mensaje1b = true; }
+                            }
+                        }
                     }
-                    if (sePuedeSalirDelCapitulo2 && acumTimeCapitulo2 > valorDeTransicionCapitulo2 && 
-                        EjemploAlumno.workspace().Shader.motionBlurActivado)
+                    if (sePuedeSalirDelCapitulo2)
                     {
-                        EjemploAlumno.workspace().desactivarBlur();
-                        loadChapter3();
-                        sePuedeSalirDelCapitulo2 = false;
-                        EjemploAlumno.workspace().credit1 = true;
-                        EjemploAlumno.workspace().music.chequearCambio("Tron Ending");
+                        if (EjemploAlumno.workspace().Shader.motionBlurActivado)
+                        {
+                            acumTime += elapsedTime;
+                            if (mensaje2a) { mensaje2a = false; mensaje2b = true; }
+                        }
+                        if (acumTime > valorDeTransicionCapitulo2)
+                        {
+                            if (EjemploAlumno.workspace().Shader.motionBlurActivado)
+                            {
+                                EjemploAlumno.workspace().desactivarBlur();
+                                loadChapter3();
+                                posicionInicialDeConteo = sol.getPosicion();
+                                sePuedeSalirDelCapitulo2 = false;
+                                acumTime = 0;
+                            }
+                        }
+                        else if (acumTime > valorDeTransicionCapitulo2 / 1.2f && mensaje2b)
+                        {
+                            mensaje2b = false;
+                            EjemploAlumno.workspace().music.chequearCambio("Tron Ending");
+                        }
                     }
-                    if (sePuedeSalirDelCapitulo2) acumTimeCapitulo2 += elapsedTime;
                     break;
             }
-            #endregion
-
         }
-
         private void colisionNavePlaneta(Dibujable nave)
         {
             Color color = Color.Yellow;
@@ -223,6 +259,7 @@ namespace AlumnoEjemplos.THE_GRID
             {
                 color = Color.Red;
                 //--------Realiza el calculo para determinar para donde salir disparado por el choque elastico con el Planeta
+                //--------Si si....elastico....es mas facil.
                 int flagReintento = 0;
                 Vector3 direccion = nave.getDireccion();
                 Vector3 distancias = Vector3.Subtract(nave.getPosicion(), planet.getPosicion());
@@ -242,6 +279,7 @@ namespace AlumnoEjemplos.THE_GRID
             }
             ((TgcObb)nave.getColision().getBoundingBox()).setRenderColor(color);
         }
+        #endregion
 
         #region Chequeo de cambios
         internal void chequearCambio(string opcion) //Cambio de Capitulo
@@ -252,24 +290,64 @@ namespace AlumnoEjemplos.THE_GRID
                     //if (escenarioElegido != TipoModo.THE_OPENING)
                         loadChapter1();
                     escenarioElegido = TipoModo.THE_OPENING;
+                    sePuedeSalirDelCapitulo1 = false;
+                    sePuedeSalirDelCapitulo2 = false;
+                    mensaje1a = false;
+                    mensaje1b = false;
+                    mensaje2a = false;
+                    mensaje2b = false;
+                    mensaje3 = false;
+                    acumTime = 0;
                     break;
                 case "IMPULSE DRIVE":
                     //if (escenarioElegido != TipoModo.IMPULSE_DRIVE)
                         loadChapter2();
                     escenarioElegido = TipoModo.IMPULSE_DRIVE;
+                    sePuedeSalirDelCapitulo1 = false;
+                    sePuedeSalirDelCapitulo2 = false;
+                    mensaje1a = false;
+                    mensaje1b = false;
+                    mensaje2a = false;
+                    mensaje2b = false;
+                    mensaje3 = false;
+                    acumTime = 0;
                     break;
                 case "WELCOME HOME":
                     //if (escenarioElegido != TipoModo.WELCOME_HOME)
                         loadChapter3();
                     escenarioElegido = TipoModo.WELCOME_HOME;
+                    sePuedeSalirDelCapitulo1 = false;
+                    sePuedeSalirDelCapitulo2 = false;
+                    mensaje1a = false;
+                    mensaje1b = false;
+                    mensaje2a = false;
+                    mensaje2b = false;
+                    mensaje3 = false;
+                    acumTime = 0;
                     break;
                 case "VACUUM":
                     //if (escenarioElegido != TipoModo.VACUUM)
                         loadVacuum();
                     escenarioElegido = TipoModo.VACUUM;
+                    sePuedeSalirDelCapitulo1 = false;
+                    sePuedeSalirDelCapitulo2 = false;
+                    mensaje1a = false;
+                    mensaje1b = false;
+                    mensaje2a = false;
+                    mensaje2b = false;
+                    mensaje3 = false;
+                    acumTime = 0;
                     break;
                 case "MISION":
                     //if (escenarioElegido != TipoModo.MISION)
+                    sePuedeSalirDelCapitulo1 = false;
+                    sePuedeSalirDelCapitulo2 = false;
+                    mensaje1a = true;
+                    mensaje1b = false;
+                    mensaje2a = false;
+                    mensaje2b = false;
+                    mensaje3 = false;
+                    acumTime = 0;
                     loadMision();
                     sePuedeSalirDelCapitulo1 = true;
                     escenarioElegido = TipoModo.MISION;
